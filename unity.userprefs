@@ -1,14 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\AndruidsShaders\TriplanarNewLit.shader">
     <Files>
-      <File FileName="Assets\AndruidsShaders\TriplanarNewLit.shader" Line="17" Column="12" />
-      <File FileName="Assets\Scripts\Ship.cs" Line="70" Column="34" />
-      <File FileName="Assets\Scripts\GameInput.cs" Line="130" Column="3" />
+      <File FileName="Assets\Scripts\MarchingCubes.cs" Line="48" Column="15" />
+      <File FileName="Assets\Scripts\Ship.cs" Line="36" Column="39" />
+      <File FileName="Assets\AndruidsShaders\TriplanarNewLit.shader" Line="91" Column="65" />
+      <File FileName="Assets\Scripts\GameInput.cs" Line="87" Column="9" />
       <File FileName="Assets\Scripts\Game.cs" Line="11" Column="1" />
       <File FileName="Assets\Scripts\Menu.cs" Line="217" Column="24" />
       <File FileName="Assets\Scripts\CaveDigger.cs" Line="23" Column="30" />
-      <File FileName="Assets\Scripts\MarchingCubes.cs" Line="48" Column="15" />
       <File FileName="Assets\Scripts\Play.cs" Line="52" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

@@ -74,11 +74,18 @@ public class GameInput : MonoBehaviour {
 						touchPosition[touch.fingerId] = touch.position;
 						startTouchPosition[touch.fingerId] = touch.position;
 						if (fingerCount+1 <= maxTouchFingers) fingerCount++;
-					} else if (touch.phase == TouchPhase.Moved) {
+					}
+					if (touch.phase == TouchPhase.Moved) {
 						isTouchMoved[touch.fingerId] = true;
 						touchPosition[touch.fingerId] = touch.position;
 						touchPositionDelta[touch.fingerId] = touch.deltaPosition;
-					} else if (touch.phase == TouchPhase.Ended) {
+					}
+/*					if (touch.phase == TouchPhase.Stationary) {
+						isTouchDown[touch.fingerId] = true;
+						wasTouchDown[touch.fingerId] = true;
+						touchPosition[touch.fingerId] = touch.position;
+					}*/
+					if (touch.phase == TouchPhase.Ended) {
 						isTouchUp[touch.fingerId] = true;
 						touchPosition[touch.fingerId] = touch.position;
 						wasTouchDown[touch.fingerId] = false;

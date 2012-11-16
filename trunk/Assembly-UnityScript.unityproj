@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CaveDigger.js" />
-     <Compile Include="Assets\Scripts\CaveOfCubes.js" />
      <None Include="Assets\TriplanarProjection\Shaders\TpWorld.shader" />
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpSingleAxis_Unlit.shader" />
      <None Include="Assets\AndruidsShaders\rim.shader" />

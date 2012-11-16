@@ -8,21 +8,38 @@ public class Ship : MonoBehaviour {
 	private GameInput gameInput;
 	
 	private Rigidbody rigidbody;
-	private Mode mode;
 	private FlyingMode flyingMode;
+//	private DirectionMode directionMode;
+	private int flyingBitwise;
+	private int flyingLeft = 1;
+	private int flyingRight = 2;
+	private int flyingUp = 4;
+	private int flyingDown = 8;
+	private int directionBitwise;
+	private int directionFinger1Down = 1;
+	private int directionFinger2Down = 2;
+	private int directionForward = 4;
+	private int directionBackward = 8;
 	
 	private Vector3 forceMove;
 	private Vector3 forceTurn;
 	private Quaternion calibration;
 	private bool isCalibrated;
 	private Vector3 gyro;
+	private int primaryTouchFinger;
+	private int secondaryTouchFinger;
+	private Vector2 touchPosition;
+	private float primaryTouchTime;
+	private float secondaryTouchTime;
 	
-	private static float FORCE_MOVE = 1200.0f;
-	private static float FORCE_TURN = 150.0f;
+	private static float FORCE_MOVE = 10.0f;
+	private static float FORCE_TURN = 0.5f;
 	private static float accelerometerThreshold = 0.05f;
+	private static float TOUCH_THRESHOLD = Screen.dpi * 0.2f;
+	private static float TOUCH_TIME_THRESHOLD = 0.3f;
 
-	public enum Mode { Stopped=0, Flying=1 }
-	public enum FlyingMode { Stopped=0, Forward=1, Backward=2, Left=3, Right=4 }
+	public enum DirectionMode { Stopped=0, Forward=1, Backward=2 }
+	public enum FlyingMode { None=0, ShiftLeft=5, ShiftRight=6, ShiftUp=7, ShiftDown=8, BankLeft=9, BankRight=10 }
 	
 	void Awake() {
 		Application.targetFrameRate = 60;
@@ -33,7 +50,8 @@ public class Ship : MonoBehaviour {
 		forceTurn = Vector3.zero;
 		gyro = Vector3.zero;
 		
-		isCalibrated = false;		
+		isCalibrated = false;
+		Debug.Log (Screen.dpi);
 	}
 	
 	public void Initialize(Play p, Game g) {
@@ -43,7 +61,11 @@ public class Ship : MonoBehaviour {
 		if (gameInput.isMobile) {
 			Input.gyro.enabled = true;
 		}
-		mode = Mode.Stopped;
+		flyingBitwise = 0;
+		directionBitwise = 0;
+//		directionMode = DirectionMode.Stopped;
+		primaryTouchFinger = 0;
+		secondaryTouchFinger = 1;
 	}
 	
 	void OnTriggerEnter(Collider collider) {
@@ -56,35 +78,162 @@ public class Ship : MonoBehaviour {
 
 	public void DispatchGameInput() {
 		if (gameInput.isMobile) {
-			if (gameInput.isTouchDown[0] && !gameInput.isGUIClicked[0] && mode == Mode.Stopped) {
-				mode = Mode.Flying;
-				flyingMode = FlyingMode.Stopped;
+			if (directionBitwise == 0 && gameInput.isTouchDown[primaryTouchFinger] && !gameInput.isGUIClicked[primaryTouchFinger]) {
+				//directionMode = DirectionMode.Forward;
+				directionBitwise |= directionFinger1Down;
+				touchPosition = gameInput.touchPosition[primaryTouchFinger];
+				primaryTouchTime = Time.time;
+//				Debug.Log("first touch " + directionBitwise);
 			}
-			if (gameInput.isTouchUp[0] && mode == Mode.Flying) {
-				mode = Mode.Stopped;
+			if ( (directionBitwise & directionFinger2Down) == directionFinger2Down) {
+				if (gameInput.isTouchUp[primaryTouchFinger] && gameInput.isTouchUp[secondaryTouchFinger]) {
+					directionBitwise = 0;
+				} else if (gameInput.isTouchUp[primaryTouchFinger]) {
+//					Debug.Log("before " + directionBitwise);
+					directionBitwise &= ~directionFinger2Down; // delete bit
+					directionBitwise &= ~directionBackward;
+					directionBitwise |= directionForward;
+//					Debug.Log("after " + directionBitwise);
+					primaryTouchFinger = 1;
+					secondaryTouchFinger = 0;
+				} else if (gameInput.isTouchUp[secondaryTouchFinger]) {
+					directionBitwise &= ~directionFinger2Down;
+					directionBitwise &= ~directionBackward;
+					directionBitwise |= directionForward;
+				}
+			} else if ( (directionBitwise & directionFinger1Down) == directionFinger1Down) {
+				if (gameInput.isTouchUp[primaryTouchFinger]) {
+					directionBitwise = 0;
+					flyingBitwise = 0;
+					primaryTouchFinger = 0;
+					secondaryTouchFinger = 1;
+				} else {
+					flyingBitwise = 0;
+					if (gameInput.touchPosition[primaryTouchFinger].y - touchPosition.y > TOUCH_THRESHOLD) {
+//						flyingMode = FlyingMode.Up;
+						flyingBitwise |= flyingUp;
+					} else if (gameInput.touchPosition[primaryTouchFinger].y - touchPosition.y < -TOUCH_THRESHOLD) {
+//						flyingMode = FlyingMode.Down;
+						flyingBitwise |= flyingDown;
+					}
+					if (gameInput.touchPosition[primaryTouchFinger].x - touchPosition.x > TOUCH_THRESHOLD) {
+//						flyingMode = FlyingMode.Right;
+						flyingBitwise |= flyingRight;
+					} else if (gameInput.touchPosition[primaryTouchFinger].x - touchPosition.x < -TOUCH_THRESHOLD) {
+//						flyingMode = FlyingMode.Left;
+						flyingBitwise |= flyingLeft;
+					}
+					if (flyingBitwise == 0 && (directionBitwise & directionForward) != directionForward) {
+						if (Time.time > primaryTouchTime + TOUCH_TIME_THRESHOLD) {
+							directionBitwise |= directionForward;
+						}
+					} else {
+						primaryTouchTime = Time.time;
+					}
+				}
+				if (gameInput.isTouchDown[secondaryTouchFinger] && !gameInput.isGUIClicked[secondaryTouchFinger]) {
+					//directionMode = DirectionMode.Backward;
+					directionBitwise |= directionFinger2Down;
+					directionBitwise |= directionBackward;
+					directionBitwise &= ~directionForward;
+//					Debug.Log("second touch " + directionBitwise);
+				}
 			}
 		}
 	}
 
 	void Update () {
 		if (!isCalibrated) Calibrate();
+		
+		if (!gameInput.isMobile) {
+			directionBitwise = 0;
+			flyingBitwise = 0;
+			if (Input.GetKey(KeyCode.A)) {
+//				rigidbody.AddRelativeForce(-Vector3.right * FORCE_MOVE);
+			}
+			if (Input.GetKey(KeyCode.D)) {
+//				rigidbody.AddRelativeForce(Vector3.right * FORCE_MOVE);
+			}
+			
+			if (Input.GetKeyUp(KeyCode.W)) {
+				directionBitwise &= ~directionForward;
+			}
+			if (Input.GetKeyUp(KeyCode.S)) {
+//				directionMode = DirectionMode.Stopped;
+				directionBitwise &= ~directionBackward;
+			}
+			if (Input.GetKey(KeyCode.W)) {
+//				directionMode = DirectionMode.Forward;
+				directionBitwise |= directionForward;
+				directionBitwise &= ~directionBackward;
+			}
+			if (Input.GetKey(KeyCode.S)) {
+//				directionMode = DirectionMode.Backward;
+				directionBitwise |= directionBackward;
+				directionBitwise &= ~directionForward;
+			}
+			
+/*			if (Input.GetKey(KeyCode.Q)) {
+				rigidbody.AddRelativeTorque(Vector3.forward * FORCE_TURN);
+			}
+			if (Input.GetKey(KeyCode.E)) {
+				rigidbody.AddRelativeTorque(-Vector3.forward * FORCE_TURN);
+			}*/
+			
+			if (Input.GetKeyUp(KeyCode.LeftArrow)) {
+				flyingBitwise &= ~flyingLeft;
+			}
+			if (Input.GetKeyUp(KeyCode.RightArrow)) {
+				flyingBitwise &= ~flyingRight;
+			}
+			if (Input.GetKeyUp(KeyCode.UpArrow)) {
+				flyingBitwise &= ~flyingUp;
+			}
+			if (Input.GetKeyUp(KeyCode.DownArrow)) {
+				flyingBitwise &= ~flyingDown;				
+			}
+			if (Input.GetKey(KeyCode.LeftArrow)) {
+//				flyingMode = FlyingMode.Left;
+				flyingBitwise |= flyingLeft;
+			}
+			if (Input.GetKey(KeyCode.RightArrow)) {
+//				flyingMode = FlyingMode.Right;
+				flyingBitwise |= flyingRight;
+			}
+			if (Input.GetKey(KeyCode.UpArrow)) {
+				//flyingMode = FlyingMode.Up;
+				flyingBitwise |= flyingUp;
+			}
+			if (Input.GetKey(KeyCode.DownArrow)) {
+//				flyingMode = FlyingMode.Down;
+				flyingBitwise |= flyingDown;
+			}
+		}
 	}
 	
-	void LateUpdate() {
-	}
 	
 	void FixedUpdate () {
-		if (gameInput.isMobile) {
-//			Debug.Log (Input.acceleration + " " + Input.gyro.rotationRate + " " + Input.gyro.attitude);
+		if ((directionBitwise & directionForward) == directionForward) {
+			Move(Vector3.forward);
+		} else if ((directionBitwise & directionBackward) == directionBackward) {
+			Move(-Vector3.forward);
+		}
+		if ( (flyingBitwise & flyingLeft) == flyingLeft) {
+			Turn(-Vector3.up);
+		} else if ( (flyingBitwise & flyingRight) == flyingRight) {
+			Turn(Vector3.up);
+		}
+		if ( (flyingBitwise & flyingUp) == flyingUp) {
+			Turn(Vector3.right);
+		} else if ( (flyingBitwise & flyingDown) == flyingDown) {
+			Turn(-Vector3.right);
+		}
+		
+//		if (gameInput.isMobile) {
+			/*
 			Quaternion calibrated = Quaternion.Inverse(calibration) * Input.gyro.attitude;
-/*			Vector3 gyroLast = Input.gyro.rotationRate;
-			
-			float upDown = (gyroNew.y < 0) ? Mathf.Min(gyro.y, gyroNew.y) : Mathf.Max(gyro.y, gyroNew.y);
-			float leftRight = (gyroNew.x < 0) ? Mathf.Min(gyro.x, gyroNew.x) : Mathf.Max(gyro.x, gyroNew.x);
-			float bank = (gyroNew.z < 0) ? Mathf.Min(gyro.z, gyroNew.z) : Mathf.Max(gyro.z, gyroNew.z);*/
 			float upDown = calibrated.x;
 			float leftRight = calibrated.y;
-//			float bank = calibrated.z;
 			if (Mathf.Abs(upDown) > accelerometerThreshold) {
 				float upDownDelta = Mathf.Clamp ( (Mathf.Abs(upDown)-accelerometerThreshold) * 10.0f, 0, 1.0f);
 				rigidbody.AddRelativeTorque(-Vector3.right * Time.deltaTime * FORCE_TURN * upDownDelta * Mathf.Sign(upDown));
@@ -92,55 +241,16 @@ public class Ship : MonoBehaviour {
 			if (Mathf.Abs(leftRight) > accelerometerThreshold) {
 				float leftRightDelta = Mathf.Clamp ( (Mathf.Abs(leftRight)-accelerometerThreshold) * 10.0f, 0, 1.0f);
 				rigidbody.AddRelativeTorque(Vector3.up * Time.deltaTime * FORCE_TURN * leftRightDelta * Mathf.Sign(leftRight));
-			}
-/*			if (Mathf.Abs(bank) > accelerometerThreshold) {
-				float bankDelta = Mathf.Clamp ( (Mathf.Abs(bank)-accelerometerThreshold) * 10.0f, 0, 1.0f);
-				rigidbody.AddRelativeTorque(Vector3.forward * Time.deltaTime * FORCE_TURN * bankDelta * Mathf.Sign(bank));
-			}*/
-			
-		} else {
-			if (Input.GetKey(KeyCode.A)) {
-	//				transform.Translate(-0.1f,0f,0f);
-				rigidbody.AddRelativeForce(-Vector3.right * Time.deltaTime * FORCE_MOVE);
-			}
-			if (Input.GetKey(KeyCode.D)) {
-	//				transform.Translate(0.1f,0f,0f);
-				rigidbody.AddRelativeForce(Vector3.right * Time.deltaTime * FORCE_MOVE);
-			}
-			if (Input.GetKey(KeyCode.UpArrow)) {
-	//				transform.Rotate(1f,0f,0f);
-				rigidbody.AddRelativeTorque(Vector3.right * Time.deltaTime * FORCE_TURN);
-			}
-			if (Input.GetKey(KeyCode.DownArrow)) {
-	//				transform.Rotate(-1f,0f,0f);
-				rigidbody.AddRelativeTorque(-Vector3.right * Time.deltaTime * FORCE_TURN);
-			}
-			if (Input.GetKey(KeyCode.W)) {
-				rigidbody.AddRelativeForce(Vector3.forward * Time.deltaTime * FORCE_MOVE);
-	//				transform.Translate(0f,0f,0.1f);
-			}
-			if (Input.GetKey(KeyCode.S)) {
-	//				transform.Translate(0f,0f,-0.1f);
-				rigidbody.AddRelativeForce(-Vector3.forward * Time.deltaTime * FORCE_MOVE);
-			}
-			if (Input.GetKey(KeyCode.Q)) {
-				rigidbody.AddRelativeTorque(Vector3.forward * Time.deltaTime * FORCE_TURN);
-	//				transform.Translate(0f,0f,0.1f);
-			}
-			if (Input.GetKey(KeyCode.E)) {
-				rigidbody.AddRelativeTorque(-Vector3.forward * Time.deltaTime * FORCE_TURN);
-	//				transform.Translate(0f,0f,0.1f);
-			}
-			if (Input.GetKey(KeyCode.LeftArrow)) {
-	//			transform.Rotate(0f,-1,0f);
-				rigidbody.AddRelativeTorque(-Vector3.up * Time.deltaTime * FORCE_TURN);
-			}
-			if (Input.GetKey(KeyCode.RightArrow)) {
-	//			transform.Rotate(0f,1f,0f);
-				rigidbody.AddRelativeTorque(Vector3.up * Time.deltaTime * FORCE_TURN);
-			}
-	//		Debug.Log ("velocity " + rigidbody.velocity);
-		}
+			}*/		
+//		}
+	}
+	
+	private void Move(Vector3 direction) {
+		rigidbody.AddRelativeForce(direction * FORCE_MOVE);
+	}
+	
+	private void Turn(Vector3 direction) {
+		rigidbody.AddRelativeTorque(direction * FORCE_TURN);
 	}
 	
 	void OnGUI() {
@@ -175,4 +285,5 @@ public class Ship : MonoBehaviour {
 	}
 	
 }
+
 

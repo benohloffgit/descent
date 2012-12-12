@@ -11,6 +11,8 @@
 
 //http://www.gamedev.net/topic/621962-using-normal-mapping-with-triplanar-texture-projection/
 
+//http://mtnphil.wordpress.com/2011/09/22/terrain-engine/
+
 using System;
 using UnityEngine;
 using System.Collections;
@@ -155,7 +157,7 @@ public class MarchingCubes : MonoBehaviour {
 		}
 		Debug.Log("different normals : " + differentNormalsCount);*/
 		
-		TangentSolver(mesh);
+		//TangentSolver(mesh);
 		
 		transform.localScale = new Vector3(MeshScale,MeshScale,MeshScale);
 		
@@ -172,7 +174,7 @@ public class MarchingCubes : MonoBehaviour {
 	
 	}
 	
-	private void RecalculateMyNormals(Mesh mesh) {
+/*	private void RecalculateMyNormals(Mesh mesh) {
 		int[] distribution = new int[16];
 		for (int j=0; j<mesh.vertices.Length; j++) {
 			distribution[CountTriangles(mesh, j)]++;
@@ -180,7 +182,7 @@ public class MarchingCubes : MonoBehaviour {
 		for (int j=0; j<16; j++) {
 			Debug.Log("distribution " + j + " " + distribution[j]);
 		}
-	}
+	}*/
 	
 	private int CountTriangles(Mesh mesh, int vertexIndex) {
 		int count = 0;
@@ -412,7 +414,7 @@ public class MarchingCubes : MonoBehaviour {
 		return Vector3.Lerp(point1, point2, 0.5f);
 	}
 	
-	private void TangentSolver(Mesh theMesh)	{
+/*	private void TangentSolver(Mesh theMesh)	{
 		int vertexCount = theMesh.vertexCount;
 		Vector3[] vertices = theMesh.vertices;
 		Vector3[] normals = theMesh.normals;
@@ -480,8 +482,7 @@ public class MarchingCubes : MonoBehaviour {
 		    tangents[i].w = ( Vector3.Dot(Vector3.Cross(n, t), tan2[i]) < 0.0f ) ? -1.0f : 1.0f;
 		}       
 		theMesh.tangents = tangents;
-	}
-	
+	}*/
 	
 	private int[] edgeTable = new int[] {
 	    0x0,   0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,

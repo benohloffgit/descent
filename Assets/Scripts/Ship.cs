@@ -3,13 +3,15 @@ using UnityEngine;
 using System.Collections;
 
 public class Ship : MonoBehaviour {
+	public GameObject shipHUDPrefab;
+	
 	private Game game;
 	private Play play;
 	private GameInput gameInput;
+	private GameObject shipHUD;
 	
 	private Rigidbody rigidbody;
 	private FlyingMode flyingMode;
-//	private DirectionMode directionMode;
 	private int flyingBitwise; // either roll in 1finger mode, or shift in 2finger mode
 	private int flyingLeft = 1;
 	private int flyingRight = 2;
@@ -29,11 +31,6 @@ public class Ship : MonoBehaviour {
 	private int directionTurn = 16;
 	private int directionShift = 32;
 	
-//	private Vector3 forceMove;
-//	private Vector3 forceTurn;
-//	private Quaternion calibration;
-//	private bool isCalibrated;
-//	private Vector3 gyro;
 	private int primaryTouchFinger;
 	private int secondaryTouchFinger;
 	private Vector2 touchPosition1;
@@ -42,10 +39,13 @@ public class Ship : MonoBehaviour {
 	private float touchTime2;
 	private Vector3 touchDelta1;
 	private Vector3 touchDelta2;
+	private bool usesMouse;
+	
+	private Vector3 collisionPoint = Vector3.zero;
+	private Vector3 collisionNormal = Vector3.zero;
 	
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 1.5f;
-//	private static float accelerometerThreshold = 0.05f;
 	private static float TOUCH_THRESHOLD = Screen.dpi * 0.2f;
 	private static float TOUCH_SENSITIVITY = Screen.dpi * 0.5f;
 	private static float TOUCH_TIME_THRESHOLD = 0.3f;
@@ -58,25 +58,26 @@ public class Ship : MonoBehaviour {
 //		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		
 		rigidbody = GetComponent<Rigidbody>();
-//		forceMove = Vector3.zero;
-//		forceTurn = Vector3.zero;
-//		gyro = Vector3.zero;
-		
-//		isCalibrated = false;
 		Debug.Log (Screen.dpi);
+		
+		InstantiateShipHUD();
 	}
 	
 	public void Initialize(Play p, Game g) {
 		play = p;
 		game = g;
 		gameInput = game.gameInput;
-//		if (gameInput.isMobile) {
-//			Input.gyro.enabled = true;
-//		}
 		flyingBitwise = 0;
 		directionBitwise = 0;
 		primaryTouchFinger = 0;
 		secondaryTouchFinger = 1;
+		usesMouse = true;
+	}
+	
+	void OnCollisionEnter(Collision c) {
+//    	Debug.Log("First point that collided: " + c.contacts[0].normal + " / " + c.contacts[0].point);
+//		collisionPoint = c.contacts[0].point;
+//		collisionNormal = c.contacts[0].normal;
 	}
 	
 	void OnTriggerEnter(Collider collider) {
@@ -191,6 +192,7 @@ public class Ship : MonoBehaviour {
 	}
 
 	void Update () {
+//		Debug.DrawRay(collisionPoint, collisionNormal*5.0f, Color.white);
 //		if (!isCalibrated) Calibrate();
 		
 		if (!gameInput.isMobile) {
@@ -240,7 +242,7 @@ public class Ship : MonoBehaviour {
 				directionBitwise |= directionBackward;
 				directionBitwise &= ~directionForward;
 			}
-						
+			
 			if (Input.GetKeyUp(KeyCode.LeftArrow)) {
 				flyingBitwise &= ~flyingLeft;
 			}
@@ -270,11 +272,11 @@ public class Ship : MonoBehaviour {
 				flyingBitwise &= ~flyingUp;
 			}
 
-			if (Input.GetKey(KeyCode.Q)) {
+			if (Input.GetKey(KeyCode.E)) {
 				flyingBitwise |= flyingYawLeft;
 				flyingBitwise &= ~flyingYawRight;
 			}
-			if (Input.GetKey(KeyCode.E)) {
+			if (Input.GetKey(KeyCode.Q)) {
 				flyingBitwise |= flyingYawRight;
 				flyingBitwise &= ~flyingYawLeft;
 			}
@@ -332,15 +334,15 @@ public class Ship : MonoBehaviour {
 			} else if ( (flyingBitwise & flyingShiftRight) == flyingShiftRight) {
 				Move(Vector3.right);
 			}
-			if ( (flyingBitwise & flyingLeft) == flyingLeft) {
-				Turn(-Vector3.up);
-			} else if ( (flyingBitwise & flyingRight) == flyingRight) {
-				Turn(Vector3.up);
-			}
 			if ( (flyingBitwise & flyingShiftUp) == flyingShiftUp) {
 				Move(Vector3.up);
 			} else if ( (flyingBitwise & flyingShiftDown) == flyingShiftDown) {
 				Move(-Vector3.up);
+			}
+			if ( (flyingBitwise & flyingLeft) == flyingLeft) {
+				Turn(-Vector3.up);
+			} else if ( (flyingBitwise & flyingRight) == flyingRight) {
+				Turn(Vector3.up);
 			}
 			if ( (flyingBitwise & flyingUp) == flyingUp) {
 				Turn(Vector3.right);
@@ -351,6 +353,11 @@ public class Ship : MonoBehaviour {
 				Turn(-Vector3.forward);
 			} else if ( (flyingBitwise & flyingYawRight) == flyingYawRight) {
 				Turn(Vector3.forward);
+			}
+			
+			if (usesMouse) {
+				Turn(Vector3.up * Input.GetAxis ("Mouse X"));
+				Turn(Vector3.right * Input.GetAxis ("Mouse Y"));
 			}
 		}
 		
@@ -381,23 +388,6 @@ public class Ship : MonoBehaviour {
 	void OnGUI() {
 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit"))
 			Application.Quit();
-/*
-		if (GUI.RepeatButton  (new Rect (60,10,50,50), "W"))
-			transform.Translate(0,0,0.1f);
-		if (GUI.RepeatButton  (new Rect (10,60,50,50), "A"))
-			transform.Translate(-0.1f,0,0);
-		if (GUI.RepeatButton  (new Rect (60,60,50,50), "S"))
-			transform.Translate(0,0,-0.1f);
-		if (GUI.RepeatButton  (new Rect (110,60,50,50), "D"))
-			transform.Translate(0.1f,0,0);
-		if (GUI.RepeatButton  (new Rect (640,420,50,50), "L"))
-			transform.Rotate(0,-1f,0);
-		if (GUI.RepeatButton  (new Rect (690,420,50,50), "D"))
-			transform.Rotate(-1f,0,0);
-		if (GUI.RepeatButton  (new Rect (740,420,50,50), "R"))
-			transform.Rotate(0,1f,0);
-		if (GUI.RepeatButton  (new Rect (690,370,50,50), "U"))
-			transform.Rotate(1f,0,0);*/
 	}
 	
 /*	private void Calibrate() {
@@ -408,7 +398,12 @@ public class Ship : MonoBehaviour {
 		}
 //		Debug.Log ("Calibration " + Input.acceleration +" " + calibration);
 	}*/
-	
+
+	private void InstantiateShipHUD() {
+		shipHUD = GameObject.Instantiate(shipHUDPrefab) as GameObject;
+		Transform crossHair = shipHUD.transform.Find("Cross Hair");
+		crossHair.localScale /= (crossHair.renderer.material.mainTexture.width/(float)Screen.width) / (32.0f/(float)Screen.width);
+	}
 }
 
 

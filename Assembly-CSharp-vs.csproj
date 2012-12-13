@@ -80,7 +80,10 @@
      <Compile Include="Assets\Scripts\Mesh3D.cs" />
      <Compile Include="Assets\Scripts\Play.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />
-     <Compile Include="Assets\Scripts\Ship.cs" />
+     <Compile Include="Assets\Scripts\Ship\Ship.cs" />
+     <Compile Include="Assets\Scripts\Ship\ShipShooting.cs" />
+     <Compile Include="Assets\Scripts\Ship\ShipSteering.cs" />
+     <Compile Include="Assets\Scripts\Ship\Shot.cs" />
      <Compile Include="Assets\Scripts\State.cs" />
      <None Include="Assets\TriplanarProjection\Shaders\TpWorld.shader" />
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpSingleAxis_Unlit.shader" />

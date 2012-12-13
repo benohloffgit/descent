@@ -2,13 +2,10 @@ using System;
 using UnityEngine;
 using System.Collections;
 
-public class Ship : MonoBehaviour {
-	public GameObject shipHUDPrefab;
+public class ShipSteering : MonoBehaviour {
 	
-	private Game game;
-	private Play play;
 	private GameInput gameInput;
-	private GameObject shipHUD;
+	private Ship ship;
 	
 	private Rigidbody rigidbody;
 	private FlyingMode flyingMode;
@@ -40,12 +37,7 @@ public class Ship : MonoBehaviour {
 	private Vector3 touchDelta1;
 	private Vector3 touchDelta2;
 	private bool usesMouse;
-	
-	private Vector3 collisionPoint = Vector3.zero;
-	private Vector3 collisionNormal = Vector3.zero;
-	
-	private static float FORCE_MOVE = 25.0f;
-	private static float FORCE_TURN = 1.5f;
+
 	private static float TOUCH_THRESHOLD = Screen.dpi * 0.2f;
 	private static float TOUCH_SENSITIVITY = Screen.dpi * 0.5f;
 	private static float TOUCH_TIME_THRESHOLD = 0.3f;
@@ -54,19 +46,13 @@ public class Ship : MonoBehaviour {
 	public enum FlyingMode { None=0, ShiftLeft=5, ShiftRight=6, ShiftUp=7, ShiftDown=8, BankLeft=9, BankRight=10 }
 	
 	void Awake() {
-		Application.targetFrameRate = 60;
-//		Screen.sleepTimeout = SleepTimeout.NeverSleep;
-		
 		rigidbody = GetComponent<Rigidbody>();
-		Debug.Log (Screen.dpi);
-		
-		InstantiateShipHUD();
 	}
 	
-	public void Initialize(Play p, Game g) {
-		play = p;
-		game = g;
-		gameInput = game.gameInput;
+	public void Initialize(Ship s, GameInput gI) {
+		ship = s;
+		gameInput = gI;
+		
 		flyingBitwise = 0;
 		directionBitwise = 0;
 		primaryTouchFinger = 0;
@@ -74,20 +60,6 @@ public class Ship : MonoBehaviour {
 		usesMouse = true;
 	}
 	
-	void OnCollisionEnter(Collision c) {
-//    	Debug.Log("First point that collided: " + c.contacts[0].normal + " / " + c.contacts[0].point);
-//		collisionPoint = c.contacts[0].point;
-//		collisionNormal = c.contacts[0].normal;
-	}
-	
-	void OnTriggerEnter(Collider collider) {
-//		Debug.Log ("OnTriggerEnter");
-	}
-	
-	void OnTriggerExit(Collider collider) {
-//		Debug.Log ("OnTriggerExit");
-	}
-
 	public void DispatchGameInput() {
 		if (gameInput.isMobile) {
 			if (directionBitwise == 0 && gameInput.isTouchDown[primaryTouchFinger] && !gameInput.isGUIClicked[primaryTouchFinger]) {
@@ -147,7 +119,6 @@ public class Ship : MonoBehaviour {
 							&& (directionBitwise & directionForward) != directionForward
 							&& (directionBitwise & directionShift) != directionShift) {
 						directionBitwise |= directionShift;
-						Debug.Log ("shift");
 					} else if (		(directionBitwise & directionBackward) != directionBackward
 									&& (directionBitwise & directionForward) != directionForward
 									&& (directionBitwise & directionShift) != directionShift
@@ -283,81 +254,80 @@ public class Ship : MonoBehaviour {
 		}
 	}
 	
-	
 	void FixedUpdate () {
 		if (gameInput.isMobile) {
 			if ((directionBitwise & directionFinger2Down) == directionFinger2Down) {
 				if ((directionBitwise & directionBackward) == directionBackward) {
-					Move(-Vector3.forward);
+					ship.Move(-Vector3.forward);
 				} else if ((directionBitwise & directionForward) == directionForward) {
-					Move(Vector3.forward);
+					ship.Move(Vector3.forward);
 				}
 				if ( (flyingBitwise & flyingShiftLeft) == flyingShiftLeft) {
-					Move(-Vector3.right * Mathf.Clamp01((Mathf.Abs(touchDelta1.x)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY) );
+					ship.Move(-Vector3.right * Mathf.Clamp01((Mathf.Abs(touchDelta1.x)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY) );
 				} else if ( (flyingBitwise & flyingShiftRight) == flyingShiftRight) {
-					Move(Vector3.right * Mathf.Clamp01((Mathf.Abs(touchDelta1.x)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Move(Vector3.right * Mathf.Clamp01((Mathf.Abs(touchDelta1.x)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				}
 				if ( (flyingBitwise & flyingShiftUp) == flyingShiftUp) {
-					Move(Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Move(Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				} else if ( (flyingBitwise & flyingShiftDown) == flyingShiftDown) {
-					Move(-Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Move(-Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				} else if ( (flyingBitwise & flyingYawLeft) == flyingYawLeft) {
-					Turn(-Vector3.forward * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Turn(-Vector3.forward * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				} else if ( (flyingBitwise & flyingYawRight) == flyingYawRight) {
-					Turn(Vector3.forward * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Turn(Vector3.forward * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				}
 			} else if ((directionBitwise & directionFinger1Down) == directionFinger1Down) {
 				if ((directionBitwise & directionForward) == directionForward) {
-					Move(Vector3.forward);
+					ship.Move(Vector3.forward);
 				} else if ((directionBitwise & directionBackward) == directionBackward) {
-					Move(-Vector3.forward);
+					ship.Move(-Vector3.forward);
 				}
 				if ( (flyingBitwise & flyingLeft) == flyingLeft) {
-					Turn(-Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.x)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Turn(-Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.x)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				} else if ( (flyingBitwise & flyingRight) == flyingRight) {
-					Turn(Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.x)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Turn(Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.x)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				}
 				if ( (flyingBitwise & flyingUp) == flyingUp) {
-					Turn(Vector3.right * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Turn(Vector3.right * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				} else if ( (flyingBitwise & flyingDown) == flyingDown) {
-					Turn(-Vector3.right * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Turn(-Vector3.right * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				}
 			}
 		} else {
 			if ((directionBitwise & directionBackward) == directionBackward) {
-				Move(-Vector3.forward);
+				ship.Move(-Vector3.forward);
 			} else if ((directionBitwise & directionForward) == directionForward) {
-				Move(Vector3.forward);
+				ship.Move(Vector3.forward);
 			}
 			if ( (flyingBitwise & flyingShiftLeft) == flyingShiftLeft) {
-				Move(-Vector3.right);
+				ship.Move(-Vector3.right);
 			} else if ( (flyingBitwise & flyingShiftRight) == flyingShiftRight) {
-				Move(Vector3.right);
+				ship.Move(Vector3.right);
 			}
 			if ( (flyingBitwise & flyingShiftUp) == flyingShiftUp) {
-				Move(Vector3.up);
+				ship.Move(Vector3.up);
 			} else if ( (flyingBitwise & flyingShiftDown) == flyingShiftDown) {
-				Move(-Vector3.up);
+				ship.Move(-Vector3.up);
 			}
 			if ( (flyingBitwise & flyingLeft) == flyingLeft) {
-				Turn(-Vector3.up);
+				ship.Turn(-Vector3.up);
 			} else if ( (flyingBitwise & flyingRight) == flyingRight) {
-				Turn(Vector3.up);
+				ship.Turn(Vector3.up);
 			}
 			if ( (flyingBitwise & flyingUp) == flyingUp) {
-				Turn(Vector3.right);
+				ship.Turn(Vector3.right);
 			} else if ( (flyingBitwise & flyingDown) == flyingDown) {
-				Turn(-Vector3.right);
+				ship.Turn(-Vector3.right);
 			}
 			if ( (flyingBitwise & flyingYawLeft) == flyingYawLeft) {
-				Turn(-Vector3.forward);
+				ship.Turn(-Vector3.forward);
 			} else if ( (flyingBitwise & flyingYawRight) == flyingYawRight) {
-				Turn(Vector3.forward);
+				ship.Turn(Vector3.forward);
 			}
 			
 			if (usesMouse) {
-				Turn(Vector3.up * Input.GetAxis ("Mouse X"));
-				Turn(Vector3.right * Input.GetAxis ("Mouse Y"));
+				ship.Turn(Vector3.up * Input.GetAxis ("Mouse X"));
+				ship.Turn(Vector3.right * Input.GetAxis ("Mouse Y"));
 			}
 		}
 		
@@ -376,34 +346,4 @@ public class Ship : MonoBehaviour {
 			}*/		
 //		}
 	}
-	
-	private void Move(Vector3 direction) {
-		rigidbody.AddRelativeForce(direction * FORCE_MOVE);
-	}
-	
-	private void Turn(Vector3 direction) {
-		rigidbody.AddRelativeTorque(direction * FORCE_TURN);
-	}
-	
-	void OnGUI() {
-		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit"))
-			Application.Quit();
-	}
-	
-/*	private void Calibrate() {
-		if (Input.acceleration != Vector3.zero) {
-//			calibration = Quaternion.FromToRotation(Input.acceleration, new Vector3(0,0,-1.0f));
-			calibration = Input.gyro.attitude;
-			isCalibrated = true;
-		}
-//		Debug.Log ("Calibration " + Input.acceleration +" " + calibration);
-	}*/
-
-	private void InstantiateShipHUD() {
-		shipHUD = GameObject.Instantiate(shipHUDPrefab) as GameObject;
-		Transform crossHair = shipHUD.transform.Find("Cross Hair");
-		crossHair.localScale /= (crossHair.renderer.material.mainTexture.width/(float)Screen.width) / (32.0f/(float)Screen.width);
-	}
 }
-
-

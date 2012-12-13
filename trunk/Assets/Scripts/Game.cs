@@ -8,6 +8,7 @@ public class Game : MonoBehaviour {
 	public GameInput gameInput;
 	public bool isInitialized = false;
 	public enum Mode { Menu=0, Dialog=1, Play=2, None=3, Preferences=4 }
+	public enum Shot { Bullet=0 }
 
 	public static Vector4 GUI_UV_TITLE = new Vector4(0f,0.5f,0.5f,1.0f);
 	
@@ -20,6 +21,8 @@ public class Game : MonoBehaviour {
 	
 	void Awake() {
 		DontDestroyOnLoad(this);
+		
+		Application.targetFrameRate = 60;
 		volume = AudioListener.volume;
 		showTrialDialog = false;
 	}

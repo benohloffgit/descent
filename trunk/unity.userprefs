@@ -1,11 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\ShipShooting.cs">
     <Files>
-      <File FileName="Assets\Scripts\Ship.cs" Line="405" Column="103" />
-      <File FileName="Assets\AndruidsShaders\TriplanarNewLit.shader" Line="43" Column="54" />
       <File FileName="Assets\Scripts\MarchingCubes.cs" Line="366" Column="14" />
-      <File FileName="Assets\Scripts\Play.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Play.cs" Line="16" Column="30" />
+      <File FileName="Assets\Scripts\CaveDigger.cs" Line="116" Column="3" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="43" Column="1" />
+      <File FileName="Assets\Scripts\GameInput.cs" Line="155" Column="126" />
+      <File FileName="Assets\Scripts\Game.cs" Line="11" Column="31" />
+      <File FileName="Assets\Scripts\Ship\ShipSteering.cs" Line="64" Column="1" />
+      <File FileName="Assets\Scripts\Ship\ShipShooting.cs" Line="16" Column="44" />
+      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="7" Column="12" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

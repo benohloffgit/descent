@@ -118,7 +118,7 @@ public class Miner {
 	public void Mine() {
 		int[] newPos = GetMineableNeighbour();
 		if (newPos == pos) {
-			Debug.Log ("Miner deactivated on pos " + pos);
+//			Debug.Log ("Miner deactivated on pos " + pos);
 			isActive = false;
 		} else {
 			pos = newPos;

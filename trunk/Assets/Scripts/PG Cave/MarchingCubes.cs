@@ -18,15 +18,18 @@ using UnityEngine;
 using System.Collections;
 
 public class MarchingCubes : MonoBehaviour {
+	public	int[,,] cubeDensity; // x,y,z - 1 = filled, 0 = empty
+	public Vector3[,,] cubeCoords; // Vector3 coords for each cube of unscaled mesh!
 
-	private Mesh mesh;
-	private int[,,] room; // x,y,z - 1 = filled, 0 = empty
+	public static float MESH_SCALE = 5.0f;
 	
-	private int[,] gridCellDensity; // x,y,z - 1 = filled, 0 = empty
+	public Mesh mesh;
+//	private int[,,] room; // x,y,z - 1 = filled, 0 = empty
+	
+	private int[,] gridCellDensity; 
 	private Vector3[,] gridCellCoords;
-	private	int[,,] cubeDensity;
-	private	Vector3[,,] cubeCoords;
 	
+	private int roomSize;
 	private	Vector3[] roomVertices;
 	private	Vector2[] roomUVs;
 	private	int[] roomTriangles;
@@ -37,8 +40,7 @@ public class MarchingCubes : MonoBehaviour {
 	
 	private int duplicateVertices = 0;
 	
-	private static float SCALE = 0.5f;
-	private static float MeshScale = 10.0f;
+//	private static float SCALE = 0.5f;
 	
 	private Transform ship;
 		
@@ -47,9 +49,10 @@ public class MarchingCubes : MonoBehaviour {
 	void Awake() {
 	}
 	
-	public void Initialize(Transform s) {
+	public void Initialize(Transform s, int rS) {
 		ship = s;
-		CreateRoom(16,16,16);
+		roomSize = rS;
+		CreateRoom(roomSize,roomSize,roomSize);
 	}
 	
 	private void CreateRoom(int dimX, int dimY, int dimZ) {
@@ -80,8 +83,7 @@ public class MarchingCubes : MonoBehaviour {
 		for (int x=0; x< dimX; x++) {
 			for (int y=0; y< dimY; y++) {
 				for (int z=0; z< dimZ; z++) {
-					//cubeDensity[x,y,z] = GetDefaultDensity(x,y,z, dimX, dimY, dimZ);
-					cubeCoords[x,y,z] = new Vector3(x * MarchingCubes.SCALE, y * MarchingCubes.SCALE, z * MarchingCubes.SCALE);
+					cubeCoords[x,y,z] = new Vector3(x, y, z);
 				}
 			}
 		}
@@ -159,7 +161,7 @@ public class MarchingCubes : MonoBehaviour {
 		
 		//TangentSolver(mesh);
 		
-		transform.localScale = new Vector3(MeshScale,MeshScale,MeshScale);
+		transform.localScale = new Vector3(MESH_SCALE,MESH_SCALE,MESH_SCALE);
 		
 		// position ship on entry cube
 		Debug.Log("entry coord " + cubeCoords[cD.entry[0],cD.entry[1],cD.entry[2]]);

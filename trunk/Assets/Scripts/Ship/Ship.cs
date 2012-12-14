@@ -4,8 +4,8 @@ using System.Collections;
 
 public class Ship : MonoBehaviour {
 	public GameObject shipHUDPrefab;
+	public Game game;
 	
-	private Game game;
 	private Play play;
 	private GameInput gameInput;
 	
@@ -23,7 +23,7 @@ public class Ship : MonoBehaviour {
 	void Awake() {
 //		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		
-		Debug.Log (Screen.dpi);
+//		Debug.Log (Screen.dpi);
 		
 		InstantiateShipHUD();
 		shipSteering = transform.GetComponent<ShipSteering>();
@@ -36,7 +36,7 @@ public class Ship : MonoBehaviour {
 		gameInput = game.gameInput;
 		
 		shipSteering.Initialize(this, gameInput);
-		shipShooting.Initialize(this, gameInput);
+		shipShooting.Initialize(this, game, gameInput);
 	}
 	
 	void OnCollisionEnter(Collision c) {

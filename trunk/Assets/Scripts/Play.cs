@@ -6,6 +6,9 @@ public class Play : MonoBehaviour {
 	public GameObject guiPrefab;
 	public GameObject marchingCubesPrefab;
 	public GameObject shipPrefab;
+	public GameObject wallGunPrefab;
+
+	public static int ROOM_SIZE = 16;
 
 	private Game game;
 //	private GameInput gI;
@@ -28,7 +31,8 @@ public class Play : MonoBehaviour {
 		marchingCubes = (GameObject.Instantiate(marchingCubesPrefab) as GameObject).GetComponent<MarchingCubes>();
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
-		marchingCubes.Initialize(ship.transform);
+		marchingCubes.Initialize(ship.transform, ROOM_SIZE);
+		PlaceEnemies();
 	}
 	
 	public void Initialize(Game g, GameInput input) {
@@ -50,6 +54,16 @@ public class Play : MonoBehaviour {
 	
 	public void DispatchGameInput() {
 		ship.DispatchGameInput();
+	}
+	
+	private void PlaceEnemies() {
+		EnemyDistributor eD = new EnemyDistributor(game, this, marchingCubes, ROOM_SIZE);
+		eD.Distribute();
+	}
+	
+	public Vector3 GetShipPosition() {
+		// TODO cache
+		return ship.transform.position;
 	}
 }
 

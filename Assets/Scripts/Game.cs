@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Game : MonoBehaviour {
 	public GameObject statePrefab;
+	public GameObject gunBulletPrefab;
 	
 	public State state;
 	public GameInput gameInput;
@@ -14,10 +15,12 @@ public class Game : MonoBehaviour {
 	
 	private Menu menu;
 	private Play play;
+	private PrefabFactory prefabFactory;
 	public bool showTrialDialog;
 	private float volume;
 	
 	public static int MAX_WIDTH = 1536;
+	public static int LAYER_CAVE = 8;
 	
 	void Awake() {
 		DontDestroyOnLoad(this);
@@ -36,7 +39,9 @@ public class Game : MonoBehaviour {
 			state.Initialize(this);
 			
 			gameInput = GetComponent<GameInput>();
-										
+			prefabFactory = new PrefabFactory(this);
+			prefabFactory.Initialize();
+				
 			isInitialized = true;
 		}
 		
@@ -111,6 +116,10 @@ public class Game : MonoBehaviour {
 		state.jniBridge.BuyProduct(id);
 //		state.jniBridge.TrackByFlurry(1);
 	//	Debug.Log("buying product");
+	}
+	
+	public PrefabFactory CreateFromPrefab() {
+		return prefabFactory;
 	}
 	
 }

@@ -50,7 +50,7 @@
      <Compile Include="Assets\Scripts\CCText\CCText.cs" />
      <Compile Include="Assets\Scripts\CCText\CCTextModifier.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
-     <Compile Include="Assets\Scripts\CaveDigger.cs" />
+     <Compile Include="Assets\Scripts\Enemies\WallGun.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />
      <Compile Include="Assets\Scripts\GUI\Button.cs" />
      <Compile Include="Assets\Scripts\GUI\Center.cs" />
@@ -75,10 +75,13 @@
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\GameInput.cs" />
      <Compile Include="Assets\Scripts\JNIBridge.cs" />
-     <Compile Include="Assets\Scripts\MarchingCubes.cs" />
      <Compile Include="Assets\Scripts\Menu.cs" />
      <Compile Include="Assets\Scripts\Mesh3D.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\CaveDigger.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\EnemyDistributor.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\MarchingCubes.cs" />
      <Compile Include="Assets\Scripts\Play.cs" />
+     <Compile Include="Assets\Scripts\PrefabFactory.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />
      <Compile Include="Assets\Scripts\Ship\Ship.cs" />
      <Compile Include="Assets\Scripts\Ship\ShipShooting.cs" />

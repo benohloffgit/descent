@@ -1,18 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\WallGun.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\Ship.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="60" Column="52" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="38" Column="29" />
       <File FileName="Assets\Scripts\GameInput.cs" Line="155" Column="126" />
+      <File FileName="Assets\Scripts\Play.cs" Line="47" Column="2" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="43" Column="4" />
       <File FileName="Assets\Scripts\Game.cs" Line="121" Column="22" />
       <File FileName="Assets\Scripts\Ship\ShipShooting.cs" Line="15" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="17" Column="1" />
-      <File FileName="Assets\Scripts\PG Cave\EnemyDistributor.cs" Line="43" Column="29" />
+      <File FileName="Assets\Scripts\PG Cave\EnemyDistributor.cs" Line="73" Column="1" />
       <File FileName="Assets\Scripts\PG Cave\CaveDigger.cs" Line="21" Column="33" />
       <File FileName="Assets\Scripts\PG Cave\MarchingCubes.cs" Line="24" Column="32" />
-      <File FileName="Assets\Scripts\Enemies\WallGun.cs" Line="47" Column="49" />
+      <File FileName="Assets\Scripts\Enemies\WallGun.cs" Line="32" Column="1" />
       <File FileName="Assets\Scripts\PrefabFactory.cs" Line="24" Column="20" />
+      <File FileName="Assets\Scripts\Enemies\MineTouch.cs" Line="12" Column="44" />
+      <File FileName="Assets\Scripts\Ship\ShipSteering.cs" Line="257" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

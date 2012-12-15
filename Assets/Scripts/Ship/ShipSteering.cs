@@ -272,9 +272,9 @@ public class ShipSteering : MonoBehaviour {
 				} else if ( (flyingBitwise & flyingShiftDown) == flyingShiftDown) {
 					ship.Move(-Vector3.up * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				} else if ( (flyingBitwise & flyingYawLeft) == flyingYawLeft) {
-					ship.Turn(-Vector3.forward * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Yaw(-Vector3.forward * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				} else if ( (flyingBitwise & flyingYawRight) == flyingYawRight) {
-					ship.Turn(Vector3.forward * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
+					ship.Yaw(Vector3.forward * Mathf.Clamp01((Mathf.Abs(touchDelta1.y)-TOUCH_THRESHOLD)/TOUCH_SENSITIVITY));
 				}
 			} else if ((directionBitwise & directionFinger1Down) == directionFinger1Down) {
 				if ((directionBitwise & directionForward) == directionForward) {
@@ -320,9 +320,9 @@ public class ShipSteering : MonoBehaviour {
 				ship.Turn(-Vector3.right);
 			}
 			if ( (flyingBitwise & flyingYawLeft) == flyingYawLeft) {
-				ship.Turn(-Vector3.forward);
+				ship.Yaw(-Vector3.forward);
 			} else if ( (flyingBitwise & flyingYawRight) == flyingYawRight) {
-				ship.Turn(Vector3.forward);
+				ship.Yaw(Vector3.forward);
 			}
 			
 			if (usesMouse) {

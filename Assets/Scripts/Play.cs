@@ -7,6 +7,7 @@ public class Play : MonoBehaviour {
 	public GameObject marchingCubesPrefab;
 	public GameObject shipPrefab;
 	public GameObject wallGunPrefab;
+	public GameObject mineTouchPrefab;
 
 	public static int ROOM_SIZE = 16;
 
@@ -14,17 +15,34 @@ public class Play : MonoBehaviour {
 //	private GameInput gI;
 	private State state;
 	private MyGUI gui;
+	private EnemyDistributor enemyDistributor;
+	private RaycastHit hit;
 
 	private int container;
 	private int dialogContainer;
 	
 	private Ship ship;
 	private MarchingCubes marchingCubes;
-		
-	void Awake() {
-	}
-		
+
+	private static float MAX_RAYCAST_DISTANCE = 100.0f;
+	
 	void Update() {
+		// editor commands
+		if (Application.platform == RuntimePlatform.WindowsEditor) {
+			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.G)) {				
+				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
+					WallGun wallGun = enemyDistributor.CreateWallGun();
+					enemyDistributor.PlaceOnWall(wallGun.gameObject, hit);
+					Debug.Log ("Adding Gun (Editor mode)");
+				}
+			}
+			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.M)) {				
+				Vector3 cubePositionOfShip = ship.GetCubePosition();
+				MineTouch mineTouch = enemyDistributor.CreateMineTouch();
+				mineTouch.transform.position = cubePositionOfShip * MarchingCubes.MESH_SCALE;
+				Debug.Log ("Adding Mine Touch (Editor mode)");
+			}
+		}
 	}
 	
 	public void Restart() {
@@ -57,8 +75,8 @@ public class Play : MonoBehaviour {
 	}
 	
 	private void PlaceEnemies() {
-		EnemyDistributor eD = new EnemyDistributor(game, this, marchingCubes, ROOM_SIZE);
-		eD.Distribute();
+		enemyDistributor = new EnemyDistributor(game, this, marchingCubes, ROOM_SIZE);
+		enemyDistributor.Distribute();
 	}
 	
 	public Vector3 GetShipPosition() {

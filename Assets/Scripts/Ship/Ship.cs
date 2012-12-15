@@ -40,6 +40,8 @@ public class Ship : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter(Collision c) {
+		 
+//		rigidbody.freezeRotation = true;
 //    	Debug.Log("First point that collided: " + c.contacts[0].normal + " / " + c.contacts[0].point);
 //		collisionPoint = c.contacts[0].point;
 //		collisionNormal = c.contacts[0].normal;
@@ -65,10 +67,23 @@ public class Ship : MonoBehaviour {
 	public void Turn(Vector3 direction) {
 		rigidbody.AddRelativeTorque(direction * FORCE_TURN);
 	}
-	
+
+/*	void FixedUpdate () {
+		if (rigidbody.freezeRotation) {
+			rigidbody.freezeRotation = false;
+		}
+	}*/
+			
 	void OnGUI() {
 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit"))
 			Application.Quit();
+	}
+	
+	// return pos of ship in marching cube grid
+	public Vector3 GetCubePosition() {
+		Vector3 pos = transform.position / MarchingCubes.MESH_SCALE;
+		// centered in cube
+		return new Vector3(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z));
 	}
 	
 /*	private void Calibrate() {

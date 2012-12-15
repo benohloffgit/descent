@@ -15,7 +15,8 @@ public class Ship : MonoBehaviour {
 	private ShipShooting shipShooting;
 	
 	private static float FORCE_MOVE = 25.0f;
-	private static float FORCE_TURN = 1.5f;
+	private static float FORCE_TURN = 7.5f;
+	private static float FORCE_YAW = 3.5f;
 	
 //	private Vector3 collisionPoint = Vector3.zero;
 //	private Vector3 collisionNormal = Vector3.zero;
@@ -40,7 +41,8 @@ public class Ship : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter(Collision c) {
-		 
+		//Move(c.impactForceSum*5f);
+		 //Vector3.Dot(col.contacts[0].normal,col.relativeVelocity) * rigidbody.mass
 //		rigidbody.freezeRotation = true;
 //    	Debug.Log("First point that collided: " + c.contacts[0].normal + " / " + c.contacts[0].point);
 //		collisionPoint = c.contacts[0].point;
@@ -68,6 +70,10 @@ public class Ship : MonoBehaviour {
 		rigidbody.AddRelativeTorque(direction * FORCE_TURN);
 	}
 
+	public void Yaw(Vector3 direction) {
+		rigidbody.AddRelativeTorque(direction * FORCE_YAW);
+	}
+	
 /*	void FixedUpdate () {
 		if (rigidbody.freezeRotation) {
 			rigidbody.freezeRotation = false;

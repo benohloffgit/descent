@@ -8,7 +8,10 @@ public class Play : MonoBehaviour {
 	public GameObject shipPrefab;
 	public GameObject wallGunPrefab;
 	public GameObject mineTouchPrefab;
+	public GameObject mineBuilderPrefab;
 
+	public bool isShipInvincible;
+	
 	public static int ROOM_SIZE = 16;
 
 	private Game game;
@@ -20,11 +23,15 @@ public class Play : MonoBehaviour {
 
 	private int container;
 	private int dialogContainer;
-	
+		
 	private Ship ship;
 	private MarchingCubes marchingCubes;
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
+	
+	void Awake() {
+		isShipInvincible = false;
+	}
 	
 	void Update() {
 		// editor commands
@@ -41,6 +48,16 @@ public class Play : MonoBehaviour {
 				MineTouch mineTouch = enemyDistributor.CreateMineTouch();
 				mineTouch.transform.position = cubePositionOfShip * MarchingCubes.MESH_SCALE;
 				Debug.Log ("Adding Mine Touch (Editor mode)");
+			}
+			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.U)) {				
+				Vector3 cubePositionOfShip = ship.GetCubePosition();
+				MineBuilder mineBuilder = enemyDistributor.CreateMineBuilder();
+				mineBuilder.transform.position = cubePositionOfShip * MarchingCubes.MESH_SCALE;
+				Debug.Log ("Adding Mine Builder (Editor mode)");
+			}
+			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
+				isShipInvincible = (isShipInvincible) ? false : true;
+				Debug.Log ("Setting ship invincible: " + isShipInvincible);
 			}
 		}
 	}

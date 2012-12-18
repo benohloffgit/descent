@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\CCText\CCText.cs" />
      <Compile Include="Assets\Scripts\CCText\CCTextModifier.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineTouch.cs" />
      <Compile Include="Assets\Scripts\Enemies\WallGun.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />

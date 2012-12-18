@@ -46,6 +46,13 @@ public class EnemyDistributor {
 		}
 	}
 
+	public MineBuilder CreateMineBuilder() {
+		GameObject mB = GameObject.Instantiate(play.mineBuilderPrefab) as GameObject;
+		MineBuilder mineBuilder = mB.GetComponent<MineBuilder>();
+		mineBuilder.Initialize(game, play);
+		return mineBuilder;
+	}
+	
 	public MineTouch CreateMineTouch() {
 		GameObject mT = GameObject.Instantiate(play.mineTouchPrefab) as GameObject;
 		MineTouch mineTouch = mT.GetComponent<MineTouch>();

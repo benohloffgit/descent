@@ -20,7 +20,12 @@ public class Game : MonoBehaviour {
 	private float volume;
 	
 	public static int MAX_WIDTH = 1536;
+	
 	public static int LAYER_CAVE = 8;
+	public static int LAYER_SHIP = 9;
+	public static int LAYER_GUI = 10;
+	public static int LAYER_BULLETS = 11;
+	public static int LAYER_ENEMIES = 12;
 	
 	void Awake() {
 		DontDestroyOnLoad(this);

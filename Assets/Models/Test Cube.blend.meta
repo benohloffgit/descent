@@ -1,16 +1,15 @@
 fileFormatVersion: 2
-guid: 5d9c676482764b343bcb8d5ba2939f9e
+guid: c91d8f45338e2384290dfa1ff97d8eae
 ModelImporter:
   fileIDToRecycleName:
-    4300000: Circle.001
-    4300002: MineBuilder
+    4300000: TestCube
   serializedVersion: 10
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 3
+    generateAnimations: 0
     bakeSimulation: 0
     splitAnimations: 1
     animationCompression: 1
@@ -41,27 +40,24 @@ ModelImporter:
     //RootNode:
       data:
         first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+    Lamp:
+      data:
+        first: 1
         second: a4860100
       data:
         first: 4
         second: 841a0600
-      data:
-        first: 111
-        second: 605fa900
-    Lamp:
+    TestCube:
       data:
         first: 1
         second: a0860100
       data:
         first: 4
         second: 801a0600
-    MineBuilder:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
       data:
         first: 23
         second: 60182300

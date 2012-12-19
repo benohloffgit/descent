@@ -44,6 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Behaviour\Movement.cs" />
      <Compile Include="Assets\Scripts\CCText\CCFont.cs" />
      <Compile Include="Assets\Scripts\CCText\CCGradient.cs" />
      <Compile Include="Assets\Scripts\CCText\CCStringBuilderUtility.cs" />
@@ -81,7 +82,7 @@
      <Compile Include="Assets\Scripts\Mesh3D.cs" />
      <Compile Include="Assets\Scripts\PG Cave\CaveDigger.cs" />
      <Compile Include="Assets\Scripts\PG Cave\EnemyDistributor.cs" />
-     <Compile Include="Assets\Scripts\PG Cave\MarchingCubes.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\Room.cs" />
      <Compile Include="Assets\Scripts\Play.cs" />
      <Compile Include="Assets\Scripts\PrefabFactory.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />

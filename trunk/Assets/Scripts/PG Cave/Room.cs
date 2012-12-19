@@ -17,14 +17,14 @@ using System;
 using UnityEngine;
 using System.Collections;
 
-public class MarchingCubes : MonoBehaviour {
+public class Room : MonoBehaviour {
 	public	int[,,] cubeDensity; // x,y,z - 1 = filled, 0 = empty
 	public Vector3[,,] cubeCoords; // Vector3 coords for each cube of unscaled mesh!
-
-	public static float MESH_SCALE = 5.0f;
 	
 	public Mesh mesh;
-//	private int[,,] room; // x,y,z - 1 = filled, 0 = empty
+
+	public static Vector3[] DIRECTIONS = new Vector3[] { Vector3.forward, -Vector3.forward, Vector3.up, -Vector3.up, Vector3.right, -Vector3.right };
+	public static float MESH_SCALE = 5.0f;
 	
 	private int[,] gridCellDensity; 
 	private Vector3[,] gridCellCoords;
@@ -223,7 +223,8 @@ public class MarchingCubes : MonoBehaviour {
 	
 	   	/* Cube is entirely in/out of the surface */
 		if (edgeTable[cubeindex] == 0) {
-//			Debug.Log("cube entirely in our out of surface");
+			//Debug.Log("cube entirely in our out of surface");
+			return;
 		}
 		
 		Vector3[] vertlist = new Vector3[12];
@@ -414,6 +415,51 @@ public class MarchingCubes : MonoBehaviour {
 	private Vector3 InterpolateVertex(Vector3 point1, Vector3 point2, int density1, int density2) {
 	//	Debug.Log("point lerp " + density1 + " " + density2);
 		return Vector3.Lerp(point1, point2, 0.5f);
+	}
+
+	// return pos in marching cube grid
+	public static Vector3 GetCubePosition(Vector3 position) {
+		Vector3 cubePos = position / Room.MESH_SCALE;
+		// centered in cube
+		return new Vector3(Mathf.RoundToInt(cubePos.x), Mathf.RoundToInt(cubePos.y), Mathf.RoundToInt(cubePos.z));
+	}
+	
+	public static Vector3 GetPositionFromCube(Vector3 cubePosition) {
+		return cubePosition * Room.MESH_SCALE;
+	}
+	
+	public Vector3 GetRandomEmptyCubePositionFrom(Vector3 cubePosition, int maxDistance) {
+		Vector3 result = cubePosition;
+		int currentDirection = UnityEngine.Random.Range(0, Room.DIRECTIONS.Length);
+//		Debug.Log ("starting with direction " + currentDirection);
+		for (int i=0; i<Room.DIRECTIONS.Length; i++) {
+			// test up to max Distance in that direction
+			for (int j=0; j<maxDistance; j++) {
+				EnemyDistributor.IntTriple cubeCoords = new EnemyDistributor.IntTriple(Room.DIRECTIONS[currentDirection] * (j+1) + cubePosition);
+				if (cubeDensity[cubeCoords.x, cubeCoords.y, cubeCoords.z] == CaveDigger.DENSITY_FILLED) {
+					if (j > 0) {
+						// exit
+						i = Room.DIRECTIONS.Length;
+					}
+					// exit
+					j = maxDistance;
+				} else {
+					result = new Vector3(cubeCoords.x, cubeCoords.y, cubeCoords.z);
+//					Debug.Log ("result " + result);
+				}
+			}
+			if (result != cubePosition) {
+				// exit
+				i = Room.DIRECTIONS.Length;
+			} else {
+				currentDirection++;
+				if (currentDirection == Room.DIRECTIONS.Length) {
+					currentDirection = 0;
+				}
+			}
+		}
+//		Debug.Log ("final direction " + currentDirection);
+		return result;
 	}
 	
 /*	private void TangentSolver(Mesh theMesh)	{

@@ -4,12 +4,16 @@ using System.Collections;
 
 public class Play : MonoBehaviour {	
 	public GameObject guiPrefab;
-	public GameObject marchingCubesPrefab;
+	public GameObject roomPrefab;
+	public GameObject testCubePrefab;
 	public GameObject shipPrefab;
 	public GameObject wallGunPrefab;
 	public GameObject mineTouchPrefab;
 	public GameObject mineBuilderPrefab;
 
+	public Room room;
+	public Movement movement;
+	public Ship ship;
 	public bool isShipInvincible;
 	
 	public static int ROOM_SIZE = 16;
@@ -24,8 +28,6 @@ public class Play : MonoBehaviour {
 	private int container;
 	private int dialogContainer;
 		
-	private Ship ship;
-	private MarchingCubes marchingCubes;
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
 	
@@ -44,15 +46,15 @@ public class Play : MonoBehaviour {
 				}
 			}
 			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.M)) {				
-				Vector3 cubePositionOfShip = ship.GetCubePosition();
+				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				MineTouch mineTouch = enemyDistributor.CreateMineTouch();
-				mineTouch.transform.position = cubePositionOfShip * MarchingCubes.MESH_SCALE;
+				mineTouch.transform.position = cubePositionOfShip * Room.MESH_SCALE;
 				Debug.Log ("Adding Mine Touch (Editor mode)");
 			}
 			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.U)) {				
-				Vector3 cubePositionOfShip = ship.GetCubePosition();
+				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				MineBuilder mineBuilder = enemyDistributor.CreateMineBuilder();
-				mineBuilder.transform.position = cubePositionOfShip * MarchingCubes.MESH_SCALE;
+				mineBuilder.transform.position = cubePositionOfShip * Room.MESH_SCALE;
 				Debug.Log ("Adding Mine Builder (Editor mode)");
 			}
 			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
@@ -63,10 +65,12 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
-		marchingCubes = (GameObject.Instantiate(marchingCubesPrefab) as GameObject).GetComponent<MarchingCubes>();
+		room = (GameObject.Instantiate(roomPrefab) as GameObject).GetComponent<Room>();
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
-		marchingCubes.Initialize(ship.transform, ROOM_SIZE);
+		room.Initialize(ship.transform, ROOM_SIZE);
+		movement = new Movement(this);
+//		PlaceTestCubes();
 		PlaceEnemies();
 	}
 	
@@ -84,7 +88,7 @@ public class Play : MonoBehaviour {
 	void onDisable() {
 		CancelInvoke();
 		Destroy(ship.gameObject);
-		Destroy(marchingCubes.gameObject);
+		Destroy(room.gameObject);
 	}
 	
 	public void DispatchGameInput() {
@@ -92,8 +96,21 @@ public class Play : MonoBehaviour {
 	}
 	
 	private void PlaceEnemies() {
-		enemyDistributor = new EnemyDistributor(game, this, marchingCubes, ROOM_SIZE);
+		enemyDistributor = new EnemyDistributor(game, this, room, ROOM_SIZE);
 		enemyDistributor.Distribute();
+	}
+	
+	private void PlaceTestCubes() {
+		for (var i=0; i<ROOM_SIZE; i++) {
+			for (var j=0; j<ROOM_SIZE; j++) {
+				for (var k=0; k<ROOM_SIZE; k++) {
+					if (room.cubeDensity[i,j,k] == CaveDigger.DENSITY_EMPTY) {
+						Instantiate(testCubePrefab, Room.GetPositionFromCube(new Vector3(i,j,k)), Quaternion.identity);
+					}
+				}
+			}
+		}
+			
 	}
 	
 	public Vector3 GetShipPosition() {

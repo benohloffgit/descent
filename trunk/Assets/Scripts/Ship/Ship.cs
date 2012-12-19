@@ -84,14 +84,7 @@ public class Ship : MonoBehaviour {
 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit"))
 			Application.Quit();
 	}
-	
-	// return pos of ship in marching cube grid
-	public Vector3 GetCubePosition() {
-		Vector3 pos = transform.position / MarchingCubes.MESH_SCALE;
-		// centered in cube
-		return new Vector3(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z));
-	}
-	
+		
 /*	private void Calibrate() {
 		if (Input.acceleration != Vector3.zero) {
 //			calibration = Quaternion.FromToRotation(Input.acceleration, new Vector3(0,0,-1.0f));

@@ -95,6 +95,10 @@ public class EnemyDistributor {
 			y=Mathf.RoundToInt(v.y);
 			z=Mathf.RoundToInt(v.z);
 		}
+		
+		public Vector3 GetVector3() {
+			return new UnityEngine.Vector3(x, y, z);
+		}
 	}
 }
 

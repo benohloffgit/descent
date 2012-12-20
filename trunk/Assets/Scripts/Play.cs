@@ -84,8 +84,8 @@ public class Play : MonoBehaviour {
 		ship.Initialize(this, game);
 		room.Initialize(ship.transform, ROOM_SIZE);
 		movement = new Movement(this);
-//		PlaceTestCubes();
-		PlaceEnemies();
+		PlaceTestCubes();
+//		PlaceEnemies();
 	}
 	
 	public void Initialize(Game g, GameInput input) {

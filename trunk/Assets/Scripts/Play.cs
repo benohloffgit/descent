@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Play : MonoBehaviour {	
 	public GameObject guiPrefab;
@@ -27,6 +28,8 @@ public class Play : MonoBehaviour {
 
 	private int container;
 	private int dialogContainer;
+	private EnemyDistributor.IntTriple testPathStart;
+	private EnemyDistributor.IntTriple testPathEnd;
 		
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
@@ -60,6 +63,17 @@ public class Play : MonoBehaviour {
 			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
 				isShipInvincible = (isShipInvincible) ? false : true;
 				Debug.Log ("Setting ship invincible: " + isShipInvincible);
+			}
+			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.O)) {
+				testPathStart = new EnemyDistributor.IntTriple(Room.GetCubePosition(ship.transform.position));
+			}
+			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.P)) {
+				testPathEnd = new EnemyDistributor.IntTriple(Room.GetCubePosition(ship.transform.position));
+				LinkedList<AStarNode> path = movement.AStarPath(testPathStart, testPathEnd);
+				foreach (AStarNode n in path) {
+					PlaceTestCube(n.position);
+				}
+				//Debug.Log(Room.GetCubePosition(ship.transform.position));
 			}
 		}
 	}
@@ -110,7 +124,10 @@ public class Play : MonoBehaviour {
 				}
 			}
 		}
-			
+	}
+	
+	public void PlaceTestCube(Vector3 position) {
+		Instantiate(testCubePrefab, Room.GetPositionFromCube(position), Quaternion.identity);
 	}
 	
 	public Vector3 GetShipPosition() {

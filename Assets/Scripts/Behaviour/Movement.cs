@@ -63,6 +63,7 @@ public class Movement {
 
 	// http://en.wikipedia.org/wiki/A*
 	public LinkedList<AStarNode> AStarPath(EnemyDistributor.IntTriple s, EnemyDistributor.IntTriple g) {
+		float startTime = Time.realtimeSinceStartup;
 		Dictionary<int, AStarNode> closedSet = new Dictionary<int, AStarNode>();
 		Dictionary<int, AStarNode> openSet = new Dictionary<int, AStarNode>();
 		Dictionary<int, int> cameFrom = new Dictionary<int, int>();
@@ -75,23 +76,21 @@ public class Movement {
 		
 		while (openSet.Count > 0) {
 			AStarNode current = AStarGetWithLowestFitness(openSet);
-//			Debug.Log ("testing current position " + current.position);
 			if (current.position == goal.position) {
-				Debug.Log ("path found");
+				Debug.Log ("path found in " + (Time.realtimeSinceStartup-startTime));
 				closedSet.Add(current.GetHashCode(), current);
 				AStarReconstructPath(ref cameFrom, ref path, ref closedSet, goal.GetHashCode());
-/*				foreach (KeyValuePair<int, int> n in path) {
-					Debug.Log (n.Key + " came from " + n.Value);
-				}*/
 				return path;
 			}
 			
+//			Debug.Log ("testing current position and moving from open to closed / hash " + current.position + " / " + current.GetHashCode());
 			openSet.Remove(current.GetHashCode());
 			closedSet.Add(current.GetHashCode(), current);
 			
 			foreach (AStarNode n in AStarGetNeighbours(current)) {
 				AStarNode neighbour = n;
 				if (closedSet.ContainsKey(neighbour.GetHashCode())) {
+//					Debug.Log ("neighbour in closed / hash " + neighbour.position +  " / " + neighbour.GetHashCode());
 					continue;
 				}
 				float tentativeGoal = current.goal + AStarHeuristic(current, neighbour);
@@ -100,13 +99,18 @@ public class Movement {
 					neighbour.fitness = neighbour.goal + AStarHeuristic(neighbour, goal);
 					cameFrom.Add(neighbour.GetHashCode(), current.GetHashCode());
 					if (!openSet.ContainsKey(neighbour.GetHashCode())) {
+//						Debug.Log ("neighbour added to open " + neighbour.position);
 						openSet.Add(neighbour.GetHashCode(), neighbour);
-					}						
+					} else {
+//						Debug.Log ("neighbour already in open " + neighbour.position);
+					}
+				} else {
+//					Debug.Log ("neighbour not valid " + neighbour.position + " " + openSet.ContainsKey(neighbour.GetHashCode()) + " " + closedSet.ContainsKey(neighbour.GetHashCode()));
 				}
 			}
 //			Debug.Log ("openSet count " + openSet.Count);
 		}
-		Debug.Log ("no path exists");
+		Debug.Log ("no path exists in time: " + (Time.realtimeSinceStartup-startTime));
 		return path;
 	}
 	
@@ -124,6 +128,17 @@ public class Movement {
 	
 	private ArrayList AStarGetNeighbours(AStarNode n) {
 		ArrayList neighbours = new ArrayList();
+		for (int i=0; i<Room.DIRECTIONS.Length; i++) {
+			try {
+				EnemyDistributor.IntTriple cube = new EnemyDistributor.IntTriple(n.position + Room.DIRECTIONS[i]);
+				if (play.room.cubeDensity[cube.x, cube.y, cube.z] == CaveDigger.DENSITY_EMPTY) {
+					neighbours.Add(new AStarNode(cube, 0, 0));
+				}
+			} catch (IndexOutOfRangeException e) {
+			}
+		}
+		
+/*		
 		for (int x=-1; x<2; x++) {
 			for (int y=-1; y<2; y++) {
 				for (int z=-1; z<2; z++) {
@@ -137,19 +152,16 @@ public class Movement {
 					}
 				}
 			}
-		}
+		}*/
 //		Debug.Log ("getting neighbour list of " + neighbours.Count);
 		return neighbours;
 	}
 	
 	private void AStarReconstructPath(ref Dictionary<int, int> cameFrom, ref LinkedList<AStarNode> path, ref Dictionary<int, AStarNode> closedSet, int current) {
+		path.AddFirst(closedSet[current]);
 		if (cameFrom.ContainsKey(current)) {
 //			Debug.Log ("path consists of " + current);
-			path.AddFirst(closedSet[current]);
 			AStarReconstructPath(ref cameFrom, ref path, ref closedSet, cameFrom[current]);
-		} else {
-//			Debug.Log ("last node of path " + current);
-			path.AddFirst(closedSet[current]);
 		}
 	}
 	

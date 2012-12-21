@@ -66,14 +66,27 @@ public class Play : MonoBehaviour {
 			}
 			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.O)) {
 				testPathStart = new EnemyDistributor.IntTriple(Room.GetCubePosition(ship.transform.position));
+				Debug.Log ("Setting AStar path start at : " + Room.GetCubePosition(ship.transform.position));
 			}
 			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.P)) {
+				Debug.Log ("Setting AStar path end at : " + Room.GetCubePosition(ship.transform.position));
 				testPathEnd = new EnemyDistributor.IntTriple(Room.GetCubePosition(ship.transform.position));
 				LinkedList<AStarNode> path = movement.AStarPath(testPathStart, testPathEnd);
 				foreach (AStarNode n in path) {
 					PlaceTestCube(n.position);
 				}
-				//Debug.Log(Room.GetCubePosition(ship.transform.position));
+			}
+			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.L)) {
+				Debug.Log(Room.GetCubePosition(ship.transform.position));
+			}
+			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
+				testPathStart = new EnemyDistributor.IntTriple(new Vector3(5f, 6f, 1f));
+				testPathEnd = new EnemyDistributor.IntTriple(new Vector3(4f, 7f, 1f));
+				Debug.Log ("Setting AStar path from/to at : " + testPathStart.GetVector3() + "/" + testPathEnd.GetVector3());
+				LinkedList<AStarNode> path = movement.AStarPath(testPathStart, testPathEnd);
+				foreach (AStarNode n in path) {
+					PlaceTestCube(n.position);
+				}
 			}
 		}
 	}
@@ -84,8 +97,8 @@ public class Play : MonoBehaviour {
 		ship.Initialize(this, game);
 		room.Initialize(ship.transform, ROOM_SIZE);
 		movement = new Movement(this);
-		PlaceTestCubes();
-//		PlaceEnemies();
+//		PlaceTestCubes();
+		PlaceEnemies();
 	}
 	
 	public void Initialize(Game g, GameInput input) {

@@ -31,6 +31,7 @@ public class Game : MonoBehaviour {
 		DontDestroyOnLoad(this);
 		
 		Application.targetFrameRate = 60;
+		Application.runInBackground = true;
 		volume = AudioListener.volume;
 		showTrialDialog = false;
 	}

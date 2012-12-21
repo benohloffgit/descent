@@ -202,12 +202,6 @@ public class Room : MonoBehaviour {
 	
 	private int GetDefaultDensity(int currX, int currY, int currZ, int dimX, int dimY, int dimZ) {
 			return CaveDigger.DENSITY_FILLED;
-	/*	if (currX == 0 || currX == dimX-1 || currY == 0 || currY == dimY-1 || currZ == 0 || currZ == dimZ-1) {
-	//		Debug.Log("no densitiy");
-			return Density.empty;
-		} else {
-			return Density.filled;
-		}*/
 	}
 	
 	
@@ -230,11 +224,7 @@ public class Room : MonoBehaviour {
 			//Debug.Log("cube entirely in our out of surface");
 			return;
 		}
-		
-/*		if (ambigousGridCells.Contains(cubeindex)) {
-			cubeindex = 255 - cubeindex;
-		}*/
-		
+				
 		Vector3[] vertlist = new Vector3[12];
 		
 	   /* Find the vertices where the surface intersects the cube */
@@ -294,16 +284,16 @@ public class Room : MonoBehaviour {
 				gridVertices[x,y,z,i+j] = vertex;
 				int uniqueVertexIndex = FetchUniqueVertexIndex(x,y,z,vertex);
 				
-//				if (uniqueVertexIndex == -1) {
+				if (uniqueVertexIndex == -1) {
 					gridTriangles[x,y,z,i+j] = roomVerticesCount;
 					roomVertices[roomVerticesCount] = vertex;
 					roomTriangles[roomTrianglesCount+j] = roomVerticesCount;
 					roomVerticesCount++;
-//				} else {
-//					duplicateVertices++;
-//					gridTriangles[x,y,z,i+j] = uniqueVertexIndex;
-//					roomTriangles[roomTrianglesCount+j] = uniqueVertexIndex;
-//				}
+				} else {
+					duplicateVertices++;
+					gridTriangles[x,y,z,i+j] = uniqueVertexIndex;
+					roomTriangles[roomTrianglesCount+j] = uniqueVertexIndex;
+				}
 			}
 
 			roomTrianglesCount+=3;

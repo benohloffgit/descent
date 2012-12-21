@@ -58,16 +58,14 @@ public class Movement {
 		}
 	}
 	
-	private void AStarInitialization() {
-	}
-
 	// http://en.wikipedia.org/wiki/A*
-	public LinkedList<AStarNode> AStarPath(EnemyDistributor.IntTriple s, EnemyDistributor.IntTriple g) {
-		float startTime = Time.realtimeSinceStartup;
+	public void AStarPath(AStarThreadState aStarThreadState, EnemyDistributor.IntTriple s, EnemyDistributor.IntTriple g) {
+		aStarThreadState.Start();
+	UnityThreadHelper.TaskDistributor.Dispatch( () => {
+			
 		Dictionary<int, AStarNode> closedSet = new Dictionary<int, AStarNode>();
 		Dictionary<int, AStarNode> openSet = new Dictionary<int, AStarNode>();
 		Dictionary<int, int> cameFrom = new Dictionary<int, int>();
-		LinkedList<AStarNode> path = new LinkedList<AStarNode>();
 		
 		AStarNode goal = new AStarNode(g, 0, 0);
 		
@@ -77,10 +75,11 @@ public class Movement {
 		while (openSet.Count > 0) {
 			AStarNode current = AStarGetWithLowestFitness(openSet);
 			if (current.position == goal.position) {
-				Debug.Log ("path found in " + (Time.realtimeSinceStartup-startTime));
+				Debug.Log ("path found in ");// + (Time.realtimeSinceStartup-startTime));
 				closedSet.Add(current.GetHashCode(), current);
-				AStarReconstructPath(ref cameFrom, ref path, ref closedSet, goal.GetHashCode());
-				return path;
+				AStarReconstructPath(ref cameFrom, ref aStarThreadState.path, ref closedSet, goal.GetHashCode());
+				aStarThreadState.Finish();
+				return;
 			}
 			
 //			Debug.Log ("testing current position and moving from open to closed / hash " + current.position + " / " + current.GetHashCode());
@@ -110,8 +109,10 @@ public class Movement {
 			}
 //			Debug.Log ("openSet count " + openSet.Count);
 		}
-		Debug.Log ("no path exists in time: " + (Time.realtimeSinceStartup-startTime));
-		return path;
+		Debug.Log ("no path exists in time: ");//+ (Time.realtimeSinceStartup-startTime));
+		aStarThreadState.path.Clear();
+		aStarThreadState.Finish();
+	});
 	}
 	
 	private AStarNode AStarGetWithLowestFitness(Dictionary<int, AStarNode> nodeSet) {
@@ -136,23 +137,7 @@ public class Movement {
 				}
 			} catch (IndexOutOfRangeException e) {
 			}
-		}
-		
-/*		
-		for (int x=-1; x<2; x++) {
-			for (int y=-1; y<2; y++) {
-				for (int z=-1; z<2; z++) {
-					try {
-						if (play.room.cubeDensity[n.intTriple.x+x,n.intTriple.y+y,n.intTriple.z+z] == CaveDigger.DENSITY_EMPTY) {
-							if (!(x == 0 && y == 0 && z == 0)) {
-								neighbours.Add(new AStarNode(new EnemyDistributor.IntTriple(n.intTriple.x+x,n.intTriple.y+y,n.intTriple.z+z), 0, 0));
-							}
-						}
-					} catch (IndexOutOfRangeException e) {
-					}
-				}
-			}
-		}*/
+		}		
 //		Debug.Log ("getting neighbour list of " + neighbours.Count);
 		return neighbours;
 	}

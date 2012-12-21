@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Behaviour\AStarNode.cs" />
+     <Compile Include="Assets\Scripts\Behaviour\AStarThreadState.cs" />
      <Compile Include="Assets\Scripts\Behaviour\EqualityComparerAStarNode.cs" />
      <Compile Include="Assets\Scripts\Behaviour\Movement.cs" />
      <Compile Include="Assets\Scripts\CCText\CCFont.cs" />
@@ -93,6 +94,11 @@
      <Compile Include="Assets\Scripts\Ship\ShipSteering.cs" />
      <Compile Include="Assets\Scripts\Ship\Shot.cs" />
      <Compile Include="Assets\Scripts\State.cs" />
+     <Compile Include="Assets\Scripts\UnityThreading\Dispatcher.cs" />
+     <Compile Include="Assets\Scripts\UnityThreading\Task.cs" />
+     <Compile Include="Assets\Scripts\UnityThreading\TaskDistributer.cs" />
+     <Compile Include="Assets\Scripts\UnityThreading\Thread.cs" />
+     <Compile Include="Assets\Scripts\UnityThreading\UnityThreadHelper.cs" />
      <None Include="Assets\TriplanarProjection\Shaders\TpWorld.shader" />
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpSingleAxis_Unlit.shader" />
      <None Include="Assets\AndruidsShaders\rim.shader" />

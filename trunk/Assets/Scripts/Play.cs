@@ -25,6 +25,7 @@ public class Play : MonoBehaviour {
 	private MyGUI gui;
 	private EnemyDistributor enemyDistributor;
 	private RaycastHit hit;
+	private AStarThreadState aStarThreadState = new AStarThreadState();
 
 	private int container;
 	private int dialogContainer;
@@ -37,7 +38,7 @@ public class Play : MonoBehaviour {
 	void Awake() {
 		isShipInvincible = false;
 	}
-	
+		
 	void Update() {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
@@ -71,10 +72,8 @@ public class Play : MonoBehaviour {
 			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.P)) {
 				Debug.Log ("Setting AStar path end at : " + Room.GetCubePosition(ship.transform.position));
 				testPathEnd = new EnemyDistributor.IntTriple(Room.GetCubePosition(ship.transform.position));
-				LinkedList<AStarNode> path = movement.AStarPath(testPathStart, testPathEnd);
-				foreach (AStarNode n in path) {
-					PlaceTestCube(n.position);
-				}
+				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
+//				Debug.Log (Time.frameCount);
 			}
 			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.L)) {
 				Debug.Log(Room.GetCubePosition(ship.transform.position));
@@ -83,8 +82,13 @@ public class Play : MonoBehaviour {
 				testPathStart = new EnemyDistributor.IntTriple(new Vector3(5f, 6f, 1f));
 				testPathEnd = new EnemyDistributor.IntTriple(new Vector3(4f, 7f, 1f));
 				Debug.Log ("Setting AStar path from/to at : " + testPathStart.GetVector3() + "/" + testPathEnd.GetVector3());
-				LinkedList<AStarNode> path = movement.AStarPath(testPathStart, testPathEnd);
-				foreach (AStarNode n in path) {
+				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
+			}
+			
+			if (aStarThreadState.isFinishedNow()) {
+				aStarThreadState.Complete();
+//				Debug.Log (Time.frameCount);
+				foreach (AStarNode n in aStarThreadState.path) {
 					PlaceTestCube(n.position);
 				}
 			}

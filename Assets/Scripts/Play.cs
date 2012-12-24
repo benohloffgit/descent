@@ -11,6 +11,7 @@ public class Play : MonoBehaviour {
 	public GameObject wallGunPrefab;
 	public GameObject mineTouchPrefab;
 	public GameObject mineBuilderPrefab;
+	public GameObject lightBulbPrefab;
 
 	public Room room;
 	public Movement movement;
@@ -49,17 +50,23 @@ public class Play : MonoBehaviour {
 					Debug.Log ("Adding Gun (Editor mode)");
 				}
 			}
-			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.M)) {				
+			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.Alpha1)) {				
 				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				MineTouch mineTouch = enemyDistributor.CreateMineTouch();
 				mineTouch.transform.position = cubePositionOfShip * Room.MESH_SCALE;
 				Debug.Log ("Adding Mine Touch (Editor mode)");
 			}
-			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.U)) {				
+			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.Alpha2)) {				
 				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				MineBuilder mineBuilder = enemyDistributor.CreateMineBuilder();
 				mineBuilder.transform.position = cubePositionOfShip * Room.MESH_SCALE;
 				Debug.Log ("Adding Mine Builder (Editor mode)");
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha3)) {				
+				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
+				LightBulb lightBulb = enemyDistributor.CreateLightBulb();
+				lightBulb.transform.position = cubePositionOfShip * Room.MESH_SCALE;
+				Debug.Log ("Adding Light Bulb (Editor mode)");
 			}
 			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
 				isShipInvincible = (isShipInvincible) ? false : true;

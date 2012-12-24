@@ -2,7 +2,7 @@
 // Copyright(c) Broken Toy Games, 2011. Do not redistribute.
 // http://www.brokentoygames.com
 
-Shader "Andruids/TriplanarNewLit" {
+Shader "Andruids/Room/MovingSpotlight" {
 
 	Properties {
 		_TexBase ("Texture (Base)", 2D) = "white" {}

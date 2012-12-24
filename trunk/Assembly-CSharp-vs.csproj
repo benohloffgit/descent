@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\CCText\CCText.cs" />
      <Compile Include="Assets\Scripts\CCText\CCTextModifier.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\Enemies\LightBulb.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineTouch.cs" />
      <Compile Include="Assets\Scripts\Enemies\WallGun.cs" />
@@ -114,14 +115,14 @@
      <None Include="Assets\TriplanarProjection\Shaders\TpWorldBump_MultiTex_VertexBlend.shader" />
      <None Include="Assets\AndruidsShaders\TriplanarNew.shader" />
      <None Include="Assets\TriplanarProjection\Shaders\TpWorld_MultiTex.shader" />
-     <None Include="Assets\AndruidsShaders\TriplanarBen2.shader" />
      <None Include="Assets\TriplanarProjection\Shaders\TpWorld_MultiTex_VertexBlend.shader" />
      <None Include="Assets\TriplanarProjection\Shaders\TpLocalBump_MultiTex.shader" />
      <None Include="Assets\AndruidsShaders\vertex.shader" />
+     <None Include="Assets\AndruidsShaders\Room\Dark.shader" />
      <None Include="Assets\TriplanarProjection\Shaders\TpLocalBump.shader" />
      <None Include="Assets\TriplanarProjection\Shaders\TpLocal_MultiTex.shader" />
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpLocal_Unlit.shader" />
-     <None Include="Assets\AndruidsShaders\TriplanarTest.shader" />
+     <None Include="Assets\AndruidsShaders\Room\MovingSpotlights.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

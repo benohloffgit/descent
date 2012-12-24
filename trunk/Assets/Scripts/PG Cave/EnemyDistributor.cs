@@ -46,6 +46,13 @@ public class EnemyDistributor {
 		}
 	}
 
+	public LightBulb CreateLightBulb() {
+		GameObject lB = GameObject.Instantiate(play.lightBulbPrefab) as GameObject;
+		LightBulb lightBulb = lB.GetComponent<LightBulb>();
+		lightBulb.Initialize(game, play);
+		return lightBulb;
+	}
+	
 	public MineBuilder CreateMineBuilder() {
 		GameObject mB = GameObject.Instantiate(play.mineBuilderPrefab) as GameObject;
 		MineBuilder mineBuilder = mB.GetComponent<MineBuilder>();

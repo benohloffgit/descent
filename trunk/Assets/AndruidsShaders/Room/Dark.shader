@@ -2,13 +2,13 @@
 // Copyright(c) Broken Toy Games, 2011. Do not redistribute.
 // http://www.brokentoygames.com
 
-Shader "Andruids/TriplanarNewLit" {
+Shader "Andruids/Room/Dark" {
 
 	Properties {
 		_TexBase ("Texture (Base)", 2D) = "white" {}
 		_TexCeil ("Texture (Ceiling)", 2D) = "white" {}
 		_TexWall ("Texture (Wall)", 2D) = "white" {}
-		_LightMap ("Lightmap (RGB)", 2D) = "grey" {}
+		_Darkness ("_Darkness", Range(0,1) ) = 0.5
 	}
 	
 	Category {
@@ -17,14 +17,13 @@ Shader "Andruids/TriplanarNewLit" {
 			Cull Back
 		CGPROGRAM
 		#pragma surface surf MyLambert noforwardadd vertex:vert 
-		
 		// noambient novertexlights 
 		#pragma target 2.0
 		#pragma exclude_renderers flash
 		sampler2D _TexBase;
 		sampler2D _TexCeil;
 		sampler2D _TexWall;
-		sampler2D _LightMap;
+		fixed _Darkness;
 		
 		struct Input {
 //			half4 pos : SV_POSITION;
@@ -61,9 +60,9 @@ Shader "Andruids/TriplanarNewLit" {
 			fixed3 color1_ = tex2D(_TexWall, i.localPos.zx); 
 			fixed3 color2_ = tex2D(_TexCeil, i.localPos.yz);
 
-			o.Albedo = (color0_ * projnormal.z + color1_ * projnormal.y + color2_ * projnormal.x);// * (i.localNormal);
+			o.Albedo = (color0_ * projnormal.z + color1_ * projnormal.y + color2_ * projnormal.x) * _Darkness;// * (i.localNormal);
 			//o.Albedo *= tex2D(_LightMap, i.localPos.xy ).rgb * 2;
-			o.Albedo *= tex2D(_LightMap, (i.localPos.xy/10.0)*_SinTime ).rgb;
+			//o.Albedo *= tex2D(_LightMap, (i.localPos.xy/10.0)*_SinTime ).rgb;
 
 		}
 		
@@ -72,6 +71,7 @@ Shader "Andruids/TriplanarNewLit" {
           fixed4 c;
           //c.rgb = o.Albedo;
           c.rgb = o.Albedo * _LightColor0.rgb * (NdotL * atten * 2);
+          
           //c.rgb = o.Albedo;
           c.a = o.Alpha;
           return c;

@@ -132,7 +132,7 @@ public class Room : MonoBehaviour {
 		}
 		for (int j=0; j<roomVerticesCount; j++) {
 			newVertices[j] = roomVertices[j];
-			newUVs[j] = new Vector2(roomVertices[j].y, roomVertices[j].z);
+			newUVs[j] = new Vector2(roomVertices[j].x, roomVertices[j].y) / 16.0f;
 		}
 		Debug.Log("vertices count " + roomVerticesCount + " triangle count " + roomTrianglesCount);
 		Debug.Log("duplicate vertices " + duplicateVertices);

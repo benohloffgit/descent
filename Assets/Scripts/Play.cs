@@ -9,6 +9,7 @@ public class Play : MonoBehaviour {
 	public GameObject testCubePrefab;
 	public GameObject shipPrefab;
 	public GameObject wallGunPrefab;
+	public GameObject wallLaserPrefab;
 	public GameObject mineTouchPrefab;
 	public GameObject mineBuilderPrefab;
 	public GameObject lightBulbPrefab;
@@ -43,20 +44,13 @@ public class Play : MonoBehaviour {
 	void Update() {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
-			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.G)) {				
-				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
-					WallGun wallGun = enemyDistributor.CreateWallGun();
-					enemyDistributor.PlaceOnWall(wallGun.gameObject, hit);
-					Debug.Log ("Adding Gun (Editor mode)");
-				}
-			}
-			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.Alpha1)) {				
+			if (Input.GetKeyDown(KeyCode.Alpha1)) {				
 				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				MineTouch mineTouch = enemyDistributor.CreateMineTouch();
 				mineTouch.transform.position = cubePositionOfShip * Room.MESH_SCALE;
 				Debug.Log ("Adding Mine Touch (Editor mode)");
 			}
-			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.Alpha2)) {				
+			if (Input.GetKeyDown(KeyCode.Alpha2)) {				
 				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				MineBuilder mineBuilder = enemyDistributor.CreateMineBuilder();
 				mineBuilder.transform.position = cubePositionOfShip * Room.MESH_SCALE;
@@ -67,6 +61,20 @@ public class Play : MonoBehaviour {
 				LightBulb lightBulb = enemyDistributor.CreateLightBulb();
 				lightBulb.transform.position = cubePositionOfShip * Room.MESH_SCALE;
 				Debug.Log ("Adding Light Bulb (Editor mode)");
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha4)) {				
+				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
+					WallGun wallGun = enemyDistributor.CreateWallGun();
+					enemyDistributor.PlaceOnWall(wallGun.gameObject, hit);
+					Debug.Log ("Adding Wall Gun (Editor mode)");
+				}
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha5)) {				
+				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
+					WallLaser wallLaser = enemyDistributor.CreateWallLaser();
+					enemyDistributor.PlaceOnWall(wallLaser.gameObject, hit);
+					Debug.Log ("Adding Wall Laser (Editor mode)");
+				}
 			}
 			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
 				isShipInvincible = (isShipInvincible) ? false : true;

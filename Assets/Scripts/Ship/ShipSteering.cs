@@ -251,6 +251,9 @@ public class ShipSteering : MonoBehaviour {
 				flyingBitwise |= flyingYawRight;
 				flyingBitwise &= ~flyingYawLeft;
 			}
+			if (Input.GetKeyDown(KeyCode.L)) {
+				ship.SwitchHeadlight();
+			}			
 		}
 	}
 	

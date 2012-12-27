@@ -4,12 +4,13 @@ using UnityEngine;
 public class Game : MonoBehaviour {
 	public GameObject statePrefab;
 	public GameObject gunBulletPrefab;
+	public GameObject laserShotPrefab;
 	
 	public State state;
 	public GameInput gameInput;
 	public bool isInitialized = false;
 	public enum Mode { Menu=0, Dialog=1, Play=2, None=3, Preferences=4 }
-	public enum Shot { Bullet=0 }
+	public enum Shot { Bullet=0, Laser=1 }
 
 	public static Vector4 GUI_UV_TITLE = new Vector4(0f,0.5f,0.5f,1.0f);
 	

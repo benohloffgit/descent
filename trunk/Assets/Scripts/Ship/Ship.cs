@@ -13,6 +13,9 @@ public class Ship : MonoBehaviour {
 	private GameObject shipHUD;
 	private ShipSteering shipSteering;
 	private ShipShooting shipShooting;
+	private Transform headlight;
+	
+	private bool isHeadlightOn;
 	
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 7.5f;
@@ -29,6 +32,7 @@ public class Ship : MonoBehaviour {
 		InstantiateShipHUD();
 		shipSteering = transform.GetComponent<ShipSteering>();
 		shipShooting = transform.GetComponent<ShipShooting>();
+		headlight = transform.FindChild("Headlight");
 	}
 	
 	public void Initialize(Play p, Game g) {
@@ -38,6 +42,8 @@ public class Ship : MonoBehaviour {
 		
 		shipSteering.Initialize(this, gameInput);
 		shipShooting.Initialize(this, game, gameInput);
+		
+		isHeadlightOn = true;
 	}
 	
 	void OnCollisionEnter(Collision c) {
@@ -72,6 +78,11 @@ public class Ship : MonoBehaviour {
 
 	public void Yaw(Vector3 direction) {
 		rigidbody.AddRelativeTorque(direction * FORCE_YAW);
+	}
+	
+	public void SwitchHeadlight() {
+		isHeadlightOn = (isHeadlightOn) ? false : true;
+		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
 	}
 	
 /*	void FixedUpdate () {

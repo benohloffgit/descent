@@ -73,6 +73,13 @@ public class EnemyDistributor {
 		wallGun.Initialize(game, play);
 		return wallGun;
 	}
+
+	public WallLaser CreateWallLaser() {
+		GameObject wL = GameObject.Instantiate(play.wallLaserPrefab) as GameObject;
+		WallLaser wallLaser = wL.GetComponent<WallLaser>();
+		wallLaser.Initialize(game, play);
+		return wallLaser;
+	}
 	
 	public void PlaceOnWall(GameObject gO, RaycastHit h) {
 //		Vector3 centeredPos = h.collider.transform.TransformPoint(h.barycentricCoordinate);

@@ -1,19 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\ShipShooting.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\WallLaser.cs">
     <Files>
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="85" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\WallGun.cs" Line="31" Column="29" />
-      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="18" Column="1" />
-      <File FileName="Assets\Scripts\Play.cs" Line="76" Column="35" />
-      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="289" Column="18" />
-      <File FileName="Assets\Scripts\Game.cs" Line="7" Column="29" />
-      <File FileName="Assets\Scripts\PG Cave\EnemyDistributor.cs" Line="81" Column="19" />
-      <File FileName="Assets\Scripts\GameInput.cs" Line="155" Column="138" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="35" Column="18" />
-      <File FileName="Assets\Scripts\Enemies\WallLaser.cs" Line="38" Column="106" />
-      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ship\ShipShooting.cs" Line="56" Column="114" />
+      <File FileName="Assets\Scripts\Enemies\WallLaser.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Game.cs" Line="26" Column="1" />
+      <File FileName="Assets\Scripts\Play.cs" Line="120" Column="1" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="56" Column="46" />
+      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="24" Column="18" />
+      <File FileName="Assets\Scripts\PG Cave\CaveDigger.cs" Line="84" Column="28" />
+      <File FileName="Assets\Scripts\PG Cave\Miner.cs" Line="17" Column="15" />
+      <File FileName="Assets\Scripts\PG Cave\Cell.cs" Line="3" Column="14" />
+      <File FileName="Assets\Scripts\PG Cave\IntTriple.cs" Line="7" Column="30" />
+      <File FileName="Assets\Scripts\PG Cave\Room2.cs" Line="6" Column="14" />
+      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="8" Column="20" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

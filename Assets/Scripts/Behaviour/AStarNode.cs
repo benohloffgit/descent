@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 	
 public struct AStarNode {
-	public EnemyDistributor.IntTriple intTriple;
+	public IntTriple intTriple;
 	public Vector3 position;
 	public float goal;
 	public float heuristic;
 	public float fitness;
 	private int hashCode;
 
-	public AStarNode(EnemyDistributor.IntTriple p, float g, float h) {
+	public AStarNode(IntTriple p, float g, float h) {
 		intTriple = p;
 		position = p.GetVector3();
 		goal = g;

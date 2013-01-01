@@ -95,24 +95,5 @@ public class EnemyDistributor {
 		return new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * ((UnityEngine.Random.Range(0,2) == 0) ? 1 : -1);
 	}
 	
-	public struct IntTriple {
-		public int x,y,z;
-		
-		public IntTriple(int a, int b, int c) {
-			x=a;
-			y=b;
-			z=c;
-		}
-		
-		public IntTriple(Vector3 v) {
-			x=Mathf.RoundToInt(v.x);
-			y=Mathf.RoundToInt(v.y);
-			z=Mathf.RoundToInt(v.z);
-		}
-		
-		public Vector3 GetVector3() {
-			return new UnityEngine.Vector3(x, y, z);
-		}
-	}
 }
 

@@ -12,14 +12,6 @@ public class Game : MonoBehaviour {
 	public enum Mode { Menu=0, Dialog=1, Play=2, None=3, Preferences=4 }
 	public enum Shot { Bullet=0, Laser=1 }
 
-	public static Vector4 GUI_UV_TITLE = new Vector4(0f,0.5f,0.5f,1.0f);
-	
-	private Menu menu;
-	private Play play;
-	private PrefabFactory prefabFactory;
-	public bool showTrialDialog;
-	private float volume;
-	
 	public static int MAX_WIDTH = 1536;
 	
 	public static int LAYER_CAVE = 8;
@@ -27,7 +19,22 @@ public class Game : MonoBehaviour {
 	public static int LAYER_GUI = 10;
 	public static int LAYER_BULLETS = 11;
 	public static int LAYER_ENEMIES = 12;
+
+	public static int DIMENSION_CAVE = 2; // AxA zones
+	public static int DIMENSION_ZONE = 3; // BxB rooms
+	public static int DIMENSION_ROOM = 16; // CxC cells
 	
+	public static int LAYER_MASK_ALL = ( (1 << LAYER_SHIP) | (1 << LAYER_ENEMIES) | (1 << LAYER_CAVE) );
+	public static int LAYER_MASK_SHIP = 1 << LAYER_SHIP;
+	
+	public static Vector4 GUI_UV_TITLE = new Vector4(0f,0.5f,0.5f,1.0f);
+	
+	private Menu menu;
+	private Play play;
+	private PrefabFactory prefabFactory;
+	public bool showTrialDialog;
+	private float volume;
+		
 	void Awake() {
 		DontDestroyOnLoad(this);
 		

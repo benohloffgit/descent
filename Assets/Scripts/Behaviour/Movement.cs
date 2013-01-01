@@ -59,7 +59,7 @@ public class Movement {
 	}
 	
 	// http://en.wikipedia.org/wiki/A*
-	public void AStarPath(AStarThreadState aStarThreadState, EnemyDistributor.IntTriple s, EnemyDistributor.IntTriple g) {
+	public void AStarPath(AStarThreadState aStarThreadState, IntTriple s, IntTriple g) {
 		aStarThreadState.Start();
 	UnityThreadHelper.TaskDistributor.Dispatch( () => {
 			
@@ -131,7 +131,7 @@ public class Movement {
 		ArrayList neighbours = new ArrayList();
 		for (int i=0; i<Room.DIRECTIONS.Length; i++) {
 			try {
-				EnemyDistributor.IntTriple cube = new EnemyDistributor.IntTriple(n.position + Room.DIRECTIONS[i]);
+				IntTriple cube = new IntTriple(n.position + Room.DIRECTIONS[i]);
 				if (play.room.cubeDensity[cube.x, cube.y, cube.z] == CaveDigger.DENSITY_EMPTY) {
 					neighbours.Add(new AStarNode(cube, 0, 0));
 				}
@@ -150,7 +150,7 @@ public class Movement {
 		}
 	}
 	
-	private float AStarHeuristic(EnemyDistributor.IntTriple start, EnemyDistributor.IntTriple goal) {
+	private float AStarHeuristic(IntTriple start, IntTriple goal) {
 		return Vector3.Distance(start.GetVector3(), goal.GetVector3());
 	}
 

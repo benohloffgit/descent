@@ -337,43 +337,6 @@ public class Room : MonoBehaviour {
 			}
 		}
 		return -1;
-	/*
-		var index : int = -1;
-		if (z>0) {
-			for (var i=0; i<15; i++) {
-				if (gridVertices[x,y,z-1,i] != null) {
-					if (gridVertices[x,y,z-1,i] == vertex) {
-						return gridTriangles[x,y,z-1,i];
-					}
-				} else {
-					i=15;
-				}
-			}
-		}
-		if (y>0) {
-			for (i=0; i<15; i++) {
-				if (gridVertices[x,y-1,z,i] != null) {
-					if (gridVertices[x,y-1,z,i] == vertex) {
-						return gridTriangles[x,y-1,z,i];
-					}
-				} else {
-					i=15;
-				}
-			}
-		}
-		if (x>0) {
-			for (i=0; i<15; i++) {
-				if (gridVertices[x-1,y,z,i] != null) {
-					if (gridVertices[x-1,y,z,i] == vertex) {
-						return gridTriangles[x-1,y,z,i];
-					}
-				} else {
-					i=15;
-				}
-			}
-		}
-		return index;
-	*/
 	}
 	
 	private Vector3 InterpolateVertex(Vector3 point1, Vector3 point2, int density1, int density2) {
@@ -399,7 +362,7 @@ public class Room : MonoBehaviour {
 		for (int i=0; i<Room.DIRECTIONS.Length; i++) {
 			// test up to max Distance in that direction
 			for (int j=0; j<maxDistance; j++) {
-				EnemyDistributor.IntTriple cubeCoords = new EnemyDistributor.IntTriple(Room.DIRECTIONS[currentDirection] * (j+1) + cubePosition);
+				IntTriple cubeCoords = new IntTriple(Room.DIRECTIONS[currentDirection] * (j+1) + cubePosition);
 				if (cubeDensity[cubeCoords.x, cubeCoords.y, cubeCoords.z] == CaveDigger.DENSITY_FILLED) {
 					if (j > 0) {
 						// exit

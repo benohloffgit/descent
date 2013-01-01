@@ -85,9 +85,16 @@
      <Compile Include="Assets\Scripts\JNIBridge.cs" />
      <Compile Include="Assets\Scripts\Menu.cs" />
      <Compile Include="Assets\Scripts\Mesh3D.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\Cave.cs" />
      <Compile Include="Assets\Scripts\PG Cave\CaveDigger.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\Cell.cs" />
      <Compile Include="Assets\Scripts\PG Cave\EnemyDistributor.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\IntDouble.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\IntTriple.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\Miner.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Room.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\Room2.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\Zone.cs" />
      <Compile Include="Assets\Scripts\Play.cs" />
      <Compile Include="Assets\Scripts\PrefabFactory.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />

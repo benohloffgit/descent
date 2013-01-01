@@ -4,6 +4,7 @@ ModelImporter:
   fileIDToRecycleName:
     4300000: Plane
     4300002: Gun_Bullet
+    4300004: GunBullet
   serializedVersion: 10
   materials:
     importMaterials: 1
@@ -48,7 +49,7 @@ ModelImporter:
       data:
         first: 111
         second: 605fa900
-    Gun_Bullet:
+    GunBullet:
       data:
         first: 1
         second: a0860100

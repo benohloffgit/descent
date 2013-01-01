@@ -13,7 +13,8 @@ public class Play : MonoBehaviour {
 	public GameObject mineTouchPrefab;
 	public GameObject mineBuilderPrefab;
 	public GameObject lightBulbPrefab;
-
+	
+	public Cave cave;
 	public Room room;
 	public Movement movement;
 	public Ship ship;
@@ -31,8 +32,8 @@ public class Play : MonoBehaviour {
 
 	private int container;
 	private int dialogContainer;
-	private EnemyDistributor.IntTriple testPathStart;
-	private EnemyDistributor.IntTriple testPathEnd;
+	private IntTriple testPathStart;
+	private IntTriple testPathEnd;
 		
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
@@ -81,12 +82,12 @@ public class Play : MonoBehaviour {
 				Debug.Log ("Setting ship invincible: " + isShipInvincible);
 			}
 			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.O)) {
-				testPathStart = new EnemyDistributor.IntTriple(Room.GetCubePosition(ship.transform.position));
+				testPathStart = new IntTriple(Room.GetCubePosition(ship.transform.position));
 				Debug.Log ("Setting AStar path start at : " + Room.GetCubePosition(ship.transform.position));
 			}
 			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.P)) {
 				Debug.Log ("Setting AStar path end at : " + Room.GetCubePosition(ship.transform.position));
-				testPathEnd = new EnemyDistributor.IntTriple(Room.GetCubePosition(ship.transform.position));
+				testPathEnd = new IntTriple(Room.GetCubePosition(ship.transform.position));
 				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
 //				Debug.Log (Time.frameCount);
 			}
@@ -94,8 +95,8 @@ public class Play : MonoBehaviour {
 				Debug.Log(Room.GetCubePosition(ship.transform.position));
 			}
 			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
-				testPathStart = new EnemyDistributor.IntTriple(new Vector3(5f, 6f, 1f));
-				testPathEnd = new EnemyDistributor.IntTriple(new Vector3(4f, 7f, 1f));
+				testPathStart = new IntTriple(new Vector3(5f, 6f, 1f));
+				testPathEnd = new IntTriple(new Vector3(4f, 7f, 1f));
 				Debug.Log ("Setting AStar path from/to at : " + testPathStart.GetVector3() + "/" + testPathEnd.GetVector3());
 				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
 			}
@@ -111,13 +112,14 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
-		room = (GameObject.Instantiate(roomPrefab) as GameObject).GetComponent<Room>();
+//		room = (GameObject.Instantiate(roomPrefab) as GameObject).GetComponent<Room>();
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
-		room.Initialize(ship.transform, ROOM_SIZE);
+//		room.Initialize(ship.transform, ROOM_SIZE);
+		cave = new Cave();
 		movement = new Movement(this);
 //		PlaceTestCubes();
-		PlaceEnemies();
+//		PlaceEnemies();
 	}
 	
 	public void Initialize(Game g, GameInput input) {

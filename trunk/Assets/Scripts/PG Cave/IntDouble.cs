@@ -14,7 +14,7 @@ public struct IntDouble {
 		y=Mathf.RoundToInt(v.y);
 	}
 	
-	public Vector3 GetVector2() {
+	public Vector2 GetVector2() {
 		return new UnityEngine.Vector2(x, y);
 	}
 }

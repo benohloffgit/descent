@@ -27,4 +27,44 @@ public struct IntTriple {
 	public Vector3 GetVector3() {
 		return new UnityEngine.Vector3(x, y, z);
 	}
+	
+	public float Magnitude() {
+		return Mathf.Sqrt(Mathf.Pow(x, 2.0f) + Mathf.Pow(y, 2.0f) + Mathf.Pow(z, 2.0f));
+	}
+	
+	public int GetBiggestFactor() {
+		if (x > y) {
+			if (x > z) {
+				return 0;
+			} else {
+				return 2;
+			}
+		} else {
+			if (y > z) {
+				return 1;
+			} else {
+				return 2;
+			}
+		}
+	}
+	
+	public override string ToString() {
+    	return base.ToString() + ": (" + x + ", " + y + ", " + z + ")";
+	}
+	
+	public static IntTriple operator -(IntTriple t1, IntTriple t2) {
+		return new IntTriple(t1.x-t2.x, t1.y-t2.y, t1.z-t2.z);
+	}
+
+	public static IntTriple operator +(IntTriple t1, IntTriple t2) {
+		return new IntTriple(t1.x+t2.x, t1.y+t2.y, t1.z+t2.z);
+	}
+
+	public static bool operator ==(IntTriple t1, IntTriple t2) {
+		return (t1.x == t2.x && t1.y == t2.y && t1.z == t2.z) ? true : false;
+	}
+
+	public static bool operator !=(IntTriple t1, IntTriple t2) {
+		return (t1.x != t2.x || t1.y != t2.y || t1.z != t2.z) ? true : false;
+	}
 }

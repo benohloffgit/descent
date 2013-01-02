@@ -1,11 +1,12 @@
 using UnityEngine;
 	
-public struct Room2 {
+public class Room2 {
 	public Cell[,,] cells;
+	public int minerId;
 
-	public Room2(int dim) {
+	public Room2(int dim, int mId) {
 		cells = new Cell[dim,dim,dim];
+		minerId = mId;
 	}
-	
 	
 }

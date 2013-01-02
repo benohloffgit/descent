@@ -10,6 +10,7 @@ public class Cave {
 	private IntTriple currentRoom;
 	
 	private int dimZone;
+	private ZoneMiner[] miners;
 
 	public static int DENSITY_FILLED = 0;
 	public static int DENSITY_EMPTY = 1;
@@ -20,6 +21,9 @@ public class Cave {
 		currentZone = IntTriple.ZERO;
 		zones = new List<Zone>();
 		AddZone(currentZone);
+		Debug.Log ("currentZone " + currentZone + ", nextZone " + nextZone);
+//		nextZone = new IntTriple(0,1,0);
+		DigZone();
 	}
 		
 /*	public void CreateZone(int dim) {
@@ -39,7 +43,7 @@ public class Cave {
 		List<IntTriple> directions = new List<IntTriple>(ZONE_DIRECTIONS);
 		for (int i=0; i<directions.Count; i++) {
 			result = Cave.ExtractRandomIntTripleFromPool(ref directions);
-			if (true) { // TODO
+			if (true) { // TODO in range and only rightwards
 				i = directions.Count;
 			}
 		}
@@ -47,15 +51,71 @@ public class Cave {
 	}
 	
 	private void DigZone() {
-		
-/*		Miner2 miner0 = new Miner2(currentZone, 0, 
+		int digCount = 0;
+		IntTriple entryRoom, exitRoom;
+		SetEntryExit(nextZone-currentZone, out entryRoom, out exitRoom, Game.DIMENSION_ZONE, 0);
+		Debug.Log ("entryRoom " + entryRoom + ", exitRoom " + exitRoom);
+		miners = new ZoneMiner[2];
+		miners[0] = new ZoneMiner(this, entryRoom, 0, zones[zones.Count-1]);
+		miners[1] = new ZoneMiner(this, exitRoom, 1, zones[zones.Count-1]);
+		miners[0].otherMiner = miners[1];
+		miners[1].otherMiner = miners[0];
+//		int j=0;
 		while (miners[0].isActive || miners[1].isActive) {
-			miners[0].Mine();
-			miners[1].Mine();
+			digCount += miners[0].Mine();
+			digCount += miners[1].Mine();
+//			j++;
 		}
-		Debug.Log ("Blocks digged: " + digCount);*/
+		Debug.Log ("Blocks digged: " + digCount);
+	}
+	
+	public void SetAllMinersInactive() {
+		for (int i=0; i<miners.Length; i++) {
+			miners[i].isActive = false;
+		}
 	}
 
+/*	
+	public IntTriple GetPosOfActiveMinerOtherThan(int minerId) {
+		IntTriple result = IntTriple.ZERO;
+		for (int i=0; i<miners.Length; i++) {
+			if (miners[i].isActive && miners[i].id != minerId) {
+				result = miners[i].pos;
+				i = miners.Length;
+			}
+		}
+		return result;
+	}*/
+	
+	private void SetEntryExit(IntTriple delta, out IntTriple entryRoom, out IntTriple exitRoom, int dim, int borderLimit) {
+		IntDouble randomA = new IntDouble(
+			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)),
+			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)));
+		IntDouble randomB = new IntDouble(
+			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)),
+			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)));
+//		IntTriple delta = exitRoom - entryRoom;
+		if (delta == IntTriple.UP) {
+				entryRoom = new IntTriple(randomA.x, 0, randomA.y);
+				exitRoom = new IntTriple(randomB.x, dim-1, randomB.y);
+		} else if (delta == IntTriple.DOWN) {
+				entryRoom = new IntTriple(randomA.x, dim-1, randomA.y);
+				exitRoom = new IntTriple(randomB.x, 0, randomB.y);
+		} else if (delta == IntTriple.LEFT) {
+				entryRoom = new IntTriple(dim-1, randomA.x,randomA.y);
+				exitRoom = new IntTriple(0,randomB.x,randomB.y);
+		} else if (delta == IntTriple.RIGHT) {
+				entryRoom = new IntTriple(0, randomA.x,randomA.y);
+				exitRoom = new IntTriple(dim-1,randomB.x,randomB.y);
+		} else if (delta == IntTriple.FORWARD) {
+				entryRoom = new IntTriple(randomA.x,randomA.y,0);
+				exitRoom = new IntTriple(randomB.x,randomB.y,dim-1);
+		} else { // (delta == IntTriple.BACKWARD) {
+				entryRoom = new IntTriple(randomA.x,randomA.y,dim-1);
+				exitRoom = new IntTriple(randomB.x,randomB.y,0);
+		}		
+	}
+	
 /*	
 	private void Dig(Cell c, int dim, int seed) {
 		UnityEngine.Random.seed = seed;
@@ -73,46 +133,37 @@ public class Cave {
 		
 		DigCave();
 	}
-
-	private void DigCave(Miner[] miners) {
-		for (int i=0; i<miners.Length; i++) {
-			miners[i] = new Miner(entry, i, this);
-		}
-		digCount = 0;
-		while (miners[0].isActive || miners[1].isActive) {
-			miners[0].Mine();
-			miners[1].Mine();
-		}
-		Debug.Log ("Blocks digged: " + digCount);
-	}
 */	
 	private IntTriple DigEntryExit(int wall, int dim, int borderLimit) {
-		IntTriple coords = new IntTriple(
-			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)),
+		IntDouble randomCoords = new IntDouble(
 			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)),
 			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)));
 		IntTriple result = IntTriple.ZERO;
 		switch (wall) {
 			case 0:
-				result = new IntTriple(0,coords.y,coords.z);
+				result = new IntTriple(0,randomCoords.x,randomCoords.y);
 				break;
 			case 1:
-				result = new IntTriple(dim-1,coords.y,coords.z);
+				result = new IntTriple(dim-1,randomCoords.x,randomCoords.y);
 				break;
 			case 2:
-				result = new IntTriple(coords.x,0,coords.z);
+				result = new IntTriple(randomCoords.x,0,randomCoords.y);
 				break;
 			case 3:
-				result = new IntTriple(coords.x,dim-1,coords.z);
+				result = new IntTriple(randomCoords.x,dim-1,randomCoords.y);
 				break;
 			case 4:
-				result = new IntTriple(coords.x,coords.y,0);
+				result = new IntTriple(randomCoords.x,randomCoords.y,0);
 				break;
 			case 5:
-				result = new IntTriple(coords.x,coords.y,dim-1);
+				result = new IntTriple(randomCoords.x,randomCoords.y,dim-1);
 				break;
 		}
 		return result;
+	}
+
+	public static int GetRandomNumberFromPool(int[] pool) {
+		return pool[UnityEngine.Random.Range(0, pool.Length-1)];
 	}
 	
 	public static int ExtractRandomNumberFromPool(ref List<int> pool) {

@@ -23,6 +23,12 @@ public struct IntTriple {
 		y=Mathf.RoundToInt(v.y);
 		z=Mathf.RoundToInt(v.z);
 	}
+
+	public IntTriple(IntDouble d, int i) {
+		x=d.x;
+		y=d.y;
+		z=i;
+	}
 	
 	public Vector3 GetVector3() {
 		return new UnityEngine.Vector3(x, y, z);
@@ -30,6 +36,22 @@ public struct IntTriple {
 	
 	public float Magnitude() {
 		return Mathf.Sqrt(Mathf.Pow(x, 2.0f) + Mathf.Pow(y, 2.0f) + Mathf.Pow(z, 2.0f));
+	}
+	
+	public int GetFactor(int i) {
+		if (i==0) return x;
+		if (i==1) return y;
+		return z;
+	}
+	
+	public void SetFactor(int i, int v) {
+		if (i==0) {
+			x = v;
+		} else if (i==1) {
+			y = v;
+		} else {
+			z = v;
+		}
 	}
 	
 	public int GetBiggestFactor() {

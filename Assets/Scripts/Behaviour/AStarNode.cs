@@ -19,7 +19,7 @@ public struct AStarNode {
 		hashCode = (int) (position.x * Play.ROOM_SIZE + position.y * (Play.ROOM_SIZE*Play.ROOM_SIZE) + position.z * (Play.ROOM_SIZE*Play.ROOM_SIZE*Play.ROOM_SIZE));
 	}
 	
-	public int GetHashCode() {
+	public override int GetHashCode() {
 		return hashCode;
 	}
 	

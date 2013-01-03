@@ -6,9 +6,9 @@ public class Cave {
 	public List<Zone> zones;
 	
 	private Play play;
-	private IntTriple currentZone;
-	private IntTriple nextZone;
-	private IntTriple currentRoom;
+//	private IntTriple currentZone;
+//	private IntTriple nextZone;
+//	private IntTriple currentRoom;
 	
 	private int dimZone;
 	private ZoneMiner[] zoneMiners;
@@ -23,25 +23,23 @@ public class Cave {
 	
 	public Cave(Play p) {
 		play = p;
-		currentZone = IntTriple.ZERO;
+//		currentZone = IntTriple.ZERO;
 		zones = new List<Zone>();
-		AddZone(currentZone, SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ZONE, 0), IntTriple.FORWARD);
-		Debug.Log ("currentZone " + currentZone + ", nextZone " + nextZone);
-		DigZone(zones[zones.Count-1]);
+		AddZone();
+//		AddZone(currentZone, SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ZONE, 0), IntTriple.FORWARD);
+//		Debug.Log ("currentZone " + currentZone + ", nextZone " + nextZone);
+//		DigZone(zones[zones.Count-1]);
 		DigRooms(zones[zones.Count-1]);
 	}
-		
-/*	public void CreateZone(int dim) {
-		dimZone = dim;
-		zones[currentZone.x, currentZone.y, currentZone.z] = new CellCube(dim);
-		// dig rooms
-		Dig(zones[currentZone.x, currentZone.y, currentZone.z], dimZone, 123456789);
-	}*/
-	
-	public void AddZone(IntTriple pos, IntTriple entryRoom, IntTriple deltaToLastZone) {
+
+	public void AddZone() {
+		zones.Add(new Zone(Game.DIMENSION_ZONE));
+	}
+
+/*	public void AddZone(IntTriple pos, IntTriple entryRoom, IntTriple deltaToLastZone) {
 		zones.Add(new Zone(Game.DIMENSION_ZONE, pos, entryRoom, deltaToLastZone));
 		nextZone = AdvanceZone();
-	}
+	}*/
 	
 	private IntTriple AdvanceZone() {
 		IntTriple result = IntTriple.ZERO;
@@ -56,7 +54,7 @@ public class Cave {
 		//return result;
 	}
 	
-	private void DigZone(Zone zone) {
+/*	private void DigZone(Zone zone) {
 		zone.exitRoom = SetEntryExit(nextZone-currentZone, 0, Game.DIMENSION_ZONE, 0);
 		Debug.Log ("entryRoom " + zone.entryRoom + ", exitRoom " + zone.exitRoom);
 		zoneMiners = new ZoneMiner[2];
@@ -72,7 +70,7 @@ public class Cave {
 //			j++;
 		}
 		Debug.Log ("Zone has rooms: " + (digCount+2));
-	}
+	}*/
 
 	public void DigRooms(Zone zone) {
 		for (int i=0; i<zone.roomList.Count; i++) { // first in array is entry room , second is exit room
@@ -94,12 +92,12 @@ public class Cave {
 				roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room));
 			}
 			if (i==0) { // entry room
-				startingCell = SetEntryExit(-1*zone.deltaToLastZone, 0, Game.DIMENSION_ROOM, 2); // + zone.entryRoom * Game.DIMENSION_ROOM;
-				roomMiners.Add(new RoomMiner(this, startingCell, -1*zone.deltaToLastZone, room));
+				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room));
 					Debug.Log ("Entry Room: " + startingCell);
 			} else if (i==1) { // exit room
-				startingCell = SetEntryExit(-1*nextZone, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, -1*nextZone, room));
+				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room));
 					Debug.Log ("Exit Room: " + startingCell);
 			}
 			

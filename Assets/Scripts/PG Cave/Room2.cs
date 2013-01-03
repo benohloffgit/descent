@@ -9,6 +9,13 @@ public class Room2 {
 //	public IntTriple entryCell;
 	public Dictionary<IntTriple, Cell> exits; // alignment, cell
 
+	public Room2(int dim, IntTriple p) {
+		dimension = dim;
+		cells = new Cell[dim,dim,dim];
+		pos = p;
+		exits = new Dictionary<IntTriple, Cell>();
+	}
+	
 	public Room2(int dim, int mId, IntTriple p) {
 		dimension = dim;
 		cells = new Cell[dim,dim,dim];

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Play : MonoBehaviour {	
 	public GameObject guiPrefab;
 	public GameObject roomPrefab;
+	public GameObject roomMeshPrefab;
 	public GameObject testCubePrefab;
 	public GameObject shipPrefab;
 	public GameObject wallGunPrefab;
@@ -116,7 +117,7 @@ public class Play : MonoBehaviour {
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
 //		room.Initialize(ship.transform, ROOM_SIZE);
-		cave = new Cave();
+		cave = new Cave(this);
 		movement = new Movement(this);
 //		PlaceTestCubes();
 //		PlaceEnemies();

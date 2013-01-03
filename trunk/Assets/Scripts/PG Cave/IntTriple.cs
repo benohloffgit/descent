@@ -52,6 +52,18 @@ public struct IntTriple {
     	return base.ToString() + ": (" + x + ", " + y + ", " + z + ")";
 	}
 	
+	public static IntTriple operator *(IntTriple t1, IntTriple t2) {
+		return new IntTriple(t1.x*t2.x, t1.y*t2.y, t1.z*t2.z);
+	}
+
+	public static IntTriple operator *(IntTriple t1, int i) {
+		return new IntTriple(t1.x*i, t1.y*i, t1.z*i);
+	}
+
+	public static IntTriple operator *(int i, IntTriple t1) {
+		return new IntTriple(t1.x*i, t1.y*i, t1.z*i);
+	}
+	
 	public static IntTriple operator -(IntTriple t1, IntTriple t2) {
 		return new IntTriple(t1.x-t2.x, t1.y-t2.y, t1.z-t2.z);
 	}

@@ -1,9 +1,12 @@
 using UnityEngine;
 	
-public struct Cell {
-	private int density;
+public class Cell {
+	public IntTriple pos;
+//	public int minerId;
+//	private int density;
 
-	public Cell(int d) {
-		density = d;
+	public Cell(IntTriple p) {
+		//density = d;
+		pos = p;
 	}
 }

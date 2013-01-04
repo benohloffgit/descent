@@ -7,7 +7,7 @@ public class ShipSteering : MonoBehaviour {
 	private GameInput gameInput;
 	private Ship ship;
 	
-	private Rigidbody rigidbody;
+	private Rigidbody myRigidbody;
 	private FlyingMode flyingMode;
 	private int flyingBitwise; // either roll in 1finger mode, or shift in 2finger mode
 	private int flyingLeft = 1;
@@ -46,7 +46,7 @@ public class ShipSteering : MonoBehaviour {
 	public enum FlyingMode { None=0, ShiftLeft=5, ShiftRight=6, ShiftUp=7, ShiftDown=8, BankLeft=9, BankRight=10 }
 	
 	void Awake() {
-		rigidbody = GetComponent<Rigidbody>();
+		myRigidbody = GetComponent<Rigidbody>();
 	}
 	
 	public void Initialize(Ship s, GameInput gI) {
@@ -341,11 +341,11 @@ public class ShipSteering : MonoBehaviour {
 			float leftRight = calibrated.y;
 			if (Mathf.Abs(upDown) > accelerometerThreshold) {
 				float upDownDelta = Mathf.Clamp ( (Mathf.Abs(upDown)-accelerometerThreshold) * 10.0f, 0, 1.0f);
-				rigidbody.AddRelativeTorque(-Vector3.right * Time.deltaTime * FORCE_TURN * upDownDelta * Mathf.Sign(upDown));
+				myRigidbody.AddRelativeTorque(-Vector3.right * Time.deltaTime * FORCE_TURN * upDownDelta * Mathf.Sign(upDown));
 			}
 			if (Mathf.Abs(leftRight) > accelerometerThreshold) {
 				float leftRightDelta = Mathf.Clamp ( (Mathf.Abs(leftRight)-accelerometerThreshold) * 10.0f, 0, 1.0f);
-				rigidbody.AddRelativeTorque(Vector3.up * Time.deltaTime * FORCE_TURN * leftRightDelta * Mathf.Sign(leftRight));
+				myRigidbody.AddRelativeTorque(Vector3.up * Time.deltaTime * FORCE_TURN * leftRightDelta * Mathf.Sign(leftRight));
 			}*/		
 //		}
 	}

@@ -18,25 +18,25 @@ public class Movement {
 		layerMaskMoveables = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) );
 	}
 	
-	public void Roam(Rigidbody rigidbody, ref Vector3 targetCubePosition, int minDistance, int maxDistance, float force) {
+	public void Roam(Rigidbody rigidbody, ref GridPosition targetPosition, int minDistance, int maxDistance, float force) {
 		Vector3 position = rigidbody.transform.position;
-		Vector3 cubePosition = Room.GetCubePosition(position);
-		if (cubePosition == targetCubePosition) {
-			targetCubePosition = play.room.GetRandomEmptyCubePositionFrom(cubePosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
+		GridPosition currentPosition = Cave.GetGridFromPosition(position);
+		if (currentPosition == targetPosition) {
+			targetPosition = play.cave.GetRandomEmptyGridPositionFrom(currentPosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
 //			Debug.Log ("current " + cubePosition + ", setting new target " + targetCubePosition + " in frame " + Time.frameCount);
 		}
-		if (cubePosition != targetCubePosition) {
+		if (currentPosition != targetPosition) {
 			Vector3 avoidance = Vector3.zero;	
 			RaycastHit hit;
-			for (int i=0; i<Room.DIRECTIONS.Length; i++) {
-				if (Physics.Raycast(position, Room.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, layerMaskAll)) {
+			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
+				if (Physics.Raycast(position, RoomMesh.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, layerMaskAll)) {
 					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);
 				}
 			}
-			Vector3 target = (Room.GetPositionFromCube(targetCubePosition) - position).normalized;
+			Vector3 target = (Cave.GetPositionFromGrid(targetPosition) - position).normalized;
 			// if obstacle in target direction, get new target
 			if (Physics.Raycast(position, target, out hit, RAYCAST_DISTANCE, layerMaskMoveables)) {
-				targetCubePosition = play.room.GetRandomEmptyCubePositionFrom(cubePosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
+				targetPosition = play.cave.GetRandomEmptyGridPositionFrom(currentPosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
 			}
 			rigidbody.AddForce((avoidance.normalized + target) * force);			
 //			Debug.Log (avoidance + " " + target);
@@ -45,7 +45,7 @@ public class Movement {
 	
 	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance) {
 		Vector3 position = rigidbody.transform.position;
-		if ( Vector3.Distance(Room.GetCubePosition(position), Room.GetCubePosition(target.position)) <= minDistance ) {
+		if ( Vector3.Distance(Cave.GetGridFromPosition(position).GetVector3(), Cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
 //			Vector3 toTarget = (target.position - position).normalized;
 			float angleForward = Vector3.Angle(rigidbody.transform.forward, -target.forward);
 			if (angleForward > 30.0f) {
@@ -59,7 +59,7 @@ public class Movement {
 	}
 	
 	// http://en.wikipedia.org/wiki/A*
-	public void AStarPath(AStarThreadState aStarThreadState, IntTriple s, IntTriple g) {
+	public void AStarPath(AStarThreadState aStarThreadState, GridPosition s, GridPosition g) {
 		aStarThreadState.Start();
 	UnityThreadHelper.TaskDistributor.Dispatch( () => {
 			
@@ -129,13 +129,14 @@ public class Movement {
 	
 	private ArrayList AStarGetNeighbours(AStarNode n) {
 		ArrayList neighbours = new ArrayList();
-		for (int i=0; i<Room.DIRECTIONS.Length; i++) {
+		for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
 			try {
-				IntTriple cube = new IntTriple(n.position + Room.DIRECTIONS[i]);
-				if (play.room.cubeDensity[cube.x, cube.y, cube.z] == CaveDigger.DENSITY_EMPTY) {
-					neighbours.Add(new AStarNode(cube, 0, 0));
+				GridPosition gridPosition = new GridPosition(new IntTriple(n.position + RoomMesh.DIRECTIONS[i]), n.gridPos.roomPosition);
+				if (play.cave.GetCellDensity(gridPosition) == Cave.DENSITY_EMPTY) {
+					neighbours.Add(new AStarNode(gridPosition, 0, 0));
 				}
 			} catch (IndexOutOfRangeException e) {
+				Game.DefNull(e);
 			}
 		}		
 //		Debug.Log ("getting neighbour list of " + neighbours.Count);
@@ -150,15 +151,13 @@ public class Movement {
 		}
 	}
 	
-	private float AStarHeuristic(IntTriple start, IntTriple goal) {
+	private float AStarHeuristic(GridPosition start, GridPosition goal) {
 		return Vector3.Distance(start.GetVector3(), goal.GetVector3());
 	}
 
 	private float AStarHeuristic(AStarNode a, AStarNode b) {
 		return Vector3.Distance(a.position, b.position);
 	}
-	
-	
 															
 }
 

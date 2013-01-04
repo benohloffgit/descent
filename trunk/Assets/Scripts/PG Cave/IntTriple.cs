@@ -94,6 +94,10 @@ public struct IntTriple {
 		return new IntTriple(t1.x+t2.x, t1.y+t2.y, t1.z+t2.z);
 	}
 
+	public static IntTriple operator +(Vector3 t1, IntTriple t2) {
+		return new IntTriple((int)t1.x+t2.x, (int)t1.y+t2.y, (int)t1.z+t2.z);
+	}
+	
 	public static bool operator ==(IntTriple t1, IntTriple t2) {
 		return (t1.x == t2.x && t1.y == t2.y && t1.z == t2.z) ? true : false;
 	}
@@ -101,4 +105,13 @@ public struct IntTriple {
 	public static bool operator !=(IntTriple t1, IntTriple t2) {
 		return (t1.x != t2.x || t1.y != t2.y || t1.z != t2.z) ? true : false;
 	}
+
+	public override bool Equals (object obj) {
+		return base.Equals(obj);
+	}
+	
+	public override int GetHashCode () {
+		return base.GetHashCode();
+	}
+
 }

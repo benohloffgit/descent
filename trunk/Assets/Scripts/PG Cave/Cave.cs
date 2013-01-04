@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,13 +7,9 @@ public class Cave {
 	public List<Zone> zones;
 	
 	private Play play;
-//	private IntTriple currentZone;
-//	private IntTriple nextZone;
-//	private IntTriple currentRoom;
 	
 	private int dimZone;
-	private ZoneMiner[] zoneMiners;
-	private RoomMiner[] roomMiners;
+	private List<RoomMiner> roomMiners;
 	private List<RoomMesh> roomMeshs;
 
 	public static int DENSITY_FILLED = 0;
@@ -23,125 +20,64 @@ public class Cave {
 	
 	public Cave(Play p) {
 		play = p;
-//		currentZone = IntTriple.ZERO;
 		zones = new List<Zone>();
 		AddZone();
-//		AddZone(currentZone, SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ZONE, 0), IntTriple.FORWARD);
-//		Debug.Log ("currentZone " + currentZone + ", nextZone " + nextZone);
-//		DigZone(zones[zones.Count-1]);
-		DigRooms(zones[zones.Count-1]);
+		DigRooms(GetCurrentZone());
 	}
 
 	public void AddZone() {
-		zones.Add(new Zone(Game.DIMENSION_ZONE));
-	}
-
-/*	public void AddZone(IntTriple pos, IntTriple entryRoom, IntTriple deltaToLastZone) {
-		zones.Add(new Zone(Game.DIMENSION_ZONE, pos, entryRoom, deltaToLastZone));
-		nextZone = AdvanceZone();
-	}*/
-	
-	private IntTriple AdvanceZone() {
-		IntTriple result = IntTriple.ZERO;
-		List<IntTriple> directions = new List<IntTriple>(ZONE_DIRECTIONS);
-		for (int i=0; i<directions.Count; i++) {
-			result = Cave.ExtractRandomIntTripleFromPool(ref directions);
-			if (true) { // TODO in range and never to the left
-				i = directions.Count;
-			}
-		}
-		return IntTriple.FORWARD;
-		//return result;
+		zones.Add(new Zone(Game.DIMENSION_ZONE, this));
 	}
 	
-/*	private void DigZone(Zone zone) {
-		zone.exitRoom = SetEntryExit(nextZone-currentZone, 0, Game.DIMENSION_ZONE, 0);
-		Debug.Log ("entryRoom " + zone.entryRoom + ", exitRoom " + zone.exitRoom);
-		zoneMiners = new ZoneMiner[2];
-		zoneMiners[0] = new ZoneMiner(this, zone.entryRoom, 0, zone);
-		zoneMiners[1] = new ZoneMiner(this, zone.exitRoom, 1, zone);
-		zoneMiners[0].otherMiner = zoneMiners[1];
-		zoneMiners[1].otherMiner = zoneMiners[0];
-//		int j=0;
-		int digCount = 0;
-		while (zoneMiners[0].isActive || zoneMiners[1].isActive) {
-			digCount += zoneMiners[0].Mine();
-			digCount += zoneMiners[1].Mine();
-//			j++;
-		}
-		Debug.Log ("Zone has rooms: " + (digCount+2));
-	}*/
-
+	public Zone GetCurrentZone() {
+		return zones[zones.Count-1];
+	}
+	
 	public void DigRooms(Zone zone) {
 		for (int i=0; i<zone.roomList.Count; i++) { // first in array is entry room , second is exit room
-			List<RoomMiner> roomMiners = new List<RoomMiner>();
-			Room2 room = zone.roomList[i];
-			List<Room2> neighbours = zone.GetEmptyNeighboursOfRoom(room.pos);
+			roomMiners = new List<RoomMiner>();
+			Room room = zone.roomList[i];
+			List<Room> neighbours = zone.GetEmptyNeighboursOfRoom(room.pos);
 			IntTriple startingCell;
 			Debug.Log ("Digging Room " + i + " on pos " +  room.pos);
-			foreach (Room2 neighbour in neighbours) {
+			foreach (Room neighbour in neighbours) {
 				IntTriple alignment = room.pos-neighbour.pos; // how we are positioned towards neighbor
-				Debug.Log ("room " + i + " has " + neighbours.Count + " neighbours, alignment is : " + alignment);
+//				Debug.Log ("room " + i + " has " + neighbours.Count + " neighbours, alignment is : " + alignment);
 				if (neighbour.exits.ContainsKey(alignment)) {
 					startingCell = GetOppositeCell(neighbour.exits[alignment], alignment);
-					Debug.Log ("01: " + startingCell);
+//					Debug.Log ("01: " + startingCell);
 				} else {
 					startingCell = SetEntryExit(-1*alignment, 0, Game.DIMENSION_ROOM, 2);
-					Debug.Log ("02: " + startingCell);
+//					Debug.Log ("02: " + startingCell);
 				}
-				roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room));
+				roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count));
 			}
 			if (i==0) { // entry room
 				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room));
-					Debug.Log ("Entry Room: " + startingCell);
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count));
+				room.entryCell = startingCell;
+//				Debug.Log ("Entry Room: " + startingCell);
 			} else if (i==1) { // exit room
 				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room));
-					Debug.Log ("Exit Room: " + startingCell);
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count));
+//				Debug.Log ("Exit Room: " + startingCell);
 			}
 			
 			int digCount = 0;
-			int noOfActiveMiners = roomMiners.Count;
-			while (noOfActiveMiners > 0) {
+			bool isAtLeastOneMinerActive = true;
+			int j=0;
+			while (j<10000 && isAtLeastOneMinerActive) {
+				j++;
+				isAtLeastOneMinerActive = false;
 				foreach (RoomMiner miner in roomMiners) {
 					if (miner.isActive) {
-						int result = miner.Mine();
-						digCount += result;
-						if (result == 0) {
-							noOfActiveMiners--;
-						}
+						isAtLeastOneMinerActive = true;
+						digCount += miner.Mine();
 					}
 				}
 			}
-			Debug.Log ("Room " + i + " has cells: " + (digCount+roomMiners.Count));
-			
-/*			IntTriple entryCell;
-			if (i==0) { // entry room
-				entryCell = SetEntryExit(zone.deltaToLastZone, 0, Game.DIMENSION_ROOM, 2); // + zone.entryRoom * Game.DIMENSION_ROOM;
-				Debug.Log ("entryCell : " + entryCell);
-			} else if (i==1) { // exit room
-				entryCell = SetEntryExit(nextZone, 0, Game.DIMENSION_ROOM, 2);
-			} else {
-				entryCell = IntTriple.ZERO;
-			}
-			// determine all exit cells and create one miner for each
-			List<Room2> neighbours = zone.GetEmptyNeighboursOfRoom(room.pos);
-			Debug.Log ("Room " + room.pos + " has neighbours: " +  neighbours.Count);
-			roomMiners = new RoomMiner[neighbours.Count + 1];
-			roomMiners[0] = new RoomMiner(this, entryCell, 0, room);
-			
-			for (int j=0; j<neighbours.Count; j++) {
-				IntTriple exitCell = SetEntryExit(neighbours[j].pos-room.pos, 0, Game.DIMENSION_ROOM, 2); // + neighbours[j].pos * Game.DIMENSION_ROOM;
-				roomMiners[j+1] = new RoomMiner(this, exitCell, 0, room);
-			}
-			
-			int digCount = 0;
-			while (roomMiners[0].isActive || roomMiners[1].isActive) {
-				digCount += roomMiners[0].Mine();
-				digCount += roomMiners[1].Mine();
-			}
-			Debug.Log ("Room " + i + " has cells: " + (digCount+2));*/
+			if (j==10000) Debug.Log ("room miner count " + roomMiners.Count);
+			Debug.Log ("Room " + i + " has cells: " + (digCount+roomMiners.Count) + " j=" + j);
 			CreateRoomMesh(room);
 		}
 	}
@@ -164,28 +100,28 @@ public class Cave {
 		return result;
 	}
 	
-	private void CreateRoomMesh(Room2 room) {
+	private void CreateRoomMesh(Room room) {
 		RoomMesh roomMesh = (GameObject.Instantiate(play.roomMeshPrefab) as GameObject).GetComponent<RoomMesh>();
 		roomMesh.Initialize(room);
+		room.roomMesh = roomMesh;
 	}
 	
 	public void SetAllMinersInactive() {
-		for (int i=0; i<zoneMiners.Length; i++) {
-			zoneMiners[i].isActive = false;
+		foreach (RoomMiner miner in roomMiners) {
+			miner.isActive = false;
 		}
 	}
 
-/*	
 	public IntTriple GetPosOfActiveMinerOtherThan(int minerId) {
 		IntTriple result = IntTriple.ZERO;
-		for (int i=0; i<miners.Length; i++) {
-			if (miners[i].isActive && miners[i].id != minerId) {
-				result = miners[i].pos;
-				i = miners.Length;
+		foreach (RoomMiner miner in roomMiners) {
+			if (miner.id != minerId) {
+				result = miner.pos;
+				break;
 			}
 		}
 		return result;
-	}*/
+	}
 
 	private IntTriple SetEntryExit(IntTriple delta, int lowDim, int highDim, int borderLimit) {
 		IntTriple entryExit;
@@ -208,81 +144,81 @@ public class Cave {
 		return entryExit;
 	}
 	
-	private void SetEntryExit(IntTriple delta, out IntTriple entryRoom, out IntTriple exitRoom, int dim, int borderLimit) {
-		IntDouble randomA = new IntDouble(
-			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)),
-			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)));
-		IntDouble randomB = new IntDouble(
-			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)),
-			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)));
-//		IntTriple delta = exitRoom - entryRoom;
-		if (delta == IntTriple.UP) {
-				entryRoom = new IntTriple(randomA.x, 0, randomA.y);
-				exitRoom = new IntTriple(randomB.x, dim-1, randomB.y);
-		} else if (delta == IntTriple.DOWN) {
-				entryRoom = new IntTriple(randomA.x, dim-1, randomA.y);
-				exitRoom = new IntTriple(randomB.x, 0, randomB.y);
-		} else if (delta == IntTriple.LEFT) {
-				entryRoom = new IntTriple(dim-1, randomA.x,randomA.y);
-				exitRoom = new IntTriple(0,randomB.x,randomB.y);
-		} else if (delta == IntTriple.RIGHT) {
-				entryRoom = new IntTriple(0, randomA.x,randomA.y);
-				exitRoom = new IntTriple(dim-1,randomB.x,randomB.y);
-		} else if (delta == IntTriple.FORWARD) {
-				entryRoom = new IntTriple(randomA.x,randomA.y,0);
-				exitRoom = new IntTriple(randomB.x,randomB.y,dim-1);
-		} else { // (delta == IntTriple.BACKWARD) {
-				entryRoom = new IntTriple(randomA.x,randomA.y,dim-1);
-				exitRoom = new IntTriple(randomB.x,randomB.y,0);
-		}		
+	public static Vector3 GetPositionFromCube(Vector3 cubePosition) {
+		return cubePosition * RoomMesh.MESH_SCALE;
+	}
+
+	public Vector3 GetCaveEntryPosition() {
+		Room entryRoom = GetCurrentZone().roomList[0];
+//		Debug.Log ("entryRoom pos " +entryRoom.pos +" " + entryRoom.entryCell);
+		return (entryRoom.pos.GetVector3() * Game.DIMENSION_ROOM + entryRoom.entryCell.GetVector3()) * RoomMesh.MESH_SCALE;
 	}
 	
-/*	
-	private void Dig(Cell c, int dim, int seed) {
-		UnityEngine.Random.seed = seed;
-		
-		Miner[] miners = new Miner[2];
-		
-		// determine wall side ( 0:x=0, 1:x=dimX-1, 2:y=0, 3:y=dimY-1, 4:z=0, 5:z=dimZ-1)
-		int[] sides = new int[] {0,1,2,3,4,5};
-		ArrayList walls = new ArrayList(sides);
-		IntTriple entry = DigEntryExit(Cave.ExtractRandomNumberFromPool(ref walls));
-		c.SetDensity(entry, DENSITY_EMPTY);
-
-		IntTriple exit = DigEntryExit(Cave.ExtractRandomNumberFromPool(ref walls));
-		c.SetDensity(exit, DENSITY_EMPTY);
-		
-		DigCave();
+	// return pos in marching cube grid
+	public static Vector3 GetCubePosition(Vector3 position) {
+		Vector3 cubePos = position / RoomMesh.MESH_SCALE;
+		// centered in cube
+		return new Vector3(Mathf.RoundToInt(cubePos.x), Mathf.RoundToInt(cubePos.y), Mathf.RoundToInt(cubePos.z));
 	}
-*/	
-	private IntTriple DigEntryExit(int wall, int dim, int borderLimit) {
-		IntDouble randomCoords = new IntDouble(
-			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)),
-			UnityEngine.Random.Range(borderLimit, dim-(borderLimit+1)));
-		IntTriple result = IntTriple.ZERO;
-		switch (wall) {
-			case 0:
-				result = new IntTriple(0,randomCoords.x,randomCoords.y);
-				break;
-			case 1:
-				result = new IntTriple(dim-1,randomCoords.x,randomCoords.y);
-				break;
-			case 2:
-				result = new IntTriple(randomCoords.x,0,randomCoords.y);
-				break;
-			case 3:
-				result = new IntTriple(randomCoords.x,dim-1,randomCoords.y);
-				break;
-			case 4:
-				result = new IntTriple(randomCoords.x,randomCoords.y,0);
-				break;
-			case 5:
-				result = new IntTriple(randomCoords.x,randomCoords.y,dim-1);
-				break;
+	
+	public int GetCellDensity(GridPosition gridPosition) {
+		return GetCurrentZone().GetCellDensity(gridPosition);
+	}
+
+	public GridPosition GetRandomEmptyGridPositionFrom(GridPosition gridPosition, int maxDistance) {
+		GridPosition result = gridPosition;
+		int currentDirection = UnityEngine.Random.Range(0, RoomMesh.DIRECTIONS.Length);
+//		Debug.Log ("starting with direction " + currentDirection);
+		for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
+			// test up to max Distance in that direction
+			for (int j=0; j<maxDistance; j++) {
+				GridPosition newPosition = new GridPosition(RoomMesh.DIRECTIONS[currentDirection] * (j+1) + gridPosition.cellPosition, gridPosition.roomPosition);
+				int cellDensity;
+				try {
+					cellDensity =  GetCellDensity(newPosition);
+				} catch (IndexOutOfRangeException e) {
+					Game.DefNull(e);
+					cellDensity = Cave.DENSITY_FILLED;
+				}
+				if (cellDensity == Cave.DENSITY_FILLED) {
+					if (j > 0) {
+						// exit
+						i = RoomMesh.DIRECTIONS.Length;
+					}
+					// exit
+					j = maxDistance;
+				} else {
+					result = newPosition;
+//					Debug.Log ("result " + result);
+				}
+			}
+			if (result != gridPosition) {
+				// exit
+				i = RoomMesh.DIRECTIONS.Length;
+			} else {
+				currentDirection++;
+				if (currentDirection == RoomMesh.DIRECTIONS.Length) {
+					currentDirection = 0;
+				}
+			}
 		}
+//		Debug.Log ("final direction " + currentDirection);
 		return result;
 	}
 
+	public static GridPosition GetGridFromPosition(Vector3 position) {
+		Vector3 unscaled = position / RoomMesh.MESH_SCALE;
+		Vector3 roomVector = unscaled / Game.DIMENSION_ROOM;
+		IntTriple roomPos = new IntTriple(Mathf.FloorToInt(roomVector.x), Mathf.FloorToInt(roomVector.y), Mathf.FloorToInt(roomVector.z));
+		Vector3 cellPos = unscaled - (roomPos * Game.DIMENSION_ROOM).GetVector3();
+		// centered in cube
+		return new GridPosition(new IntTriple(Mathf.RoundToInt(cellPos.x), Mathf.RoundToInt(cellPos.y), Mathf.RoundToInt(cellPos.z)), roomPos);
+	}
+	
+	public static Vector3 GetPositionFromGrid(GridPosition rP) {
+		return (rP.roomPosition.GetVector3() * Game.DIMENSION_ROOM + rP.cellPosition.GetVector3()) * RoomMesh.MESH_SCALE;
+	}
+	
 	public static int GetRandomNumberFromPool(int[] pool) {
 		return pool[UnityEngine.Random.Range(0, pool.Length-1)];
 	}

@@ -3,20 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 	
 public struct AStarNode {
-	public IntTriple intTriple;
+	public GridPosition gridPos;
 	public Vector3 position;
 	public float goal;
 	public float heuristic;
 	public float fitness;
 	private int hashCode;
 
-	public AStarNode(IntTriple p, float g, float h) {
-		intTriple = p;
-		position = p.GetVector3();
+	public AStarNode(GridPosition p, float g, float h) {
+		gridPos = p;
+		position = p.cellPosition.GetVector3();
 		goal = g;
 		heuristic = h;
 		fitness = g + h;
-		hashCode = (int) (position.x * Play.ROOM_SIZE + position.y * (Play.ROOM_SIZE*Play.ROOM_SIZE) + position.z * (Play.ROOM_SIZE*Play.ROOM_SIZE*Play.ROOM_SIZE));
+		hashCode = (int) (position.x * Game.DIMENSION_ROOM + position.y * (Game.DIMENSION_ROOM*Game.DIMENSION_ROOM) + position.z * (Game.DIMENSION_ROOM*Game.DIMENSION_ROOM*Game.DIMENSION_ROOM));
 	}
 	
 	public override int GetHashCode() {

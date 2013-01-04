@@ -16,13 +16,10 @@ public class Play : MonoBehaviour {
 	public GameObject lightBulbPrefab;
 	
 	public Cave cave;
-	public Room room;
 	public Movement movement;
 	public Ship ship;
 	public bool isShipInvincible;
 	
-	public static int ROOM_SIZE = 16;
-
 	private Game game;
 //	private GameInput gI;
 	private State state;
@@ -33,8 +30,8 @@ public class Play : MonoBehaviour {
 
 	private int container;
 	private int dialogContainer;
-	private IntTriple testPathStart;
-	private IntTriple testPathEnd;
+	private GridPosition testPathStart;
+	private GridPosition testPathEnd;
 		
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
@@ -47,21 +44,18 @@ public class Play : MonoBehaviour {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
 			if (Input.GetKeyDown(KeyCode.Alpha1)) {				
-				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				MineTouch mineTouch = enemyDistributor.CreateMineTouch();
-				mineTouch.transform.position = cubePositionOfShip * Room.MESH_SCALE;
+				mineTouch.transform.position = GetShipPosition();
 				Debug.Log ("Adding Mine Touch (Editor mode)");
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha2)) {				
-				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				MineBuilder mineBuilder = enemyDistributor.CreateMineBuilder();
-				mineBuilder.transform.position = cubePositionOfShip * Room.MESH_SCALE;
+				mineBuilder.transform.position = GetShipPosition();
 				Debug.Log ("Adding Mine Builder (Editor mode)");
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha3)) {				
-				Vector3 cubePositionOfShip = Room.GetCubePosition(ship.transform.position);
 				LightBulb lightBulb = enemyDistributor.CreateLightBulb();
-				lightBulb.transform.position = cubePositionOfShip * Room.MESH_SCALE;
+				lightBulb.transform.position = GetShipPosition();
 				Debug.Log ("Adding Light Bulb (Editor mode)");
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha4)) {				
@@ -82,31 +76,39 @@ public class Play : MonoBehaviour {
 				isShipInvincible = (isShipInvincible) ? false : true;
 				Debug.Log ("Setting ship invincible: " + isShipInvincible);
 			}
-			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.O)) {
-				testPathStart = new IntTriple(Room.GetCubePosition(ship.transform.position));
-				Debug.Log ("Setting AStar path start at : " + Room.GetCubePosition(ship.transform.position));
+			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.C)) {
+				PlaceTestCubes();
+				Debug.Log ("Placing test cubes");
 			}
-			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.P)) {
-				Debug.Log ("Setting AStar path end at : " + Room.GetCubePosition(ship.transform.position));
-				testPathEnd = new IntTriple(Room.GetCubePosition(ship.transform.position));
+			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.V)) {
+				RemoveTestCubes();
+				Debug.Log ("Removing test cubes");
+			}
+			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.O)) {
+				testPathStart = Cave.GetGridFromPosition(ship.transform.position);
+				Debug.Log ("Setting AStar path start at : " + testPathStart);
+			}
+			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.P)) {
+				testPathEnd = Cave.GetGridFromPosition(ship.transform.position);
+				Debug.Log ("Setting AStar path end at : " + testPathEnd);
 				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
 //				Debug.Log (Time.frameCount);
 			}
-			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.L)) {
-				Debug.Log(Room.GetCubePosition(ship.transform.position));
+			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.K)) {
+				Debug.Log(Cave.GetGridFromPosition(ship.transform.position));
 			}
-			if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
+	/*		if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
 				testPathStart = new IntTriple(new Vector3(5f, 6f, 1f));
 				testPathEnd = new IntTriple(new Vector3(4f, 7f, 1f));
 				Debug.Log ("Setting AStar path from/to at : " + testPathStart.GetVector3() + "/" + testPathEnd.GetVector3());
 				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
-			}
+			}*/
 			
 			if (aStarThreadState.isFinishedNow()) {
 				aStarThreadState.Complete();
 //				Debug.Log (Time.frameCount);
 				foreach (AStarNode n in aStarThreadState.path) {
-					PlaceTestCube(n.position);
+					PlaceTestCube(n.gridPos);
 				}
 			}
 		}
@@ -116,11 +118,11 @@ public class Play : MonoBehaviour {
 //		room = (GameObject.Instantiate(roomPrefab) as GameObject).GetComponent<Room>();
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
-//		room.Initialize(ship.transform, ROOM_SIZE);
 		cave = new Cave(this);
+		PlaceShip();
 		movement = new Movement(this);
 //		PlaceTestCubes();
-//		PlaceEnemies();
+		PlaceEnemies();
 	}
 	
 	public void Initialize(Game g, GameInput input) {
@@ -137,37 +139,55 @@ public class Play : MonoBehaviour {
 	void onDisable() {
 		CancelInvoke();
 		Destroy(ship.gameObject);
-		Destroy(room.gameObject);
+//		Destroy(cave.gameObject);
 	}
 	
 	public void DispatchGameInput() {
 		ship.DispatchGameInput();
 	}
 	
+	private void PlaceShip() {
+		ship.transform.position = cave.GetCaveEntryPosition();
+	}
+	
 	private void PlaceEnemies() {
-		enemyDistributor = new EnemyDistributor(game, this, room, ROOM_SIZE);
-		enemyDistributor.Distribute();
+		enemyDistributor = new EnemyDistributor(game, this);
+//		enemyDistributor.Distribute();
 	}
 	
 	private void PlaceTestCubes() {
-		for (var i=0; i<ROOM_SIZE; i++) {
-			for (var j=0; j<ROOM_SIZE; j++) {
-				for (var k=0; k<ROOM_SIZE; k++) {
-					if (room.cubeDensity[i,j,k] == CaveDigger.DENSITY_EMPTY) {
-						Instantiate(testCubePrefab, Room.GetPositionFromCube(new Vector3(i,j,k)), Quaternion.identity);
+		Room room = GetRoomOfShip();
+		for (var i=0; i<Game.DIMENSION_ROOM; i++) {
+			for (var j=0; j<Game.DIMENSION_ROOM; j++) {
+				for (var k=0; k<Game.DIMENSION_ROOM; k++) {
+					IntTriple cellPos = new IntTriple(i,j,k);
+					if (room.GetCellDensity(cellPos) == Cave.DENSITY_EMPTY) {
+						PlaceTestCube(new GridPosition(cellPos, room.pos));
 					}
 				}
 			}
 		}
 	}
 	
-	public void PlaceTestCube(Vector3 position) {
-		Instantiate(testCubePrefab, Room.GetPositionFromCube(position), Quaternion.identity);
+	private void RemoveTestCubes() {
+		GameObject[] gOs = GameObject.FindGameObjectsWithTag("TestCube");
+		for (int i=0; i<gOs.Length; i++) {
+			Destroy(gOs[i]);
+		}
+	}
+	
+	public void PlaceTestCube(GridPosition pos) {
+		Instantiate(testCubePrefab, Cave.GetPositionFromGrid(pos), Quaternion.identity);
 	}
 	
 	public Vector3 GetShipPosition() {
 		// TODO cache
 		return ship.transform.position;
+	}
+	
+	public Room GetRoomOfShip() {
+		GridPosition gP = Cave.GetGridFromPosition(GetShipPosition());
+		return cave.GetCurrentZone().GetRoom(gP);
 	}
 }
 

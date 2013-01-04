@@ -22,14 +22,13 @@ public class RoomMesh : MonoBehaviour {
 	public Mesh mesh;
 
 	public static Vector3[] DIRECTIONS = new Vector3[] { Vector3.forward, -Vector3.forward, Vector3.up, -Vector3.up, Vector3.right, -Vector3.right };
-	public static float MESH_SCALE = 5.0f;
+	public static float MESH_SCALE = 10.0f;
 	
-	private Room2 room;
+	private Room room;
 	private int[,] gridCellDensity; 
 	private Vector3[,] gridCellCoords;
 	
 	private	Vector3[] roomVertices;
-	private	Vector2[] roomUVs;
 	private	int[] roomTriangles;
 	private int roomVerticesCount;
 	private int roomTrianglesCount;
@@ -38,14 +37,13 @@ public class RoomMesh : MonoBehaviour {
 	
 	private int duplicateVertices = 0;
 					
-	public void Initialize(Room2 room) {		
+	public void Initialize(Room room) {		
 		MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
 	
 		roomVertices = new Vector3[16384];
 		roomTriangles = new int[49152];
-		roomUVs = new Vector2[16384];
 		roomVerticesCount = 0;
 		roomTrianglesCount = 0;
 		
@@ -118,19 +116,14 @@ public class RoomMesh : MonoBehaviour {
 		mesh.RecalculateBounds();
 	//	RecalculateMyNormals(mesh);
 		mesh.RecalculateNormals();
-	
 //		Debug.Log("normals : " + mesh.normals.Length);
 	
 		transform.localScale = new Vector3(MESH_SCALE,MESH_SCALE,MESH_SCALE);
-		
-		// position ship on entry cube
-//		Debug.Log("entry coord " + cubeCoords[cD.entry[0],cD.entry[1],cD.entry[2]]);
-//		Debug.Log("exit coord " + cubeCoords[cD.exit[0],cD.exit[1],cD.exit[2]]);
-		
+				
 		MeshCollider mC = GetComponent<MeshCollider>() as MeshCollider;
 		mC.sharedMesh = mesh;
 	}
-	
+/*	
 	private int CountTriangles(Mesh mesh, int vertexIndex) {
 		int count = 0;
 		for (int j=0; j<mesh.triangles.Length; j++) {
@@ -139,11 +132,7 @@ public class RoomMesh : MonoBehaviour {
 			}
 		}
 		return count;
-	}
-	
-	private int GetDefaultDensity(int currX, int currY, int currZ, int dimX, int dimY, int dimZ) {
-			return CaveDigger.DENSITY_FILLED;
-	}
+	}*/
 	
 	private void MarchCubes(int gridCell, int x, int y, int z) {
 		int  cubeindex = 0;
@@ -240,7 +229,6 @@ public class RoomMesh : MonoBehaviour {
 		}   
 	}
 	
-
 	private int FetchUniqueVertexIndex(int x, int y, int z, Vector3 vertex) {
 		for (int i=0; i<roomVerticesCount; i++) {
 			if (roomVertices[i] == vertex) {
@@ -255,52 +243,6 @@ public class RoomMesh : MonoBehaviour {
 		return Vector3.Lerp(point1, point2, 0.5f);
 	}
 
-	// return pos in marching cube grid
-	public static Vector3 GetCubePosition(Vector3 position) {
-		Vector3 cubePos = position / Room.MESH_SCALE;
-		// centered in cube
-		return new Vector3(Mathf.RoundToInt(cubePos.x), Mathf.RoundToInt(cubePos.y), Mathf.RoundToInt(cubePos.z));
-	}
-	
-	public static Vector3 GetPositionFromCube(Vector3 cubePosition) {
-		return cubePosition * Room.MESH_SCALE;
-	}
-	
-	public Vector3 GetRandomEmptyCubePositionFrom(Vector3 cubePosition, int maxDistance) {
-		Vector3 result = cubePosition;
-		int currentDirection = UnityEngine.Random.Range(0, Room.DIRECTIONS.Length);
-//		Debug.Log ("starting with direction " + currentDirection);
-		for (int i=0; i<Room.DIRECTIONS.Length; i++) {
-			// test up to max Distance in that direction
-			for (int j=0; j<maxDistance; j++) {
-				IntTriple cubeCoords = new IntTriple(Room.DIRECTIONS[currentDirection] * (j+1) + cubePosition);
-				if (room.GetCellDensity(cubeCoords) == CaveDigger.DENSITY_FILLED) {
-					if (j > 0) {
-						// exit
-						i = Room.DIRECTIONS.Length;
-					}
-					// exit
-					j = maxDistance;
-				} else {
-					result = new Vector3(cubeCoords.x, cubeCoords.y, cubeCoords.z);
-//					Debug.Log ("result " + result);
-				}
-			}
-			if (result != cubePosition) {
-				// exit
-				i = Room.DIRECTIONS.Length;
-			} else {
-				currentDirection++;
-				if (currentDirection == Room.DIRECTIONS.Length) {
-					currentDirection = 0;
-				}
-			}
-		}
-//		Debug.Log ("final direction " + currentDirection);
-		return result;
-	}
-
-	
 	private static int[] EDGE_TABLE = new int[] {
 	    0x0,   0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
 		0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,

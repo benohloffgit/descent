@@ -136,5 +136,7 @@ public class Game : MonoBehaviour {
 		return prefabFactory;
 	}
 	
+	public static void DefNull(object o) {
+	}
 }
 

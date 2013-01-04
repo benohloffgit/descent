@@ -4,29 +4,23 @@ using System.Collections.Generic;
 	
 public class Zone {
 	public int dimension;
-	public Room2[,,] rooms;
-	public List<Room2> roomList;
+	public Room[,,] rooms;
+	public List<Room> roomList;
 	public IntTriple position;
 	public IntTriple entryRoom;
 	public IntTriple exitRoom;
 	public IntTriple deltaToLastZone;
 	
+	private Cave cave;
+	
 	private static IntDouble[] ENTRYEXIT_POSITIONS = new IntDouble[] { new IntDouble(0,1), new IntDouble(1,1), new IntDouble(2,1), new IntDouble(1,0), new IntDouble(1,2) };
 
-	public Zone(int dim) {
+	public Zone(int dim, Cave c) {
 		dimension = dim;
-		rooms = new Room2[dim,dim,dim];
-		roomList = new List<Room2>();
+		cave = c;
+		rooms = new Room[dim,dim,dim];
+		roomList = new List<Room>();
 		CreateRooms();
-	}
-	
-	public Zone(int dim, IntTriple pos, IntTriple eR, IntTriple d) {
-		dimension = dim;
-		rooms = new Room2[dim,dim,dim];
-		roomList = new List<Room2>();
-		position = pos;
-		entryRoom = eR;
-		deltaToLastZone = d;
 	}
 	
 	private void CreateRooms() {
@@ -43,7 +37,6 @@ public class Zone {
 				if (delta.GetFactor(random) != 0) {
 					pos.SetFactor(random, pos.GetFactor(random) + Math.Sign(delta.GetFactor(random)));
 					if (pos != exitRoom) {
-						Debug.Log (pos);
 						AddRoom(pos);
 					}
 					i=3;
@@ -63,41 +56,33 @@ public class Zone {
 		}
 	}
 	
-/*	public bool IsRoomEmptiedByMiner(IntTriple pos, int minerId) {
-		if (rooms[pos.x, pos.y, pos.z] != null && rooms[pos.x, pos.y, pos.z].minerId == minerId) {
-			return true;
+	public Room GetRoom(GridPosition gP) {
+		return rooms[gP.roomPosition.x, gP.roomPosition.y, gP.roomPosition.z];
+	}
+	
+	public int GetCellDensity(GridPosition gP) {
+		if (GetRoom(gP).cells[gP.cellPosition.x, gP.cellPosition.y, gP.cellPosition.z] == null) {
+			return Cave.DENSITY_FILLED;
 		} else {
-			return false;
-		}
-	}*/
-
-	public bool IsRoomNotEmptiedByMiner(IntTriple pos, int minerId) {
-		if (rooms[pos.x, pos.y, pos.z] != null && rooms[pos.x, pos.y, pos.z].minerId != minerId) {
-			return true;
-		} else {
-			return false;
+			return Cave.DENSITY_EMPTY;
 		}
 	}
 	
-	private void AddRoom(IntTriple pos) {
-		rooms[pos.x, pos.y, pos.z] = new Room2(Game.DIMENSION_ROOM, pos);
+	public void AddRoom(IntTriple pos) {
+		rooms[pos.x, pos.y, pos.z] = new Room(Game.DIMENSION_ROOM, pos, cave);
 		roomList.Add(rooms[pos.x, pos.y, pos.z]);
 	}
 	
-	public void AddRoom(IntTriple pos, int minerId) {
-		rooms[pos.x, pos.y, pos.z] = new Room2(Game.DIMENSION_ROOM, minerId, pos);
-		roomList.Add(rooms[pos.x, pos.y, pos.z]);
-	}
-	
-	public List<Room2> GetEmptyNeighboursOfRoom(IntTriple pos) {
-		List<Room2> neighbours = new List<Room2>();
-		foreach (IntTriple step in Cave.ZONE_DIRECTIONS) {
+	public List<Room> GetEmptyNeighboursOfRoom(IntTriple pos) {
+		List<Room> neighbours = new List<Room>();
+		foreach (IntTriple step in Cave.ROOM_DIRECTIONS) {
 			IntTriple newPos = pos + step;
 			try {
 				if (rooms[newPos.x, newPos.y, newPos.z] != null) {
 					neighbours.Add(rooms[newPos.x, newPos.y, newPos.z]);
 				}
 			} catch (IndexOutOfRangeException e) {
+				Game.DefNull(e);
 			}
 		}
 		return neighbours;

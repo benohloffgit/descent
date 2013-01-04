@@ -5,15 +5,17 @@ public class MineBuilder : MonoBehaviour {
 	private Play play;
 	private Game game;
 		
-	private Rigidbody rigidbody;
+	private Rigidbody myRigidbody;
 	private RaycastHit hit;
-	private Vector3 targetCubePosition;
+	private GridPosition targetPosition;
+//	private Vector3 targetCubePosition;
+//	private IntTriple roomPos;
 
 	private static float FORCE_MOVE = 5.0f;
 	private static int LOOK_AT_DISTANCE = 4; // measured in cubes
 	
 	void Awake() {
-		rigidbody = GetComponent<Rigidbody>();
+		myRigidbody = GetComponent<Rigidbody>();
 	}
 	
 	public void Initialize(Game g, Play p) {
@@ -22,37 +24,15 @@ public class MineBuilder : MonoBehaviour {
 	}
 	
 	void Start() {
-		targetCubePosition = Room.GetCubePosition(transform.position);
+		targetPosition = Cave.GetGridFromPosition(transform.position);
 	}
 		
 	void FixedUpdate() {
-		play.movement.Roam(rigidbody, ref targetCubePosition, 2, 4, FORCE_MOVE);
-		play.movement.LookAt(rigidbody, play.ship.transform, LOOK_AT_DISTANCE);
+		play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
+		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE);
 		
 	}		
 }
-
-/*		Vector3 cubePosition = Room.GetCubePosition(transform.position);
-		if (cubePosition == targetCubePosition) {
-			targetCubePosition = play.room.GetRandomEmptyCubePositionFrom(cubePosition, Random.Range(2,4));
-//			Debug.Log ("current " + cubePosition + ", setting new target " + targetCubePosition + " in frame " + Time.frameCount);
-		}
-		if (cubePosition != targetCubePosition) {
-			Vector3 avoidance = Vector3.zero;		
-			for (int i=0; i<Room.DIRECTIONS.Length; i++) {
-				if (Physics.Raycast(transform.position, Room.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, layerMaskAll)) {
-					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);
-				}
-			}
-			Vector3 target = (Room.GetPositionFromCube(targetCubePosition) - transform.position).normalized;
-			// if obstacle in target direction, get new target
-			if (Physics.Raycast(transform.position, target, out hit, RAYCAST_DISTANCE, layerMaskMoveables)) {
-				targetCubePosition = play.room.GetRandomEmptyCubePositionFrom(cubePosition, Random.Range(2,4));
-			}
-//			Debug.Log (avoidance + " " + target);
-		
-			rigidbody.AddForce((avoidance.normalized + target) * FORCE_MOVE);
-		}*/
 
 
 			/*Collider[] colliders = Physics.OverlapSphere(transform.position, 1.0f, 1 << Game.LAYER_CAVE);

@@ -2,11 +2,10 @@ using UnityEngine;
 	
 public class Cell {
 	public IntTriple pos;
-//	public int minerId;
-//	private int density;
+	public int minerId;
 
-	public Cell(IntTriple p) {
-		//density = d;
+	public Cell(IntTriple p, int mId) {
 		pos = p;
+		minerId = mId;
 	}
 }

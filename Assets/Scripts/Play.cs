@@ -72,6 +72,34 @@ public class Play : MonoBehaviour {
 					Debug.Log ("Adding Wall Laser (Editor mode)");
 				}
 			}
+			if (Input.GetKeyDown(KeyCode.Alpha0)) {
+				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
+					int triangleIndex = hit.triangleIndex * 3;
+					Debug.Log ("Triangle Index: " + triangleIndex);
+					Mesh m = GetRoomOfShip().roomMesh.mesh;
+					int[] vertexIndices = new int[3];
+					vertexIndices[0] = m.triangles[triangleIndex];
+					vertexIndices[1] = m.triangles[triangleIndex+1];
+					vertexIndices[2] = m.triangles[triangleIndex+2];
+					Vector3[] normals = new Vector3[3];
+					normals[0] = m.normals[vertexIndices[0]];
+					normals[1] = m.normals[vertexIndices[1]];
+					normals[2] = m.normals[vertexIndices[2]];
+					Debug.Log ("Vertex index is " + vertexIndices[0] +","+vertexIndices[1]+","+vertexIndices[2]);
+					Debug.Log ("Vertex is " + m.vertices[vertexIndices[0]] +","+m.vertices[vertexIndices[1]]+","+m.vertices[vertexIndices[2]]);
+					Debug.Log ("Triangle (Editor mode): " + hit.normal + " (" + normals[0]+","+normals[1]+","+normals[2]+ ")");
+				}
+			}
+	/*		if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.LeftArrow)) {
+				Debug.Log ("Changing Vertex");
+				Mesh m = GetRoomOfShip().roomMesh.mesh;
+				Vector3[] vertices = m.vertices;
+				int i = 462; // 462,403,469
+				vertices[i].z += 0.1f;
+				m.vertices = vertices;
+				//m.RecalculateNormals();
+			}*/
+			
 			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
 				isShipInvincible = (isShipInvincible) ? false : true;
 				Debug.Log ("Setting ship invincible: " + isShipInvincible);
@@ -118,6 +146,7 @@ public class Play : MonoBehaviour {
 //		room = (GameObject.Instantiate(roomPrefab) as GameObject).GetComponent<Room>();
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
+		UnityEngine.Random.seed = 123456789;
 		cave = new Cave(this);
 		PlaceShip();
 		movement = new Movement(this);

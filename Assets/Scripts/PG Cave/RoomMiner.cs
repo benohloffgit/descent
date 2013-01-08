@@ -59,7 +59,7 @@ public class RoomMiner {
 		} else {
 			mineCount++;
 			if (mineCount > MINE_COUNT_MAX) { // move towards
-				Debug.Log ("moving towards other miner...");
+//				Debug.Log ("moving towards other miner...");
 				IntTriple delta = cave.GetPosOfActiveMinerOtherThan(id) - pos;
 				if (delta == IntTriple.ZERO) {
 					cave.SetAllMinersInactive();

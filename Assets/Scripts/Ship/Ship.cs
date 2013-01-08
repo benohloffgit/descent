@@ -18,7 +18,7 @@ public class Ship : MonoBehaviour {
 	private bool isHeadlightOn;
 	
 	private static float FORCE_MOVE = 25.0f;
-	private static float FORCE_TURN = 7.5f;
+	private static float FORCE_TURN = 15.0f;
 	private static float FORCE_YAW = 3.5f;
 	
 //	private Vector3 collisionPoint = Vector3.zero;

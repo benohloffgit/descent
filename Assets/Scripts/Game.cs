@@ -20,7 +20,6 @@ public class Game : MonoBehaviour {
 	public static int LAYER_BULLETS = 11;
 	public static int LAYER_ENEMIES = 12;
 
-	public static int DIMENSION_CAVE = 2; // AxA zones
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ROOM = 16; // CxC cells
 	

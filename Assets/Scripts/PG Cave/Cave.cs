@@ -39,7 +39,7 @@ public class Cave {
 			Room room = zone.roomList[i];
 			List<Room> neighbours = zone.GetEmptyNeighboursOfRoom(room.pos);
 			IntTriple startingCell;
-			Debug.Log ("Digging Room " + i + " on pos " +  room.pos);
+//			Debug.Log ("Digging Room " + i + " on pos " +  room.pos);
 			foreach (Room neighbour in neighbours) {
 				IntTriple alignment = room.pos-neighbour.pos; // how we are positioned towards neighbor
 //				Debug.Log ("room " + i + " has " + neighbours.Count + " neighbours, alignment is : " + alignment);
@@ -76,7 +76,7 @@ public class Cave {
 					}
 				}
 			}
-			if (j==10000) Debug.Log ("room miner count " + roomMiners.Count);
+//			if (j==10000) Debug.Log ("room miner count " + roomMiners.Count);
 			Debug.Log ("Room " + i + " has cells: " + (digCount+roomMiners.Count) + " j=" + j);
 			CreateRoomMesh(room);
 		}

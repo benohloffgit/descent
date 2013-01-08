@@ -28,7 +28,7 @@ Shader "Andruids/Room/Dark" {
 		struct Input {
 //			half4 pos : SV_POSITION;
 //			half2  uv : TEXCOORD0;
-			fixed2  uv;
+//			fixed2  uv;
 			fixed3 localPos;
 			fixed3 localNormal;
 //			fixed3 worldPos;
@@ -40,7 +40,7 @@ Shader "Andruids/Room/Dark" {
 //			i.uv = TRANSFORM_TEX (v.texcoord, _LightMap);
 			i.localPos = v.vertex;
 			i.localNormal = v.normal;
-			i.uv = v.texcoord;
+//			i.uv = v.texcoord;
 //			i.worldNormal = mul(_Object2World, fixed4(v.normal, 0.0f)).xyz;
 		}
 		
@@ -56,18 +56,20 @@ Shader "Andruids/Room/Dark" {
 			projnormal.y /= total;
 			projnormal.z /= total;
 			
-			fixed3 color0_ = tex2D(_TexBase, i.localPos.yx); 
-			fixed3 color1_ = tex2D(_TexWall, i.localPos.zx); 
+			fixed3 color0_ = tex2D(_TexBase, i.localPos.xy); 
+			fixed3 color1_ = tex2D(_TexWall, i.localPos.xz); 
 			fixed3 color2_ = tex2D(_TexCeil, i.localPos.yz);
 
 			o.Albedo = (color0_ * projnormal.z + color1_ * projnormal.y + color2_ * projnormal.x) * _Darkness;// * (i.localNormal);
+			o.Normal = projnormal; // leads to "Shader wants tangents" complaint
+			
 			//o.Albedo *= tex2D(_LightMap, i.localPos.xy ).rgb * 2;
 			//o.Albedo *= tex2D(_LightMap, (i.localPos.xy/10.0)*_SinTime ).rgb;
 
 		}
 		
 		half4 LightingMyLambert (SurfaceOutput o, fixed3 lightDir, fixed atten) {
-          fixed NdotL = dot (o.Normal, lightDir);
+          fixed NdotL = dot(o.Normal, lightDir);
           fixed4 c;
           //c.rgb = o.Albedo;
           c.rgb = o.Albedo * _LightColor0.rgb * (NdotL * atten * 2);

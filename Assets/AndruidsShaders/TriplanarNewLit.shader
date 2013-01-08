@@ -29,7 +29,7 @@ Shader "Andruids/TriplanarNewLit" {
 		struct Input {
 //			half4 pos : SV_POSITION;
 //			half2  uv : TEXCOORD0;
-			fixed2  uv;
+//			fixed2  uv;
 			fixed3 localPos;
 			fixed3 localNormal;
 //			fixed3 worldPos;
@@ -41,7 +41,7 @@ Shader "Andruids/TriplanarNewLit" {
 //			i.uv = TRANSFORM_TEX (v.texcoord, _LightMap);
 			i.localPos = v.vertex;
 			i.localNormal = v.normal;
-			i.uv = v.texcoord;
+//			i.uv = v.texcoord;
 //			i.worldNormal = mul(_Object2World, fixed4(v.normal, 0.0f)).xyz;
 		}
 		

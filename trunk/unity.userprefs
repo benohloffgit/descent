@@ -2,13 +2,18 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PG Cave\RoomMesh.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="189" Column="25" />
-      <File FileName="Assets\Scripts\PG Cave\RoomMesh.cs" Line="246" Column="1" />
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="221" Column="2" />
+      <File FileName="Assets\Scripts\Enemies\WallLaser.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ship\ShipShooting.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Play.cs" Line="101" Column="7" />
+      <File FileName="Assets\Scripts\PG Cave\RoomMesh.cs" Line="113" Column="32" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="37" Column="83" />
       <File FileName="Assets\Scripts\PG Cave\Cell.cs" Line="10" Column="3" />
-      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="48" Column="78" />
       <File FileName="Assets\Scripts\PG Cave\EnemyDistributor.cs" Line="82" Column="20" />
-      <File FileName="Assets\Scripts\Game.cs" Line="139" Column="30" />
+      <File FileName="Assets\Scripts\Game.cs" Line="24" Column="39" />
+      <File FileName="Assets\Scripts\PG Cave\RoomMiner.cs" Line="62" Column="1" />
+      <File FileName="Assets\AndruidsShaders\Room\Dark.shader" Line="60" Column="50" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="37" Column="2" />
+      <File FileName="Assets\Scripts\Ship\ShipSteering.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

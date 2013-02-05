@@ -98,20 +98,20 @@ public class RoomMesh : MonoBehaviour {
 		
 		Vector3[] newVertices = new Vector3[roomVerticesCount];
 		int[] newTriangles = new int[roomTrianglesCount];
-//		Vector2[] newUVs = new Vector2[roomVerticesCount];
+		Vector2[] newUVs = new Vector2[roomVerticesCount];
 		for (int j=0; j<roomTrianglesCount; j++) {
 			newTriangles[j] = roomTriangles[j];
 		}
 		for (int j=0; j<roomVerticesCount; j++) {
 			newVertices[j] = roomVertices[j];
-//			newUVs[j] = new Vector2(roomVertices[j].x, roomVertices[j].y) / 16.0f;
+			newUVs[j] = new Vector2(roomVertices[j].x, roomVertices[j].y) / 16.0f;
 		}
 //		Debug.Log("vertices count " + roomVerticesCount + " triangle count " + roomTrianglesCount);
 //		Debug.Log("duplicate vertices " + duplicateVertices);
 	
 		mesh.vertices = newVertices;
 		mesh.triangles = newTriangles;
-//		mesh.uv = newUVs;
+		mesh.uv = newUVs;
 	
 		mesh.RecalculateBounds();
 	//	RecalculateMyNormals(mesh);
@@ -229,8 +229,8 @@ public class RoomMesh : MonoBehaviour {
 					roomTriangles[roomTrianglesCount+j] = uniqueVertexIndex;
 				}
 				if (roomTrianglesCount == 2703) { // 2703, 3387, 3375, 2691, 2697, 1830
-					Debug.Log ("building triangle 2703: " + vertex + " cubeindex " + cubeindex + " gridCell " + gridCell);
-					Debug.Log ("x,y,z: " + x+","+y+","+z);
+//					Debug.Log ("building triangle 2703: " + vertex + " cubeindex " + cubeindex + " gridCell " + gridCell);
+//					Debug.Log ("x,y,z: " + x+","+y+","+z);
 				}
 			}
 			roomTrianglesCount+=3;

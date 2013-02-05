@@ -61,7 +61,7 @@ public class EnemyDistributor {
 		mineTouch.Initialize(game, play);
 		return mineTouch;
 	}
-	
+
 	public WallGun CreateWallGun() {
 		GameObject wG = GameObject.Instantiate(play.wallGunPrefab) as GameObject;
 		WallGun wallGun = wG.GetComponent<WallGun>();

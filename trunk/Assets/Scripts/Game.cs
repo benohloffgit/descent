@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class Game : MonoBehaviour {
 	public GameObject statePrefab;
+	// those are objects create while game is running (after cave generation)
 	public GameObject gunBulletPrefab;
 	public GameObject laserShotPrefab;
+	public GameObject breadcrumbPrefab;
+	public GameObject miniMapPrefab;
 	
 	public State state;
 	public GameInput gameInput;

@@ -5,17 +5,19 @@ using System.Collections;
 public class Ship : MonoBehaviour {
 	public GameObject shipHUDPrefab;
 	public Game game;
-	
+
 	private Play play;
 	private GameInput gameInput;
 	
 	// ship components
 	private GameObject shipHUD;
 	private ShipSteering shipSteering;
-	private ShipShooting shipShooting;
+	private ShipControl shipControl;
+	private MiniMap miniMap;
 	private Transform headlight;
 	
 	private bool isHeadlightOn;
+	private bool isMiniMapOn;
 	
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 15.0f;
@@ -31,7 +33,8 @@ public class Ship : MonoBehaviour {
 		
 		InstantiateShipHUD();
 		shipSteering = transform.GetComponent<ShipSteering>();
-		shipShooting = transform.GetComponent<ShipShooting>();
+		shipControl = new ShipControl(); //transform.GetComponent<ShipControl>();
+		miniMap = transform.GetComponent<MiniMap>();
 		headlight = transform.FindChild("Headlight");
 	}
 	
@@ -41,9 +44,11 @@ public class Ship : MonoBehaviour {
 		gameInput = game.gameInput;
 		
 		shipSteering.Initialize(this, gameInput);
-		shipShooting.Initialize(this, game, gameInput);
+		shipControl.Initialize(this, game, gameInput);
+		miniMap.Initialize(this, play, gameInput);
 		
 		isHeadlightOn = true;
+		isMiniMapOn = false;
 	}
 	
 	void OnCollisionEnter(Collision c) {
@@ -64,8 +69,9 @@ public class Ship : MonoBehaviour {
 	}
 
 	public void DispatchGameInput() {
-		//shipSteering.DispatchGameInput();
-		shipShooting.DispatchGameInput();
+		shipSteering.DispatchGameInput();
+		shipControl.DispatchGameInput();
+		miniMap.DispatchGameInput();
 	}
 	
 	public void Move(Vector3 direction) {
@@ -83,6 +89,16 @@ public class Ship : MonoBehaviour {
 	public void SwitchHeadlight() {
 		isHeadlightOn = (isHeadlightOn) ? false : true;
 		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
+	}
+	
+	public void SwitchMiniMap() {
+		if (isMiniMapOn) {
+			isMiniMapOn = false;
+			miniMap.SwitchOff();
+		} else {
+			isMiniMapOn = true;
+			miniMap.SwitchOn();
+		}
 	}
 	
 /*	void FixedUpdate () {

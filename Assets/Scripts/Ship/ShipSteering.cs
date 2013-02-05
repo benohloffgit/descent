@@ -159,14 +159,7 @@ public class ShipSteering : MonoBehaviour {
 					touchPosition2 = gameInput.touchPosition[secondaryTouchFinger];
 				}
 			}
-		}
-	}
-
-	void Update () {
-//		Debug.DrawRay(collisionPoint, collisionNormal*5.0f, Color.white);
-//		if (!isCalibrated) Calibrate();
-		
-		if (!gameInput.isMobile) {
+		} else {
 			directionBitwise = 0;
 			flyingBitwise = 0;
 			if (Input.GetKeyUp(KeyCode.A)) {
@@ -251,9 +244,15 @@ public class ShipSteering : MonoBehaviour {
 				flyingBitwise |= flyingYawRight;
 				flyingBitwise &= ~flyingYawLeft;
 			}
-			if (Input.GetKeyDown(KeyCode.L)) {
-				ship.SwitchHeadlight();
-			}			
+		}
+	}
+
+	void Update () {
+//		Debug.DrawRay(collisionPoint, collisionNormal*5.0f, Color.white);
+//		if (!isCalibrated) Calibrate();
+		
+		if (!gameInput.isMobile) {
+
 		}
 	}
 	

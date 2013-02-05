@@ -7,24 +7,18 @@ public class Room {
 //	public int minerId;
 	public IntTriple pos;
 	public IntTriple entryCell;
+	public IntTriple exitCell;
 	public Dictionary<IntTriple, Cell> exits; // alignment, cell
 	public RoomMesh roomMesh;
 	
-	private Cave cave;
-
-/*	public Room(int dim, IntTriple p) {
-		dimension = dim;
-		cells = new Cell[dim,dim,dim];
-		pos = p;
-		exits = new Dictionary<IntTriple, Cell>();
-	}*/
+//	private Cave cave;
 	
 	public Room(int dim, IntTriple p, Cave c) {
 		dimension = dim;
 		cells = new Cell[dim,dim,dim];
 //		minerId = mId;
 		pos = p;
-		cave = c;
+//		cave = c;
 		exits = new Dictionary<IntTriple, Cell>();
 	}
 	

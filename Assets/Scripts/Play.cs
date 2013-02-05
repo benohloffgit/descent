@@ -14,6 +14,8 @@ public class Play : MonoBehaviour {
 	public GameObject mineTouchPrefab;
 	public GameObject mineBuilderPrefab;
 	public GameObject lightBulbPrefab;
+	public GameObject roomEntryPrefab;
+	public GameObject roomConnectorPrefab;
 	
 	public Cave cave;
 	public Movement movement;

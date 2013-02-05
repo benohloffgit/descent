@@ -44,26 +44,36 @@ public class Cave {
 				IntTriple alignment = room.pos-neighbour.pos; // how we are positioned towards neighbor
 //				Debug.Log ("room " + i + " has " + neighbours.Count + " neighbours, alignment is : " + alignment);
 				if (neighbour.exits.ContainsKey(alignment)) {
+					// this case no longer happens since each room has just 2 connections
 					startingCell = GetOppositeCell(neighbour.exits[alignment], alignment);
 //					Debug.Log ("01: " + startingCell);
 				} else {
 					startingCell = SetEntryExit(-1*alignment, 0, Game.DIMENSION_ROOM, 2);
 //					Debug.Log ("02: " + startingCell);
+					AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
 				}
-				roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count));
+				if (i>1) {
+					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
+				} else {
+					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+				}
 			}
 			if (i==0) { // entry room
 				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count));
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 				room.entryCell = startingCell;
 //				Debug.Log ("Entry Room: " + startingCell);
+				AddZoneEntry(new GridPosition(startingCell, room.pos), 0f);
 			} else if (i==1) { // exit room
 				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count));
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+				room.exitCell = startingCell;
+				AddZoneEntry(new GridPosition(startingCell, room.pos), 180.0f);
 //				Debug.Log ("Exit Room: " + startingCell);
 			}
 			
 			int digCount = 0;
+			int maxDig = Game.DIMENSION_ROOM*Game.DIMENSION_ROOM*Game.DIMENSION_ROOM;
 			bool isAtLeastOneMinerActive = true;
 			int j=0;
 			while (j<10000 && isAtLeastOneMinerActive) {
@@ -71,11 +81,17 @@ public class Cave {
 				isAtLeastOneMinerActive = false;
 				foreach (RoomMiner miner in roomMiners) {
 					if (miner.isActive) {
-						isAtLeastOneMinerActive = true;
 						digCount += miner.Mine();
+						isAtLeastOneMinerActive = true;
+						if (i > 1) {
+							if (digCount >= maxDig * 0.2f && miner.isConnectedToOtherMiner) {
+								isAtLeastOneMinerActive = false;
+							}
+						}
 					}
 				}
 			}
+			
 //			if (j==10000) Debug.Log ("room miner count " + roomMiners.Count);
 			Debug.Log ("Room " + i + " has cells: " + (digCount+roomMiners.Count) + " j=" + j);
 			CreateRoomMesh(room);
@@ -155,11 +171,11 @@ public class Cave {
 	}
 	
 	// return pos in marching cube grid
-	public static Vector3 GetCubePosition(Vector3 position) {
+/*	public static Vector3 GetCubePosition(Vector3 position) {
 		Vector3 cubePos = position / RoomMesh.MESH_SCALE;
 		// centered in cube
 		return new Vector3(Mathf.RoundToInt(cubePos.x), Mathf.RoundToInt(cubePos.y), Mathf.RoundToInt(cubePos.z));
-	}
+	}*/
 	
 	public int GetCellDensity(GridPosition gridPosition) {
 		return GetCurrentZone().GetCellDensity(gridPosition);
@@ -206,6 +222,26 @@ public class Cave {
 		return result;
 	}
 
+	private void AddRoomConnector(GridPosition gP, IntTriple alignment) {
+		GameObject rC = GameObject.Instantiate(play.roomConnectorPrefab) as GameObject;
+		rC.transform.localScale *= RoomMesh.MESH_SCALE;
+		rC.transform.position = GetPositionFromGrid(gP);
+		if (alignment.x != 0) {
+			rC.transform.Rotate(new Vector3(180.0f, 90.0f * alignment.x, 0));
+		}
+		if (alignment.y != 0) {
+			// TODO
+			//rC.transform.Rotate(new Vector3(180.0f, 90.0f * alignment.x, 0));
+		}
+	}
+
+	private void AddZoneEntry(GridPosition gP, float rotation) {
+		GameObject rC = GameObject.Instantiate(play.roomEntryPrefab) as GameObject;
+		rC.transform.localScale *= RoomMesh.MESH_SCALE;
+		rC.transform.position = GetPositionFromGrid(gP);
+		rC.transform.Rotate(new Vector3(rotation, 0f, 0f));
+	}
+	
 	public static GridPosition GetGridFromPosition(Vector3 position) {
 		Vector3 unscaled = position / RoomMesh.MESH_SCALE;
 		Vector3 roomVector = unscaled / Game.DIMENSION_ROOM;
@@ -215,8 +251,8 @@ public class Cave {
 		return new GridPosition(new IntTriple(Mathf.RoundToInt(cellPos.x), Mathf.RoundToInt(cellPos.y), Mathf.RoundToInt(cellPos.z)), roomPos);
 	}
 	
-	public static Vector3 GetPositionFromGrid(GridPosition rP) {
-		return (rP.roomPosition.GetVector3() * Game.DIMENSION_ROOM + rP.cellPosition.GetVector3()) * RoomMesh.MESH_SCALE;
+	public static Vector3 GetPositionFromGrid(GridPosition gP) {
+		return (gP.roomPosition.GetVector3() * Game.DIMENSION_ROOM + gP.cellPosition.GetVector3()) * RoomMesh.MESH_SCALE;
 	}
 	
 	public static int GetRandomNumberFromPool(int[] pool) {
@@ -236,4 +272,5 @@ public class Cave {
 		pool.RemoveAt(random);
 		return result;
 	}
+	
 }

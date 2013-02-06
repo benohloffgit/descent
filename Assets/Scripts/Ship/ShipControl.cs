@@ -8,6 +8,7 @@ public class ShipControl {
 	private Ship ship;
 	private Game game;
 	private RaycastHit hit;
+	private Play play;
 //	private Shot shotTemplate;
 	
 	private static Vector3 GUN_POSITION = new Vector3(0f, 0.5f, 0f);
@@ -20,9 +21,10 @@ public class ShipControl {
 	public ShipControl() {
 	}
 	
-	public void Initialize(Ship s, Game g, GameInput gI) {
+	public void Initialize(Ship s, Game g, Play p, GameInput gI) {
 		ship = s;
 		game = g;
+		play = p;
 		gameInput = gI;
 		
 //		InitializeWeapons();
@@ -64,7 +66,7 @@ public class ShipControl {
 				ship.SwitchHeadlight();
 			}
 			if (Input.GetKeyDown(KeyCode.M)) {
-				ship.SwitchMiniMap();
+				play.SwitchMiniMap();
 			}
 		}
 	}

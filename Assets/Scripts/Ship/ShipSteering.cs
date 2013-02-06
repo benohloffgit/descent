@@ -6,6 +6,7 @@ public class ShipSteering : MonoBehaviour {
 	
 	private GameInput gameInput;
 	private Ship ship;
+	private Play play;
 	
 	private Rigidbody myRigidbody;
 	private FlyingMode flyingMode;
@@ -49,9 +50,10 @@ public class ShipSteering : MonoBehaviour {
 		myRigidbody = GetComponent<Rigidbody>();
 	}
 	
-	public void Initialize(Ship s, GameInput gI) {
+	public void Initialize(Ship s, Play p, GameInput gI) {
 		ship = s;
 		gameInput = gI;
+		play = p;
 		
 		flyingBitwise = 0;
 		directionBitwise = 0;
@@ -247,14 +249,12 @@ public class ShipSteering : MonoBehaviour {
 		}
 	}
 
-	void Update () {
-//		Debug.DrawRay(collisionPoint, collisionNormal*5.0f, Color.white);
-//		if (!isCalibrated) Calibrate();
+/*	void Update () {
 		
 		if (!gameInput.isMobile) {
 
 		}
-	}
+	}*/
 	
 	void FixedUpdate () {
 		if (gameInput.isMobile) {
@@ -327,7 +327,7 @@ public class ShipSteering : MonoBehaviour {
 				ship.Yaw(Vector3.forward);
 			}
 			
-			if (usesMouse) {
+			if (!Input.GetKey(KeyCode.LeftAlt) && usesMouse) {
 				ship.Turn(Vector3.up * Input.GetAxis ("Mouse X"));
 				ship.Turn(Vector3.right * Input.GetAxis ("Mouse Y"));
 			}

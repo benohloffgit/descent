@@ -16,13 +16,16 @@ public class Play : MonoBehaviour {
 	public GameObject lightBulbPrefab;
 	public GameObject roomEntryPrefab;
 	public GameObject roomConnectorPrefab;
+	public GameObject miniMapPrefab;
 	
+	public Game game;
 	public Cave cave;
 	public Movement movement;
 	public Ship ship;
 	public bool isShipInvincible;
+	public bool isMiniMapOn;
+	private MiniMap miniMap;
 	
-	private Game game;
 //	private GameInput gI;
 	private State state;
 	private MyGUI gui;
@@ -34,14 +37,9 @@ public class Play : MonoBehaviour {
 	private int dialogContainer;
 	private GridPosition testPathStart;
 	private GridPosition testPathEnd;
-		
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
-	
-	void Awake() {
-		isShipInvincible = false;
-	}
-		
+			
 	void Update() {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
@@ -148,6 +146,10 @@ public class Play : MonoBehaviour {
 //		room = (GameObject.Instantiate(roomPrefab) as GameObject).GetComponent<Room>();
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
+		GameObject newMiniMap = GameObject.Instantiate(miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
+		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
+
 		UnityEngine.Random.seed = 123456789;
 		cave = new Cave(this);
 		PlaceShip();
@@ -159,6 +161,8 @@ public class Play : MonoBehaviour {
 	public void Initialize(Game g, GameInput input) {
 		game = g;
 		state = game.state;
+		isShipInvincible = false;
+		isMiniMapOn = false;
 	}
 		
 	private void CloseDialog() {
@@ -175,6 +179,7 @@ public class Play : MonoBehaviour {
 	
 	public void DispatchGameInput() {
 		ship.DispatchGameInput();
+		miniMap.DispatchGameInput();
 	}
 	
 	private void PlaceShip() {
@@ -220,5 +225,17 @@ public class Play : MonoBehaviour {
 		GridPosition gP = Cave.GetGridFromPosition(GetShipPosition());
 		return cave.GetCurrentZone().GetRoom(gP);
 	}
+	
+	public void SwitchMiniMap() {
+		if (isMiniMapOn) {
+			isMiniMapOn = false;
+			miniMap.SwitchOff();
+		} else {
+			isMiniMapOn = true;
+			miniMap.SwitchOn();
+		}
+	}
+	
+
 }
 

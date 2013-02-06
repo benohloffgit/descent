@@ -8,7 +8,6 @@ public class PrefabFactory {
 	private GameObject gunBulletTemplate;
 	private GameObject laserShotTemplate;
 	private GameObject breadcrumbTemplate;
-	private GameObject miniMapTemplate;
 	
 	public PrefabFactory(Game g) {
 		game = g;
@@ -20,8 +19,6 @@ public class PrefabFactory {
 		laserShotTemplate = GameObject.Instantiate(game.laserShotPrefab) as GameObject;
 		laserShotTemplate.GetComponent<Shot>().enabled = false;
 		breadcrumbTemplate = GameObject.Instantiate(game.breadcrumbPrefab) as GameObject;
-		miniMapTemplate = GameObject.Instantiate(game.miniMapPrefab) as GameObject;
-		miniMapTemplate.SetActiveRecursively(false);
 	}
 	
 	public GameObject CreateGunBullet(Vector3 pos, Quaternion rot) {
@@ -43,11 +40,6 @@ public class PrefabFactory {
 	public GameObject CreateBreadcrumb(Vector3 pos, Quaternion rot) {
 		GameObject newBreadcrumb = GameObject.Instantiate(breadcrumbTemplate, pos, rot) as GameObject;
 		return newBreadcrumb;
-	}
-
-	public GameObject CreateMiniMap(Vector3 pos, Quaternion rot) {
-		GameObject newMiniMap = GameObject.Instantiate(miniMapTemplate, pos, rot) as GameObject;
-		return newMiniMap;
 	}
 	
 }

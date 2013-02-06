@@ -7,7 +7,6 @@ public class Game : MonoBehaviour {
 	public GameObject gunBulletPrefab;
 	public GameObject laserShotPrefab;
 	public GameObject breadcrumbPrefab;
-	public GameObject miniMapPrefab;
 	
 	public State state;
 	public GameInput gameInput;

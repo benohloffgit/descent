@@ -7,11 +7,10 @@ public class MiniMap : MonoBehaviour {
 	private GameInput gameInput;
 	private Ship ship;
 	private Play play;
-	private Transform map;
-	
-	private Vector3 setoffMap; // each mesh's vertices are set off depending on the position of its room in the zone
-	private Vector3 setoffRoom;
-	
+	private Transform miniMapShip;
+	private Camera miniMapCamera;
+	private float mouseSensitivity;
+		
 	private Mode mode;
 	private int moveBitwise; // either roll in 1finger mode, or shift in 2finger mode
 	private int moveZoomIn = 1;
@@ -35,22 +34,32 @@ public class MiniMap : MonoBehaviour {
 	
 	private static float MINI_MAP_SCALE = 0.2f;
 	private static Vector3 MINI_MAP_POSITION = new Vector3(0f, 0f, 2.0f);
+	private static float ZOOM_MODIFIER = 1.0f;
+	private static float ZOOM_MAX = 5.0f;
+	private static float ZOOM_MIN = 0.5f;
 //	private static float TOUCH_THRESHOLD = Screen.dpi * 0.2f;
 //	private static float TOUCH_SENSITIVITY = Screen.dpi * 0.5f;
 //	private static float TOUCH_TIME_THRESHOLD = 0.3f;
 
 	public enum Mode { Off=0, On=1 }
+	
+	void Awake() {
+		miniMapShip = transform.Find("Ship");
+		transform.localScale *= MINI_MAP_SCALE;
+	}
 		
-	public void Initialize(Ship s, Play p, GameInput gI) {
+	public void Initialize(Ship s, Play p, GameInput gI, Camera c) {
 		ship = s;
 		gameInput = gI;
 		play = p;
+		miniMapCamera = c;
 		
 		moveBitwise = 0;
 		primaryTouchFinger = 0;
 		secondaryTouchFinger = 1;
 		usesMouse = true;
-		mode = Mode.Off;
+		mouseSensitivity = play.game.state.GetPreferenceMiniMapMouseSensitivity();
+		SwitchOff();
 	}
 	
 	void FixedUpdate() {
@@ -60,35 +69,50 @@ public class MiniMap : MonoBehaviour {
 	}
 	
 	public void SwitchOn() {
-		Debug.Log ("Switching mini map on");
-		Room r = play.GetRoomOfShip();
-		GameObject mO = ship.game.CreateFromPrefab().CreateMiniMap(Vector3.zero, Quaternion.identity);
-		map = mO.transform;
-		map.localScale *= MINI_MAP_SCALE;
 		UpdatePosition();
+		Room r = play.GetRoomOfShip();
 		Mesh m = new Mesh();
 		m.vertices = r.roomMesh.mesh.vertices;
 		m.triangles = r.roomMesh.mesh.triangles;
 		m.uv = r.roomMesh.mesh.uv;
-		map.GetComponent<MeshFilter>().mesh = m;
+		GetComponent<MeshFilter>().mesh = m;
 		mode = Mode.On;
+		miniMapCamera.enabled = true;
 	}
 	
 	public void SwitchOff() {
-		Debug.Log ("Switching mini map off");
 		mode = Mode.Off;
+		miniMapCamera.enabled = false;
 	}
 	
 	private void UpdatePosition() {
-		Room r = play.GetRoomOfShip();
-		Vector3 setoff = r.pos.GetVector3() * Game.DIMENSION_ROOM;
-		Vector3 setoffShipUnscaled = (ship.transform.position - (r.roomMesh.transform.position - setoff) ) / RoomMesh.MESH_SCALE;
-		Debug.Log ("setoffShipUnscaled:"+setoffShipUnscaled);
-//		map.localPosition = Vector3.zero - setoffShipUnscaled * MINI_MAP_SCALE;
+		miniMapShip.position = (play.GetShipPosition() / RoomMesh.MESH_SCALE) * MINI_MAP_SCALE;
+	}
+	
+	private void Rotate() {
+		miniMapCamera.transform.RotateAround(miniMapShip.position, miniMapCamera.transform.TransformDirection(Vector3.up), -Input.GetAxis ("Mouse X") * mouseSensitivity * Time.deltaTime);
+		miniMapCamera.transform.RotateAround(miniMapShip.position,miniMapCamera.transform.TransformDirection(Vector3.right), -Input.GetAxis ("Mouse Y") * mouseSensitivity * Time.deltaTime);
+	}
+	
+	private void Zoom() {
+		float zoom = Input.GetAxis("Mouse ScrollWheel");
+		if (zoom != 0) {
+			Vector3 toShip = miniMapShip.position - miniMapCamera.transform.position;
+			float move = Mathf.Clamp(toShip.magnitude + zoom * ZOOM_MODIFIER, ZOOM_MIN, ZOOM_MAX);
+			miniMapCamera.transform.position = miniMapShip.position;
+			miniMapCamera.transform.Translate(-Vector3.forward * move);
+		}
 	}
 	
 	public void DispatchGameInput() {
-		if (gameInput.isMobile) {
+		if (mode == Mode.On) {
+			if (gameInput.isMobile) {
+			} else {
+				if (Input.GetKey(KeyCode.LeftAlt)) {
+					Rotate();
+					Zoom();
+				}				
+			}
 		}
 	}
 	

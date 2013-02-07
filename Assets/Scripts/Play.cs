@@ -24,6 +24,7 @@ public class Play : MonoBehaviour {
 	public Ship ship;
 	public bool isShipInvincible;
 	public bool isMiniMapOn;
+	public bool isMiniMapFollowOn;
 	private MiniMap miniMap;
 	
 //	private GameInput gI;
@@ -150,7 +151,7 @@ public class Play : MonoBehaviour {
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 
-		UnityEngine.Random.seed = 123456789;
+		//UnityEngine.Random.seed = 123456789;
 		cave = new Cave(this);
 		PlaceShip();
 		movement = new Movement(this);
@@ -163,6 +164,7 @@ public class Play : MonoBehaviour {
 		state = game.state;
 		isShipInvincible = false;
 		isMiniMapOn = false;
+		isMiniMapFollowOn = false;
 	}
 		
 	private void CloseDialog() {
@@ -236,6 +238,15 @@ public class Play : MonoBehaviour {
 		}
 	}
 	
+	public void SwitchMiniMapFollow() {
+		if (isMiniMapFollowOn) {
+			isMiniMapFollowOn = false;
+			miniMap.SwitchFollowOff();
+		} else {
+			isMiniMapFollowOn = true;
+			miniMap.SwitchFollowOn();
+		}
+	}
 
 }
 

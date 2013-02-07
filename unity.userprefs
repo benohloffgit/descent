@@ -1,19 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\MiniMap.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PG Cave\Cave.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="26" Column="8" />
-      <File FileName="Assets\Scripts\PG Cave\RoomMiner.cs" Line="94" Column="58" />
+      <File FileName="Assets\Scripts\Play.cs" Line="154" Column="5" />
+      <File FileName="Assets\Scripts\PG Cave\RoomMiner.cs" Line="78" Column="75" />
       <File FileName="Assets\Scripts\Game.cs" Line="10" Column="1" />
-      <File FileName="Assets\Scripts\Ship\ShipSteering.cs" Line="330" Column="8" />
       <File FileName="Assets\Scripts\PrefabFactory.cs" Line="44" Column="1" />
       <File FileName="Assets\Scripts\Ship\Ship.cs" Line="43" Column="39" />
-      <File FileName="Assets\Scripts\Ship\MiniMap.cs" Line="90" Column="1" />
-      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="68" Column="1" />
+      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="54" Column="41" />
       <File FileName="Assets\Scripts\PG Cave\RoomMesh.cs" Line="114" Column="1" />
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="87" Column="36" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="238" Column="58" />
       <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="25" Column="14" />
       <File FileName="Assets\Scripts\State.cs" Line="41" Column="103" />
+      <File FileName="Assets\Scripts\PG Cave\WeightedProbability.cs" Line="14" Column="2" />
+      <File FileName="Assets\Scripts\PG Cave\IntTriple.cs" Line="72" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

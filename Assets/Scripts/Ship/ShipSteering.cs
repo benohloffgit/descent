@@ -185,11 +185,11 @@ public class ShipSteering : MonoBehaviour {
 				flyingBitwise |= flyingShiftRight;
 				flyingBitwise &= ~flyingShiftLeft;
 			}
-			if (Input.GetKey(KeyCode.R)) {
+			if (Input.GetKey(KeyCode.Y)) {
 				flyingBitwise |= flyingShiftUp;
 				flyingBitwise &= ~flyingShiftDown;
 			}
-			if (Input.GetKey(KeyCode.F)) {
+			if (Input.GetKey(KeyCode.C)) {
 				flyingBitwise |= flyingShiftDown;
 				flyingBitwise &= ~flyingShiftUp;
 			}

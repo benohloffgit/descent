@@ -68,6 +68,9 @@ public class ShipControl {
 			if (Input.GetKeyDown(KeyCode.M)) {
 				play.SwitchMiniMap();
 			}
+			if (Input.GetKeyDown(KeyCode.F)) {
+				play.SwitchMiniMapFollow();
+			}
 		}
 	}
 }

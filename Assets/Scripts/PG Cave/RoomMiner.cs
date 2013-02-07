@@ -14,7 +14,9 @@ public class RoomMiner {
 	private int mineCount;
 	private Type type;
 	
-	public enum Type { QuitOnConnection=0, QuitOn40Percent=1 }
+	private List<IntTriple> weightedCells;
+	
+	public enum Type { QuitOnConnection=0, QuitOn40Percent=1, WeightBased=2 }
 
 	private static int MINE_COUNT_MAX_WHEN_QUIT_ON_CONNECTION = 250;
 	
@@ -26,6 +28,15 @@ public class RoomMiner {
 		type = t;
 		room.AddExitCell(pos, alignment, id);
 		mineCount = 1;
+		
+		if (type == Type.WeightBased) {
+			weightedCells = new List<IntTriple>();
+			weightedCells.Add(new IntTriple(4,4,4));
+			weightedCells.Add(new IntTriple(12,12,4));
+			weightedCells.Add(new IntTriple(4,12,12));
+			weightedCells.Add(new IntTriple(4,4,12));
+		}
+			
 //		Debug.Log ("miner created with id " + id);
 	}
 	
@@ -44,10 +55,45 @@ public class RoomMiner {
 				room.AddCell(pos, id);
 				digged++;
 			}
+		} else if (type == Type.WeightBased) {
+			pos = GetWeightedNeighbour();
+			if (room.GetCellDensity(pos) == Cave.DENSITY_FILLED) {
+				room.AddCell(pos, id);
+				digged++;
+			}
 		}
 		return digged;
 	}
 	
+	private IntTriple GetWeightedNeighbour() {
+		List<WeightedProbability> possibilities = new List<WeightedProbability>();
+		IntTriple center = new IntTriple(8,8,8);
+		int lastProbabilityIndex = 0;
+		foreach (IntTriple step in Cave.ROOM_DIRECTIONS) {
+			IntTriple newPos = pos + step;
+			if (		newPos.x > 0 && newPos.x < room.dimension-1 
+					&& 	newPos.y > 0 && newPos.y < room.dimension-1 
+					&& 	newPos.z > 0 && newPos.z < room.dimension-1 ) {
+				float distanceToCenter = (center - newPos).Magnitude();
+				int newProbabilityIndex = 100 - Mathf.RoundToInt(distanceToCenter * 10.0f);
+				possibilities.Add(new WeightedProbability(newPos, lastProbabilityIndex, lastProbabilityIndex + newProbabilityIndex - 1));
+				lastProbabilityIndex += newProbabilityIndex;
+				if (room.GetCellDensity(newPos) == Cave.DENSITY_EMPTY && room.IsCellNotEmptiedByMiner(newPos, id)) {
+					// we have a connection
+					isConnectedToOtherMiner = true;
+				}				
+			}
+		}
+		int random = UnityEngine.Random.Range(0, lastProbabilityIndex);
+		int seek = 0;
+		for (int i=0; i<possibilities.Count; i++) {
+			if (possibilities[i].maxProbability > random && possibilities[i].minProbability <= random) {
+				seek = i;
+				i = possibilities.Count;
+			}
+		}
+		return possibilities[seek].baseValue;
+	}
 
 	private IntTriple GetRandomNeighbour() {
 		List<IntTriple> possibilities = new List<IntTriple>();

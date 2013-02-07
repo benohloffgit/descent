@@ -53,7 +53,11 @@ public class Cave {
 					AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
 				}
 				if (i>1) {
-					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
+					if (i==2) {
+						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.WeightBased));
+					} else {
+						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
+					}
 				} else {
 					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 				}
@@ -231,7 +235,7 @@ public class Cave {
 		}
 		if (alignment.y != 0) {
 			// TODO
-			//rC.transform.Rotate(new Vector3(180.0f, 90.0f * alignment.x, 0));
+			rC.transform.Rotate(new Vector3(90.0f * alignment.y, 0, 0));
 		}
 	}
 

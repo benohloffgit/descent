@@ -10,8 +10,11 @@ public class MiniMap : MonoBehaviour {
 	private Transform miniMapShip;
 	private Camera miniMapCamera;
 	private float mouseSensitivity;
+	private bool isCameraRotatingToFollow;
+	private float cameraFollowDistance;
 		
 	private Mode mode;
+	private Follow follow;
 	private int moveBitwise; // either roll in 1finger mode, or shift in 2finger mode
 	private int moveZoomIn = 1;
 	private int moveZoomOut = 2;
@@ -37,11 +40,13 @@ public class MiniMap : MonoBehaviour {
 	private static float ZOOM_MODIFIER = 1.0f;
 	private static float ZOOM_MAX = 5.0f;
 	private static float ZOOM_MIN = 0.5f;
+	private static float CAMERA_FOLLOW_ROTATION_SPEED = 10.0f;
 //	private static float TOUCH_THRESHOLD = Screen.dpi * 0.2f;
 //	private static float TOUCH_SENSITIVITY = Screen.dpi * 0.5f;
 //	private static float TOUCH_TIME_THRESHOLD = 0.3f;
 
 	public enum Mode { Off=0, On=1 }
+	public enum Follow { Off=0, On=1 }
 	
 	void Awake() {
 		miniMapShip = transform.Find("Ship");
@@ -58,6 +63,8 @@ public class MiniMap : MonoBehaviour {
 		primaryTouchFinger = 0;
 		secondaryTouchFinger = 1;
 		usesMouse = true;
+		isCameraRotatingToFollow = false;
+		follow = Follow.Off;
 		mouseSensitivity = play.game.state.GetPreferenceMiniMapMouseSensitivity();
 		SwitchOff();
 	}
@@ -65,6 +72,7 @@ public class MiniMap : MonoBehaviour {
 	void FixedUpdate() {
 		if (mode == Mode.On) {
 			UpdatePosition();
+			UpdateRotation();
 		}
 	}
 	
@@ -85,8 +93,38 @@ public class MiniMap : MonoBehaviour {
 		miniMapCamera.enabled = false;
 	}
 	
+	public void SwitchFollowOn() {
+		follow = Follow.On;
+		isCameraRotatingToFollow = true;
+		cameraFollowDistance = (miniMapShip.position - miniMapCamera.transform.position).magnitude;
+	}
+	
+	public void SwitchFollowOff() {
+		follow = Follow.Off;
+		isCameraRotatingToFollow = false;
+	}
+	
 	private void UpdatePosition() {
 		miniMapShip.position = (play.GetShipPosition() / RoomMesh.MESH_SCALE) * MINI_MAP_SCALE;
+	}
+	
+	private void UpdateRotation() {
+		Vector3 camPos = miniMapCamera.transform.position;
+		Quaternion camRot = miniMapCamera.transform.rotation;
+		miniMapShip.rotation = ship.transform.rotation;
+		if (follow == Follow.Off) {
+			// preserve camera angle
+			miniMapCamera.transform.position = camPos;
+			miniMapCamera.transform.rotation = camRot;
+		} else if (isCameraRotatingToFollow) {
+			Vector3 rotateTo = miniMapShip.position - (miniMapShip.forward * cameraFollowDistance);
+//			Debug.Log (rotateTo + " " + (miniMapShip.forward * toShip.magnitude).magnitude);
+			miniMapCamera.transform.position = Vector3.Lerp(miniMapCamera.transform.position, rotateTo, CAMERA_FOLLOW_ROTATION_SPEED * Time.deltaTime);
+			if (miniMapCamera.transform.position == rotateTo) {
+				isCameraRotatingToFollow = false;
+			}
+			miniMapCamera.transform.LookAt(miniMapShip.position, miniMapShip.up);
+		}
 	}
 	
 	private void Rotate() {
@@ -108,9 +146,12 @@ public class MiniMap : MonoBehaviour {
 		if (mode == Mode.On) {
 			if (gameInput.isMobile) {
 			} else {
+				Zoom();
 				if (Input.GetKey(KeyCode.LeftAlt)) {
 					Rotate();
-					Zoom();
+					if (follow == Follow.On) {
+						play.SwitchMiniMapFollow();
+					}
 				}				
 			}
 		}

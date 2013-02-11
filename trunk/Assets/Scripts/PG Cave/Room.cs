@@ -11,6 +11,8 @@ public class Room {
 	public Dictionary<IntTriple, Cell> exits; // alignment, cell
 	public RoomMesh roomMesh;
 	
+	private static float ISOVALUE_PER_NEIGHBOUR = 0.037f; // 1/27 neighbours 
+	
 //	private Cave cave;
 	
 	public Room(int dim, IntTriple p, Cave c) {
@@ -29,6 +31,7 @@ public class Room {
 	public void AddExitCell(IntTriple pos, IntTriple alignment, int minerId) {
 		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId);
 		exits.Add (alignment, cells[pos.x, pos.y, pos.z]);
+		//exitCell = pos;
 	}
 
 	public bool IsCellNotEmptiedByMiner(IntTriple pos, int minerId) {
@@ -53,6 +56,31 @@ public class Room {
 		} else {
 			return Cave.DENSITY_EMPTY;
 		}
+	}
+
+	public float GetNewCellDensity(int x, int y, int z) {
+		float result = 0f;
+		if (x == entryCell.x && y == entryCell.y && z == entryCell.z) return 2.0f;
+		if (x == exitCell.x && y == exitCell.y && z == exitCell.z) return 2.0f;
+		if (x == 0 || x == dimension-1 || y == 0 || y == dimension-1 || z == 0 || z == dimension -1) return result;
+		for (int nX=x-1; nX<=x+1; nX++) {
+			if (nX >= 0 && nX<dimension) {
+				for (int nY=y-1; nY<=y+1; nY++) {
+					if (nY >= 0 && nY<dimension) {
+						for (int nZ=z-1; nZ<=z+1; nZ++) {
+							if (nZ >= 0 && nZ<dimension) {
+								if (GetCellDensity(nX, nY, nZ) == Cave.DENSITY_EMPTY) {
+									result += ISOVALUE_PER_NEIGHBOUR;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if (result == 0.999) result = 1.0f;
+//		Debug.Log (result);
+		return result;
 	}
 	
 }

@@ -40,17 +40,14 @@ public class Cave {
 			List<Room> neighbours = zone.GetEmptyNeighboursOfRoom(room.pos);
 			IntTriple startingCell;
 //			Debug.Log ("Digging Room " + i + " on pos " +  room.pos);
+			int neighbourCount = 0;
 			foreach (Room neighbour in neighbours) {
 				IntTriple alignment = room.pos-neighbour.pos; // how we are positioned towards neighbor
 //				Debug.Log ("room " + i + " has " + neighbours.Count + " neighbours, alignment is : " + alignment);
 				if (neighbour.exits.ContainsKey(alignment)) {
-					// this case no longer happens since each room has just 2 connections
 					startingCell = GetOppositeCell(neighbour.exits[alignment], alignment);
-//					Debug.Log ("01: " + startingCell);
 				} else {
 					startingCell = SetEntryExit(-1*alignment, 0, Game.DIMENSION_ROOM, 2);
-//					Debug.Log ("02: " + startingCell);
-					AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
 				}
 				if (i>1) {
 					if (i==2) {
@@ -58,9 +55,22 @@ public class Cave {
 					} else {
 						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
 					}
+					if (neighbourCount == 0) {
+						room.entryCell = startingCell;
+					} else {
+						AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
+						room.exitCell = startingCell;
+					}
 				} else {
 					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+					if (i==0) { // entry room
+						AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
+						room.exitCell = startingCell;
+					} else { // exit room
+						room.entryCell = startingCell;
+					}
 				}
+				neighbourCount++;
 			}
 			if (i==0) { // entry room
 				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);

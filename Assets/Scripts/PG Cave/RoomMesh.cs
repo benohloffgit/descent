@@ -1,4 +1,5 @@
 // http://paulbourke.net/geometry/polygonise/
+//http://books.google.es/books?id=WNfD2u8nIlIC&lpg=PR1&dq=game+engine+gems&pg=PA39&redir_esc=y#v=onepage&q&f=false
 // http://users.polytech.unice.fr/~lingrand/MarchingCubes/applet.html
 // http://0fps.wordpress.com/2012/07/12/smooth-voxel-terrain-part-2/
 //http://stackoverflow.com/questions/8705201/troubles-with-marching-cubes-and-texture-coordinates
@@ -25,7 +26,8 @@ public class RoomMesh : MonoBehaviour {
 	public static float MESH_SCALE = 5.0f;
 	
 	private Room room;
-	private int[,] gridCellDensity; 
+//	private int[,] gridCellDensity; 
+	private float[,] gridCellDensity; 
 	private Vector3[,] gridCellCoords;
 	
 	private	Vector3[] roomVertices;
@@ -34,6 +36,7 @@ public class RoomMesh : MonoBehaviour {
 	private int roomTrianglesCount;
 	private	Vector3[,,,] gridVertices;
 	private	int[,,,] gridTriangles;
+	private	float isovalue = 0.1f;
 	
 	private int duplicateVertices = 0;
 					
@@ -54,7 +57,8 @@ public class RoomMesh : MonoBehaviour {
 		
 //		Debug.Log("grid cells " + gridCells);
 		
-		gridCellDensity = new int[gridCells, 8];
+		gridCellDensity = new float[gridCells, 8];
+//		gridCellDensity = new int[gridCells, 8];
 		gridCellCoords = new Vector3[gridCells, 8];
 		
 		cubeCoords = new Vector3[Game.DIMENSION_ROOM,Game.DIMENSION_ROOM,Game.DIMENSION_ROOM];
@@ -73,21 +77,21 @@ public class RoomMesh : MonoBehaviour {
 		for (int x=0; x< Game.DIMENSION_ROOM-1; x++) {
 			for (int y=0; y< Game.DIMENSION_ROOM-1; y++) {
 				for (int z=0; z< Game.DIMENSION_ROOM-1; z++) {
-					gridCellDensity[gridCellIndex,0] = room.GetCellDensity(x,y,z+1);
+					gridCellDensity[gridCellIndex,0] = room.GetNewCellDensity(x,y,z+1);
 					gridCellCoords[gridCellIndex,0] = cubeCoords[x,y,z+1];
-					gridCellDensity[gridCellIndex,1] = room.GetCellDensity(x+1,y,z+1);
+					gridCellDensity[gridCellIndex,1] = room.GetNewCellDensity(x+1,y,z+1);
 					gridCellCoords[gridCellIndex,1] = cubeCoords[x+1,y,z+1];
-					gridCellDensity[gridCellIndex,2] = room.GetCellDensity(x+1,y,z);
+					gridCellDensity[gridCellIndex,2] = room.GetNewCellDensity(x+1,y,z);
 					gridCellCoords[gridCellIndex,2] = cubeCoords[x+1,y,z];
-					gridCellDensity[gridCellIndex,3] = room.GetCellDensity(x,y,z);
+					gridCellDensity[gridCellIndex,3] = room.GetNewCellDensity(x,y,z);
 					gridCellCoords[gridCellIndex,3] = cubeCoords[x,y,z];
-					gridCellDensity[gridCellIndex,4] = room.GetCellDensity(x,y+1,z+1);
+					gridCellDensity[gridCellIndex,4] = room.GetNewCellDensity(x,y+1,z+1);
 					gridCellCoords[gridCellIndex,4] = cubeCoords[x,y+1,z+1];
-					gridCellDensity[gridCellIndex,5] = room.GetCellDensity(x+1,y+1,z+1);
+					gridCellDensity[gridCellIndex,5] = room.GetNewCellDensity(x+1,y+1,z+1);
 					gridCellCoords[gridCellIndex,5] = cubeCoords[x+1,y+1,z+1];
-					gridCellDensity[gridCellIndex,6] = room.GetCellDensity(x+1,y+1,z);
+					gridCellDensity[gridCellIndex,6] = room.GetNewCellDensity(x+1,y+1,z);
 					gridCellCoords[gridCellIndex,6] = cubeCoords[x+1,y+1,z];
-					gridCellDensity[gridCellIndex,7] = room.GetCellDensity(x,y+1,z);
+					gridCellDensity[gridCellIndex,7] = room.GetNewCellDensity(x,y+1,z);
 					gridCellCoords[gridCellIndex,7] = cubeCoords[x,y+1,z];
 					MarchCubes(gridCellIndex, x,y,z);
 					gridCellIndex++;
@@ -104,7 +108,7 @@ public class RoomMesh : MonoBehaviour {
 		}
 		for (int j=0; j<roomVerticesCount; j++) {
 			newVertices[j] = roomVertices[j];
-			newUVs[j] = new Vector2(roomVertices[j].x, roomVertices[j].y) / 16.0f;
+			newUVs[j] = new Vector2(roomVertices[j].x, roomVertices[j].y) / RoomMesh.MESH_SCALE;
 		}
 //		Debug.Log("vertices count " + roomVerticesCount + " triangle count " + roomTrianglesCount);
 //		Debug.Log("duplicate vertices " + duplicateVertices);
@@ -140,20 +144,30 @@ public class RoomMesh : MonoBehaviour {
 		
 //		if (gridCell == 1726) return;
 	   
-		if (gridCellDensity[gridCell,0] == 1) cubeindex |= 1;
+		if (gridCellDensity[gridCell,0] > isovalue) cubeindex |= 1;
+		if (gridCellDensity[gridCell,1] > isovalue) cubeindex |= 2;
+		if (gridCellDensity[gridCell,2] > isovalue) cubeindex |= 4;
+		if (gridCellDensity[gridCell,3] > isovalue) cubeindex |= 8;
+		if (gridCellDensity[gridCell,4] > isovalue) cubeindex |= 16;
+		if (gridCellDensity[gridCell,5] > isovalue) cubeindex |= 32;
+		if (gridCellDensity[gridCell,6] > isovalue) cubeindex |= 64;
+		if (gridCellDensity[gridCell,7] > isovalue) cubeindex |= 128;
+
+/*		if (gridCellDensity[gridCell,0] == 1) cubeindex |= 1;
 		if (gridCellDensity[gridCell,1] == 1) cubeindex |= 2;
 		if (gridCellDensity[gridCell,2] == 1) cubeindex |= 4;
 		if (gridCellDensity[gridCell,3] == 1) cubeindex |= 8;
 		if (gridCellDensity[gridCell,4] == 1) cubeindex |= 16;
 		if (gridCellDensity[gridCell,5] == 1) cubeindex |= 32;
 		if (gridCellDensity[gridCell,6] == 1) cubeindex |= 64;
-		if (gridCellDensity[gridCell,7] == 1) cubeindex |= 128;
-	
+		if (gridCellDensity[gridCell,7] == 1) cubeindex |= 128;*/
+		
 //		Debug.Log("cube index " + cubeindex + " for gridCell " + gridCell);
 	
 	   	/* Cube is entirely in/out of the surface */
 		if (EDGE_TABLE[cubeindex] == 0) {
-			//Debug.Log("cube entirely in our out of surface");
+//				Debug.Log("cube entirely in our out of surface ");
+//				Debug.Log (gridCellDensity[gridCell,0]);
 			return;
 		}
 				
@@ -212,7 +226,7 @@ public class RoomMesh : MonoBehaviour {
 	   /* Create the triangles */   
 		for (int i=0; TRIANGLE_TABLE[cubeindex][i] != -1; i+=3) {
 			for (int j=0; j<3; j++) {
-				if (cubeindex == 23) Debug.Log ("triangle table values: " +TRIANGLE_TABLE[cubeindex][i+j]);
+//				if (cubeindex == 23) Debug.Log ("triangle table values: " +TRIANGLE_TABLE[cubeindex][i+j]);
 				Vector3 vertex = vertlist[TRIANGLE_TABLE[cubeindex][i+j]];
 				gridVertices[x,y,z,i+j] = vertex;
 				int uniqueVertexIndex = FetchUniqueVertexIndex(x,y,z,vertex);
@@ -227,11 +241,11 @@ public class RoomMesh : MonoBehaviour {
 					gridTriangles[x,y,z,i+j] = uniqueVertexIndex;
 					roomTriangles[roomTrianglesCount+j] = uniqueVertexIndex;
 				}
-				if (roomTrianglesCount == 3222) { // DONE 2697, 3387 -- OPEN 2703, 3375, 2691, 1830
+/*				if (roomTrianglesCount == 3222) { // DONE 2697, 3387 -- OPEN 2703, 3375, 2691, 1830
 					Debug.Log ("building triangle 3219: " + vertex + " cubeindex " + cubeindex + " gridCell " + gridCell);
 					Debug.Log ("x,y,z: " + x+","+y+","+z);
 					Debug.Log ("EdgeTable value : " + EDGE_TABLE[cubeindex]);
-				}
+				}*/
 			}
 			roomTrianglesCount+=3;
 		}   
@@ -246,22 +260,37 @@ public class RoomMesh : MonoBehaviour {
 		return -1;
 	}
 	
-	private Vector3 InterpolateVertex(Vector3 point1, Vector3 point2, int density1, int density2) {
+/*	private Vector3 InterpolateVertex(Vector3 point1, Vector3 point2, int density1, int density2) {
 	//	Debug.Log("point lerp " + density1 + " " + density2);
 		return Vector3.Lerp(point1, point2, 0.5f);
-	}
+	}*/
 	
-/*	private Vector3 InterpolateVertex(Vector3 point1, Vector3 point2, int density1, int density2) {
-		if (density2-density1 == 1) {
-//			return point1;
-			return Vector3.Lerp(point1, point2, 0.45f);
-		} else if (density2-density1 == -1) {
-//			return point2;
-			return Vector3.Lerp(point1, point2, 0.55f);
-		} else {
+	private Vector3 InterpolateVertex(Vector3 point1, Vector3 point2, float density1, float density2) {
+		if (density1 == 2.0f || density2 == 2.0f) { // entry or exit cell
 			return Vector3.Lerp(point1, point2, 0.5f);
 		}
-	}*/
+		float mu;
+   		Vector3 p = new Vector3();
+
+	   if (Mathf.Abs(isovalue-density1) < 0.00001f)
+	      return point1 ;
+	   if (Mathf.Abs(isovalue-density2) < 0.00001f)
+	      return point2;
+	   if (Mathf.Abs(density1-density2) < 0.00001f)
+	      return point1;
+	   mu = (isovalue - density1) / (density2 - density1);
+	   p.x = point1.x + mu * (point2.x - point1.x);
+	   p.y = point1.y + mu * (point2.y - point1.y);
+	   p.z = point1.z + mu * (point2.z - point1.z);
+	
+	   return p;
+		/*
+		if (density2-density1 == 0f) {
+			return Vector3.Lerp(point1, point2, 0.5f);
+		} else {
+			return Vector3.Lerp(point1, point2, 0.5f);
+		}*/
+	}
 
 	private static int[] EDGE_TABLE = new int[] {
 	    0x0,   0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,

@@ -151,7 +151,7 @@ public class Play : MonoBehaviour {
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 
-		//UnityEngine.Random.seed = 123456789;
+		UnityEngine.Random.seed = 123456789;
 		cave = new Cave(this);
 		PlaceShip();
 		movement = new Movement(this);

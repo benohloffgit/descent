@@ -40,7 +40,6 @@ public class Cave {
 			List<Room> neighbours = zone.GetEmptyNeighboursOfRoom(room.pos);
 			IntTriple startingCell;
 //			Debug.Log ("Digging Room " + i + " on pos " +  room.pos);
-			int neighbourCount = 0;
 			foreach (Room neighbour in neighbours) {
 				IntTriple alignment = room.pos-neighbour.pos; // how we are positioned towards neighbor
 //				Debug.Log ("room " + i + " has " + neighbours.Count + " neighbours, alignment is : " + alignment);
@@ -55,22 +54,21 @@ public class Cave {
 					} else {
 						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
 					}
-					if (neighbourCount == 0) {
+					if (neighbour.id < i && neighbour.id != 1) {
 						room.entryCell = startingCell;
 					} else {
-						AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
 						room.exitCell = startingCell;
-					}
+						AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
+					}					
 				} else {
 					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 					if (i==0) { // entry room
-						AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
 						room.exitCell = startingCell;
+						AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
 					} else { // exit room
 						room.entryCell = startingCell;
 					}
 				}
-				neighbourCount++;
 			}
 			if (i==0) { // entry room
 				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);
@@ -108,6 +106,7 @@ public class Cave {
 			
 //			if (j==10000) Debug.Log ("room miner count " + roomMiners.Count);
 			Debug.Log ("Room " + i + " has cells: " + (digCount+roomMiners.Count) + " j=" + j);
+//			if (i==2) room.TestRoomForSingleCells();
 			CreateRoomMesh(room);
 		}
 	}

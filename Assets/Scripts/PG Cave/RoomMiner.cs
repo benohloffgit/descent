@@ -14,7 +14,7 @@ public class RoomMiner {
 	private int mineCount;
 	private Type type;
 	
-	private List<IntTriple> weightedCells;
+//	private List<IntTriple> weightedCells;
 	
 	public enum Type { QuitOnConnection=0, QuitOn40Percent=1, WeightBased=2 }
 
@@ -29,13 +29,13 @@ public class RoomMiner {
 		room.AddExitCell(pos, alignment, id);
 		mineCount = 1;
 		
-		if (type == Type.WeightBased) {
+/*		if (type == Type.WeightBased) {
 			weightedCells = new List<IntTriple>();
 			weightedCells.Add(new IntTriple(4,4,4));
 			weightedCells.Add(new IntTriple(12,12,4));
 			weightedCells.Add(new IntTriple(4,12,12));
 			weightedCells.Add(new IntTriple(4,4,12));
-		}
+		}*/
 			
 //		Debug.Log ("miner created with id " + id);
 	}

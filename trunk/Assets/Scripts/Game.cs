@@ -15,7 +15,7 @@ public class Game : MonoBehaviour {
 	public enum Shot { Bullet=0, Laser=1 }
 
 	public static int MAX_WIDTH = 1536;
-	
+		
 	public static int LAYER_CAVE = 8;
 	public static int LAYER_SHIP = 9;
 	public static int LAYER_GUI = 10;
@@ -24,9 +24,15 @@ public class Game : MonoBehaviour {
 
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ROOM = 16; // CxC cells
+	// max diagonal line of our room cube, roughly 27 units times mesh scale
+	public static float MAX_VISIBILITY_DISTANCE = RoomMesh.MESH_SCALE * Mathf.Sqrt( Mathf.Pow(Mathf.Sqrt(Mathf.Pow(DIMENSION_ROOM,2)*2),2) + Mathf.Pow(DIMENSION_ROOM,2));
+
+	public static float GUN_BULLET_SPEED = 200.0f;
 	
 	public static int LAYER_MASK_ALL = ( (1 << LAYER_SHIP) | (1 << LAYER_ENEMIES) | (1 << LAYER_CAVE) );
+	public static int LAYER_MASK_SHIP_CAVE = ( (1 << LAYER_SHIP) | (1 << LAYER_CAVE) );
 	public static int LAYER_MASK_SHIP = 1 << LAYER_SHIP;
+	public static int LAYER_MASK_MOVEABLES = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) );
 	
 	public static Vector4 GUI_UV_TITLE = new Vector4(0f,0.5f,0.5f,1.0f);
 	
@@ -43,6 +49,7 @@ public class Game : MonoBehaviour {
 		Application.runInBackground = true;
 		volume = AudioListener.volume;
 		showTrialDialog = false;
+		Debug.Log ("MAX_VISIBILITY_DISTANCE " + MAX_VISIBILITY_DISTANCE);
 	}
 	
 	public void Initialize(Mode m) {

@@ -11,6 +11,7 @@ public class LightBulb : MonoBehaviour {
 
 	private static float FORCE_MOVE = 5.0f;
 	private static int LOOK_AT_DISTANCE = 4; // measured in cubes
+	private static float LOOK_AT_ANGLE_TOLERANCE = 30.0f;
 	
 	void Awake() {
 		myRigidbody = GetComponent<Rigidbody>();
@@ -27,7 +28,6 @@ public class LightBulb : MonoBehaviour {
 		
 	void FixedUpdate() {
 		play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
-		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE);
-		
+		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE);
 	}		
 }

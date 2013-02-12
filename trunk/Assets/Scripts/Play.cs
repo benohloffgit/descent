@@ -14,6 +14,7 @@ public class Play : MonoBehaviour {
 	public GameObject mineTouchPrefab;
 	public GameObject mineBuilderPrefab;
 	public GameObject lightBulbPrefab;
+	public GameObject pyramidPrefab;
 	public GameObject roomEntryPrefab;
 	public GameObject roomConnectorPrefab;
 	public GameObject miniMapPrefab;
@@ -72,6 +73,11 @@ public class Play : MonoBehaviour {
 					enemyDistributor.PlaceOnWall(wallLaser.gameObject, hit);
 					Debug.Log ("Adding Wall Laser (Editor mode)");
 				}
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha6)) {				
+				Pyramid pyramid = enemyDistributor.CreatePyramid();
+				pyramid.transform.position = GetShipPosition();
+				Debug.Log ("Adding Pyramid (Editor mode)");
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha0)) {
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {

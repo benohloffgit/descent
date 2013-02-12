@@ -14,8 +14,11 @@ public class Ship : MonoBehaviour {
 	private ShipSteering shipSteering;
 	private ShipControl shipControl;
 	private Transform headlight;
+	private RaycastHit hit;
 	
 	private bool isHeadlightOn;
+	
+	public static string TAG = "Ship";
 	
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 15.0f;
@@ -78,6 +81,17 @@ public class Ship : MonoBehaviour {
 
 	public void Yaw(Vector3 direction) {
 		rigidbody.AddRelativeTorque(direction * FORCE_YAW);
+	}
+	
+	public Vector3 IsVisibleFrom(Vector3 fromPos) {
+		Vector3 result = Vector3.zero;
+		Vector3 direction = (play.GetShipPosition()-fromPos).normalized;
+		if (Physics.Raycast(fromPos, direction, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_SHIP_CAVE)) {
+			if (hit.collider.tag == TAG) {
+				result = (play.GetShipPosition() - fromPos);
+			}
+		}				
+		return result;
 	}
 	
 	public void SwitchHeadlight() {

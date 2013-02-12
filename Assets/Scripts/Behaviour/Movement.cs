@@ -5,17 +5,12 @@ using System.Collections.Generic;
 
 public class Movement {
 	private Play play;
-	
-	private int layerMaskAll;
-	private int layerMaskMoveables;
-	
+		
 	private static float RAYCAST_DISTANCE = 2.0f;
 	
 	public Movement(Play p) {
 		play = p;
 
-		layerMaskAll = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) | (1 << Game.LAYER_CAVE) );
-		layerMaskMoveables = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) );
 	}
 	
 	public void Roam(Rigidbody rigidbody, ref GridPosition targetPosition, int minDistance, int maxDistance, float force) {
@@ -29,13 +24,13 @@ public class Movement {
 			Vector3 avoidance = Vector3.zero;	
 			RaycastHit hit;
 			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
-				if (Physics.Raycast(position, RoomMesh.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, layerMaskAll)) {
+				if (Physics.Raycast(position, RoomMesh.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_ALL)) {
 					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);
 				}
 			}
 			Vector3 target = (Cave.GetPositionFromGrid(targetPosition) - position).normalized;
 			// if obstacle in target direction, get new target
-			if (Physics.Raycast(position, target, out hit, RAYCAST_DISTANCE, layerMaskMoveables)) {
+			if (Physics.Raycast(position, target, out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_MOVEABLES)) {
 				targetPosition = play.cave.GetRandomEmptyGridPositionFrom(currentPosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
 			}
 			rigidbody.AddForce((avoidance.normalized + target) * force);			
@@ -43,17 +38,17 @@ public class Movement {
 		}
 	}
 	
-	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance) {
+	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance) {
 		Vector3 position = rigidbody.transform.position;
 		if ( Vector3.Distance(Cave.GetGridFromPosition(position).GetVector3(), Cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
-//			Vector3 toTarget = (target.position - position).normalized;
-			float angleForward = Vector3.Angle(rigidbody.transform.forward, -target.forward);
-			if (angleForward > 30.0f) {
-				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, -target.forward) * 10.0f);
-			}
 			float angleUp = Vector3.Angle(rigidbody.transform.up, target.up);
-			if (angleUp > 30.0f) {
+			if (angleUp > angleTolerance) {
 				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.up, -target.up) * 10.0f);
+			}
+			Vector3 toTarget = target.position-position;
+			float angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
+			if (angleForward > angleTolerance) {
+				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 1.0f);
 			}
 		}
 	}

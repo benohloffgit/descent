@@ -75,6 +75,13 @@ public class EnemyDistributor {
 		wallLaser.Initialize(game, play);
 		return wallLaser;
 	}
+
+	public Pyramid CreatePyramid() {
+		GameObject p = GameObject.Instantiate(play.pyramidPrefab) as GameObject;
+		Pyramid pyramid = p.GetComponent<Pyramid>();
+		pyramid.Initialize(game, play);
+		return pyramid;
+	}
 	
 	public void PlaceOnWall(GameObject gO, RaycastHit h) {
 //		Vector3 centeredPos = h.collider.transform.TransformPoint(h.barycentricCoordinate);

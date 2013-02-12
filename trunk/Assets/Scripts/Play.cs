@@ -150,8 +150,11 @@ public class Play : MonoBehaviour {
 		GameObject newMiniMap = GameObject.Instantiate(miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
-
-		UnityEngine.Random.seed = 123456789;
+		
+		int seed = 1922614; //123456789;
+//		int seed = UnityEngine.Random.Range(1000000,9999999);
+		Debug.Log ("Seed: " + seed);
+		UnityEngine.Random.seed = seed;
 		cave = new Cave(this);
 		PlaceShip();
 		movement = new Movement(this);

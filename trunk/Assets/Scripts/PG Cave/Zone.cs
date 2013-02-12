@@ -25,9 +25,9 @@ public class Zone {
 	
 	private void CreateRooms() {
 		entryRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,5)],0);
-		AddRoom(entryRoom);
+		AddRoom(0, entryRoom);
 		exitRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,5)],2);
-		AddRoom(exitRoom);
+		AddRoom(1, exitRoom);
 		// dig from entry to exit
 		IntTriple pos = entryRoom;
 		while (pos != exitRoom) {
@@ -37,7 +37,7 @@ public class Zone {
 				if (delta.GetFactor(random) != 0) {
 					pos.SetFactor(random, pos.GetFactor(random) + Math.Sign(delta.GetFactor(random)));
 					if (pos != exitRoom) {
-						AddRoom(pos);
+						AddRoom(2+i, pos);
 					}
 					i=3;
 				} else {
@@ -68,8 +68,8 @@ public class Zone {
 		}
 	}
 	
-	public void AddRoom(IntTriple pos) {
-		rooms[pos.x, pos.y, pos.z] = new Room(Game.DIMENSION_ROOM, pos, cave);
+	public void AddRoom(int id, IntTriple pos) {
+		rooms[pos.x, pos.y, pos.z] = new Room(id, Game.DIMENSION_ROOM, pos, cave);
 		roomList.Add(rooms[pos.x, pos.y, pos.z]);
 	}
 	

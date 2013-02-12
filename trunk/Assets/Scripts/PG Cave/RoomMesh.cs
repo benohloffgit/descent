@@ -36,10 +36,11 @@ public class RoomMesh : MonoBehaviour {
 	private int roomTrianglesCount;
 	private	Vector3[,,,] gridVertices;
 	private	int[,,,] gridTriangles;
-	private	float isovalue = 0.1f;
 	
 	private int duplicateVertices = 0;
 					
+	private	static float ISOVALUE = 0.34f; // between 0.31 and 0.35 ... (old: 0.1)
+	
 	public void Initialize(Room room) {		
 		MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
 		mesh = new Mesh();
@@ -77,21 +78,21 @@ public class RoomMesh : MonoBehaviour {
 		for (int x=0; x< Game.DIMENSION_ROOM-1; x++) {
 			for (int y=0; y< Game.DIMENSION_ROOM-1; y++) {
 				for (int z=0; z< Game.DIMENSION_ROOM-1; z++) {
-					gridCellDensity[gridCellIndex,0] = room.GetNewCellDensity(x,y,z+1);
+					gridCellDensity[gridCellIndex,0] = room.GetIsovalueDensity(x,y,z+1);
 					gridCellCoords[gridCellIndex,0] = cubeCoords[x,y,z+1];
-					gridCellDensity[gridCellIndex,1] = room.GetNewCellDensity(x+1,y,z+1);
+					gridCellDensity[gridCellIndex,1] = room.GetIsovalueDensity(x+1,y,z+1);
 					gridCellCoords[gridCellIndex,1] = cubeCoords[x+1,y,z+1];
-					gridCellDensity[gridCellIndex,2] = room.GetNewCellDensity(x+1,y,z);
+					gridCellDensity[gridCellIndex,2] = room.GetIsovalueDensity(x+1,y,z);
 					gridCellCoords[gridCellIndex,2] = cubeCoords[x+1,y,z];
-					gridCellDensity[gridCellIndex,3] = room.GetNewCellDensity(x,y,z);
+					gridCellDensity[gridCellIndex,3] = room.GetIsovalueDensity(x,y,z);
 					gridCellCoords[gridCellIndex,3] = cubeCoords[x,y,z];
-					gridCellDensity[gridCellIndex,4] = room.GetNewCellDensity(x,y+1,z+1);
+					gridCellDensity[gridCellIndex,4] = room.GetIsovalueDensity(x,y+1,z+1);
 					gridCellCoords[gridCellIndex,4] = cubeCoords[x,y+1,z+1];
-					gridCellDensity[gridCellIndex,5] = room.GetNewCellDensity(x+1,y+1,z+1);
+					gridCellDensity[gridCellIndex,5] = room.GetIsovalueDensity(x+1,y+1,z+1);
 					gridCellCoords[gridCellIndex,5] = cubeCoords[x+1,y+1,z+1];
-					gridCellDensity[gridCellIndex,6] = room.GetNewCellDensity(x+1,y+1,z);
+					gridCellDensity[gridCellIndex,6] = room.GetIsovalueDensity(x+1,y+1,z);
 					gridCellCoords[gridCellIndex,6] = cubeCoords[x+1,y+1,z];
-					gridCellDensity[gridCellIndex,7] = room.GetNewCellDensity(x,y+1,z);
+					gridCellDensity[gridCellIndex,7] = room.GetIsovalueDensity(x,y+1,z);
 					gridCellCoords[gridCellIndex,7] = cubeCoords[x,y+1,z];
 					MarchCubes(gridCellIndex, x,y,z);
 					gridCellIndex++;
@@ -144,14 +145,14 @@ public class RoomMesh : MonoBehaviour {
 		
 //		if (gridCell == 1726) return;
 	   
-		if (gridCellDensity[gridCell,0] > isovalue) cubeindex |= 1;
-		if (gridCellDensity[gridCell,1] > isovalue) cubeindex |= 2;
-		if (gridCellDensity[gridCell,2] > isovalue) cubeindex |= 4;
-		if (gridCellDensity[gridCell,3] > isovalue) cubeindex |= 8;
-		if (gridCellDensity[gridCell,4] > isovalue) cubeindex |= 16;
-		if (gridCellDensity[gridCell,5] > isovalue) cubeindex |= 32;
-		if (gridCellDensity[gridCell,6] > isovalue) cubeindex |= 64;
-		if (gridCellDensity[gridCell,7] > isovalue) cubeindex |= 128;
+		if (gridCellDensity[gridCell,0] > ISOVALUE) cubeindex |= 1;
+		if (gridCellDensity[gridCell,1] > ISOVALUE) cubeindex |= 2;
+		if (gridCellDensity[gridCell,2] > ISOVALUE) cubeindex |= 4;
+		if (gridCellDensity[gridCell,3] > ISOVALUE) cubeindex |= 8;
+		if (gridCellDensity[gridCell,4] > ISOVALUE) cubeindex |= 16;
+		if (gridCellDensity[gridCell,5] > ISOVALUE) cubeindex |= 32;
+		if (gridCellDensity[gridCell,6] > ISOVALUE) cubeindex |= 64;
+		if (gridCellDensity[gridCell,7] > ISOVALUE) cubeindex |= 128;
 
 /*		if (gridCellDensity[gridCell,0] == 1) cubeindex |= 1;
 		if (gridCellDensity[gridCell,1] == 1) cubeindex |= 2;
@@ -266,24 +267,24 @@ public class RoomMesh : MonoBehaviour {
 	}*/
 	
 	private Vector3 InterpolateVertex(Vector3 point1, Vector3 point2, float density1, float density2) {
-		if (density1 == 2.0f || density2 == 2.0f) { // entry or exit cell
+		if (density1 == Room.ENTRY_EXIT_CELL_MARKER || density2 == Room.ENTRY_EXIT_CELL_MARKER) { // entry or exit cell
 			return Vector3.Lerp(point1, point2, 0.5f);
 		}
 		float mu;
    		Vector3 p = new Vector3();
 
-	   if (Mathf.Abs(isovalue-density1) < 0.00001f)
-	      return point1 ;
-	   if (Mathf.Abs(isovalue-density2) < 0.00001f)
-	      return point2;
-	   if (Mathf.Abs(density1-density2) < 0.00001f)
-	      return point1;
-	   mu = (isovalue - density1) / (density2 - density1);
-	   p.x = point1.x + mu * (point2.x - point1.x);
-	   p.y = point1.y + mu * (point2.y - point1.y);
-	   p.z = point1.z + mu * (point2.z - point1.z);
+		if (Mathf.Abs(ISOVALUE-density1) < 0.00001f) // ISOVALUE == density1
+	    	return point1 ;
+		if (Mathf.Abs(ISOVALUE-density2) < 0.00001f) // ISOVALUE == density2
+	    	return point2;
+		if (Mathf.Abs(density1-density2) < 0.00001f) // density1 == density2
+	    	return point1;
+	  	mu = (ISOVALUE - density1) / (density2 - density1);
+	   	p.x = point1.x + mu * (point2.x - point1.x);
+	   	p.y = point1.y + mu * (point2.y - point1.y);
+	   	p.z = point1.z + mu * (point2.z - point1.z);
 	
-	   return p;
+	   	return p;
 		/*
 		if (density2-density1 == 0f) {
 			return Vector3.Lerp(point1, point2, 0.5f);

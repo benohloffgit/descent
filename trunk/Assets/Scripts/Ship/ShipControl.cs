@@ -11,8 +11,8 @@ public class ShipControl {
 	private Play play;
 //	private Shot shotTemplate;
 	
-	private static Vector3 GUN_POSITION = new Vector3(0f, 0.5f, 0f);
-	private static Vector3 LASER_POSITION = new Vector3(0f, -0.5f, 0f);
+	private static Vector3 GUN_POSITION = new Vector3(0f, 1.5f, 0f);
+	private static Vector3 LASER_POSITION = new Vector3(0f, -1.5f, 0f);
 	private static float GUN_BULLET_SPEED = 100.0f;
 	private static float LASER_SHOT_SPEED = 200.0f;
 	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);

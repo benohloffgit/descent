@@ -58,6 +58,7 @@
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineTouch.cs" />
      <Compile Include="Assets\Scripts\Enemies\Pyramid.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Spike.cs" />
      <Compile Include="Assets\Scripts\Enemies\WallGun.cs" />
      <Compile Include="Assets\Scripts\Enemies\WallLaser.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />

@@ -10,6 +10,9 @@ public class Shot : MonoBehaviour {
 	
 	void OnCollisionEnter(Collision c) {
 		CancelInvoke("DestroySelf");
+		if (c.collider.tag == Ship.TAG) {
+			Debug.Log ("HIT Ship");
+		}
 		Destroy(gameObject);
 	}	
 

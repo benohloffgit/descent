@@ -82,6 +82,13 @@ public class EnemyDistributor {
 		pyramid.Initialize(game, play);
 		return pyramid;
 	}
+
+	public Spike CreateSpike() {
+		GameObject p = GameObject.Instantiate(play.spikePrefab) as GameObject;
+		Spike spike = p.GetComponent<Spike>();
+		spike.Initialize(game, play);
+		return spike;
+	}
 	
 	public void PlaceOnWall(GameObject gO, RaycastHit h) {
 //		Vector3 centeredPos = h.collider.transform.TransformPoint(h.barycentricCoordinate);

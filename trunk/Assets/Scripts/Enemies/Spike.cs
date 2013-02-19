@@ -70,12 +70,12 @@ public class Spike : MonoBehaviour {
 					mode = Mode.SHOOTING;
 				} else if (mode != Mode.PATHFINDING && mode != Mode.CHASING) {
 					mode = Mode.PATHFINDING;
+//					GridPosition gp1 = cave.GetGridFromPosition(transform.position);
+//					GridPosition gp2 = cave.GetGridFromPosition(play.GetShipPosition());
+//					Debug.Log ("requesting path : " + gp1 + " / " + gp2);
+//					Room r = cave.GetCurrentZone().GetRoom(gp1);
+//					Debug.Log (r.GetCellDensity(gp1.cellPosition) + " " + r.GetCellDensity(gp2.cellPosition));
 					play.movement.AStarPath(aStarThreadState, cave.GetGridFromPosition(transform.position), cave.GetGridFromPosition(play.GetShipPosition()));
-					GridPosition gp1 = cave.GetGridFromPosition(transform.position);
-					GridPosition gp2 = cave.GetGridFromPosition(play.GetShipPosition());
-					Debug.Log ("requesting path : " + gp1 + " / " + gp2);
-					Room r = cave.GetCurrentZone().GetRoom(gp1);
-					Debug.Log (r.GetCellDensity(gp1.cellPosition) + " " + r.GetCellDensity(gp2.cellPosition));
 				}
 				lastShotTime = Time.time;
 			}
@@ -86,7 +86,7 @@ public class Spike : MonoBehaviour {
 //				Debug.Log (Time.frameCount);
 				mode = Mode.CHASING;
 				isOnPath = false;
-				Debug.Log ("Pathfinding finished");
+//				Debug.Log ("Pathfinding finished");
 //				aStarThreadState.path.RemoveFirst(); // because this is our starting pos
 			} else {
 				// TODO
@@ -103,7 +103,7 @@ public class Spike : MonoBehaviour {
 					targetPosition = n.Value.gridPos;
 					aStarThreadState.path.RemoveFirst();
 					isOnPath = true;
-					Debug.Log ("setting new target position " + targetPosition);
+//					Debug.Log ("setting new target position " + targetPosition);
 				} else {
 					mode = Mode.AIMING;
 					Debug.Log ("back to AIMING");

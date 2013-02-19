@@ -40,6 +40,10 @@ public class Play : MonoBehaviour {
 	private int dialogContainer;
 	private GridPosition testPathStart;
 	private GridPosition testPathEnd;
+	
+	// cached values
+//	private Vector3 shipPosition;
+	private GridPosition shipGridPosition;
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
 			
@@ -126,17 +130,20 @@ public class Play : MonoBehaviour {
 				Debug.Log ("Removing test cubes");
 			}
 			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.O)) {
-				testPathStart = Cave.GetGridFromPosition(ship.transform.position);
+				testPathStart = cave.GetGridFromPosition(ship.transform.position);
 				Debug.Log ("Setting AStar path start at : " + testPathStart);
 			}
 			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.P)) {
-				testPathEnd = Cave.GetGridFromPosition(ship.transform.position);
+				testPathEnd = cave.GetGridFromPosition(ship.transform.position);
 				Debug.Log ("Setting AStar path end at : " + testPathEnd);
 				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
 //				Debug.Log (Time.frameCount);
 			}
 			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.K)) {
-				Debug.Log(Cave.GetGridFromPosition(ship.transform.position));
+				Debug.Log("Ship Grid: " + shipGridPosition + ", " + cave.GetCellDensity(shipGridPosition));
+			}
+			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.L)) {
+				Debug.Log("Nearest empty grid: " + cave.GetNearestEmptyGridPositionFrom(shipGridPosition));
 			}
 	/*		if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
 				testPathStart = new IntTriple(new Vector3(5f, 6f, 1f));
@@ -230,18 +237,31 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void PlaceTestCube(GridPosition pos) {
-		Instantiate(testCubePrefab, Cave.GetPositionFromGrid(pos), Quaternion.identity);
+		Instantiate(testCubePrefab, cave.GetPositionFromGrid(pos), Quaternion.identity);
+	}
+	
+	public void CachePositionalDataOfShip(Vector3 pos) {
+//		shipPosition = pos;
+		shipGridPosition = cave.GetClosestEmptyGridFromPosition(pos);
+//		if (cave.GetCellDensity(shipGridPosition) == Cave.DENSITY_FILLED) {
+//			GridPosition old = shipGridPosition;
+//			shipGridPosition = cave.GetRandomEmptyGridPositionFrom(shipGridPosition, 2);
+//			shipGridPosition = cave.GetNearestEmptyGridPositionFrom(shipGridPosition);
+//			Debug.Log ("correcting " + old + " - " + shipGridPosition + " / " + cave.GetCellDensity(shipGridPosition) );
+//		}
 	}
 	
 	public Vector3 GetShipPosition() {
-		// TODO cache
 		return ship.transform.position;
+	}
+
+	public GridPosition GetShipGridPosition() {
+		return shipGridPosition;
 	}
 	
 	public Room GetRoomOfShip() {
-		GridPosition gP = Cave.GetGridFromPosition(GetShipPosition());
-		return cave.GetCurrentZone().GetRoom(gP);
-	}
+		return cave.GetCurrentZone().GetRoom(shipGridPosition);
+	}	
 	
 	public void SwitchMiniMap() {
 		if (isMiniMapOn) {

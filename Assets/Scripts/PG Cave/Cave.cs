@@ -204,7 +204,7 @@ public class Cave {
 				GridPosition newPosition = new GridPosition(RoomMesh.DIRECTIONS[currentDirection] * (j+1) + gridPosition.cellPosition, gridPosition.roomPosition);
 				int cellDensity;
 				try {
-					cellDensity =  GetCellDensity(newPosition);
+					cellDensity = GetCellDensity(newPosition);
 				} catch (IndexOutOfRangeException e) {
 					Game.DefNull(e);
 					cellDensity = Cave.DENSITY_FILLED;
@@ -235,6 +235,65 @@ public class Cave {
 		return result;
 	}
 
+	public GridPosition GetNearestEmptyGridPositionFrom(GridPosition gridPosition) {
+		GridPosition result = gridPosition;
+		IntTriple cell = gridPosition.cellPosition;
+		int dimension = Game.DIMENSION_ROOM;
+		Room r = GetCurrentZone().GetRoom(gridPosition);
+		for (int shells=0; shells<4; shells++) {
+			int startDim = ((shells*2+1) - 1 / 2);
+			for (int slices=0; slices<shells*2+1; slices++) {
+				if (slices == 0 || slices == shells*2) { // full layer
+					for (int nX=cell.x-startDim; nX<=cell.x+startDim; nX++) {
+						if (nX >= 0 && nX<dimension) {
+							for (int nY=cell.y-startDim; nY<=cell.y+startDim; nY++) {
+								if (nY >= 0 && nY<dimension) {
+//									for (int nZ=cell.z-startDim; nZ<=cell.z+startDim; nZ++) {
+//										if (nZ >= 0 && nZ<dimension) {
+											if (r.GetCellDensity(nX, nY, cell.z + startDim + slices) == Cave.DENSITY_EMPTY) {
+												result.cellPosition = new IntTriple(nX, nY, cell.z + startDim + slices);
+												return result;
+											}
+//										}
+//									}
+								}
+							}
+						}
+					}
+				} else { // outer spiral
+					for (int side=0; side<4; side++) {
+						int x = cell.x-startDim;
+						int y = cell.y-startDim;
+						if (side == 1) {
+							x += shells*2;
+						} else if (side == 2) {
+							x += shells*2;
+							y += shells*2;
+						} else if (side == 3) {
+							y += shells*2;
+						}
+						for (int edge=0; edge<shells*2; edge++) {
+							if (side == 0) {
+								x++;
+							} else if (side == 1) {
+								y++;
+							} else if (side == 2) {
+								x--;
+							} else if (side == 3) {
+								y--;
+							}
+							if (r.GetCellDensity(x, y, cell.z + startDim + slices) == Cave.DENSITY_EMPTY) {
+								result.cellPosition = new IntTriple(x, y, cell.z + startDim + slices);
+								return result;
+							}
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
 	private void AddRoomConnector(GridPosition gP, IntTriple alignment) {
 		GameObject rC = GameObject.Instantiate(play.roomConnectorPrefab) as GameObject;
 		rC.transform.localScale *= RoomMesh.MESH_SCALE;
@@ -255,16 +314,28 @@ public class Cave {
 		rC.transform.Rotate(new Vector3(rotation, 0f, 0f));
 	}
 	
-	public static GridPosition GetGridFromPosition(Vector3 position) {
+	public GridPosition GetGridFromPosition(Vector3 position) {
 		Vector3 unscaled = position / RoomMesh.MESH_SCALE;
 		Vector3 roomVector = unscaled / Game.DIMENSION_ROOM;
 		IntTriple roomPos = new IntTriple(Mathf.FloorToInt(roomVector.x), Mathf.FloorToInt(roomVector.y), Mathf.FloorToInt(roomVector.z));
-		Vector3 cellPos = unscaled - (roomPos * Game.DIMENSION_ROOM).GetVector3();
+		Vector3 cellVector = unscaled - (roomPos * Game.DIMENSION_ROOM).GetVector3();
 		// centered in cube
-		return new GridPosition(new IntTriple(Mathf.RoundToInt(cellPos.x), Mathf.RoundToInt(cellPos.y), Mathf.RoundToInt(cellPos.z)), roomPos);
+		IntTriple cellPos = new IntTriple(Mathf.RoundToInt(cellVector.x), Mathf.RoundToInt(cellVector.y), Mathf.RoundToInt(cellVector.z));
+		GridPosition gridPos = new GridPosition(cellPos, roomPos);
+//		if (GetCellDensity(gridPos) == Cave.DENSITY_FILLED) { // this can happen with our new cave generation, mostly for the ship
+//			Debug.Log("cell not empty " + gridPos);
+//			gridPos = GetRandomEmptyGridPositionFrom(gridPos, 1);
+//			Debug.Log("changing grid to empty cell " + gridPos);
+//		}
+		return gridPos;
 	}
 	
-	public static Vector3 GetPositionFromGrid(GridPosition gP) {
+	public GridPosition GetClosestEmptyGridFromPosition(Vector3 position) {
+		GridPosition gP = GetGridFromPosition(position);
+		return gP;
+	}
+	
+	public Vector3 GetPositionFromGrid(GridPosition gP) {
 		return (gP.roomPosition.GetVector3() * Game.DIMENSION_ROOM + gP.cellPosition.GetVector3()) * RoomMesh.MESH_SCALE;
 	}
 	

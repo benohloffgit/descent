@@ -80,7 +80,7 @@ public class Room {
 				for (int z=0; z<dimension; z++) {
 					if (GetCellDensity(x, y, z) == Cave.DENSITY_FILLED) {
 						if (GetNeighbourCells(x, y, z, Cave.DENSITY_EMPTY) >= 24) {
-							Debug.Log ("single cell around: " + x+ ", " + y +", " + z);
+//							Debug.Log ("single cell around: " + x+ ", " + y +", " + z);
 							AddCell(new IntTriple(x,y,z), 0);
 							singleCells++;
 						}

@@ -10,6 +10,7 @@ public class Pyramid : MonoBehaviour {
 	private GridPosition targetPosition;
 	private float lastShotTime;
 	private Mode mode;
+	private float currentAngleUp;
 
 	private static float SHOOTING_FREQUENCY = 1.0f;
 	private static float FORCE_MOVE = 5.0f;
@@ -31,7 +32,7 @@ public class Pyramid : MonoBehaviour {
 	}
 	
 	void Start() {
-		targetPosition = Cave.GetGridFromPosition(transform.position);
+		targetPosition = play.cave.GetGridFromPosition(transform.position);
 		lastShotTime = Time.time;
 		mode = Mode.ROAMING;
 	}
@@ -48,14 +49,14 @@ public class Pyramid : MonoBehaviour {
 		}
 		if (mode == Mode.ROAMING) {
 			play.movement.Roam(myRigidbody, ref targetPosition, 3, 8, FORCE_MOVE);
-			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_ROAMING);
+			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_ROAMING, ref currentAngleUp);
 		} else if (mode == Mode.SHOOTING) {
 			Shoot();
 			mode = Mode.AIMING;
 		}
 		if (mode == Mode.AIMING) {
 			play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
-			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_AIMING);
+			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_AIMING, ref currentAngleUp);
 		}
 	}
 

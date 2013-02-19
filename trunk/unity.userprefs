@@ -1,21 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PG Cave\Cell.cs">
     <Files>
-      <File FileName="Assets\Scripts\Game.cs" Line="27" Column="74" />
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="59" Column="13" />
-      <File FileName="Assets\Scripts\PG Cave\RoomMesh.cs" Line="49" Column="36" />
-      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="22" Column="10" />
-      <File FileName="Assets\Scripts\Play.cs" Line="86" Column="29" />
-      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="72" Column="45" />
-      <File FileName="Assets\Scripts\PG Cave\EnemyDistributor.cs" Line="86" Column="14" />
-      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="48" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\WallGun.cs" Line="47" Column="57" />
-      <File FileName="Assets\Scripts\Enemies\Pyramid.cs" Line="70" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="26" Column="2" />
-      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="14" Column="1" />
-      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="15" Column="60" />
-      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="18" Column="39" />
+      <File FileName="Assets\Scripts\Game.cs" Line="26" Column="34" />
+      <File FileName="Assets\Scripts\Play.cs" Line="245" Column="42" />
+      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="30" Column="26" />
+      <File FileName="Assets\Scripts\Enemies\Pyramid.cs" Line="35" Column="25" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="86" Column="17" />
+      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="77" Column="15" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="325" Column="61" />
+      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="24" Column="33" />
+      <File FileName="Assets\Scripts\Ship\ShipSteering.cs" Line="260" Column="33" />
+      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="64" Column="1" />
+      <File FileName="Assets\Scripts\PG Cave\Cell.cs" Line="6" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -257,6 +257,8 @@ public class ShipSteering : MonoBehaviour {
 	}*/
 	
 	void FixedUpdate () {
+		play.CachePositionalDataOfShip(transform.position);
+//		Debug.Log (play.GetShipGridPosition() + ": " +play.cave.GetCellDensity(play.GetShipGridPosition()));
 		if (gameInput.isMobile) {
 			if ((directionBitwise & directionFinger2Down) == directionFinger2Down) {
 				if ((directionBitwise & directionBackward) == directionBackward) {
@@ -347,5 +349,7 @@ public class ShipSteering : MonoBehaviour {
 				myRigidbody.AddRelativeTorque(Vector3.up * Time.deltaTime * FORCE_TURN * leftRightDelta * Mathf.Sign(leftRight));
 			}*/		
 //		}
+		
+		
 	}
 }

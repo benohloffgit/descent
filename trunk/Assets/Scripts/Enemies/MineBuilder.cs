@@ -10,6 +10,7 @@ public class MineBuilder : MonoBehaviour {
 	private GridPosition targetPosition;
 //	private Vector3 targetCubePosition;
 //	private IntTriple roomPos;
+	private float currentAngleUp;
 
 	private static float FORCE_MOVE = 5.0f;
 	private static int LOOK_AT_DISTANCE = 4; // measured in cubes
@@ -25,12 +26,12 @@ public class MineBuilder : MonoBehaviour {
 	}
 	
 	void Start() {
-		targetPosition = Cave.GetGridFromPosition(transform.position);
+		targetPosition = play.cave.GetGridFromPosition(transform.position);
 	}
 		
 	void FixedUpdate() {
 		play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
-		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE);
+		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE, ref currentAngleUp);
 		
 	}		
 }

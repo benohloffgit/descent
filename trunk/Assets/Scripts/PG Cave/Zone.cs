@@ -61,11 +61,7 @@ public class Zone {
 	}
 	
 	public int GetCellDensity(GridPosition gP) {
-		if (GetRoom(gP).cells[gP.cellPosition.x, gP.cellPosition.y, gP.cellPosition.z] == null) {
-			return Cave.DENSITY_FILLED;
-		} else {
-			return Cave.DENSITY_EMPTY;
-		}
+		return GetRoom(gP).GetCellDensity(gP.cellPosition);
 	}
 	
 	public void AddRoom(int id, IntTriple pos) {

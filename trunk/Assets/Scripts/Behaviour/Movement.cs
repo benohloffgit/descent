@@ -5,17 +5,36 @@ using System.Collections.Generic;
 
 public class Movement {
 	private Play play;
-		
+	private Cave cave;
+	
 	private static float RAYCAST_DISTANCE = 2.0f;
 	
 	public Movement(Play p) {
 		play = p;
+		cave = play.cave;
+	}
 
+	public void Chase(Rigidbody rigidbody, GridPosition targetPosition, float force, ref bool isOnPath) {
+		Vector3 position = rigidbody.transform.position;
+		GridPosition currentPosition = cave.GetGridFromPosition(position);
+		if (currentPosition == targetPosition) {
+			isOnPath = false;
+		} else {
+			Vector3 avoidance = Vector3.zero;	
+			RaycastHit hit;
+			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
+				if (Physics.Raycast(position, RoomMesh.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_ALL)) {
+					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);
+				}
+			}
+			Vector3 target = (cave.GetPositionFromGrid(targetPosition) - position).normalized;
+			rigidbody.AddForce((avoidance.normalized + target) * force);			
+		}
 	}
 	
 	public void Roam(Rigidbody rigidbody, ref GridPosition targetPosition, int minDistance, int maxDistance, float force) {
 		Vector3 position = rigidbody.transform.position;
-		GridPosition currentPosition = Cave.GetGridFromPosition(position);
+		GridPosition currentPosition = cave.GetGridFromPosition(position);
 		if (currentPosition == targetPosition) {
 			targetPosition = play.cave.GetRandomEmptyGridPositionFrom(currentPosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
 //			Debug.Log ("current " + cubePosition + ", setting new target " + targetCubePosition + " in frame " + Time.frameCount);
@@ -28,18 +47,55 @@ public class Movement {
 					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);
 				}
 			}
-			Vector3 target = (Cave.GetPositionFromGrid(targetPosition) - position).normalized;
+			Vector3 target = (cave.GetPositionFromGrid(targetPosition) - position).normalized;
 			// if obstacle in target direction, get new target
 			if (Physics.Raycast(position, target, out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_MOVEABLES)) {
 				targetPosition = play.cave.GetRandomEmptyGridPositionFrom(currentPosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
+			} else {
+				rigidbody.AddForce((avoidance.normalized + target) * force);			
 			}
-			rigidbody.AddForce((avoidance.normalized + target) * force);			
 //			Debug.Log (avoidance + " " + target);
 		}
 	}
-	
-	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance) {
+
+	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleForwardMax, ref float currentAngleUp) {
 		Vector3 position = rigidbody.transform.position;
+		if ( Vector3.Distance(cave.GetGridFromPosition(position).GetVector3(), cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
+			Vector3 toTarget = target.position - position;
+			float angleUp = Vector3.Angle(rigidbody.transform.up, target.up);
+			if (angleUp > 35.0f) {
+				currentAngleUp = angleUp;
+			}
+			if (currentAngleUp > 5.0f) {
+				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.up, target.up) * 10.0f);
+				currentAngleUp = angleUp;
+			} else {
+				currentAngleUp = 0f;
+			}
+			float angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
+			if (angleForward > angleForwardMax) {
+				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 10.0f);
+			}
+		}
+	}
+	
+/*	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance) {
+		Vector3 position = rigidbody.transform.position;
+		if ( Vector3.Distance(Cave.GetGridFromPosition(position).GetVector3(), Cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
+			Vector3 toTarget = target.position - position;
+//			Vector3 tangent = Vector3.zero;
+//			Vector3 binormal = Vector3.zero;
+//			Vector3.OrthoNormalize(ref toTarget, ref tangent, ref binormal);
+			float angleUp = Vector3.Angle(rigidbody.transform.up, target.up);
+			if (angleUp > 30.0f) {
+				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.up, target.up) * 10.0f);
+			}
+			float angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
+			if (angleForward > angleTolerance) {
+				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 10.0f);
+			}
+		}*/
+/*		Vector3 position = rigidbody.transform.position;
 		if ( Vector3.Distance(Cave.GetGridFromPosition(position).GetVector3(), Cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
 			float angleUp = Vector3.Angle(rigidbody.transform.up, target.up);
 			if (angleUp > angleTolerance) {
@@ -51,7 +107,7 @@ public class Movement {
 				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 1.0f);
 			}
 		}
-	}
+	}*/
 	
 	// http://en.wikipedia.org/wiki/A*
 	public void AStarPath(AStarThreadState aStarThreadState, GridPosition s, GridPosition g) {
@@ -70,7 +126,7 @@ public class Movement {
 		while (openSet.Count > 0) {
 			AStarNode current = AStarGetWithLowestFitness(openSet);
 			if (current.position == goal.position) {
-				Debug.Log ("path found in ");// + (Time.realtimeSinceStartup-startTime));
+				Debug.Log ("path found! ");// + (Time.realtimeSinceStartup-startTime));
 				closedSet.Add(current.GetHashCode(), current);
 				AStarReconstructPath(ref cameFrom, ref aStarThreadState.path, ref closedSet, goal.GetHashCode());
 				aStarThreadState.Finish();

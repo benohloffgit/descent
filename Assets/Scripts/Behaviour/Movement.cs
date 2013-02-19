@@ -124,9 +124,10 @@ public class Movement {
 		openSet.Add(startNode.GetHashCode(), startNode);
 		
 		while (openSet.Count > 0) {
+//			Debug.Log ("here1");
 			AStarNode current = AStarGetWithLowestFitness(openSet);
 			if (current.position == goal.position) {
-				Debug.Log ("path found! ");// + (Time.realtimeSinceStartup-startTime));
+//				Debug.Log ("path FOUND!");// + (Time.realtimeSinceStartup-startTime));
 				closedSet.Add(current.GetHashCode(), current);
 				AStarReconstructPath(ref cameFrom, ref aStarThreadState.path, ref closedSet, goal.GetHashCode());
 				aStarThreadState.Finish();
@@ -145,8 +146,10 @@ public class Movement {
 				}
 				float tentativeGoal = current.goal + AStarHeuristic(current, neighbour);
 				if (!openSet.ContainsKey(neighbour.GetHashCode()) || tentativeGoal <= neighbour.goal) {
+//					Debug.Log ("here2 " + closedSet.Count);
 					neighbour.goal = tentativeGoal;
-					neighbour.fitness = neighbour.goal + AStarHeuristic(neighbour, goal);
+					neighbour.heuristic = AStarHeuristic(neighbour, goal);
+					neighbour.fitness = neighbour.goal + neighbour.heuristic; //AStarHeuristic(neighbour, goal);
 					cameFrom.Add(neighbour.GetHashCode(), current.GetHashCode());
 					if (!openSet.ContainsKey(neighbour.GetHashCode())) {
 //						Debug.Log ("neighbour added to open " + neighbour.position);
@@ -160,9 +163,12 @@ public class Movement {
 			}
 //			Debug.Log ("openSet count " + openSet.Count);
 		}
-		Debug.Log ("no path exists in time: ");//+ (Time.realtimeSinceStartup-startTime));
-		aStarThreadState.path.Clear();
+//		Debug.Log ("Find nearest PATH location based on heuristic!");//+ (Time.realtimeSinceStartup-startTime));
+		AStarChoosePathFromNearestNode(ref cameFrom, ref aStarThreadState.path, ref closedSet);
 		aStarThreadState.Finish();
+		return;
+//		aStarThreadState.path.Clear();
+//		aStarThreadState.Finish();
 	});
 	}
 	
@@ -193,7 +199,24 @@ public class Movement {
 //		Debug.Log ("getting neighbour list of " + neighbours.Count);
 		return neighbours;
 	}
-	
+
+	private void AStarChoosePathFromNearestNode(ref Dictionary<int, int> cameFrom, ref LinkedList<AStarNode> path, ref Dictionary<int, AStarNode> closedSet) {
+		AStarNode nearestNode;
+		int key = 0;
+		float heuristic = 1000000f;
+		foreach (KeyValuePair<int, AStarNode> n in closedSet) {
+//			Debug.Log ("heuristic is " + n.Value.heuristic +  " " + closedSet[n.Value.GetHashCode()].gridPos);
+			if (n.Value.heuristic < heuristic) {
+				key = n.Value.GetHashCode();
+				heuristic = n.Value.heuristic;
+//				Debug.Log ("Lower heuristic " + closedSet[key].heuristic + " " + closedSet[key].gridPos);
+			}
+		}
+		nearestNode = closedSet[key];
+//		Debug.Log ("NearestNode " + nearestNode.gridPos);
+		AStarReconstructPath(ref cameFrom, ref path, ref closedSet, nearestNode.GetHashCode());
+	}
+		
 	private void AStarReconstructPath(ref Dictionary<int, int> cameFrom, ref LinkedList<AStarNode> path, ref Dictionary<int, AStarNode> closedSet, int current) {
 		path.AddFirst(closedSet[current]);
 		if (cameFrom.ContainsKey(current)) {

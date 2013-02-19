@@ -16,7 +16,7 @@ public struct AStarNode {
 		goal = g;
 		heuristic = h;
 		fitness = g + h;
-		hashCode = (int) (position.x * Game.DIMENSION_ROOM + position.y * (Game.DIMENSION_ROOM*Game.DIMENSION_ROOM) + position.z * (Game.DIMENSION_ROOM*Game.DIMENSION_ROOM*Game.DIMENSION_ROOM));
+		hashCode = (int) (position.x * Game.DIMENSION_ROOM + position.y * Game.DIMENSION_ROOM_SQUARED + position.z * Game.DIMENSION_ROOM_CUBED);
 	}
 	
 	public override int GetHashCode() {

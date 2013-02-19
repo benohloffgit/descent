@@ -24,6 +24,8 @@ public class Game : MonoBehaviour {
 
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ROOM = 16; // CxC cells
+	public static int DIMENSION_ROOM_SQUARED = DIMENSION_ROOM * DIMENSION_ROOM;
+	public static int DIMENSION_ROOM_CUBED = DIMENSION_ROOM_SQUARED * DIMENSION_ROOM;
 	// max diagonal line of our room cube, roughly 27 units times mesh scale
 	public static float MAX_VISIBILITY_DISTANCE = RoomMesh.MESH_SCALE * Mathf.Sqrt( Mathf.Pow(Mathf.Sqrt(Mathf.Pow(DIMENSION_ROOM,2)*2),2) + Mathf.Pow(DIMENSION_ROOM,2));
 
@@ -49,7 +51,7 @@ public class Game : MonoBehaviour {
 		Application.runInBackground = true;
 		volume = AudioListener.volume;
 		showTrialDialog = false;
-		Debug.Log ("MAX_VISIBILITY_DISTANCE " + MAX_VISIBILITY_DISTANCE);
+//		Debug.Log ("MAX_VISIBILITY_DISTANCE " + MAX_VISIBILITY_DISTANCE);
 	}
 	
 	public void Initialize(Mode m) {

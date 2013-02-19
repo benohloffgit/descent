@@ -129,6 +129,12 @@ public class Play : MonoBehaviour {
 				RemoveTestCubes();
 				Debug.Log ("Removing test cubes");
 			}
+			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.I)) {
+				testPathStart = new GridPosition(new IntTriple(7,2,2), new IntTriple(1,2,0));
+				testPathEnd = new GridPosition(new IntTriple(9,2,10), new IntTriple(1,2,0));
+				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
+				Debug.Log ("Setting AStar path from/to : " + testPathStart + " / "  + testPathEnd);
+			}
 			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.O)) {
 				testPathStart = cave.GetGridFromPosition(ship.transform.position);
 				Debug.Log ("Setting AStar path start at : " + testPathStart);
@@ -142,14 +148,8 @@ public class Play : MonoBehaviour {
 			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.K)) {
 				Debug.Log("Ship Grid: " + shipGridPosition + ", " + cave.GetCellDensity(shipGridPosition));
 			}
-			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.L)) {
+/*			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.L)) {
 				Debug.Log("Nearest empty grid: " + cave.GetNearestEmptyGridPositionFrom(shipGridPosition));
-			}
-	/*		if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
-				testPathStart = new IntTriple(new Vector3(5f, 6f, 1f));
-				testPathEnd = new IntTriple(new Vector3(4f, 7f, 1f));
-				Debug.Log ("Setting AStar path from/to at : " + testPathStart.GetVector3() + "/" + testPathEnd.GetVector3());
-				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
 			}*/
 			
 			if (aStarThreadState.isFinishedNow()) {

@@ -235,7 +235,7 @@ public class Cave {
 		return result;
 	}
 
-	public GridPosition GetNearestEmptyGridPositionFrom(GridPosition gridPosition) {
+/*	public GridPosition GetNearestEmptyGridPositionFrom(GridPosition gridPosition) {
 		GridPosition result = gridPosition;
 		IntTriple cell = gridPosition.cellPosition;
 		int dimension = Game.DIMENSION_ROOM;
@@ -292,7 +292,7 @@ public class Cave {
 			}
 		}
 		return result;
-	}
+	} */
 	
 	private void AddRoomConnector(GridPosition gP, IntTriple alignment) {
 		GameObject rC = GameObject.Instantiate(play.roomConnectorPrefab) as GameObject;
@@ -321,13 +321,7 @@ public class Cave {
 		Vector3 cellVector = unscaled - (roomPos * Game.DIMENSION_ROOM).GetVector3();
 		// centered in cube
 		IntTriple cellPos = new IntTriple(Mathf.RoundToInt(cellVector.x), Mathf.RoundToInt(cellVector.y), Mathf.RoundToInt(cellVector.z));
-		GridPosition gridPos = new GridPosition(cellPos, roomPos);
-//		if (GetCellDensity(gridPos) == Cave.DENSITY_FILLED) { // this can happen with our new cave generation, mostly for the ship
-//			Debug.Log("cell not empty " + gridPos);
-//			gridPos = GetRandomEmptyGridPositionFrom(gridPos, 1);
-//			Debug.Log("changing grid to empty cell " + gridPos);
-//		}
-		return gridPos;
+		return new GridPosition(cellPos, roomPos);
 	}
 	
 	public GridPosition GetClosestEmptyGridFromPosition(Vector3 position) {

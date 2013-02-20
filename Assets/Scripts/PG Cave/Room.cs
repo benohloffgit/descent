@@ -34,7 +34,7 @@ public class Room {
 
 	public void AddExitCell(IntTriple pos, IntTriple alignment, int minerId) {
 		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId);
-		exits.Add (alignment, cells[pos.x, pos.y, pos.z]);
+		exits.Add(alignment, cells[pos.x, pos.y, pos.z]);
 		//exitCell = pos;
 	}
 

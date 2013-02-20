@@ -258,6 +258,7 @@ public class ShipSteering : MonoBehaviour {
 	
 	void FixedUpdate () {
 		play.CachePositionalDataOfShip(transform.position);
+		
 //		Debug.Log (play.GetShipGridPosition() + ": " +play.cave.GetCellDensity(play.GetShipGridPosition()));
 		if (gameInput.isMobile) {
 			if ((directionBitwise & directionFinger2Down) == directionFinger2Down) {

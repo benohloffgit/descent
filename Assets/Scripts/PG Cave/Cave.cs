@@ -34,7 +34,7 @@ public class Cave {
 	}
 	
 	public void DigRooms(Zone zone) {
-		for (int i=0; i<zone.roomList.Count; i++) { // first in array is entry room , second is exit room
+		for (int i=0; i<zone.roomList.Count; i++) { // first in array is entry room
 			roomMiners = new List<RoomMiner>();
 			Room room = zone.roomList[i];
 			List<Room> neighbours = zone.GetEmptyNeighboursOfRoom(room.pos);
@@ -48,13 +48,13 @@ public class Cave {
 				} else {
 					startingCell = SetEntryExit(-1*alignment, 0, Game.DIMENSION_ROOM, 2);
 				}
-				if (i>1) {
-					if (i==2) {
+				if (i > 0 && i < zone.roomList.Count-1) { // all rooms other than entry or exit room
+					if (i==1) {
 						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.WeightBased));
 					} else {
 						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
 					}
-					if (neighbour.id < i && neighbour.id != 1) {
+					if (neighbour.id < i) { //if (neighbour.id < i && neighbour.id != 1) {
 						room.entryCell = startingCell;
 					} else {
 						room.exitCell = startingCell;
@@ -76,7 +76,7 @@ public class Cave {
 				room.entryCell = startingCell;
 //				Debug.Log ("Entry Room: " + startingCell);
 				AddZoneEntry(new GridPosition(startingCell, room.pos), 0f);
-			} else if (i==1) { // exit room
+			} else if (i==zone.roomList.Count-1) { // exit room
 				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
 				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 				room.exitCell = startingCell;
@@ -324,10 +324,10 @@ public class Cave {
 		return new GridPosition(cellPos, roomPos);
 	}
 	
-	public GridPosition GetClosestEmptyGridFromPosition(Vector3 position) {
+/*	public GridPosition GetClosestEmptyGridFromPosition(Vector3 position) {
 		GridPosition gP = GetGridFromPosition(position);
 		return gP;
-	}
+	}*/
 	
 	public Vector3 GetPositionFromGrid(GridPosition gP) {
 		return (gP.roomPosition.GetVector3() * Game.DIMENSION_ROOM + gP.cellPosition.GetVector3()) * RoomMesh.MESH_SCALE;

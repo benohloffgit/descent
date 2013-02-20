@@ -27,7 +27,6 @@ public class Zone {
 		entryRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,5)],0);
 		AddRoom(0, entryRoom);
 		exitRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,5)],2);
-		AddRoom(1, exitRoom);
 		// dig from entry to exit
 		IntTriple pos = entryRoom;
 		while (pos != exitRoom) {
@@ -37,7 +36,7 @@ public class Zone {
 				if (delta.GetFactor(random) != 0) {
 					pos.SetFactor(random, pos.GetFactor(random) + Math.Sign(delta.GetFactor(random)));
 					if (pos != exitRoom) {
-						AddRoom(2+i, pos);
+						AddRoom(1+i, pos);
 					}
 					i=3;
 				} else {
@@ -46,6 +45,7 @@ public class Zone {
 				}
 			}
 		}
+		AddRoom(roomList.Count-1, exitRoom); // id will be set to real value once we know how many rooms we have -- see below last line
 	}
 	
 	public int GetRoomDensity(IntTriple pos) {

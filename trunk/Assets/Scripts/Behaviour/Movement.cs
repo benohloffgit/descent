@@ -111,8 +111,36 @@ public class Movement {
 	
 	// http://en.wikipedia.org/wiki/A*
 	public void AStarPath(AStarThreadState aStarThreadState, GridPosition s, GridPosition g) {
+		
 		aStarThreadState.Start();
 	UnityThreadHelper.TaskDistributor.Dispatch( () => {
+
+		if (g.roomPosition != s.roomPosition) {
+			// prepare a room transition move
+//			Debug.Log ("goal in different room than start!");
+			Room sR = cave.GetCurrentZone().GetRoom(s);
+			Room gR = cave.GetCurrentZone().GetRoom(g);
+			IntTriple startRoomTransitionCell;
+			IntTriple goalRoomTransitionCell;
+			if (sR.id > gR.id) {
+				startRoomTransitionCell = sR.entryCell;
+				goalRoomTransitionCell = gR.exitCell;
+			} else {
+				startRoomTransitionCell = sR.exitCell;
+				goalRoomTransitionCell = gR.entryCell;
+			}
+			if (s.cellPosition == startRoomTransitionCell) {
+				aStarThreadState.path.AddLast(new AStarNode(s, 0, 0));
+				aStarThreadState.path.AddLast(new AStarNode(new GridPosition(goalRoomTransitionCell, g.roomPosition), 0, 0));
+//				Debug.Log ("performing transition to another room " + s + ", " + new GridPosition(goalRoomTransitionCell, g.roomPosition));
+				aStarThreadState.Finish();
+				return;
+			} else {
+				// first we have to move towards the transition cell (either entry or exit of start room)
+				g = new GridPosition(startRoomTransitionCell, s.roomPosition);
+//				Debug.Log ("moving to transition cell");
+			}
+		}
 			
 		Dictionary<int, AStarNode> closedSet = new Dictionary<int, AStarNode>();
 		Dictionary<int, AStarNode> openSet = new Dictionary<int, AStarNode>();

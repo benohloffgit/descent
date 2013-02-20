@@ -241,14 +241,8 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void CachePositionalDataOfShip(Vector3 pos) {
-//		shipPosition = pos;
-		shipGridPosition = cave.GetClosestEmptyGridFromPosition(pos);
-//		if (cave.GetCellDensity(shipGridPosition) == Cave.DENSITY_FILLED) {
-//			GridPosition old = shipGridPosition;
-//			shipGridPosition = cave.GetRandomEmptyGridPositionFrom(shipGridPosition, 2);
-//			shipGridPosition = cave.GetNearestEmptyGridPositionFrom(shipGridPosition);
-//			Debug.Log ("correcting " + old + " - " + shipGridPosition + " / " + cave.GetCellDensity(shipGridPosition) );
-//		}
+		shipGridPosition = cave.GetGridFromPosition(pos);
+//		shipGridPosition = cave.GetClosestEmptyGridFromPosition(pos);
 	}
 	
 	public Vector3 GetShipPosition() {

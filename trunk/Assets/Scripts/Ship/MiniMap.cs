@@ -12,31 +12,31 @@ public class MiniMap : MonoBehaviour {
 	private float mouseSensitivity;
 	private bool isCameraRotatingToFollow;
 	private float cameraFollowDistance;
+	private IntTriple currentRoomPos;
 		
 	private Mode mode;
 	private Follow follow;
 	private int moveBitwise; // either roll in 1finger mode, or shift in 2finger mode
-	private int moveZoomIn = 1;
+/*	private int moveZoomIn = 1;
 	private int moveZoomOut = 2;
 	private int moveYawLeft = 4;
 	private int moveYawRight = 8;
 	private int moveTiltUp = 16;
 	private int moveTiltDown = 32;
 	private int moveTurnLeft = 64;
-	private int moveTurnRight = 128;
+	private int moveTurnRight = 128;*/
 	
 	private int primaryTouchFinger;
 	private int secondaryTouchFinger;
-	private Vector2 touchPosition1;
+/*	private Vector2 touchPosition1;
 	private Vector2 touchPosition2;
 	private float touchTime1;
 	private float touchTime2;
 	private Vector3 touchDelta1;
-	private Vector3 touchDelta2;
+	private Vector3 touchDelta2;*/
 	private bool usesMouse;
 	
 	private static float MINI_MAP_SCALE = 0.2f;
-	private static Vector3 MINI_MAP_POSITION = new Vector3(0f, 0f, 2.0f);
 	private static float ZOOM_MODIFIER = 1.0f;
 	private static float ZOOM_MAX = 5.0f;
 	private static float ZOOM_MIN = 0.5f;
@@ -51,6 +51,10 @@ public class MiniMap : MonoBehaviour {
 	void Awake() {
 		miniMapShip = transform.Find("Ship");
 		transform.localScale *= MINI_MAP_SCALE;
+	}
+	
+	void Start() {
+		ReadRoomData();
 	}
 		
 	public void Initialize(Ship s, Play p, GameInput gI, Camera c) {
@@ -70,6 +74,10 @@ public class MiniMap : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
+		if (play.GetRoomOfShip().pos != currentRoomPos) {
+			ReadRoomData();
+		}
+		
 		if (mode == Mode.On) {
 			UpdatePosition();
 			UpdateRotation();
@@ -78,12 +86,6 @@ public class MiniMap : MonoBehaviour {
 	
 	public void SwitchOn() {
 		UpdatePosition();
-		Room r = play.GetRoomOfShip();
-		Mesh m = new Mesh();
-		m.vertices = r.roomMesh.mesh.vertices;
-		m.triangles = r.roomMesh.mesh.triangles;
-		m.uv = r.roomMesh.mesh.uv;
-		GetComponent<MeshFilter>().mesh = m;
 		mode = Mode.On;
 		miniMapCamera.enabled = true;
 	}
@@ -140,6 +142,15 @@ public class MiniMap : MonoBehaviour {
 			miniMapCamera.transform.position = miniMapShip.position;
 			miniMapCamera.transform.Translate(-Vector3.forward * move);
 		}
+	}
+	
+	private void ReadRoomData() {
+		Room r = play.GetRoomOfShip();
+		Mesh m = new Mesh();
+		m.vertices = r.roomMesh.mesh.vertices;
+		m.triangles = r.roomMesh.mesh.triangles;
+		m.uv = r.roomMesh.mesh.uv;
+		GetComponent<MeshFilter>().mesh = m;
 	}
 	
 	public void DispatchGameInput() {

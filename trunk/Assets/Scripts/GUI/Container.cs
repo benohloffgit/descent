@@ -19,6 +19,7 @@ public class Container : MonoBehaviour {
 	private bool isFixedSize;
 	private Transform blendTop;
 	private Transform blendBottom;
+	private Vector3 camZero;
 	
 	// virtual coords based on elements added
 	private Vector3 bottomLeft;
@@ -34,6 +35,7 @@ public class Container : MonoBehaviour {
 	}
 	
 	void Start() {
+		camZero = Camera.main.ScreenToWorldPoint(Vector3.zero);		
 		if (isScrollableContainer) {
 			// even though the scrolleable container is not fixed size we use lossy scale here to get its real size
 			float amountToScroll = GetSize().y - transform.lossyScale.y;
@@ -54,12 +56,12 @@ public class Container : MonoBehaviour {
 	
 	void LateUpdate() {
 		if (mode == SelectionMode.On) {
-			if (myGUI.gameInput.isTouchMoved[scrollFinger]) {
+			if (myGUI.gameInput.isTouchMoved[scrollFinger] || myGUI.gameInput.isTouchDown[scrollFinger] || myGUI.gameInput.isTouchUp[scrollFinger]) {
 				// delta in pixels
-				Vector3 delta = myGUI.gameInput.touchPositionDelta[scrollFinger];
-				// since we have a orthogonal camera we just have to divide by Screen.height
-				float deltaY = delta.y/Screen.height; //-Camera.main.ScreenToWorldPoint(new Vector3(delta.x, delta.y, Mathf.Abs(cameraZ-transform.position.z)));
-				transform.position += new Vector3(0,deltaY,0);
+				Vector3 delta = myGUI.gameInput.touchPosition[scrollFinger] - myGUI.gameInput.oldTouchPosition[scrollFinger];
+				Vector3 camDelta = Camera.main.ScreenToWorldPoint(new Vector3(0, Mathf.Abs(delta.y), 0));
+				Vector3 camFinalDelta = camDelta - camZero;
+				transform.position += new Vector3(0, camFinalDelta.y*Mathf.Sign(delta.y), 0);
 			}
 			if (myGUI.gameInput.isTouchUp[scrollFinger]) {
 				mode = SelectionMode.Off;

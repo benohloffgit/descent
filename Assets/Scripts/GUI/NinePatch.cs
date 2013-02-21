@@ -76,6 +76,8 @@ public class NinePatch : MonoBehaviour {
 
 	// uv1 : lower left, uv2 : upper right
 	public static void SetUVMapping(Mesh m, Vector2 uv0, Vector2 uv1) {
+		uv0 = MyGUI.RectifyUV(uv0, 0.001f);
+		uv1 = MyGUI.RectifyUV(uv1, -0.001f);
 		Vector2[] uvs = new Vector2[m.vertices.Length];
 		float quarterX = (uv1.x-uv0.x)/4.0f;
 		float quarterY = (uv1.y-uv0.y)/4.0f;

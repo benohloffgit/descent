@@ -65,6 +65,7 @@
      <Compile Include="Assets\Scripts\GUI\Button.cs" />
      <Compile Include="Assets\Scripts\GUI\Center.cs" />
      <Compile Include="Assets\Scripts\GUI\Container.cs" />
+     <Compile Include="Assets\Scripts\GUI\CustomAnimation.cs" />
      <Compile Include="Assets\Scripts\GUI\Dim.cs" />
      <Compile Include="Assets\Scripts\GUI\Dropdown.cs" />
      <Compile Include="Assets\Scripts\GUI\Focussable.cs" />

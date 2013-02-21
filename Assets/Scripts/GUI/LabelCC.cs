@@ -53,8 +53,10 @@ public class LabelCC : MonoBehaviour {
 		background = backgr;
 		labelImage = imageT;
 		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter);
-
+		
 		Vector3 textSize = text.GetSize();
+//		transform.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin.z + textMargin.w, 1.0f);
+//		background.localScale = transform.localScale;
 		background.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin.z + textMargin.w, 1.0f);
 		background.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		background.parent = transform;

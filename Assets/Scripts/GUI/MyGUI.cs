@@ -219,6 +219,10 @@ public class MyGUI : MonoBehaviour {
 		return d.gameObject.GetInstanceID();
 	}
 	
+	public void AddCustomAnimation(Transform t) {
+		t.gameObject.AddComponent<CustomAnimation>();
+	}
+	
 	public static void CenterOnScreen(Transform t) {
 		// center x,y
 		Vector3 pos = t.position;
@@ -295,11 +299,15 @@ public class MyGUI : MonoBehaviour {
 		}
 	}
 
-	public static void Align(Transform t, Transform parentT, GUIAlignment alignLeftRightCenter, float borderLeftRight, GUIAlignment alignTopBottomCenter, float borderTopBottom) {
-		MyGUI.Align(parentT.position, t.lossyScale, parentT.lossyScale, t, parentT, alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
+	public static void Align(Transform t, Transform parentT, GUIAlignment alignLeftRightCenter,
+				float borderLeftRight, GUIAlignment alignTopBottomCenter, float borderTopBottom) {
+		MyGUI.Align(parentT.position, t.lossyScale, parentT.lossyScale, t, parentT, alignLeftRightCenter,
+				borderLeftRight, alignTopBottomCenter, borderTopBottom);
 	}
 	
-	public static void Align(Vector3 center, Vector3 sizeT, Vector3 sizeParentT, Transform t, Transform parentT, GUIAlignment alignLeftRightCenter, float borderLeftRight, GUIAlignment alignTopBottomCenter, float borderTopBottom) {
+	public static void Align(Vector3 center, Vector3 sizeT, Vector3 sizeParentT, Transform t,
+				Transform parentT, GUIAlignment alignLeftRightCenter, float borderLeftRight,
+				GUIAlignment alignTopBottomCenter, float borderTopBottom) {
 		t.parent = parentT;
 		Vector3 reposition = Vector3.zero;
 		if (alignLeftRightCenter == MyGUI.GUIAlignment.Left) {
@@ -317,7 +325,13 @@ public class MyGUI : MonoBehaviour {
 			reposition.y = borderTopBottom;
 		} 
 		t.position = center + reposition;
-	}		
+	}
+	
+	public static Vector2 RectifyUV(Vector2 uv, float rectify) {
+		uv.x += rectify;
+		uv.y += rectify;
+		return uv;
+	}
 
 	private Material GetTextMaterial() {
 		Material m = textureAtlas[4];

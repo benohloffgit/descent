@@ -52,7 +52,12 @@
      <Compile Include="Assets\Scripts\CCText\CCGradient.cs" />
      <Compile Include="Assets\Scripts\CCText\CCStringBuilderUtility.cs" />
      <Compile Include="Assets\Scripts\CCText\CCText.cs" />
+     <Compile Include="Assets\Scripts\CCText\CCTextCylinderWrapper.cs" />
+     <Compile Include="Assets\Scripts\CCText\CCTextMarkedColorer.cs" />
      <Compile Include="Assets\Scripts\CCText\CCTextModifier.cs" />
+     <Compile Include="Assets\Scripts\CCText\CCTextRangeColorer.cs" />
+     <Compile Include="Assets\Scripts\CCText\CCTextTorusWrapper.cs" />
+     <Compile Include="Assets\Scripts\CCText\CCTextVerticalColorer.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\Enemies\LightBulb.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
@@ -69,6 +74,7 @@
      <Compile Include="Assets\Scripts\GUI\Dim.cs" />
      <Compile Include="Assets\Scripts\GUI\Dropdown.cs" />
      <Compile Include="Assets\Scripts\GUI\Focussable.cs" />
+     <Compile Include="Assets\Scripts\GUI\Image.cs" />
      <Compile Include="Assets\Scripts\GUI\Label.cs" />
      <Compile Include="Assets\Scripts\GUI\LabelCC.cs" />
      <Compile Include="Assets\Scripts\GUI\MyGUI.cs" />
@@ -100,6 +106,7 @@
      <Compile Include="Assets\Scripts\PG Cave\WeightedProbability.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Zone.cs" />
      <Compile Include="Assets\Scripts\Play.cs" />
+     <Compile Include="Assets\Scripts\PlayGUI.cs" />
      <Compile Include="Assets\Scripts\PrefabFactory.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />
      <Compile Include="Assets\Scripts\Ship\MiniMap.cs" />

@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Collections;
 
 public class Menu : MonoBehaviour {	
-	public GameObject guiPrefab;
 	public AnimationClip upgradeButtonAnimationClip;
 
 	private Game game;

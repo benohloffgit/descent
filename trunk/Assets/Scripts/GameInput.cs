@@ -26,6 +26,7 @@ public class GameInput : MonoBehaviour {
 	private Game game;
 	private State state;
 //	private MyGUI myGUI;
+	private Camera guiCamera;
 	
 	private float guiRaycastLength;
 	private bool isGUIRegistered;
@@ -41,6 +42,7 @@ public class GameInput : MonoBehaviour {
 		if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) {
 			isMobile = true;
 		}
+		guiCamera = GameObject.Find("/GUI Camera").GetComponent<Camera>();
 		SetGUIRaycastLength(0f);
 		isGUIRegistered = false;
 	}
@@ -152,7 +154,7 @@ public class GameInput : MonoBehaviour {
 	private bool IsGUIClicked(int finger) {
 		bool result = false;
 //		Debug.Log (guiRaycastLength);
-		if (isGUIRegistered && Physics.Raycast(Camera.main.ScreenPointToRay(touchPosition[finger]), out hit, guiRaycastLength, 1 << gui3DLayer)) {
+		if (isGUIRegistered && Physics.Raycast(guiCamera.ScreenPointToRay(touchPosition[finger]), out hit, guiRaycastLength, 1 << gui3DLayer)) {
 			if (hit.collider != null) {
 				if (hit.collider.tag == "Select1Up") {
 //					myGUI.SendTouchDown(hit.collider.transform.parent.gameObject, finger);
@@ -170,7 +172,7 @@ public class GameInput : MonoBehaviour {
 	}
 	
 	public void SetGUIRaycastLength(float maxZ) {
-		guiRaycastLength = Mathf.Abs(Camera.main.transform.position.z - maxZ);
+		guiRaycastLength = Mathf.Abs(guiCamera.transform.position.z - maxZ);
 //		Debug.Log ("guiRaycastLength " + guiRaycastLength + ", " + maxZ);
 	}
 	

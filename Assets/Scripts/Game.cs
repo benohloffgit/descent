@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Game : MonoBehaviour {
 	public GameObject statePrefab;
+	public GameObject guiPrefab;
 	// those are objects create while game is running (after cave generation)
 	public GameObject gunBulletPrefab;
 	public GameObject laserShotPrefab;
@@ -36,7 +37,7 @@ public class Game : MonoBehaviour {
 	public static int LAYER_MASK_SHIP = 1 << LAYER_SHIP;
 	public static int LAYER_MASK_MOVEABLES = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) );
 	
-	public static Vector4 GUI_UV_TITLE = new Vector4(0f,0.5f,0.5f,1.0f);
+	public static Vector4 GUI_UV_TITLE = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	
 	private Menu menu;
 	private Play play;

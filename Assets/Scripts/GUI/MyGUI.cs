@@ -14,6 +14,7 @@ public class MyGUI : MonoBehaviour {
 	public GameObject ninePatchPrefab;
 	public GameObject quadPrefab;
 	public GameObject buttonPrefab;
+	public GameObject imagePrefab;
 	public GameObject textPrefab;
 	public GameObject dimPrefab;
 	public GameObject radioPrefab;
@@ -36,6 +37,7 @@ public class MyGUI : MonoBehaviour {
 	public Dictionary<int, Dropdown> dropdowns;
 	public Dictionary<int, Dim> dims;
 	public Dictionary<int, Button> buttons;
+	public Dictionary<int, Image> images;
 	
 	public enum Focus { NoFocus=0, Focus=1 }	
 	public enum GUIAlignment { Left=0, Right=1, Center=2, Top=3, Bottom=4 }
@@ -56,6 +58,7 @@ public class MyGUI : MonoBehaviour {
 		dropdowns = new Dictionary<int, Dropdown>();
 		dims = new Dictionary<int, Dim>();
 		buttons = new Dictionary<int, Button>();
+		images = new Dictionary<int, Image>();
 		
 //		background = GetComponent<NinePatch>();
 		
@@ -97,7 +100,7 @@ public class MyGUI : MonoBehaviour {
 		return cID;
 	}
 	
-	// as child of another container, with defined position and zLevel
+	// as child of another container, with absolute position and zLevel
 	public int AddContainer(int containerID, Vector3 size, Vector3 pos, bool isFixedSize) {
 		Container c = (GameObject.Instantiate(containerPrefab, pos, Quaternion.identity) as GameObject).GetComponent<Container>();
 		c.Initialize(size, isFixedSize);
@@ -106,12 +109,22 @@ public class MyGUI : MonoBehaviour {
 		return c.gameObject.GetInstanceID();		
 	}
 	
-	// as child of another container
+	// as child of another container and absolute position
 	public int AddContainer(int containerID, Vector3 size, Vector2 pos, bool isFixedSize) {
 		zLevel = containers[containerID].transform.position.z - 2.0f;
 		return AddContainer (containerID, size, new Vector3(pos.x, pos.y, zLevel), isFixedSize);
 	}
-
+	
+	// as child and positioned relative
+	public int AddContainer(int containerID, Vector3 scale, bool isFixedSize, GUIAlignment alignLeftRightCenter, float borderLeftRight,
+					GUIAlignment alignTopBottomCenter, float borderTopBottom) {		
+		Container c = (GameObject.Instantiate(containerPrefab) as GameObject).GetComponent<Container>();
+		c.Initialize(scale, isFixedSize);
+		containers.Add(c.gameObject.GetInstanceID(), c);
+		containers[containerID].AddElement(c.transform, c.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
+		return c.gameObject.GetInstanceID();
+	}
+	
 	public int AddContainerScrollable(int containerID, Vector3 size, Vector2 pos, GUIBackground background, int textureIx, Vector4 uvMap,
 			int textureIDBlendTop, Vector4 uvMapBlendTop, int textureIDBlendBottom, Vector4 uvMapBlendBottom) {
 		int cID = AddContainer(containerID, size, pos, false);
@@ -128,6 +141,16 @@ public class MyGUI : MonoBehaviour {
 		buttons.Add(b.gameObject.GetInstanceID(), b);
 		containers[containerID].AddElement(b.transform, b.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 		return b.gameObject.GetInstanceID();
+	}	
+	
+	// scaled by bounding container
+	public int AddImage(int containerID, GUIAlignment alignLeftRightCenter, float borderLeftRight,
+					GUIAlignment alignTopBottomCenter, float borderTopBottom, Vector4 uvMap, int textureID) {
+		Image i = (GameObject.Instantiate(imagePrefab) as GameObject).GetComponent<Image>();
+		i.Initialize(this, textureID, uvMap, containers[containerID].GetSize());
+		images.Add(i.gameObject.GetInstanceID(), i);
+		containers[containerID].AddElement(i.transform, containers[containerID].GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
+		return i.gameObject.GetInstanceID();
 	}	
 	
 	// add floating
@@ -323,7 +346,7 @@ public class MyGUI : MonoBehaviour {
 			reposition.y = -sizeParentT.y/2 + sizeT.y/2 + borderTopBottom;
 		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Center) {
 			reposition.y = borderTopBottom;
-		} 
+		}
 		t.position = center + reposition;
 	}
 	

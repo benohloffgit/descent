@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Shot : MonoBehaviour {
 	public Game.Shot shotType;
-	
+		
 	void Start() {
 		Invoke ("DestroySelf", 10.0f);
 	}

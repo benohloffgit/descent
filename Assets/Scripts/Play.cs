@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Play : MonoBehaviour {	
-	public GameObject guiPrefab;
 	public GameObject roomPrefab;
 	public GameObject roomMeshPrefab;
 	public GameObject testCubePrefab;
@@ -28,16 +27,14 @@ public class Play : MonoBehaviour {
 	public bool isMiniMapOn;
 	public bool isMiniMapFollowOn;
 	private MiniMap miniMap;
+	private PlayGUI playGUI;
 	
 //	private GameInput gI;
 	private State state;
-	private MyGUI gui;
 	private EnemyDistributor enemyDistributor;
 	private RaycastHit hit;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 
-	private int container;
-	private int dialogContainer;
 	private GridPosition testPathStart;
 	private GridPosition testPathEnd;
 	
@@ -163,7 +160,9 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
-//		room = (GameObject.Instantiate(roomPrefab) as GameObject).GetComponent<Room>();
+		playGUI = new PlayGUI(this);
+		
+		// game setup
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
 		GameObject newMiniMap = GameObject.Instantiate(miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
@@ -189,12 +188,6 @@ public class Play : MonoBehaviour {
 		isMiniMapFollowOn = false;
 	}
 		
-	private void CloseDialog() {
-		Destroy(gui.containers[dialogContainer].gameObject);
-		gui.ResetGameInputZLevel();
-		gui.DeleteGUIInFocus();
-	}
-	
 	void onDisable() {
 		CancelInvoke();
 		Destroy(ship.gameObject);

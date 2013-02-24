@@ -42,6 +42,7 @@ public class ShipControl {
 				}
 				
 				GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(ship.transform.position + ship.transform.TransformDirection(GUN_POSITION), ship.transform.rotation);
+				newBullet.GetComponent<Shot>().Initialize(play);				
 				Vector3 bulletDirection = bulletPath * GUN_BULLET_SPEED;
 				newBullet.rigidbody.AddForce(new Vector3(bulletDirection.x, bulletDirection.y, bulletDirection.z + ship.rigidbody.velocity.z));
 //				Debug.Log (shipRelativeVelocity + " " + (bulletPath * GUN_BULLET_SPEED));
@@ -55,6 +56,7 @@ public class ShipControl {
 				}
 				
 				GameObject newLaserShot = game.CreateFromPrefab().CreateLaserShot(ship.transform.position + ship.transform.TransformDirection(LASER_POSITION), ship.transform.rotation);
+				newLaserShot.GetComponent<Shot>().Initialize(play);				
 				Vector3 laserShotDirection = laserPath * LASER_SHOT_SPEED;
 				newLaserShot.rigidbody.AddForce(new Vector3(laserShotDirection.x, laserShotDirection.y, laserShotDirection.z));
 //				Debug.Log (shipRelativeVelocity + " " + (bulletPath * GUN_BULLET_SPEED));

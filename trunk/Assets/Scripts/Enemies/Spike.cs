@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Spike : MonoBehaviour {
+public class Spike : Enemy {
+	public int health;
+
 	private Play play;
 	private Game game;
 	private Cave cave;
@@ -27,7 +29,9 @@ public class Spike : MonoBehaviour {
 	private static float LOOK_AT_ANGLE_TOLERANCE_AIMING = 0.5f;
 	private static float TURRET_TURN_SPEED = 2.5f;
 //	private static float TURRET_MAX_ROTATION = 0.005f;
-
+	
+	private static int HEALTH = 15;
+	
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2, PATHFINDING=3, CHASING=4 }
 	
 	void Awake() {
@@ -39,6 +43,7 @@ public class Spike : MonoBehaviour {
 		game = g;
 		play = p;
 		cave = play.cave;
+		health = HEALTH;
 	}
 	
 	void Start() {
@@ -106,8 +111,16 @@ public class Spike : MonoBehaviour {
 
 	private void Shoot() {
 		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(turret.position + turret.TransformDirection(BULLET_POSITION), transform.rotation);
+		newBullet.GetComponent<Shot>().Initialize(play);				
 		Vector3 bulletDirection = turret.forward * Game.GUN_BULLET_SPEED;
 		newBullet.rigidbody.AddForce(bulletDirection);
+	}
+	
+	public override void Damage(int damage) {
+		health -= damage;
+		if (health <= 0) {
+			Destroy(gameObject);
+		}
 	}
 
 }

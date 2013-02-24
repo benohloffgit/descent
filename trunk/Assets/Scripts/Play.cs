@@ -104,6 +104,10 @@ public class Play : MonoBehaviour {
 					Debug.Log ("Triangle (Editor mode): " + hit.normal + " (" + normals[0]+","+normals[1]+","+normals[2]+ ")");
 				}
 			}
+/*			if (Input.GetKeyDown(KeyCode.H)) {				
+				ship.health -= 10;
+				playGUI.SetHealth(ship.health);
+			}*/
 	/*		if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.LeftArrow)) {
 				Debug.Log ("Changing Vertex");
 				Mesh m = GetRoomOfShip().roomMesh.mesh;
@@ -157,6 +161,8 @@ public class Play : MonoBehaviour {
 				}
 			}
 		}
+		
+		playGUI.DispatchUpdate();
 	}
 	
 	public void Restart() {
@@ -165,6 +171,9 @@ public class Play : MonoBehaviour {
 		// game setup
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
+		playGUI.DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.health), MyGUI.GetDigitOfNumber(1, ship.health), MyGUI.GetDigitOfNumber(2, ship.health)});
+		playGUI.currentHealth = ship.health;
+		
 		GameObject newMiniMap = GameObject.Instantiate(miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
@@ -269,6 +278,14 @@ public class Play : MonoBehaviour {
 			miniMap.SwitchFollowOn();
 		}
 	}
-
+	
+	public void DamageShip(int damage) {
+		ship.health -= damage;
+		playGUI.SetHealth(ship.health);		
+	}
+	
+	public void DamageEnemy(int damage, Enemy e) {
+		e.Damage(damage);
+	}
 }
 

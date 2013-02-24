@@ -432,4 +432,9 @@ public class MyGUI : MonoBehaviour {
 		}
 		return f;
 	}
+	
+	public static int GetDigitOfNumber(int digit, int number) {
+		return (int) Mathf.Floor( (number % (Mathf.Pow(10.0f, digit+1))) / Mathf.Pow(10.0f, digit));
+	}
+
 }

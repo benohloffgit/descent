@@ -5,7 +5,9 @@ using System.Collections;
 public class Ship : MonoBehaviour {
 	public GameObject shipHUDPrefab;
 	public Game game;
-
+	
+	public int health;
+	
 	private Play play;
 	private GameInput gameInput;
 	
@@ -23,6 +25,8 @@ public class Ship : MonoBehaviour {
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 5.0f;
 	private static float FORCE_YAW = 3.5f;
+	
+	private static int HEALTH = 200;
 	
 //	private Vector3 collisionPoint = Vector3.zero;
 //	private Vector3 collisionNormal = Vector3.zero;
@@ -47,6 +51,7 @@ public class Ship : MonoBehaviour {
 		shipControl.Initialize(this, game, play, gameInput);
 		
 		isHeadlightOn = true;
+		health = HEALTH;
 	}
 	
 	void OnCollisionEnter(Collision c) {

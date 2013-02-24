@@ -22,7 +22,7 @@ public class Game : MonoBehaviour {
 	public static int LAYER_GUI = 10;
 	public static int LAYER_BULLETS = 11;
 	public static int LAYER_ENEMIES = 12;
-
+	
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ROOM = 16; // CxC cells
 	public static int DIMENSION_ROOM_SQUARED = DIMENSION_ROOM * DIMENSION_ROOM;
@@ -37,7 +37,16 @@ public class Game : MonoBehaviour {
 	public static int LAYER_MASK_SHIP = 1 << LAYER_SHIP;
 	public static int LAYER_MASK_MOVEABLES = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) );
 	
-	public static Vector4 GUI_UV_TITLE = new Vector4(0.0f,0.875f,0.125f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_2 = new Vector4(0.25f,0.875f,0.375f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_3 = new Vector4(0.375f,0.875f,0.5f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_4 = new Vector4(0.5f,0.875f,0.625f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_5 = new Vector4(0.625f,0.875f,0.75f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_6 = new Vector4(0.75f,0.875f,0.875f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_7 = new Vector4(0.875f,0.875f,1.0f,1.0f);
+	public static Vector4 GUI_UV_NUMBER_8 = new Vector4(0.0f,0.75f,0.125f,0.875f);
+	public static Vector4 GUI_UV_NUMBER_9 = new Vector4(0.125f,0.75f,0.25f,0.875f);
 	
 	private Menu menu;
 	private Play play;

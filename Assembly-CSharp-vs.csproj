@@ -59,6 +59,7 @@
      <Compile Include="Assets\Scripts\CCText\CCTextTorusWrapper.cs" />
      <Compile Include="Assets\Scripts\CCText\CCTextVerticalColorer.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Enemy.cs" />
      <Compile Include="Assets\Scripts\Enemies\LightBulb.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineTouch.cs" />

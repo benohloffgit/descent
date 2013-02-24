@@ -2,11 +2,24 @@ using UnityEngine;
 using System.Collections;
 
 public class PlayGUI {
+	public int currentHealth;
+	
 	private Play play;
 	
 	private MyGUI gui;
 	private int container;
 	private int dialogContainer;
+	
+	private Image healthDigit0;
+	private Image healthDigit1;
+	private Image healthDigit2;
+	private int ticks;
+	private int[] count;
+	private float lastTick;
+
+	private static float TICK_DELTA = 0.1f;
+	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
+												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
 	
 	public PlayGUI(Play p) {
 		play = p;
@@ -24,9 +37,53 @@ public class PlayGUI {
 
 		// ship health
 		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.025f, MyGUI.GUIAlignment.Top, 0.01f);
-		gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_TITLE, 0);
-		gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.05f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_TITLE, 0);
-		gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.1f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_TITLE, 0);
+		int imageId;
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		healthDigit0 = gui.images[imageId];
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.05f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		healthDigit1 = gui.images[imageId];
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.1f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		healthDigit2 = gui.images[imageId];
+
+		ticks = 0;
+		count = new int[3];
+	}
+	
+	public void SetHealth(int newHealth) {
+		ticks = currentHealth - newHealth;
+		count = new int[] { MyGUI.GetDigitOfNumber(0, currentHealth), MyGUI.GetDigitOfNumber(1, currentHealth), MyGUI.GetDigitOfNumber(2, currentHealth)}; // right to left
+		currentHealth = newHealth;
+//		Debug.Log (count[0] + " " + count[1] + " " + count[2]);
+		lastTick = Time.time;
+	}
+	
+	public void DisplayHealth(int[] digits) {
+		healthDigit0.SetUVMapping(DIGITS[digits[0]]);
+		healthDigit1.SetUVMapping(DIGITS[digits[1]]);
+		healthDigit2.SetUVMapping(DIGITS[digits[2]]);
+	}
+	
+	public void DispatchUpdate() {
+		if (ticks > 0 && Time.time > lastTick + TICK_DELTA) {			
+			if (count[0] == 0) {
+				count[0] = 9;
+				if (count[1] == 0) {
+					count[1] = 9;
+					if (count[2] == 0) {
+						// should not happen
+					} else {
+						count[2]--;
+					}
+				} else {
+					count[1]--;
+				}
+			} else {
+				count[0]--;
+			}
+			DisplayHealth(count);
+			lastTick = Time.time;
+			ticks--;
+		}
 	}
 	
 	private void CloseDialog() {

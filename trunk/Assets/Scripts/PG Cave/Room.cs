@@ -7,9 +7,9 @@ public class Room {
 	public Cell[,,] cells;
 //	public int minerId;
 	public IntTriple pos;
-	public IntTriple entryCell;
-	public IntTriple exitCell;
-	public Dictionary<IntTriple, Cell> exits; // alignment, cell
+//	public IntTriple entryCell;
+//	public IntTriple exitCell;
+	public Dictionary<IntTriple, Cell> exits; // alignment, cell : alignment is other-me
 	public RoomMesh roomMesh;
 	
 	public static float ENTRY_EXIT_CELL_MARKER = 2.0f;
@@ -29,11 +29,11 @@ public class Room {
 	}
 	
 	public void AddCell(IntTriple pos, int minerId) {
-		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId);
+		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId, false);
 	}
 
 	public void AddExitCell(IntTriple pos, IntTriple alignment, int minerId) {
-		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId);
+		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId, true);
 		exits.Add(alignment, cells[pos.x, pos.y, pos.z]);
 		//exitCell = pos;
 	}
@@ -64,8 +64,9 @@ public class Room {
 
 	public float GetIsovalueDensity(int x, int y, int z) {
 		float result = 0.3f;
-		if (x == entryCell.x && y == entryCell.y && z == entryCell.z) return ENTRY_EXIT_CELL_MARKER;
-		if (x == exitCell.x && y == exitCell.y && z == exitCell.z) return ENTRY_EXIT_CELL_MARKER;
+		if (cells[x,y,z] != null && cells[x,y,z].isExit) return ENTRY_EXIT_CELL_MARKER;
+//		if (x == entryCell.x && y == entryCell.y && z == entryCell.z) return ENTRY_EXIT_CELL_MARKER;
+//		if (x == exitCell.x && y == exitCell.y && z == exitCell.z) return ENTRY_EXIT_CELL_MARKER;
 		if (x == 0 || x == dimension-1 || y == 0 || y == dimension-1 || z == 0 || z == dimension -1) return result;
 		result += ISOVALUE_PER_NEIGHBOUR * GetNeighbourCells(x, y, z, Cave.DENSITY_EMPTY);
 		if (result == 0.999) result = 1.0f;

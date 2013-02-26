@@ -24,6 +24,8 @@ public class Game : MonoBehaviour {
 	public static int LAYER_ENEMIES = 12;
 	
 	public static int DIMENSION_ZONE = 3; // BxB rooms
+	public static int DIMENSION_ZONE_SQUARED = DIMENSION_ZONE * DIMENSION_ZONE;
+	public static int DIMENSION_ZONE_CUBED = DIMENSION_ZONE_SQUARED * DIMENSION_ZONE;
 	public static int DIMENSION_ROOM = 16; // CxC cells
 	public static int DIMENSION_ROOM_SQUARED = DIMENSION_ROOM * DIMENSION_ROOM;
 	public static int DIMENSION_ROOM_CUBED = DIMENSION_ROOM_SQUARED * DIMENSION_ROOM;

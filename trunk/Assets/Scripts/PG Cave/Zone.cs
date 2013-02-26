@@ -27,6 +27,7 @@ public class Zone {
 		entryRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,5)],0);
 		AddRoom(0, entryRoom);
 		exitRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,5)],2);
+		AddRoom(1, exitRoom);
 		// dig from entry to exit
 		IntTriple pos = entryRoom;
 		while (pos != exitRoom) {
@@ -36,7 +37,7 @@ public class Zone {
 				if (delta.GetFactor(random) != 0) {
 					pos.SetFactor(random, pos.GetFactor(random) + Math.Sign(delta.GetFactor(random)));
 					if (pos != exitRoom) {
-						AddRoom(1+i, pos);
+						AddRoom(2+i, pos);
 					}
 					i=3;
 				} else {
@@ -45,19 +46,46 @@ public class Zone {
 				}
 			}
 		}
-		AddRoom(roomList.Count-1, exitRoom); // id will be set to real value once we know how many rooms we have -- see below last line
+		AddAdditionalRooms();
+		Debug.Log ("Rooms generated " + roomList.Count);
 	}
 	
-	public int GetRoomDensity(IntTriple pos) {
-		if (rooms[pos.x, pos.y, pos.z] == null) {
+	private void AddAdditionalRooms() {
+		List<Room> newRoomList = new List<Room>();
+		foreach (Room r in roomList) {
+			if (UnityEngine.Random.Range(0,2) == 0) { // 50/50 chance
+				// add available room positions of neighbouring rooms to array and select one randomly
+				List<IntTriple> neighbours = GetFilledNeighboursOfRoom(r.pos);
+				if (neighbours.Count > 0) {
+					IntTriple newPos = neighbours[UnityEngine.Random.Range(0, neighbours.Count)];
+					rooms[newPos.x, newPos.y, newPos.z] = new Room(newRoomList.Count+roomList.Count, Game.DIMENSION_ROOM, newPos, cave);
+					newRoomList.Add(rooms[newPos.x, newPos.y, newPos.z]);
+				}
+/*				foreach (IntTriple direction in Cave.ZONE_DIRECTIONS) {
+					IntTriple newPos = r.pos + direction;
+					if (newPos.x >=0  && newPos.x <= 2 && newPos.y >=0  && newPos.y <= 2 && newPos.z >=0  && newPos.z <= 2
+						&& rooms[newPos.x, newPos.y, newPos.z] == null) {
+//							AddRoom(newRoomList.Count-1, newPos);
+							rooms[newPos.x, newPos.y, newPos.z] = new Room(newRoomList.Count+roomList.Count, Game.DIMENSION_ROOM, newPos, cave);
+							newRoomList.Add(rooms[newPos.x, newPos.y, newPos.z]);
+					}
+				}*/
+			}
+		}
+		roomList.AddRange(newRoomList);
+		Debug.Log ("Added AddAdditionalRooms " + newRoomList.Count);
+	}
+
+	public Room GetRoom(GridPosition gP) {
+		return rooms[gP.roomPosition.x, gP.roomPosition.y, gP.roomPosition.z];
+	}
+
+	public int GetRoomDensity(GridPosition gP) {
+		if (rooms[gP.roomPosition.x, gP.roomPosition.y, gP.roomPosition.z] == null) {
 			return Cave.DENSITY_FILLED;
 		} else {
 			return Cave.DENSITY_EMPTY;
 		}
-	}
-	
-	public Room GetRoom(GridPosition gP) {
-		return rooms[gP.roomPosition.x, gP.roomPosition.y, gP.roomPosition.z];
 	}
 	
 	public int GetCellDensity(GridPosition gP) {
@@ -76,6 +104,21 @@ public class Zone {
 			try {
 				if (rooms[newPos.x, newPos.y, newPos.z] != null) {
 					neighbours.Add(rooms[newPos.x, newPos.y, newPos.z]);
+				}
+			} catch (IndexOutOfRangeException e) {
+				Game.DefNull(e);
+			}
+		}
+		return neighbours;
+	}
+
+	public List<IntTriple> GetFilledNeighboursOfRoom(IntTriple pos) {
+		List<IntTriple> neighbours = new List<IntTriple>();
+		foreach (IntTriple step in Cave.ROOM_DIRECTIONS) {
+			IntTriple newPos = pos + step;
+			try {
+				if (rooms[newPos.x, newPos.y, newPos.z] == null) {
+					neighbours.Add(newPos);
 				}
 			} catch (IndexOutOfRangeException e) {
 				Game.DefNull(e);

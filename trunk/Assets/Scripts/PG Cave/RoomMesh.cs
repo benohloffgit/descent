@@ -47,7 +47,7 @@ public class RoomMesh : MonoBehaviour {
 		meshFilter.mesh = mesh;
 	
 		roomVertices = new Vector3[16384];
-		roomTriangles = new int[49152];
+		roomTriangles = new int[64000]; //new int[49152]
 		roomVerticesCount = 0;
 		roomTrianglesCount = 0;
 		
@@ -119,7 +119,7 @@ public class RoomMesh : MonoBehaviour {
 		mesh.uv = newUVs;
 	
 		mesh.RecalculateBounds();
-	//	RecalculateMyNormals(mesh);
+//		RecalculateMyNormals(mesh);
 		mesh.RecalculateNormals();
 //		Debug.Log("normals : " + mesh.normals.Length);
 	

@@ -83,7 +83,7 @@ public class Play : MonoBehaviour {
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha7)) {				
 				Spike spike = enemyDistributor.CreateSpike();
-				spike.transform.position = GetShipPosition();
+				spike.transform.position = new Vector3(130f, 205f, 67f); //GetShipPosition();
 				Debug.Log ("Adding Spike (Editor mode)");
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha0)) {
@@ -153,10 +153,10 @@ public class Play : MonoBehaviour {
 				Debug.Log("Nearest empty grid: " + cave.GetNearestEmptyGridPositionFrom(shipGridPosition));
 			}*/
 			
-			if (aStarThreadState.isFinishedNow()) {
+			if (aStarThreadState.IsFinishedNow()) {
 				aStarThreadState.Complete();
 //				Debug.Log (Time.frameCount);
-				foreach (AStarNode n in aStarThreadState.path) {
+				foreach (AStarNode n in aStarThreadState.roomPath) {
 					PlaceTestCube(n.gridPos);
 				}
 			}

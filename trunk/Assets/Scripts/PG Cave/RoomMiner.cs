@@ -8,11 +8,11 @@ public class RoomMiner {
 	public IntTriple pos;
 	public int id;
 	public bool isConnectedToOtherMiner = false;
+	public Type type;
 	
 	private Cave cave;
 	private Room room;
 	private int mineCount;
-	private Type type;
 	
 //	private List<IntTriple> weightedCells;
 	
@@ -126,7 +126,7 @@ public class RoomMiner {
 				} else if (room.GetCellDensity(newPos) == Cave.DENSITY_EMPTY && room.IsCellNotEmptiedByMiner(newPos, id)) {
 					// we have a connection
 					isConnectedToOtherMiner = true;
-					cave.SetAllMinersInactive();
+//					cave.SetAllMinersInactive();
 //					Debug.Log ("Miner deactivated on pos " + pos);
 					return pos;
 				}				

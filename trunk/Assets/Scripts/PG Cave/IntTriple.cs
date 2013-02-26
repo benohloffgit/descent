@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public struct IntTriple {
 	public int x,y,z;
@@ -106,6 +107,13 @@ public struct IntTriple {
 		return (t1.x != t2.x || t1.y != t2.y || t1.z != t2.z) ? true : false;
 	}
 
+	public static IntTriple ExtractRandomFromPool(ref List<IntTriple> pool) {
+		int random = UnityEngine.Random.Range(0, pool.Count);
+		IntTriple result = pool[random];
+		pool.RemoveAt(random);
+		return result;
+	}
+		
 	public override bool Equals (object obj) {
 		return base.Equals(obj);
 	}

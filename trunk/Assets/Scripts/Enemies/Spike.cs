@@ -70,7 +70,7 @@ public class Spike : Enemy {
 			}
 		}
 		if (mode == Mode.PATHFINDING) {
-			if (aStarThreadState.isFinishedNow()) {
+			if (aStarThreadState.IsFinishedNow()) {
 				aStarThreadState.Complete();
 				mode = Mode.CHASING;
 				isOnPath = false;
@@ -83,10 +83,10 @@ public class Spike : Enemy {
 //				Debug.Log ("chasing " + isOnPath);
 			} else {
 				if (distanceToShip > CHASE_DISTANCE) {
-					if (aStarThreadState.path.Count > 0) {
-						LinkedListNode<AStarNode> n = aStarThreadState.path.First;
+					if (aStarThreadState.roomPath.Count > 0) {
+						LinkedListNode<AStarNode> n = aStarThreadState.roomPath.First;
 						targetPosition = n.Value.gridPos;
-						aStarThreadState.path.RemoveFirst();
+						aStarThreadState.roomPath.RemoveFirst();
 						isOnPath = true;
 	//					Debug.Log ("setting new target position " + targetPosition);
 					} else {

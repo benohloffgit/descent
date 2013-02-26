@@ -113,52 +113,80 @@ public class Movement {
 	public void AStarPath(AStarThreadState aStarThreadState, GridPosition s, GridPosition g) {
 		
 		aStarThreadState.Start();
-	UnityThreadHelper.TaskDistributor.Dispatch( () => {
+		UnityThreadHelper.TaskDistributor.Dispatch( () => {
 
-		if (g.roomPosition != s.roomPosition) {
-			// prepare a room transition move
-//			Debug.Log ("goal in different room than start!");
-			Room sR = cave.GetCurrentZone().GetRoom(s);
-			Room gR = cave.GetCurrentZone().GetRoom(g);
-			IntTriple startRoomTransitionCell;
-			IntTriple goalRoomTransitionCell;
-			if (sR.id > gR.id) {
-				startRoomTransitionCell = sR.entryCell;
-				goalRoomTransitionCell = gR.exitCell;
-			} else {
-				startRoomTransitionCell = sR.exitCell;
-				goalRoomTransitionCell = gR.entryCell;
+			if (g.roomPosition != s.roomPosition) {
+//				Debug.Log ("start room not equals goal room, zone count " + aStarThreadState.zonePath.Count);
+				if (aStarThreadState.zonePath.Count == 0) {
+//					Debug.Log ("Pathfinding in ZONE mode from/to " + s + " " + g);
+					AStarPathCore(aStarThreadState, s, g, AStarThreadState.Mode.ZONE);
+//					Debug.Log ("zone path found " + aStarThreadState.zonePath.Count);
+//					Debug.Log(aStarThreadState.zonePath.First.Value.gridPos + " " + aStarThreadState.zonePath.Last.Value.gridPos);
+				}
+				GridPosition nextRoom = aStarThreadState.zonePath.First.Value.gridPos;
+//				Debug.Log ("nextRoom " + nextRoom);
+				if (s.roomPosition == nextRoom.roomPosition) {
+//					Debug.Log ("start room == next room");
+					// we are in this room already, remove it and get next one
+					aStarThreadState.zonePath.RemoveFirst();
+					if (aStarThreadState.zonePath.Count > 0) {
+						nextRoom = aStarThreadState.zonePath.First.Value.gridPos;						
+//						Debug.Log ("new next room " + nextRoom);
+					}
+				}
+				Room sR = cave.GetCurrentZone().GetRoom(s);
+				Room gR = cave.GetCurrentZone().GetRoom(nextRoom);
+				IntTriple startRoomTransitionCell = sR.exits[gR.pos-sR.pos].pos;
+				IntTriple goalRoomTransitionCell = gR.exits[sR.pos-gR.pos].pos;
+//				Debug.Log("startRoomTransitionCell " + startRoomTransitionCell + " goalRoomTransitionCell " + goalRoomTransitionCell);
+				if (s.cellPosition == startRoomTransitionCell) {
+					aStarThreadState.roomPath.AddLast(new AStarNode(AStarThreadState.Mode.ROOM, s, 0, 0));
+					aStarThreadState.roomPath.AddLast(new AStarNode(AStarThreadState.Mode.ROOM, new GridPosition(goalRoomTransitionCell, gR.pos), 0, 0));
+//					Debug.Log ("performing transition to another room " + s + ", " + new GridPosition(goalRoomTransitionCell, gR.pos));
+					aStarThreadState.Finish();
+					return;
+				} else {
+					// first we have to move towards the transition cell (either entry or exit of start room)
+					g = new GridPosition(startRoomTransitionCell, s.roomPosition);
+//					Debug.Log ("moving to transition cell: " + g);
+				}				
+				
 			}
-			if (s.cellPosition == startRoomTransitionCell) {
-				aStarThreadState.path.AddLast(new AStarNode(s, 0, 0));
-				aStarThreadState.path.AddLast(new AStarNode(new GridPosition(goalRoomTransitionCell, g.roomPosition), 0, 0));
-//				Debug.Log ("performing transition to another room " + s + ", " + new GridPosition(goalRoomTransitionCell, g.roomPosition));
-				aStarThreadState.Finish();
-				return;
-			} else {
-				// first we have to move towards the transition cell (either entry or exit of start room)
-				g = new GridPosition(startRoomTransitionCell, s.roomPosition);
-//				Debug.Log ("moving to transition cell");
-			}
-		}
 			
+			AStarPathCore(aStarThreadState, s, g, AStarThreadState.Mode.ROOM);
+			return;			
+		});
+	}
+
+	public void AStarPathCore(AStarThreadState aStarThreadState, GridPosition s, GridPosition g, AStarThreadState.Mode mode) {
+		if (mode == AStarThreadState.Mode.ZONE) {
+			s.cellPosition = IntTriple.ZERO;
+			g.cellPosition = IntTriple.ZERO;
+		}
+		
 		Dictionary<int, AStarNode> closedSet = new Dictionary<int, AStarNode>();
 		Dictionary<int, AStarNode> openSet = new Dictionary<int, AStarNode>();
 		Dictionary<int, int> cameFrom = new Dictionary<int, int>();
 		
-		AStarNode goal = new AStarNode(g, 0, 0);
+		AStarNode goal = new AStarNode(mode, g, 0, 0);
 		
-		AStarNode startNode = new AStarNode(s, 0, AStarHeuristic(s, g));
+		AStarNode startNode = new AStarNode(mode, s, 0, AStarHeuristic(s, g));
 		openSet.Add(startNode.GetHashCode(), startNode);
 		
 		while (openSet.Count > 0) {
 //			Debug.Log ("here1");
 			AStarNode current = AStarGetWithLowestFitness(openSet);
-			if (current.position == goal.position) {
+			if (current.GetHashCode() == goal.GetHashCode()) {
 //				Debug.Log ("path FOUND!");// + (Time.realtimeSinceStartup-startTime));
 				closedSet.Add(current.GetHashCode(), current);
-				AStarReconstructPath(ref cameFrom, ref aStarThreadState.path, ref closedSet, goal.GetHashCode());
-				aStarThreadState.Finish();
+				if (mode == AStarThreadState.Mode.ROOM) {
+					AStarReconstructPath(ref cameFrom, ref aStarThreadState.roomPath, ref closedSet, goal.GetHashCode());
+				} else {
+					AStarReconstructPath(ref cameFrom, ref aStarThreadState.zonePath, ref closedSet, goal.GetHashCode());
+				}
+				if (mode == AStarThreadState.Mode.ROOM) {
+					aStarThreadState.Finish();
+				}
 				return;
 			}
 			
@@ -166,7 +194,7 @@ public class Movement {
 			openSet.Remove(current.GetHashCode());
 			closedSet.Add(current.GetHashCode(), current);
 			
-			foreach (AStarNode n in AStarGetNeighbours(current)) {
+			foreach (AStarNode n in AStarGetNeighbours(current, mode)) {
 				AStarNode neighbour = n;
 				if (closedSet.ContainsKey(neighbour.GetHashCode())) {
 //					Debug.Log ("neighbour in closed / hash " + neighbour.position +  " / " + neighbour.GetHashCode());
@@ -192,14 +220,11 @@ public class Movement {
 //			Debug.Log ("openSet count " + openSet.Count);
 		}
 //		Debug.Log ("Find nearest PATH location based on heuristic!");//+ (Time.realtimeSinceStartup-startTime));
-		AStarChoosePathFromNearestNode(ref cameFrom, ref aStarThreadState.path, ref closedSet);
+		AStarChoosePathFromNearestNode(ref cameFrom, ref aStarThreadState.roomPath, ref closedSet);
 		aStarThreadState.Finish();
 		return;
-//		aStarThreadState.path.Clear();
-//		aStarThreadState.Finish();
-	});
 	}
-	
+
 	private AStarNode AStarGetWithLowestFitness(Dictionary<int, AStarNode> nodeSet) {
 		int key = 0;
 		float fitness = 1000000f;
@@ -212,13 +237,20 @@ public class Movement {
 		return nodeSet[key];
 	}
 	
-	private ArrayList AStarGetNeighbours(AStarNode n) {
+	private ArrayList AStarGetNeighbours(AStarNode n, AStarThreadState.Mode mode) {
 		ArrayList neighbours = new ArrayList();
 		for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
 			try {
-				GridPosition gridPosition = new GridPosition(new IntTriple(n.position + RoomMesh.DIRECTIONS[i]), n.gridPos.roomPosition);
-				if (play.cave.GetCellDensity(gridPosition) == Cave.DENSITY_EMPTY) {
-					neighbours.Add(new AStarNode(gridPosition, 0, 0));
+				if (mode == AStarThreadState.Mode.ROOM) {
+					GridPosition gridPosition = new GridPosition(n.gridPos.cellPosition + Cave.ROOM_DIRECTIONS[i], n.gridPos.roomPosition);
+					if (play.cave.GetCellDensity(gridPosition) == Cave.DENSITY_EMPTY) {
+						neighbours.Add(new AStarNode(mode, gridPosition, 0, 0));
+					}
+				} else {
+					GridPosition gridPosition = new GridPosition(n.gridPos.cellPosition, n.gridPos.roomPosition + Cave.ROOM_DIRECTIONS[i]);
+					if (play.cave.GetRoomDensity(gridPosition) == Cave.DENSITY_EMPTY) {
+						neighbours.Add(new AStarNode(mode, gridPosition, 0, 0));
+					}
 				}
 			} catch (IndexOutOfRangeException e) {
 				Game.DefNull(e);

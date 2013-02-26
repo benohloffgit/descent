@@ -3,19 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 	
 public class AStarThreadState {
-	public bool isProcessing = false;
-	public bool isFinished = true;
-	public LinkedList<AStarNode> path;
+	public LinkedList<AStarNode> roomPath;
+	public LinkedList<AStarNode> zonePath;
+	
 	private float startTime;
+	private bool isProcessing = false;
+	private bool isFinished = true;
 
+	public enum Mode { ROOM=0, ZONE=1 }
+	
 	public AStarThreadState() {
+//		zonePath = new LinkedList<AStarNode>();
 	}
 	
 	public void Start() {
 		startTime = Time.realtimeSinceStartup;
 		isProcessing = true;
 		isFinished = false;
-		path = new LinkedList<AStarNode>();
+		roomPath = new LinkedList<AStarNode>();
+		zonePath = new LinkedList<AStarNode>();
 	}
 	
 	public void Finish() {
@@ -27,7 +33,7 @@ public class AStarThreadState {
 		Debug.Log("AStar completed in " + (Time.realtimeSinceStartup-startTime));
 	}
 	
-	public bool isFinishedNow() {
+	public bool IsFinishedNow() {
 		return (isFinished && isProcessing);
 	}
 }

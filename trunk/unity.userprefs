@@ -1,20 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Game.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayGUI.cs">
     <Files>
       <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="88" Column="40" />
-      <File FileName="Assets\Scripts\Game.cs" Line="29" Column="39" />
-      <File FileName="Assets\Scripts\Play.cs" Line="156" Column="26" />
+      <File FileName="Assets\Scripts\Game.cs" Line="25" Column="2" />
+      <File FileName="Assets\Scripts\Play.cs" Line="176" Column="3" />
       <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="129" Column="3" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="29" Column="2" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="31" Column="31" />
       <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="85" Column="27" />
       <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="67" Column="43" />
       <File FileName="Assets\Scripts\Menu.cs" Line="122" Column="1" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="62" Column="40" />
-      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="61" Column="79" />
-      <File FileName="Assets\Scripts\PG Cave\RoomMiner.cs" Line="52" Column="42" />
-      <File FileName="Assets\Scripts\Behaviour\AStarThreadState.cs" Line="36" Column="15" />
-      <File FileName="Assets\Scripts\PG Cave\RoomMesh.cs" Line="50" Column="32" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="61" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -7,6 +7,7 @@ public class Ship : MonoBehaviour {
 	public Game game;
 	
 	public int health;
+	public int shield;
 	
 	private Play play;
 	private GameInput gameInput;
@@ -27,6 +28,7 @@ public class Ship : MonoBehaviour {
 	private static float FORCE_YAW = 3.5f;
 	
 	private static int HEALTH = 200;
+	private static int SHIELD = 50;
 	
 //	private Vector3 collisionPoint = Vector3.zero;
 //	private Vector3 collisionNormal = Vector3.zero;
@@ -52,6 +54,7 @@ public class Ship : MonoBehaviour {
 		
 		isHeadlightOn = true;
 		health = HEALTH;
+		shield = SHIELD;
 	}
 	
 	void OnCollisionEnter(Collision c) {

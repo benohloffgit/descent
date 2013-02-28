@@ -83,7 +83,7 @@ public class Play : MonoBehaviour {
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha7)) {				
 				Spike spike = enemyDistributor.CreateSpike();
-				spike.transform.position = new Vector3(130f, 205f, 67f); //GetShipPosition();
+				spike.transform.position = GetShipPosition(); //new Vector3(130f, 205f, 67f)
 				Debug.Log ("Adding Spike (Editor mode)");
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha0)) {
@@ -171,8 +171,10 @@ public class Play : MonoBehaviour {
 		// game setup
 		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
-		playGUI.DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.health), MyGUI.GetDigitOfNumber(1, ship.health), MyGUI.GetDigitOfNumber(2, ship.health)});
-		playGUI.currentHealth = ship.health;
+		playGUI.Initialize();
+//		playGUI.DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.health), MyGUI.GetDigitOfNumber(1, ship.health), MyGUI.GetDigitOfNumber(2, ship.health)});
+//		playGUI.DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, ship.shield), MyGUI.GetDigitOfNumber(1, ship.shield), MyGUI.GetDigitOfNumber(2, ship.shield)});
+//		playGUI.currentHealth = ship.health;
 		
 		GameObject newMiniMap = GameObject.Instantiate(miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
@@ -280,8 +282,18 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void DamageShip(int damage) {
+		if (ship.shield > 0) {
+			ship.shield -= damage * 2;
+			if (ship.shield < 0) {
+				damage = Mathf.Abs(ship.shield);
+				ship.shield = 0;
+			} else {
+				damage = 0;
+			}
+		}
 		ship.health -= damage;
-		playGUI.SetHealth(ship.health);		
+//		playGUI.SetHealth(ship.health);
+//		playGUI.SetShield(ship.shield);
 	}
 	
 	public void DamageEnemy(int damage, Enemy e) {

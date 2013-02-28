@@ -76,6 +76,7 @@ public class MiniMap : MonoBehaviour {
 	void FixedUpdate() {
 		if (play.GetRoomOfShip().pos != currentRoomPos) {
 			ReadRoomData();
+			currentRoomPos = play.GetRoomOfShip().pos;
 		}
 		
 		if (mode == Mode.On) {

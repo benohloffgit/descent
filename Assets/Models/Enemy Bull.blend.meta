@@ -7,6 +7,10 @@ ModelImporter:
     7400000: Action //// Enemy Bull
     7400002: Forward //// Enemy Bull
     7400004: Up //// Enemy Bull
+    7400006: ToForward //// Enemy Bull
+    7400008: FromForward //// Enemy Bull
+    7400010: ToUp //// Enemy Bull
+    7400012: FromUp //// Enemy Bull
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -22,14 +26,34 @@ ModelImporter:
     animationScaleError: .5
     animationWrapMode: 0
     clipAnimations:
+    - name: ToForward
+      firstFrame: 10
+      lastFrame: 20
+      wrapMode: 0
+      loop: 0
     - name: Forward
-      firstFrame: 1
+      firstFrame: 20
       lastFrame: 60
       wrapMode: 2
       loop: 1
-    - name: Up
+    - name: FromForward
       firstFrame: 60
+      lastFrame: 70
+      wrapMode: 0
+      loop: 0
+    - name: ToUp
+      firstFrame: 70
+      lastFrame: 80
+      wrapMode: 0
+      loop: 0
+    - name: Up
+      firstFrame: 80
       lastFrame: 120
+      wrapMode: 2
+      loop: 1
+    - name: FromUp
+      firstFrame: 120
+      lastFrame: 130
       wrapMode: 0
       loop: 0
   meshes:

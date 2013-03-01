@@ -67,14 +67,19 @@ public class Movement {
 				currentAngleUp = angleUp;
 			}
 			if (currentAngleUp > 5.0f) {
-				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.up, target.up) * 10.0f);
+				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.up, target.up) * 5.0f);
 				currentAngleUp = angleUp;
 			} else {
 				currentAngleUp = 0f;
 			}
 			float angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
 			if (angleForward > angleForwardMax) {
-				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 10.0f);
+				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 5.0f);
+			}
+		} else { // look to moving direction
+			float angleForward = Vector3.Angle(rigidbody.transform.forward, rigidbody.velocity.normalized);
+			if (angleForward > angleForwardMax) {
+				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, rigidbody.velocity) * 5.0f);
 			}
 		}
 	}

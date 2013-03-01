@@ -89,6 +89,13 @@ public class EnemyDistributor {
 		spike.Initialize(game, play);
 		return spike;
 	}
+
+	public Bull CreateBull() {
+		GameObject p = GameObject.Instantiate(play.bullPrefab) as GameObject;
+		Bull bull = p.GetComponentInChildren<Bull>();
+		bull.Initialize(game, play);
+		return bull;
+	}
 	
 	public void PlaceOnWall(GameObject gO, RaycastHit h) {
 //		Vector3 centeredPos = h.collider.transform.TransformPoint(h.barycentricCoordinate);

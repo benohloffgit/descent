@@ -15,6 +15,7 @@ public class Play : MonoBehaviour {
 	public GameObject lightBulbPrefab;
 	public GameObject pyramidPrefab;
 	public GameObject spikePrefab;
+	public GameObject bullPrefab;
 	public GameObject roomEntryPrefab;
 	public GameObject roomConnectorPrefab;
 	public GameObject miniMapPrefab;
@@ -85,6 +86,11 @@ public class Play : MonoBehaviour {
 				Spike spike = enemyDistributor.CreateSpike();
 				spike.transform.position = GetShipPosition(); //new Vector3(130f, 205f, 67f)
 				Debug.Log ("Adding Spike (Editor mode)");
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha8)) {				
+				Bull bull = enemyDistributor.CreateBull();
+				bull.transform.position = GetShipPosition(); //new Vector3(130f, 205f, 67f)
+				Debug.Log ("Adding Bull (Editor mode)");
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha0)) {
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {

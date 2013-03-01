@@ -4,6 +4,7 @@ using System.Collections;
 
 public class PrefabFactory {
 	private Game game;
+	private Play play;
 
 	private GameObject gunBulletTemplate;
 	private GameObject laserShotTemplate;
@@ -13,7 +14,8 @@ public class PrefabFactory {
 		game = g;
 	}
 	
-	public void Initialize() {
+	public void Initialize(Play p) {
+		play = p;
 		gunBulletTemplate = GameObject.Instantiate(game.gunBulletPrefab) as GameObject;
 		gunBulletTemplate.GetComponent<Shot>().enabled = false;
 		laserShotTemplate = GameObject.Instantiate(game.laserShotPrefab) as GameObject;
@@ -24,6 +26,7 @@ public class PrefabFactory {
 	public GameObject CreateGunBullet(Vector3 pos, Quaternion rot) {
 		GameObject newBullet = GameObject.Instantiate(gunBulletTemplate, pos, rot) as GameObject;
 		Shot shot = newBullet.GetComponent<Shot>();
+		shot.Initialize(play);
 		shot.enabled = true;
 		shot.shotType = Game.Shot.Bullet;
 		return newBullet;
@@ -33,6 +36,7 @@ public class PrefabFactory {
 		GameObject newLaser = GameObject.Instantiate(laserShotTemplate, pos, rot) as GameObject;
 		Shot shot = newLaser.GetComponent<Shot>();
 		shot.enabled = true;
+		shot.Initialize(play);
 		shot.shotType = Game.Shot.Laser;
 		return newLaser;
 	}

@@ -111,7 +111,7 @@ public class Spike : Enemy {
 
 	private void Shoot() {
 		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(turret.position + turret.TransformDirection(BULLET_POSITION), transform.rotation);
-		newBullet.GetComponent<Shot>().Initialize(play);				
+//		newBullet.GetComponent<Shot>().Initialize(play);				
 		Vector3 bulletDirection = turret.forward * Game.GUN_BULLET_SPEED;
 		newBullet.rigidbody.AddForce(bulletDirection);
 	}

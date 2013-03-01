@@ -75,24 +75,26 @@ public class Game : MonoBehaviour {
 			state.Initialize(this);
 			
 			gameInput = GetComponent<GameInput>();
+
+			o = GameObject.Find("/Menu");
+			if (o != null) {
+				menu = o.GetComponent<Menu>();
+				menu.Initialize(this, gameInput);
+			}
+			o = GameObject.Find("/Play");
+			if (o != null) {
+				play = o.GetComponent<Play>();
+				play.Initialize(this, gameInput);
+			}
+			
 			prefabFactory = new PrefabFactory(this);
-			prefabFactory.Initialize();
+			prefabFactory.Initialize(play);
 				
 			isInitialized = true;
 		}
 		
 		gameInput.enabled = true;
 		
-		o = GameObject.Find("/Menu");
-		if (o != null) {
-			menu = o.GetComponent<Menu>();
-			menu.Initialize(this, gameInput);
-		}
-		o = GameObject.Find("/Play");
-		if (o != null) {
-			play = o.GetComponent<Play>();
-			play.Initialize(this, gameInput);
-		}
 
 		if (state.gameMode != Game.Mode.None) {
 			SetGameMode(state.gameMode);

@@ -3,6 +3,9 @@ guid: 462a4b9d655215345af3b75f32af96f7
 ModelImporter:
   fileIDToRecycleName:
     4300000: EnemySpikeTurret
+    4300002: Turret
+    7400000: Action //// Enemy Spike Turret
+    7400002: Forward //// Enemy Spike Turret
   serializedVersion: 10
   materials:
     importMaterials: 1
@@ -17,7 +20,12 @@ ModelImporter:
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
-    clipAnimations: []
+    clipAnimations:
+    - name: Forward
+      firstFrame: 10
+      lastFrame: 50
+      wrapMode: 2
+      loop: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
@@ -47,19 +55,76 @@ ModelImporter:
       data:
         first: 111
         second: 605fa900
-    EnemySpikeTurret:
+    Armature:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    Body:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+    Bone0Do.L:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+    Bone0Do.R:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    Bone0Up.L:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+    Bone0Up.R:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+    Bone1Do.L:
+      data:
+        first: 1
+        second: b6860100
+      data:
+        first: 4
+        second: 961a0600
+    Bone1Do.R:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+    Bone1Up.L:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    Bone1Up.R:
       data:
         first: 1
         second: a2860100
       data:
         first: 4
         second: 821a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
     Lamp:
       data:
         first: 1
@@ -67,3 +132,13 @@ ModelImporter:
       data:
         first: 4
         second: 801a0600
+    Turret:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+      data:
+        first: 137
+        second: a00bd100

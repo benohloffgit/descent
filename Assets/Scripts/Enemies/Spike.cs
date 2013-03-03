@@ -27,7 +27,7 @@ public class Spike : Enemy {
 	private static float CHASE_DISTANCE = RoomMesh.MESH_SCALE * CHASE_RANGE;
 	private static Vector3 BULLET_POSITION = new Vector3(0,0,2.0f);
 	private static float LOOK_AT_ANGLE_TOLERANCE_AIMING = 0.5f;
-	private static float TURRET_TURN_SPEED = 2.5f;
+	private static float TURRET_TURN_SPEED = 1.0f;
 //	private static float TURRET_MAX_ROTATION = 0.005f;
 	
 	private static int HEALTH = 15;
@@ -55,7 +55,7 @@ public class Spike : Enemy {
 	}
 					
 	void FixedUpdate() {
-		turret.RotateAround(transform.position, transform.TransformDirection(Vector3.forward), TURRET_TURN_SPEED);
+//		turret.RotateAround(transform.position, transform.TransformDirection(Vector3.up), TURRET_TURN_SPEED);
 		
 		Vector3 isVisible = play.ship.IsVisibleFrom(turret.position);
 	// TODO take into account if in another room...
@@ -111,7 +111,6 @@ public class Spike : Enemy {
 
 	private void Shoot() {
 		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(turret.position + turret.TransformDirection(BULLET_POSITION), transform.rotation);
-//		newBullet.GetComponent<Shot>().Initialize(play);				
 		Vector3 bulletDirection = turret.forward * Game.GUN_BULLET_SPEED;
 		newBullet.rigidbody.AddForce(bulletDirection);
 	}

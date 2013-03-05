@@ -82,8 +82,9 @@ namespace UnityThreading
                 if (TaskSortingSystem == UnityThreading.TaskSortingSystem.ReorderWhenAdded ||
                     TaskSortingSystem == UnityThreading.TaskSortingSystem.ReorderWhenExecuted)
                     ReorderTasks();
+
+                dataEvent.Set();
             }
-			dataEvent.Set();
         }
 
         internal void AddTasks(IEnumerable<TaskBase> tasks)
@@ -96,8 +97,9 @@ namespace UnityThreading
                 if (TaskSortingSystem == UnityThreading.TaskSortingSystem.ReorderWhenAdded ||
                     TaskSortingSystem == UnityThreading.TaskSortingSystem.ReorderWhenExecuted)
                     ReorderTasks();
+
+                dataEvent.Set();
             }
-			dataEvent.Set();
         }
 
         protected void ReorderTasks()
@@ -127,10 +129,10 @@ namespace UnityThreading
 
                 if (TaskSortingSystem == TaskSortingSystem.ReorderWhenExecuted)
                     ReorderTasks();
-            }
 
-			if (TaskCount == 0)
-				dataEvent.Reset();
+                if (TaskCount == 0)
+                    dataEvent.Reset();
+            }
 
 			return newTasks;
         }
@@ -325,10 +327,10 @@ namespace UnityThreading
                     return false;
                 else
                     ProcessSingleTask();
-            }
 
-			if (TaskCount == 0)
-				dataEvent.Reset();
+                if (TaskCount == 0)
+                    dataEvent.Reset();
+            }
 
             return true;
         }
@@ -347,9 +349,11 @@ namespace UnityThreading
                 return false;
 
             lock (taskList)
+            {
                 ProcessSingleTask();
-			if (TaskCount == 0)
-				dataEvent.Reset();
+                if (TaskCount == 0)
+                    dataEvent.Reset();
+            }
             return true;
         }
 
@@ -359,10 +363,10 @@ namespace UnityThreading
             {
                 while (taskList.Count != 0)
                     ProcessSingleTask();
-			}
 
-			if (TaskCount == 0)
-				dataEvent.Reset();
+                if (TaskCount == 0)
+                    dataEvent.Reset();
+			}
 		}
 
         private void ProcessSingleTask()

@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Movement {
+	public enum LookAtMode { IntoMovingDirection=0, None=1 }
+	
 	private Play play;
 	private Cave cave;
 	
@@ -58,7 +60,7 @@ public class Movement {
 		}
 	}
 
-	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleForwardMax, ref float currentAngleUp) {
+	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleForwardMax, ref float currentAngleUp, LookAtMode mode) {
 		Vector3 position = rigidbody.transform.position;
 		if ( Vector3.Distance(cave.GetGridFromPosition(position).GetVector3(), cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
 			Vector3 toTarget = target.position - position;
@@ -76,7 +78,7 @@ public class Movement {
 			if (angleForward > angleForwardMax) {
 				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 5.0f);
 			}
-		} else { // look to moving direction
+		} else if (mode == LookAtMode.IntoMovingDirection) { // look to moving direction
 			float angleForward = Vector3.Angle(rigidbody.transform.forward, rigidbody.velocity.normalized);
 			if (angleForward > angleForwardMax) {
 				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, rigidbody.velocity) * 5.0f);
@@ -297,7 +299,112 @@ public class Movement {
 	private float AStarHeuristic(AStarNode a, AStarNode b) {
 		return Vector3.Distance(a.position, b.position);
 	}
-															
+
+	public void CoverFind(CoverFindThreadState coverFindThreadState, GridPosition start, GridPosition shipPos) {
+//		start = new GridPosition(new IntTriple(3,2,3), new IntTriple(1,2,0));
+//		shipPos = new GridPosition(new IntTriple(4,2,6), new IntTriple(1,2,0));
+		
+		coverFindThreadState.Start();
+		coverFindThreadState.coverPosition = GridPosition.ZERO;
+//		int tested = 0;
+		
+		UnityThreadHelper.TaskDistributor.Dispatch( () => {
+			Vector3 shipPosition = shipPos.GetVector3() * RoomMesh.MESH_SCALE;
+
+			IntTriple cell = start.cellPosition;
+			int dimension = Game.DIMENSION_ROOM;
+			Room r = cave.GetCurrentZone().GetRoom(start);
+//			Debug.Log ("Cover Find " + start + " "  + shipPos);
+			for (int shells=0; shells<4; shells++) {
+//				Debug.Log ("shells " + shells);
+				int startDim = shells; //int startDim = ((shells*2+1) - 1 / 2);
+				for (int slices=0; slices<shells*2+1; slices++) {
+//					Debug.Log ("  slices " + slices);
+					if (slices == 0 || slices == shells*2) { // full layer
+						for (int nX=cell.x-startDim; nX<=cell.x+startDim; nX++) {
+							if (nX >= 0 && nX<dimension) {
+								for (int nY=cell.y-startDim; nY<=cell.y+startDim; nY++) {
+									if (nY >= 0 && nY<dimension) {
+										try {
+//											tested++;
+//											Debug.Log ("testing full layer " + nX + " " + nY +  " " + (cell.z - startDim + slices));
+											if (r.GetCellDensity(nX, nY, cell.z - startDim + slices) == Cave.DENSITY_EMPTY) {
+												GridPosition testCell = new GridPosition(new IntTriple(nX, nY, cell.z - startDim + slices), start.roomPosition);
+												if (!CoverFindTestLOS(testCell, shipPosition)) { // if no LOS
+													coverFindThreadState.coverPosition = testCell;
+													coverFindThreadState.Finish();
+													return;
+												}
+											}
+										} catch (IndexOutOfRangeException e) {
+											Game.DefNull(e);
+										}
+									}
+								}
+							}
+						}
+					} else { // outer spiral
+//						Debug.Log ("outer spiral");
+						for (int side=0; side<4; side++) {
+							int x = cell.x-startDim;
+							int y = cell.y-startDim;
+							if (side == 1) {
+								x += shells*2;
+							} else if (side == 2) {
+								x += shells*2;
+								y += shells*2;
+							} else if (side == 3) {
+								y += shells*2;
+							}
+							for (int edge=0; edge<=shells*2; edge++) {
+//								Debug.Log ("03 " + side + " " + edge + " " + x + " " + y);
+								try {
+//									tested++;
+//									Debug.Log ("testing spiral " + x + " " + y +  " " + (cell.z - startDim + slices));
+									if (r.GetCellDensity(x, y, cell.z - startDim + slices) == Cave.DENSITY_EMPTY) {
+//										Debug.Log ("testing " + side + " " + edge);
+										GridPosition testCell = new GridPosition(new IntTriple(x, y, cell.z - startDim + slices), start.roomPosition);
+										if (!CoverFindTestLOS(testCell, shipPosition)) { // if no LOS
+											coverFindThreadState.coverPosition = testCell;
+											coverFindThreadState.Finish();
+											return;
+										}
+									}
+								} catch (IndexOutOfRangeException e) {
+									Game.DefNull(e);
+								}
+								if (side == 0) {
+									x++;
+								} else if (side == 1) {
+									y++;
+								} else if (side == 2) {
+									x--;
+								} else if (side == 3) {
+									y--;
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			coverFindThreadState.Finish();
+			Debug.Log ("No cover found");
+			return;
+		});
+	}
+	
+	private bool CoverFindTestLOS(GridPosition a, Vector3 bV) {
+		Vector3 aV = a.GetVector3() * RoomMesh.MESH_SCALE;
+//		Vector3 bV = b.GetVector3();
+		float distance = Vector3.Distance(aV, bV);
+		UnityThreading.Task<bool> task = UnityThreadHelper.Dispatcher.Dispatch(() => {
+			return Physics.Raycast(aV, bV-aV, distance, Game.LAYER_MASK_CAVE);
+		});
+		bool result = task.Wait<bool>();
+//		Debug.Log (a + " " + aV + " " + bV + " " + result);
+		return !result;
+	}
 }
 
 

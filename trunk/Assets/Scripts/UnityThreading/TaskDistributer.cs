@@ -60,9 +60,9 @@ namespace UnityThreading
             if (workerThreadCount <= 0)
             {
 #if !NO_UNITY
-                workerThreadCount = UnityEngine.SystemInfo.processorCount * 3;
+                workerThreadCount = UnityEngine.SystemInfo.processorCount * 2;
 #else
-                workerThreadCount = Environment.ProcessorCount * 3;
+                workerThreadCount = Environment.ProcessorCount * 2;
 #endif
             }
 

@@ -1,20 +1,29 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MineBuilder : MonoBehaviour {
 	private Play play;
 	private Game game;
+	private Cave cave;
 		
 	private Rigidbody myRigidbody;
 	private RaycastHit hit;
 	private GridPosition targetPosition;
-//	private Vector3 targetCubePosition;
-//	private IntTriple roomPos;
+	private GridPosition coverPosition;
 	private float currentAngleUp;
+	private Mode mode;
+	private AStarThreadState aStarThreadState = new AStarThreadState();
+	private CoverFindThreadState coverFindThreadState = new CoverFindThreadState();
+	private bool isOnPath;
+	private float roamingStart;
 
 	private static float FORCE_MOVE = 5.0f;
 	private static int LOOK_AT_DISTANCE = 4; // measured in cubes
 	private static float LOOK_AT_ANGLE_TOLERANCE = 30.0f;
+	private static float MAX_ROAMING_TIME = 4.0f;
+
+	public enum Mode { ROAMING=0, HIDING=1, PATHFINDING=3, COVERFINDING=4 }
 	
 	void Awake() {
 		myRigidbody = GetComponent<Rigidbody>();
@@ -23,43 +32,83 @@ public class MineBuilder : MonoBehaviour {
 	public void Initialize(Game g, Play p) {
 		game = g;
 		play = p;
+		cave = play.cave;
 	}
 	
 	void Start() {
 		targetPosition = play.cave.GetGridFromPosition(transform.position);
+		coverPosition = GridPosition.ZERO;
+		mode = Mode.ROAMING;
+		currentAngleUp = 0f;
+		isOnPath = false;
+		roamingStart = Time.time;
 	}
 		
 	void FixedUpdate() {
-		play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
-		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE, ref currentAngleUp);
+		if (mode == Mode.COVERFINDING) {
+			if (coverFindThreadState.IsFinishedNow()) {
+//				Debug.Log ("Mode.COVERFINDING finished " + coverFindThreadState.coverPosition);
+				coverFindThreadState.Complete();
+				if (coverFindThreadState.coverPosition == GridPosition.ZERO) { // no cover found
+					mode = Mode.ROAMING;
+					roamingStart = Time.time;
+//					Debug.Log ("No cover found, Mode.ROAMING" );					
+				} else {
+					coverPosition = coverFindThreadState.coverPosition;
+					if (coverPosition != cave.GetGridFromPosition(transform.position)) {
+//						Debug.Log ("Mode.PATHFINDING" );					
+						mode = Mode.PATHFINDING;
+						play.movement.AStarPath(aStarThreadState, cave.GetGridFromPosition(transform.position), coverFindThreadState.coverPosition);
+					} else {
+						mode = Mode.ROAMING;
+						roamingStart = Time.time;
+						coverPosition =GridPosition.ZERO;
+//						Debug.Log ("We are already on cover pos : Mode.ROAMING" );					
+					}
+				}
+			}
+		}
+		if (mode == Mode.PATHFINDING) {
+			if (aStarThreadState.IsFinishedNow()) {
+				aStarThreadState.Complete();
+				mode = Mode.HIDING;
+				isOnPath = false;
+//				Debug.Log ("Pathfinding finished");
+			}
+		}
+		if (mode == Mode.HIDING) {
+			if (isOnPath) {
+				play.movement.Chase(myRigidbody, targetPosition, FORCE_MOVE, ref isOnPath);
+//				Debug.Log ("chasing " + isOnPath);
+			} else {
+				if (aStarThreadState.roomPath.Count > 0) {
+					LinkedListNode<AStarNode> n = aStarThreadState.roomPath.First;
+					targetPosition = n.Value.gridPos;
+					aStarThreadState.roomPath.RemoveFirst();
+					isOnPath = true;
+//					Debug.Log ("setting new target position " + targetPosition);
+				} else {
+					mode = Mode.ROAMING;
+					roamingStart = Time.time;
+//					Debug.Log ("Mode.ROAMING" );
+				}
+			}
+		}
+		if (mode == Mode.ROAMING) {
+			if (Time.time > roamingStart + MAX_ROAMING_TIME) {
+				mode = Mode.COVERFINDING;
+//				Debug.Log ("Mode.COVERFINDING" );
+				if (coverPosition == GridPosition.ZERO) {
+					coverPosition = cave.GetGridFromPosition(transform.position);
+				}
+				play.movement.CoverFind(coverFindThreadState, coverPosition, play.GetShipGridPosition());
+			} else {
+				play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
+			}
+		}
 		
+		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 	}		
 }
 
-
-			/*Collider[] colliders = Physics.OverlapSphere(transform.position, 1.0f, 1 << Game.LAYER_CAVE);
-			foreach (Collider c in colliders) {
-				//vel += hit.normal * FORCE_MOVE; //(RAYCAST_DISTANCE/hit.distance);
-				Debug.Log(c.name + " " + c.ClosestPointOnBounds(transform.position) + " " + transform.position + " " + (c.ClosestPointOnBounds(transform.position) - transform.position).magnitude + " " + vel);
-			}*/
-			
-/*			RaycastHit[] hits = Physics.SphereCastAll(transform.position, RAYCAST_DISTANCE, transform.position, 0.01f, layerMask);
-			foreach (RaycastHit hit in hits) {
-				vel += hit.normal * FORCE_MOVE; //(RAYCAST_DISTANCE/hit.distance);
-				Debug.Log(hit.collider.name + " " + hit.normal + " " + hit.distance + " " + vel);
-			}*/
-
-		/*
-		RaycastHit[] hits = Physics.SphereCastAll(transform.position, 20.0f, transform.up, 20.0f);
-		Debug.Log ("hitting");
-		foreach (RaycastHit hit in hits) {
-			Debug.Log(hit.collider.name + " " + hit.normal);
-		}
-		
-		Debug.Log ("hitting2");
-		Collider[] colliders = Physicshysics.OverlapSphere(transform.position, 10.0f)
-		foreach (Collider c in colliders) {
-			Debug.Log(c.name);
-		}
-		*/
 

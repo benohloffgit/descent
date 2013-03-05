@@ -37,6 +37,7 @@ public class Game : MonoBehaviour {
 	public static int LAYER_MASK_ALL = ( (1 << LAYER_SHIP) | (1 << LAYER_ENEMIES) | (1 << LAYER_CAVE) );
 	public static int LAYER_MASK_SHIP_CAVE = ( (1 << LAYER_SHIP) | (1 << LAYER_CAVE) );
 	public static int LAYER_MASK_SHIP = 1 << LAYER_SHIP;
+	public static int LAYER_MASK_CAVE = 1 << LAYER_CAVE;
 	public static int LAYER_MASK_MOVEABLES = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) );
 	
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);

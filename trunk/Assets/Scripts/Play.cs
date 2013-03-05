@@ -128,11 +128,11 @@ public class Play : MonoBehaviour {
 				isShipInvincible = (isShipInvincible) ? false : true;
 				Debug.Log ("Setting ship invincible: " + isShipInvincible);
 			}
-			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.C)) {
+			if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.C)) {
 				PlaceTestCubes();
 				Debug.Log ("Placing test cubes");
 			}
-			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.V)) {
+			if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.V)) {
 				RemoveTestCubes();
 				Debug.Log ("Removing test cubes");
 			}
@@ -152,7 +152,7 @@ public class Play : MonoBehaviour {
 				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
 //				Debug.Log (Time.frameCount);
 			}
-			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.K)) {
+			if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K)) {
 				Debug.Log("Ship Grid: " + shipGridPosition + ", " + cave.GetCellDensity(shipGridPosition));
 			}
 /*			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.L)) {

@@ -212,6 +212,9 @@ public class UnityThreadHelper : MonoBehaviour
         if (taskDistributor != null)
             taskDistributor.Dispose();
         taskDistributor = null;
+
+        if (instance == this)
+            instance = null;
     }
 
     void Update()

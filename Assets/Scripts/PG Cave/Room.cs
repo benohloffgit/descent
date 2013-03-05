@@ -5,26 +5,19 @@ public class Room {
 	public int id; // 0=entry, 1=exit, 2... inbetween
 	public int dimension;
 	public Cell[,,] cells;
-//	public int minerId;
 	public IntTriple pos;
-//	public IntTriple entryCell;
-//	public IntTriple exitCell;
 	public Dictionary<IntTriple, Cell> exits; // alignment, cell : alignment is other-me
 	public RoomMesh roomMesh;
 	
 	public static float ENTRY_EXIT_CELL_MARKER = 2.0f;
 	
 	private static float ISOVALUE_PER_NEIGHBOUR = 0.0148f; // 0.037 1/27 neighbours 
-	
-//	private Cave cave;
-	
+		
 	public Room(int i, int dim, IntTriple p, Cave c) {
 		id = i;
 		dimension = dim;
 		cells = new Cell[dim,dim,dim];
-//		minerId = mId;
 		pos = p;
-//		cave = c;
 		exits = new Dictionary<IntTriple, Cell>();
 	}
 	

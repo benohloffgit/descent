@@ -29,6 +29,6 @@ public class LightBulb : MonoBehaviour {
 		
 	void FixedUpdate() {
 		play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
-		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE, ref currentAngleUp);
+		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 	}		
 }

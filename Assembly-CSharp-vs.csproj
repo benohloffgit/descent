@@ -46,6 +46,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Behaviour\AStarNode.cs" />
      <Compile Include="Assets\Scripts\Behaviour\AStarThreadState.cs" />
+     <Compile Include="Assets\Scripts\Behaviour\CoverFindThreadState.cs" />
      <Compile Include="Assets\Scripts\Behaviour\EqualityComparerAStarNode.cs" />
      <Compile Include="Assets\Scripts\Behaviour\Movement.cs" />
      <Compile Include="Assets\Scripts\CCText\CCFont.cs" />

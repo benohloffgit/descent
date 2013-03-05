@@ -49,14 +49,14 @@ public class Bull : MonoBehaviour {
 		}
 		if (mode == Mode.ROAMING) {
 			play.movement.Roam(myRigidbody, ref targetPosition, 3, 8, FORCE_MOVE);
-			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_ROAMING, ref currentAngleUp);
+			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_ROAMING, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 		} else if (mode == Mode.SHOOTING) {
 			Shoot();
 			mode = Mode.AIMING;
 		}
 		if (mode == Mode.AIMING) {
 			play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
-			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_AIMING, ref currentAngleUp);
+			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_AIMING, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 		}
 	}
 

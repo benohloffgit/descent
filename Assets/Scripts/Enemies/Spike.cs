@@ -106,7 +106,7 @@ public class Spike : Enemy {
 				play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
 			}
 		}
-		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_RANGE, LOOK_AT_ANGLE_TOLERANCE_AIMING, ref currentAngleUp);
+		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_RANGE, LOOK_AT_ANGLE_TOLERANCE_AIMING, ref currentAngleUp, Movement.LookAtMode.None);
 	}
 
 	private void Shoot() {

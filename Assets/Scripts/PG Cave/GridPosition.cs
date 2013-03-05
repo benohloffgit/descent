@@ -4,7 +4,9 @@ using UnityEngine;
 public struct GridPosition {
 	public IntTriple roomPosition;
 	public IntTriple cellPosition;
-		
+
+	public static GridPosition ZERO = new GridPosition(IntTriple.ZERO, IntTriple.ZERO);
+	
 	public GridPosition(IntTriple cP, IntTriple rP) {
 		cellPosition = cP;
 		roomPosition = rP;

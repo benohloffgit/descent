@@ -36,6 +36,9 @@ public class Play : MonoBehaviour {
 	private RaycastHit hit;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 
+	Vector3 tangent = Vector3.zero;
+	Vector3 binormal = Vector3.zero;
+	
 	private GridPosition testPathStart;
 	private GridPosition testPathEnd;
 	
@@ -302,8 +305,28 @@ public class Play : MonoBehaviour {
 //		playGUI.SetShield(ship.shield);
 	}
 	
-	public void DamageEnemy(int damage, Enemy e) {
-		e.Damage(damage);
+	public void DamageEnemy(int damage, Enemy e, Vector3 contactPos) {
+		e.Damage(damage, contactPos);
+	}
+	
+	public void ShootBullet(Vector3 pos, Quaternion rot, Vector3 dir, float deviation) {
+		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot);
+		if (deviation != 0) {
+			Vector3.OrthoNormalize(ref dir, ref tangent, ref binormal);
+			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, deviation) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
+			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, deviation) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
+			dir = deviation1 * deviation2 * dir;
+		}
+		newBullet.rigidbody.AddForce(dir * Shot.SPEED);
+//		Debug.Log (dir + " " + (deviation1 * deviation2 * dir));
+	}
+	
+	public void DisplayExplosion(Vector3 pos, Quaternion rot) {
+		game.CreateFromPrefab().CreateExplosion(pos, rot);
+	}
+
+	public void DisplayHit(Vector3 pos, Quaternion rot) {
+		game.CreateFromPrefab().CreateHit(pos, rot);
 	}
 }
 

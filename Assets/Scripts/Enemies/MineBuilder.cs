@@ -2,8 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class MineBuilder : MonoBehaviour {
-	private Play play;
+public class MineBuilder : Enemy {
 	private Game game;
 	private Cave cave;
 		
@@ -22,6 +21,7 @@ public class MineBuilder : MonoBehaviour {
 	private static int LOOK_AT_DISTANCE = 4; // measured in cubes
 	private static float LOOK_AT_ANGLE_TOLERANCE = 30.0f;
 	private static float MAX_ROAMING_TIME = 4.0f;
+	private static int HEALTH = 10;
 
 	public enum Mode { ROAMING=0, HIDING=1, PATHFINDING=3, COVERFINDING=4 }
 	
@@ -33,6 +33,7 @@ public class MineBuilder : MonoBehaviour {
 		game = g;
 		play = p;
 		cave = play.cave;
+		health = HEALTH;
 	}
 	
 	void Start() {

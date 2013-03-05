@@ -16,9 +16,15 @@ public class Movement {
 		cave = play.cave;
 	}
 
-	public void Chase(Rigidbody rigidbody, GridPosition targetPosition, float force, ref bool isOnPath) {
+	public void Chase(Rigidbody rigidbody, GridPosition targetPosition, float force, ref bool isOnPath) {	
 		Vector3 position = rigidbody.transform.position;
 		GridPosition currentPosition = cave.GetGridFromPosition(position);
+		
+/*		// make sure targetPosition refers to actual empty grid cell in cave (this might not be the case with the first entry in pathfinding)
+		if (cave.GetCellDensity(targetPosition) == Cave.DENSITY_FILLED) {
+			Debug.Log ("Chase pos filled " + targetPosition);
+			targetPosition = currentPosition;
+		}*/
 		if (currentPosition == targetPosition) {
 			isOnPath = false;
 		} else {
@@ -118,6 +124,12 @@ public class Movement {
 	
 	// http://en.wikipedia.org/wiki/A*
 	public void AStarPath(AStarThreadState aStarThreadState, GridPosition s, GridPosition g) {
+		
+		if (cave.GetCellDensity(s) == Cave.DENSITY_FILLED) {
+//			Debug.Log ("start not empty " + s);
+			s = cave.GetNearestEmptyGridPositionFrom(s);
+//			Debug.Log ("start not empty, changing to " + s );
+		}
 		
 		aStarThreadState.Start();
 		UnityThreadHelper.TaskDistributor.Dispatch( () => {
@@ -307,7 +319,6 @@ public class Movement {
 		coverFindThreadState.Start();
 		coverFindThreadState.coverPosition = GridPosition.ZERO;
 //		int tested = 0;
-		
 		UnityThreadHelper.TaskDistributor.Dispatch( () => {
 			Vector3 shipPosition = shipPos.GetVector3() * RoomMesh.MESH_SCALE;
 

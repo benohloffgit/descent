@@ -4,6 +4,9 @@ using UnityEngine;
 public class Shot : MonoBehaviour {
 	public Game.Shot shotType;
 	
+	public static float SPEED = 100.0f;
+	public static float LASER_SPEED = 400.0f;
+	
 	private Play play;
 	
 	private static int DAMAGE = 5;
@@ -23,7 +26,7 @@ public class Shot : MonoBehaviour {
 //			Debug.Log ("HIT Ship");
 		} else if (c.collider.tag == Enemy.TAG) {
 			Debug.Log ("HIT Enemy");
-			play.DamageEnemy(DAMAGE, c.collider.GetComponent<Enemy>());
+			play.DamageEnemy(DAMAGE, c.collider.GetComponent<Enemy>(), c.contacts[0].point);
 		}
 		Destroy(gameObject);
 	}	
@@ -31,4 +34,5 @@ public class Shot : MonoBehaviour {
 	private void DestroySelf() {
 		Destroy(gameObject);
 	}
+	
 }

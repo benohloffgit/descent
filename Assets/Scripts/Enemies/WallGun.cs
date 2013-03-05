@@ -44,7 +44,7 @@ public class WallGun : MonoBehaviour {
 	
 	private void Shoot() {
 		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(barrelAnchor.position, barrelAnchor.rotation);
-		Vector3 bulletDirection = barrelAnchor.forward * Game.GUN_BULLET_SPEED;
+		Vector3 bulletDirection = barrelAnchor.forward * Shot.SPEED;
 		newBullet.rigidbody.AddForce(bulletDirection);
 	}
 	

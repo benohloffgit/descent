@@ -142,7 +142,7 @@ namespace UnityThreading
 					workerThreads[i].Dispose();
 				workerThreads = new TaskWorker[0];
 			}
-
+			
 			dataEvent.Close();
 			dataEvent = null;
 

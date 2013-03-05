@@ -62,7 +62,7 @@ public class Bull : MonoBehaviour {
 
 	private void Shoot() {
 		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(transform.position + transform.TransformDirection(BULLET_POSITION), transform.rotation);
-		Vector3 bulletDirection = transform.forward * Game.GUN_BULLET_SPEED;
+		Vector3 bulletDirection = transform.forward * Shot.SPEED;
 		newBullet.rigidbody.AddForce(bulletDirection);
 	}
 

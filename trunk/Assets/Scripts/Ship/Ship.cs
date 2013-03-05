@@ -8,7 +8,9 @@ public class Ship : MonoBehaviour {
 	
 	public int health;
 	public int shield;
-	
+	public float lastShotTime;
+	public float lastLaserTime;
+		
 	private Play play;
 	private GameInput gameInput;
 	
@@ -53,8 +55,11 @@ public class Ship : MonoBehaviour {
 		shipControl.Initialize(this, game, play, gameInput);
 		
 		isHeadlightOn = true;
+		SwitchHeadlight();
 		health = HEALTH;
 		shield = SHIELD;
+		lastShotTime = Time.time;
+		lastLaserTime = Time.time;
 	}
 	
 	void OnCollisionEnter(Collision c) {

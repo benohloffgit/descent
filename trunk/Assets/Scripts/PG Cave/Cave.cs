@@ -230,27 +230,27 @@ public class Cave {
 		return result;
 	}
 
-/*	public GridPosition GetNearestEmptyGridPositionFrom(GridPosition gridPosition) {
+	public GridPosition GetNearestEmptyGridPositionFrom(GridPosition gridPosition) {
 		GridPosition result = gridPosition;
 		IntTriple cell = gridPosition.cellPosition;
 		int dimension = Game.DIMENSION_ROOM;
 		Room r = GetCurrentZone().GetRoom(gridPosition);
 		for (int shells=0; shells<4; shells++) {
-			int startDim = ((shells*2+1) - 1 / 2);
+			int startDim = shells;
 			for (int slices=0; slices<shells*2+1; slices++) {
 				if (slices == 0 || slices == shells*2) { // full layer
 					for (int nX=cell.x-startDim; nX<=cell.x+startDim; nX++) {
 						if (nX >= 0 && nX<dimension) {
 							for (int nY=cell.y-startDim; nY<=cell.y+startDim; nY++) {
 								if (nY >= 0 && nY<dimension) {
-//									for (int nZ=cell.z-startDim; nZ<=cell.z+startDim; nZ++) {
-//										if (nZ >= 0 && nZ<dimension) {
-											if (r.GetCellDensity(nX, nY, cell.z + startDim + slices) == Cave.DENSITY_EMPTY) {
-												result.cellPosition = new IntTriple(nX, nY, cell.z + startDim + slices);
-												return result;
-											}
-//										}
-//									}
+									try {
+										if (r.GetCellDensity(nX, nY, cell.z - startDim + slices) == Cave.DENSITY_EMPTY) {
+											result.cellPosition = new IntTriple(nX, nY, cell.z - startDim + slices);
+											return result;
+										}
+									} catch (IndexOutOfRangeException e) {
+										Game.DefNull(e);
+									}
 								}
 							}
 						}
@@ -277,9 +277,13 @@ public class Cave {
 							} else if (side == 3) {
 								y--;
 							}
-							if (r.GetCellDensity(x, y, cell.z + startDim + slices) == Cave.DENSITY_EMPTY) {
-								result.cellPosition = new IntTriple(x, y, cell.z + startDim + slices);
-								return result;
+							try {
+								if (r.GetCellDensity(x, y, cell.z - startDim + slices) == Cave.DENSITY_EMPTY) {
+									result.cellPosition = new IntTriple(x, y, cell.z - startDim + slices);
+									return result;
+								}
+							} catch (IndexOutOfRangeException e) {
+								Game.DefNull(e);
 							}
 						}
 					}
@@ -287,7 +291,7 @@ public class Cave {
 			}
 		}
 		return result;
-	} */
+	}
 	
 	private void AddRoomConnector(GridPosition gP, IntTriple alignment) {
 		GameObject rC = GameObject.Instantiate(play.roomConnectorPrefab) as GameObject;
@@ -321,12 +325,7 @@ public class Cave {
 		IntTriple cellPos = new IntTriple(Mathf.RoundToInt(cellVector.x), Mathf.RoundToInt(cellVector.y), Mathf.RoundToInt(cellVector.z));
 		return new GridPosition(cellPos, roomPos);
 	}
-	
-/*	public GridPosition GetClosestEmptyGridFromPosition(Vector3 position) {
-		GridPosition gP = GetGridFromPosition(position);
-		return gP;
-	}*/
-	
+		
 	public Vector3 GetPositionFromGrid(GridPosition gP) {
 		return (gP.roomPosition.GetVector3() * Game.DIMENSION_ROOM + gP.cellPosition.GetVector3()) * RoomMesh.MESH_SCALE;
 	}

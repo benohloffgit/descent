@@ -8,6 +8,8 @@ public class Game : MonoBehaviour {
 	public GameObject gunBulletPrefab;
 	public GameObject laserShotPrefab;
 	public GameObject breadcrumbPrefab;
+	public GameObject explosionPrefab;
+	public GameObject hitPrefab;
 	
 	public State state;
 	public GameInput gameInput;
@@ -26,14 +28,12 @@ public class Game : MonoBehaviour {
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ZONE_SQUARED = DIMENSION_ZONE * DIMENSION_ZONE;
 	public static int DIMENSION_ZONE_CUBED = DIMENSION_ZONE_SQUARED * DIMENSION_ZONE;
-	public static int DIMENSION_ROOM = 12; // CxC cells
+	public static int DIMENSION_ROOM = 16; // CxC cells
 	public static int DIMENSION_ROOM_SQUARED = DIMENSION_ROOM * DIMENSION_ROOM;
 	public static int DIMENSION_ROOM_CUBED = DIMENSION_ROOM_SQUARED * DIMENSION_ROOM;
 	// max diagonal line of our room cube, roughly 27 units times mesh scale
 	public static float MAX_VISIBILITY_DISTANCE = RoomMesh.MESH_SCALE * Mathf.Sqrt( Mathf.Pow(Mathf.Sqrt(Mathf.Pow(DIMENSION_ROOM,2)*2),2) + Mathf.Pow(DIMENSION_ROOM,2));
 
-	public static float GUN_BULLET_SPEED = 200.0f;
-	
 	public static int LAYER_MASK_ALL = ( (1 << LAYER_SHIP) | (1 << LAYER_ENEMIES) | (1 << LAYER_CAVE) );
 	public static int LAYER_MASK_SHIP_CAVE = ( (1 << LAYER_SHIP) | (1 << LAYER_CAVE) );
 	public static int LAYER_MASK_SHIP = 1 << LAYER_SHIP;
@@ -65,6 +65,8 @@ public class Game : MonoBehaviour {
 		volume = AudioListener.volume;
 		showTrialDialog = false;
 //		Debug.Log ("MAX_VISIBILITY_DISTANCE " + MAX_VISIBILITY_DISTANCE);
+		Screen.lockCursor = true;
+		//Screen.showCursor = false;
 	}
 	
 	public void Initialize(Mode m) {
@@ -163,5 +165,6 @@ public class Game : MonoBehaviour {
 	
 	public static void DefNull(object o) {
 	}
+	
 }
 

@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Spike : Enemy {
-	public int health;
+//	public int health;
 
-	private Play play;
 	private Game game;
 	private Cave cave;
 	
@@ -28,6 +27,7 @@ public class Spike : Enemy {
 	private static Vector3 BULLET_POSITION = new Vector3(0,0,2.0f);
 	private static float LOOK_AT_ANGLE_TOLERANCE_AIMING = 0.5f;
 	private static float TURRET_TURN_SPEED = 1.0f;
+	private static float AIMING_DEVIATION = 3.0f;
 //	private static float TURRET_MAX_ROTATION = 0.005f;
 	
 	private static int HEALTH = 15;
@@ -74,10 +74,11 @@ public class Spike : Enemy {
 				aStarThreadState.Complete();
 				mode = Mode.CHASING;
 				isOnPath = false;
-//				Debug.Log ("Pathfinding finished");
+//				Debug.Log ("Pathfinding finished " + aStarThreadState.roomPath.Count);
 			}
 		}
 		if (mode == Mode.CHASING) {
+//			Debug.Log ("Chasing ...");
 			if (isOnPath) {
 				play.movement.Chase(myRigidbody, targetPosition, FORCE_MOVE, ref isOnPath);
 //				Debug.Log ("chasing " + isOnPath);
@@ -88,18 +89,21 @@ public class Spike : Enemy {
 						targetPosition = n.Value.gridPos;
 						aStarThreadState.roomPath.RemoveFirst();
 						isOnPath = true;
-	//					Debug.Log ("setting new target position " + targetPosition);
+//						Debug.Log ("setting new target position " + targetPosition);
 					} else {
 						mode = Mode.ROAMING;
+//						Debug.Log ("back to ROAMING 01");
 					}
 				} else {
 					mode = Mode.ROAMING;
-//					Debug.Log ("back to ROAMING");
+//					Debug.Log ("back to ROAMING 02");
 				}
 			}					
 		}
 		if (mode == Mode.ROAMING) {
+//			Debug.Log ("Roaming ...");
 			if (distanceToShip > SHOOTING_DISTANCE) {
+//				Debug.Log ("PATHFINDING");
 				mode = Mode.PATHFINDING;
 				play.movement.AStarPath(aStarThreadState, cave.GetGridFromPosition(transform.position), play.GetShipGridPosition());
 			} else {
@@ -110,17 +114,9 @@ public class Spike : Enemy {
 	}
 
 	private void Shoot() {
-		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(turret.position + turret.TransformDirection(BULLET_POSITION), transform.rotation);
-		Vector3 bulletDirection = turret.forward * Game.GUN_BULLET_SPEED;
-		newBullet.rigidbody.AddForce(bulletDirection);
+		play.ShootBullet(turret.position + turret.TransformDirection(BULLET_POSITION), transform.rotation, turret.forward, AIMING_DEVIATION);
 	}
 	
-	public override void Damage(int damage) {
-		health -= damage;
-		if (health <= 0) {
-			Destroy(gameObject);
-		}
-	}
 
 }
 

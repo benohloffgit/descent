@@ -29,6 +29,8 @@ public class Play : MonoBehaviour {
 	public bool isMiniMapFollowOn;
 	private MiniMap miniMap;
 	private PlayGUI playGUI;
+	private string keyCommand;
+	public bool isInKeyboardMode;
 	
 //	private GameInput gI;
 	private State state;
@@ -47,15 +49,37 @@ public class Play : MonoBehaviour {
 	private GridPosition shipGridPosition;
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
-			
+	
+	// e_CLAZZ_NUMBER_NUMBER
+	
+	void OnGUI() {
+        Event e = Event.current;
+        if (e.isKey && e.type == EventType.KeyDown) { // keydown and characters can come as seperate events!!!
+//			Debug.Log("> " + keyCommand + " "  + e.type + " " +  e.keyCode);
+			if (e.keyCode == KeyCode.Backslash) {
+				keyCommand = "";
+				isInKeyboardMode = true;
+			} else if (isInKeyboardMode) {
+				if (e.keyCode == KeyCode.Return) {
+					ExecuteKeyCommand();
+				}
+				if (e.character != 0) {
+//					Debug.Log ("here 2 " + e.character + " " + e.keyCode);
+					keyCommand += e.character;
+				}
+			}
+		}
+		e.Use();
+    }
+	
 	void Update() {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
-			if (Input.GetKeyDown(KeyCode.Alpha1)) {				
+/*			if (Input.GetKeyDown(KeyCode.Alpha1)) {				
 				MineTouch mineTouch = enemyDistributor.CreateMineTouch();
 				mineTouch.transform.position = GetShipPosition();
 				Debug.Log ("Adding Mine Touch (Editor mode)");
-			}
+			}*/
 			if (Input.GetKeyDown(KeyCode.Alpha2)) {				
 				MineBuilder mineBuilder = enemyDistributor.CreateMineBuilder();
 				mineBuilder.transform.position = GetShipPosition();
@@ -73,13 +97,13 @@ public class Play : MonoBehaviour {
 					Debug.Log ("Adding Wall Gun (Editor mode)");
 				}
 			}
-			if (Input.GetKeyDown(KeyCode.Alpha5)) {				
+/*			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
 					WallLaser wallLaser = enemyDistributor.CreateWallLaser();
 					enemyDistributor.PlaceOnWall(wallLaser.gameObject, hit);
 					Debug.Log ("Adding Wall Laser (Editor mode)");
 				}
-			}
+			}*/
 			if (Input.GetKeyDown(KeyCode.Alpha6)) {				
 				Pyramid pyramid = enemyDistributor.CreatePyramid();
 				pyramid.transform.position = GetShipPosition();
@@ -90,12 +114,8 @@ public class Play : MonoBehaviour {
 				spike.transform.position = GetShipPosition(); //new Vector3(130f, 205f, 67f)
 				Debug.Log ("Adding Spike (Editor mode)");
 			}
-			if (Input.GetKeyDown(KeyCode.Alpha8)) {				
-				Bull bull = enemyDistributor.CreateBull();
-				bull.transform.position = GetShipPosition(); //new Vector3(130f, 205f, 67f)
-				Debug.Log ("Adding Bull (Editor mode)");
-			}
-			if (Input.GetKeyDown(KeyCode.Alpha0)) {
+				
+/*			if (Input.GetKeyDown(KeyCode.Alpha0)) {
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
 					int triangleIndex = hit.triangleIndex * 3;
 					Debug.Log ("Triangle Index: " + triangleIndex);
@@ -112,7 +132,7 @@ public class Play : MonoBehaviour {
 					Debug.Log ("Vertex is " + m.vertices[vertexIndices[0]] +","+m.vertices[vertexIndices[1]]+","+m.vertices[vertexIndices[2]]);
 					Debug.Log ("Triangle (Editor mode): " + hit.normal + " (" + normals[0]+","+normals[1]+","+normals[2]+ ")");
 				}
-			}
+			}*/
 /*			if (Input.GetKeyDown(KeyCode.H)) {				
 				ship.health -= 10;
 				playGUI.SetHealth(ship.health);
@@ -175,6 +195,8 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
+		isInKeyboardMode = false;
+		
 		playGUI = new PlayGUI(this);
 		
 		// game setup
@@ -247,6 +269,17 @@ public class Play : MonoBehaviour {
 		for (int i=0; i<gOs.Length; i++) {
 			Destroy(gOs[i]);
 		}
+	}
+	
+	private void ExecuteKeyCommand() {
+		Debug.Log ("Key command is: " + keyCommand);
+		if (keyCommand.Substring(1, 1) == "e") {
+				Enemy e = enemyDistributor.CreateEnemy(keyCommand.Substring(2, 1), Convert.ToInt32(keyCommand.Substring(3, 2)));
+				e.transform.position = GetShipPosition();
+				Debug.Log ("Adding Bull " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
+		}
+				
+		isInKeyboardMode = false;
 	}
 	
 	public void PlaceTestCube(GridPosition pos) {

@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Spike : Enemy {
-//	public int health;
-
-	private Game game;
 	private Cave cave;
 	
 	private Transform turret;
@@ -38,20 +35,15 @@ public class Spike : Enemy {
 		myRigidbody = GetComponent<Rigidbody>();
 		turret = transform.Find("Turret");
 	}
-	
-	public void Initialize(Game g, Play p) {
-		game = g;
-		play = p;
-		cave = play.cave;
-		health = HEALTH;
-	}
-	
+		
 	void Start() {
 		targetPosition = cave.GetGridFromPosition(transform.position);
 		lastShotTime = Time.time;
 		mode = Mode.ROAMING;
 		currentAngleUp = 0f;
 		isOnPath = false;
+		health = HEALTH;
+		cave = play.cave;
 	}
 					
 	void FixedUpdate() {

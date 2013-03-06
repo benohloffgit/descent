@@ -62,6 +62,7 @@
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\Enemies\Bull.cs" />
      <Compile Include="Assets\Scripts\Enemies\Enemy.cs" />
+     <Compile Include="Assets\Scripts\Enemies\EnemyDistributor.cs" />
      <Compile Include="Assets\Scripts\Enemies\LightBulb.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineTouch.cs" />
@@ -99,7 +100,6 @@
      <Compile Include="Assets\Scripts\Mesh3D.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Cave.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Cell.cs" />
-     <Compile Include="Assets\Scripts\PG Cave\EnemyDistributor.cs" />
      <Compile Include="Assets\Scripts\PG Cave\GridPosition.cs" />
      <Compile Include="Assets\Scripts\PG Cave\IntDouble.cs" />
      <Compile Include="Assets\Scripts\PG Cave\IntTriple.cs" />
@@ -119,6 +119,7 @@
      <Compile Include="Assets\Scripts\Ship\ShipControl.cs" />
      <Compile Include="Assets\Scripts\Ship\ShipSteering.cs" />
      <Compile Include="Assets\Scripts\Ship\Shot.cs" />
+     <Compile Include="Assets\Scripts\Ship\Weapon.cs" />
      <Compile Include="Assets\Scripts\State.cs" />
      <Compile Include="Assets\Scripts\UnityThreading\Dispatcher.cs" />
      <Compile Include="Assets\Scripts\UnityThreading\Task.cs" />

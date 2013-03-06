@@ -1,19 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\Spike.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
     <Files>
-      <File FileName="Assets\Scripts\Game.cs" Line="169" Column="1" />
-      <File FileName="Assets\Scripts\Play.cs" Line="329" Column="1" />
-      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="131" Column="3" />
+      <File FileName="Assets\Scripts\Game.cs" Line="21" Column="1" />
+      <File FileName="Assets\Scripts\Play.cs" Line="276" Column="43" />
+      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="47" Column="26" />
       <File FileName="Assets\Scripts\Ship\Ship.cs" Line="59" Column="1" />
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="233" Column="53" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="185" Column="41" />
       <File FileName="Assets\Scripts\PrefabFactory.cs" Line="68" Column="16" />
-      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="70" Column="28" />
-      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="100" Column="6" />
-      <File FileName="Assets\Scripts\Enemies\MineBuilder.cs" Line="6" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="28" Column="28" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="17" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Hit.cs" Line="16" Column="30" />
+      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="23" Column="1" />
+      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="38" Column="2" />
+      <File FileName="Assets\Scripts\Enemies\MineBuilder.cs" Line="30" Column="2" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="9" Column="35" />
+      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="7" Column="34" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="97" Column="15" />
+      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="43" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

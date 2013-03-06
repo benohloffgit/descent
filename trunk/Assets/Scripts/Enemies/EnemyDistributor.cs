@@ -14,7 +14,7 @@ public class EnemyDistributor {
 	public EnemyDistributor(Game g, Play p) {
 		game = g;
 		play = p;
-		
+				
 		// build array list of all empty cells
 /*		emptyCells = new ArrayList();
 		int emptyCellIx = 0;
@@ -51,7 +51,6 @@ public class EnemyDistributor {
 	public MineBuilder CreateMineBuilder() {
 		GameObject mB = GameObject.Instantiate(play.mineBuilderPrefab) as GameObject;
 		MineBuilder mineBuilder = mB.GetComponent<MineBuilder>();
-		mineBuilder.Initialize(game, play);
 		return mineBuilder;
 	}
 	
@@ -86,15 +85,33 @@ public class EnemyDistributor {
 	public Spike CreateSpike() {
 		GameObject p = GameObject.Instantiate(play.spikePrefab) as GameObject;
 		Spike spike = p.GetComponent<Spike>();
-		spike.Initialize(game, play);
 		return spike;
 	}
 
 	public Bull CreateBull() {
 		GameObject p = GameObject.Instantiate(play.bullPrefab) as GameObject;
 		Bull bull = p.GetComponentInChildren<Bull>();
-		bull.Initialize(game, play);
 		return bull;
+	}
+	
+	public Enemy CreateEnemy(string clazz, int number) {
+		Enemy enemy;
+		if (clazz == Enemy.CLAZZ_A) {
+			enemy = (Enemy)CreateBull();
+			switch (number) {
+				case 1:
+					enemy.Initialize(play, clazz, number, 20, 0, 1.0f, 0f, 5.0f, 5.0f, 4, 0.5f, 20.0f, 0f);	break;
+				case 5:
+					enemy.Initialize(play, clazz, number, 20, 0, 0.5f, 0f, 5.0f, 5.0f, 4, 0.5f, 20.0f, 0f);	break;
+				case 11:
+					enemy.Initialize(play, clazz, number, 20, 0, 0.5f, 0f, 10.0f, 5.0f, 4, 0.5f, 20.0f, 0f);	break;
+				default:
+					break;
+			}
+		} else {
+			enemy = (Enemy)CreateBull();
+		}		
+		return enemy;
 	}
 	
 	public void PlaceOnWall(GameObject gO, RaycastHit h) {
@@ -111,6 +128,6 @@ public class EnemyDistributor {
 	public static Vector3 RandomVector() {
 		return new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * ((UnityEngine.Random.Range(0,2) == 0) ? 1 : -1);
 	}
-	
+		
 }
 

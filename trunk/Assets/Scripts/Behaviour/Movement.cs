@@ -43,18 +43,26 @@ public class Movement {
 	public void Roam(Rigidbody rigidbody, ref GridPosition targetPosition, int minDistance, int maxDistance, float force) {
 		Vector3 position = rigidbody.transform.position;
 		GridPosition currentPosition = cave.GetGridFromPosition(position);
+				
+		if (cave.GetCellDensity(currentPosition) == Cave.DENSITY_FILLED) {
+//			Debug.Log ("start not empty " + currentPosition + " "  + targetPosition);
+			currentPosition = cave.GetNearestEmptyGridPositionFrom(currentPosition);
+			targetPosition = currentPosition;
+//			Debug.Log ("start not empty, changing to " + currentPosition + " "  +position);
+		}
+		
 		if (currentPosition == targetPosition) {
 			targetPosition = play.cave.GetRandomEmptyGridPositionFrom(currentPosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
-//			Debug.Log ("current " + cubePosition + ", setting new target " + targetCubePosition + " in frame " + Time.frameCount);
+//			Debug.Log ("setting new targt " + targetPosition);
 		}
 		if (currentPosition != targetPosition) {
-			Vector3 avoidance = Vector3.zero;	
 			RaycastHit hit;
-			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
+			Vector3 avoidance = Vector3.zero;	
+/*			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
 				if (Physics.Raycast(position, RoomMesh.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_ALL)) {
 					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);
 				}
-			}
+			}*/
 			Vector3 target = (cave.GetPositionFromGrid(targetPosition) - position).normalized;
 			// if obstacle in target direction, get new target
 			if (Physics.Raycast(position, target, out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_MOVEABLES)) {

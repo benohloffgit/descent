@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MineBuilder : Enemy {
-	private Game game;
 	private Cave cave;
 		
 	private Rigidbody myRigidbody;
@@ -28,14 +27,7 @@ public class MineBuilder : Enemy {
 	void Awake() {
 		myRigidbody = GetComponent<Rigidbody>();
 	}
-	
-	public void Initialize(Game g, Play p) {
-		game = g;
-		play = p;
-		cave = play.cave;
-		health = HEALTH;
-	}
-	
+		
 	void Start() {
 		targetPosition = play.cave.GetGridFromPosition(transform.position);
 		coverPosition = GridPosition.ZERO;
@@ -43,6 +35,8 @@ public class MineBuilder : Enemy {
 		currentAngleUp = 0f;
 		isOnPath = false;
 		roamingStart = Time.time;
+		health = HEALTH;
+		cave = play.cave;
 	}
 		
 	void FixedUpdate() {

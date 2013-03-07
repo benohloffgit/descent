@@ -35,7 +35,7 @@ public class ShipControl {
 		} else {
 			if ((Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.RightControl))  && Time.time > ship.lastShotTime + RATE_OF_FIRE_SHOT) {
 				Vector3 bulletPath;
-				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
+				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
 					bulletPath = (hit.point - (ship.transform.position + ship.transform.TransformDirection(GUN_POSITION))).normalized;
 				} else {
 					bulletPath = ship.transform.forward;
@@ -50,7 +50,7 @@ public class ShipControl {
 			}
 			if (Input.GetKeyDown("mouse 1") && Time.time > ship.lastLaserTime + RATE_OF_FIRE_LASER) {
 				Vector3 laserPath;
-				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
+				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
 					laserPath = (hit.point - (ship.transform.position + ship.transform.TransformDirection(LASER_POSITION))).normalized;
 				} else {
 					laserPath = ship.transform.forward;
@@ -74,6 +74,9 @@ public class ShipControl {
 			}
 			if (Input.GetKeyDown(KeyCode.F)) {
 				play.SwitchMiniMapFollow();
+			}
+			if (Input.GetKeyDown(KeyCode.F1)) {
+				ship.CycleCamera();
 			}
 		}
 	}

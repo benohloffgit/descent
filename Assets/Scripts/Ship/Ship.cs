@@ -20,8 +20,11 @@ public class Ship : MonoBehaviour {
 	private ShipControl shipControl;
 	private Transform headlight;
 	private RaycastHit hit;
+	private Transform cameraTransform;
+	private Camera shipCamera;
 	
 	private bool isHeadlightOn;
+	private int cameraPosition;
 	
 	public static string TAG = "Ship";
 	
@@ -31,6 +34,11 @@ public class Ship : MonoBehaviour {
 	
 	private static int HEALTH = 200;
 	private static int SHIELD = 50;
+	
+	private static Vector3[] CAMERA_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 3.0f, -12.0f)};
+	
+	private static int CAMERA_POSITION_COCKPIT = 0;
+	private static int CAMERA_POSITION_BEHIND = 1;
 	
 //	private Vector3 collisionPoint = Vector3.zero;
 //	private Vector3 collisionNormal = Vector3.zero;
@@ -44,6 +52,8 @@ public class Ship : MonoBehaviour {
 		shipSteering = transform.GetComponent<ShipSteering>();
 		shipControl = new ShipControl(); //transform.GetComponent<ShipControl>();
 		headlight = transform.FindChild("Headlight");
+		cameraTransform = transform.FindChild("Camera");
+		shipCamera = cameraTransform.GetComponent<Camera>();
 	}
 	
 	public void Initialize(Play p, Game g) {
@@ -56,6 +66,7 @@ public class Ship : MonoBehaviour {
 		
 		isHeadlightOn = true;
 		SwitchHeadlight();
+		cameraPosition = CAMERA_POSITION_COCKPIT;
 		health = HEALTH;
 		shield = SHIELD;
 		lastShotTime = Time.time;
@@ -110,6 +121,21 @@ public class Ship : MonoBehaviour {
 	public void SwitchHeadlight() {
 		isHeadlightOn = (isHeadlightOn) ? false : true;
 		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
+	}
+	
+	public void CycleCamera() {
+		cameraPosition++;
+		
+		if (cameraPosition == CAMERA_POSITIONS.Length) {
+			cameraPosition = CAMERA_POSITION_COCKPIT;
+		}
+		if (cameraPosition == CAMERA_POSITION_COCKPIT) {
+			shipCamera.cullingMask = Game.LAYER_MASK_CAMERA_WITHOUT_SHIP;
+		} else {
+			shipCamera.cullingMask = Game.LAYER_MASK_CAMERA_WITH_SHIP;
+		}
+		
+		cameraTransform.localPosition = CAMERA_POSITIONS[cameraPosition];
 	}
 	
 /*	void FixedUpdate () {

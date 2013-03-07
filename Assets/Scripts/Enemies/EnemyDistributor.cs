@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 
 public class EnemyDistributor {
-	private Play play;
+	public Play play;
 	private Game game;
 	
 	private ArrayList emptyCells;
@@ -93,21 +93,32 @@ public class EnemyDistributor {
 		Bull bull = p.GetComponentInChildren<Bull>();
 		return bull;
 	}
+
+	public GameObject CreateGun() {
+		return GameObject.Instantiate(play.gunPrefab) as GameObject;
+	}
 	
 	public Enemy CreateEnemy(string clazz, int number) {
 		Enemy enemy;
 		if (clazz == Enemy.CLAZZ_A) {
 			enemy = (Enemy)CreateBull();
 			switch (number) {
-				case 1:
-					enemy.Initialize(play, clazz, number, 20, 0, 1.0f, 0f, 5.0f, 5.0f, 4, 0.5f, 20.0f, 0f);	break;
-				case 5:
-					enemy.Initialize(play, clazz, number, 20, 0, 0.5f, 0f, 5.0f, 5.0f, 4, 0.5f, 20.0f, 0f);	break;
-				case 11:
-					enemy.Initialize(play, clazz, number, 20, 0, 0.5f, 0f, 10.0f, 5.0f, 4, 0.5f, 20.0f, 0f);	break;
-				default:
-					break;
+												     //   health shield size    aggr    movF   turnF lookR aimTol roamTol chaseR
+				case 1:	enemy.Initialize(this, clazz, number, 10,	0,	1.0f,	2.5f,	5.0f,	5.0f,	4,	0.5f,	20.0f,	0, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 5:	enemy.Initialize(this, clazz, number, 20,	0,	0.5f,	10.0f,	5.0f,	5.0f,	4,	0.5f,	20.0f,	0, new int[] {Weapon.TYPE_GUN, Weapon.TYPE_GUN}, new int[] {1,2}); break;
+				case 11:enemy.Initialize(this, clazz, number, 20,	0,	0.5f,	5.0f,	10.0f,	5.0f,	4,	0.5f,	20.0f,	0, new int[] {Weapon.TYPE_LASER}, new int[] {1}); break;
+				default:break;
 			}
+		} else if (clazz == Enemy.CLAZZ_B) {
+			enemy = (Enemy)CreateSpike();
+			switch (number) {
+												     //   health shield size    aggr    movF   turnF lookR aimTol roamTol chaseR
+				case 1:	enemy.Initialize(this, clazz, number, 10,	0,	1.0f,	2.5f,	7.5f,	5.0f,	8,	0.5f,	20.0f,	4, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 5:	enemy.Initialize(this, clazz, number, 20,	0,	0.5f,	10.0f,	5.0f,	5.0f,	8,	0.5f,	20.0f,	4, new int[] {Weapon.TYPE_GUN}, new int[] {2}); break;
+				case 11:enemy.Initialize(this, clazz, number, 20,	0,	0.5f,	5.0f,	10.0f,	5.0f,	8,	0.5f,	20.0f,	4, new int[] {Weapon.TYPE_LASER}, new int[] {1}); break;
+				default:break;
+			}
+			
 		} else {
 			enemy = (Enemy)CreateBull();
 		}		

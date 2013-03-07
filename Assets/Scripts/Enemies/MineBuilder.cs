@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class MineBuilder : Enemy {
 	private Cave cave;
 		
-	private Rigidbody myRigidbody;
 	private RaycastHit hit;
 	private GridPosition targetPosition;
 	private GridPosition coverPosition;
@@ -16,6 +15,7 @@ public class MineBuilder : Enemy {
 	private bool isOnPath;
 	private float roamingStart;
 
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {Vector3.up, Vector3.down, Vector3.zero, Vector3.zero, Vector3.zero};
 	private static float FORCE_MOVE = 5.0f;
 	private static int LOOK_AT_DISTANCE = 4; // measured in cubes
 	private static float LOOK_AT_ANGLE_TOLERANCE = 30.0f;
@@ -24,10 +24,10 @@ public class MineBuilder : Enemy {
 
 	public enum Mode { ROAMING=0, HIDING=1, PATHFINDING=3, COVERFINDING=4 }
 	
-	void Awake() {
-		myRigidbody = GetComponent<Rigidbody>();
+	public override void InitializeWeapon(int ix, int w, int m) {
+		weapons.Add(new Weapon(this, w, m, WEAPON_POSITIONS[ix]));
 	}
-		
+	
 	void Start() {
 		targetPosition = play.cave.GetGridFromPosition(transform.position);
 		coverPosition = GridPosition.ZERO;

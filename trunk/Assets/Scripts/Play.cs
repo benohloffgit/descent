@@ -19,6 +19,7 @@ public class Play : MonoBehaviour {
 	public GameObject roomEntryPrefab;
 	public GameObject roomConnectorPrefab;
 	public GameObject miniMapPrefab;
+	public GameObject gunPrefab;
 	
 	public Game game;
 	public Cave cave;
@@ -59,10 +60,9 @@ public class Play : MonoBehaviour {
 			if (e.keyCode == KeyCode.Backslash) {
 				keyCommand = "";
 				isInKeyboardMode = true;
+			} else if (e.keyCode == KeyCode.Return) {
+				ExecuteKeyCommand();
 			} else if (isInKeyboardMode) {
-				if (e.keyCode == KeyCode.Return) {
-					ExecuteKeyCommand();
-				}
 				if (e.character != 0) {
 //					Debug.Log ("here 2 " + e.character + " " + e.keyCode);
 					keyCommand += e.character;
@@ -276,7 +276,7 @@ public class Play : MonoBehaviour {
 		if (keyCommand.Substring(1, 1) == "e") {
 				Enemy e = enemyDistributor.CreateEnemy(keyCommand.Substring(2, 1), Convert.ToInt32(keyCommand.Substring(3, 2)));
 				e.transform.position = GetShipPosition();
-				Debug.Log ("Adding Bull " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
+				Debug.Log ("Adding Enemy " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
 		}
 				
 		isInKeyboardMode = false;
@@ -342,15 +342,21 @@ public class Play : MonoBehaviour {
 		e.Damage(damage, contactPos);
 	}
 	
-	public void ShootBullet(Vector3 pos, Quaternion rot, Vector3 dir, float deviation) {
-		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot);
+	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float deviation, float speed, Collider col) {
+		GameObject newBullet;
+		if (weaponType == Weapon.TYPE_GUN) {
+			newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot);
+		} else {
+			newBullet = game.CreateFromPrefab().CreateLaserShot(pos, rot);
+		}
 		if (deviation != 0) {
 			Vector3.OrthoNormalize(ref dir, ref tangent, ref binormal);
 			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, deviation) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
 			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, deviation) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
 			dir = deviation1 * deviation2 * dir;
 		}
-		newBullet.rigidbody.AddForce(dir * Shot.SPEED);
+		newBullet.rigidbody.AddForce(dir * speed);
+		Physics.IgnoreCollision(col, newBullet.collider);
 //		Debug.Log (dir + " " + (deviation1 * deviation2 * dir));
 	}
 	

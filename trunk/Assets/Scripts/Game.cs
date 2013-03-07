@@ -24,6 +24,7 @@ public class Game : MonoBehaviour {
 	public static int LAYER_GUI = 10;
 	public static int LAYER_BULLETS = 11;
 	public static int LAYER_ENEMIES = 12;
+	public static int LAYER_EFFECT = 13;
 	
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ZONE_SQUARED = DIMENSION_ZONE * DIMENSION_ZONE;
@@ -39,6 +40,9 @@ public class Game : MonoBehaviour {
 	public static int LAYER_MASK_SHIP = 1 << LAYER_SHIP;
 	public static int LAYER_MASK_CAVE = 1 << LAYER_CAVE;
 	public static int LAYER_MASK_MOVEABLES = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) );
+	public static int LAYER_MASK_ENEMIES_CAVE = ( (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_ENEMIES) );
+	public static int LAYER_MASK_CAMERA_WITHOUT_SHIP = ( (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_BULLETS) | (1 << Game.LAYER_EFFECT) | (1 << Game.LAYER_ENEMIES) );
+	public static int LAYER_MASK_CAMERA_WITH_SHIP = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_BULLETS) | (1 << Game.LAYER_EFFECT) | (1 << Game.LAYER_ENEMIES) );
 	
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);

@@ -29,6 +29,7 @@ public class MyGUI : MonoBehaviour {
 	
 	private Game game;
 	public GameInput gameInput;
+	private Camera guiCamera;
 	
 	public Dictionary<int, Container> containers;
 	public Dictionary<int, Label> labels;
@@ -51,6 +52,8 @@ public class MyGUI : MonoBehaviour {
 	private float zLevel;
 		
 	void Awake() {
+		guiCamera = GameObject.Find ("GUI Camera").GetComponent<Camera>();
+			
 		containers = new Dictionary<int, Container>();
 		labels = new Dictionary<int, Label>();
 		labelsCC = new Dictionary<int, LabelCC>();
@@ -246,17 +249,17 @@ public class MyGUI : MonoBehaviour {
 		t.gameObject.AddComponent<CustomAnimation>();
 	}
 	
-	public static void CenterOnScreen(Transform t) {
+	public void CenterOnScreen(Transform t) {
 		// center x,y
 		Vector3 pos = t.position;
-		pos.x = Camera.main.transform.position.x;
-		pos.y = Camera.main.transform.position.y;
+		pos.x = guiCamera.transform.position.x;
+		pos.y = guiCamera.transform.position.y;
 		t.position = pos;
 	}
 
-	public static void ResizeToScreenSize(Transform t) {
+	public void ResizeToScreenSize(Transform t) {
 		Vector3 scale = t.localScale;
-		scale.x *= Camera.main.aspect;
+		scale.x *= guiCamera.aspect;
 		t.localScale = scale;
 	}
 

@@ -5,62 +5,37 @@ using System.Collections.Generic;
 public class Spike : Enemy {
 	private Cave cave;
 	
-	private Transform turret;
-	private Rigidbody myRigidbody;
 	private RaycastHit hit;
 	private GridPosition targetPosition;
-	private float lastShotTime;
 	private Mode mode;
 	private float currentAngleUp;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private bool isOnPath;
 
-	private static float SHOOTING_FREQUENCY = 1.0f;
-	private static float FORCE_MOVE = 7.5f;
-	private static int CHASE_RANGE = 4; // measured in cubes 5
-	private static int LOOK_AT_RANGE = 8; // measured in cubes 8
-	private static float SHOOTING_DISTANCE = RoomMesh.MESH_SCALE * LOOK_AT_RANGE;
-	private static float CHASE_DISTANCE = RoomMesh.MESH_SCALE * CHASE_RANGE;
-	private static Vector3 BULLET_POSITION = new Vector3(0,0,2.0f);
-	private static float LOOK_AT_ANGLE_TOLERANCE_AIMING = 0.5f;
-	private static float TURRET_TURN_SPEED = 1.0f;
-	private static float AIMING_DEVIATION = 3.0f;
-//	private static float TURRET_MAX_ROTATION = 0.005f;
-	
-	private static int HEALTH = 15;
-	
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {Vector3.zero};
+		
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2, PATHFINDING=3, CHASING=4 }
 	
-	void Awake() {
-		myRigidbody = GetComponent<Rigidbody>();
-		turret = transform.Find("Turret");
+	public override void InitializeWeapon(int ix, int w, int m) {
+		weapons.Add(new Weapon(this, w, m, WEAPON_POSITIONS[ix]));
 	}
-		
+	
 	void Start() {
+		cave = play.cave;
 		targetPosition = cave.GetGridFromPosition(transform.position);
-		lastShotTime = Time.time;
 		mode = Mode.ROAMING;
 		currentAngleUp = 0f;
 		isOnPath = false;
-		health = HEALTH;
-		cave = play.cave;
 	}
 					
 	void FixedUpdate() {
-//		turret.RotateAround(transform.position, transform.TransformDirection(Vector3.up), TURRET_TURN_SPEED);
-		
-		Vector3 isVisible = play.ship.IsVisibleFrom(turret.position);
-	// TODO take into account if in another room...
-		float distanceToShip = Vector3.Distance(turret.position, play.GetShipPosition());
-			
-		if (isVisible != Vector3.zero) {
-			if (Time.time > lastShotTime + SHOOTING_FREQUENCY) {
-				if (isVisible.magnitude <= SHOOTING_DISTANCE) {
-					Shoot();
-				}
-				lastShotTime = Time.time;
-			}
+		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
+		if (isShipVisible.magnitude <= shootingRange) {
+			Shoot();
 		}
+		
+		float distanceToShip = Vector3.Distance(transform.position, play.GetShipPosition());
+			
 		if (mode == Mode.PATHFINDING) {
 			if (aStarThreadState.IsFinishedNow()) {
 				aStarThreadState.Complete();
@@ -72,10 +47,10 @@ public class Spike : Enemy {
 		if (mode == Mode.CHASING) {
 //			Debug.Log ("Chasing ...");
 			if (isOnPath) {
-				play.movement.Chase(myRigidbody, targetPosition, FORCE_MOVE, ref isOnPath);
+				play.movement.Chase(myRigidbody, targetPosition, movementForce, ref isOnPath);
 //				Debug.Log ("chasing " + isOnPath);
 			} else {
-				if (distanceToShip > CHASE_DISTANCE) {
+				if (distanceToShip > chasingRange) {
 					if (aStarThreadState.roomPath.Count > 0) {
 						LinkedListNode<AStarNode> n = aStarThreadState.roomPath.First;
 						targetPosition = n.Value.gridPos;
@@ -94,19 +69,15 @@ public class Spike : Enemy {
 		}
 		if (mode == Mode.ROAMING) {
 //			Debug.Log ("Roaming ...");
-			if (distanceToShip > SHOOTING_DISTANCE) {
+			if (distanceToShip > shootingRange) {
 //				Debug.Log ("PATHFINDING");
 				mode = Mode.PATHFINDING;
 				play.movement.AStarPath(aStarThreadState, cave.GetGridFromPosition(transform.position), play.GetShipGridPosition());
 			} else {
-				play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
+				play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, movementForce);
 			}
 		}
-		play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_RANGE, LOOK_AT_ANGLE_TOLERANCE_AIMING, ref currentAngleUp, Movement.LookAtMode.None);
-	}
-
-	private void Shoot() {
-		play.ShootBullet(turret.position + turret.TransformDirection(BULLET_POSITION), transform.rotation, turret.forward, AIMING_DEVIATION);
+		play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.None);
 	}
 	
 

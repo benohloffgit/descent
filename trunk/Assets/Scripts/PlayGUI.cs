@@ -40,8 +40,8 @@ public class PlayGUI {
 		// GUI stuff
 		gui = (GameObject.Instantiate(play.game.guiPrefab) as GameObject).GetComponent<MyGUI>();
 		gui.Initialize(play.game, play.game.gameInput);
-		MyGUI.CenterOnScreen(gui.transform);
-		MyGUI.ResizeToScreenSize(gui.transform);
+		gui.CenterOnScreen(gui.transform);
+		gui.ResizeToScreenSize(gui.transform);
 		container = gui.AddContainer();
 		
 		Vector3 fullSize = gui.containers[container].GetSize();

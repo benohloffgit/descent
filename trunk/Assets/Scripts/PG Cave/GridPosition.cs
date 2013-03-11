@@ -23,6 +23,10 @@ public struct GridPosition {
 	public Vector3 GetVector3() {
 		return roomPosition.GetVector3() * Game.DIMENSION_ROOM + cellPosition.GetVector3();
 	}
+	
+	public Vector3 GetWorldVector3() {
+		return GetVector3() * RoomMesh.MESH_SCALE;
+	}
 
 	public override string ToString() {
     	return base.ToString() + ": Room (" + roomPosition.x + ", " + roomPosition.y + ", " + roomPosition.z + "), Cell (" + cellPosition.x + ", " + cellPosition.y + ", " + cellPosition.z + ")";

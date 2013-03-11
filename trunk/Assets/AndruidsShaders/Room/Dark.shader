@@ -61,7 +61,7 @@ Shader "Andruids/Room/Dark" {
 			fixed3 color2_ = tex2D(_TexCeil, i.localPos.yz);
 
 			o.Albedo = (color0_ * projnormal.z + color1_ * projnormal.y + color2_ * projnormal.x) * _Darkness;// * (i.localNormal);
-			o.Normal = projnormal; // leads to "Shader wants tangents" complaint
+//			o.Normal = projnormal; // leads to "Shader wants tangents" complaint
 			
 			//o.Albedo *= tex2D(_LightMap, i.localPos.xy ).rgb * 2;
 			//o.Albedo *= tex2D(_LightMap, (i.localPos.xy/10.0)*_SinTime ).rgb;

@@ -4,6 +4,26 @@ using UnityEngine;
 public class Game : MonoBehaviour {
 	public GameObject statePrefab;
 	public GameObject guiPrefab;
+
+	public GameObject roomPrefab;
+	public GameObject roomMeshPrefab;
+	public GameObject testCubePrefab;
+	public GameObject shipPrefab;
+	public GameObject wallGunPrefab;
+	public GameObject wallLaserPrefab;
+	public GameObject mineTouchPrefab;
+	public GameObject mineBuilderPrefab;
+	public GameObject lightBulbPrefab;
+	public GameObject pyramidPrefab;
+	public GameObject spikePrefab;
+	public GameObject bullPrefab;
+	public GameObject roomEntryPrefab;
+	public GameObject roomConnectorPrefab;
+	public GameObject miniMapPrefab;
+	public GameObject gunPrefab;
+	public GameObject manaPrefab;
+	public GameObject spawnPrefab;
+
 	// those are objects create while game is running (after cave generation)
 	public GameObject gunBulletPrefab;
 	public GameObject laserShotPrefab;
@@ -18,13 +38,19 @@ public class Game : MonoBehaviour {
 	public enum Shot { Bullet=0, Laser=1 }
 
 	public static int MAX_WIDTH = 1536;
-		
+	
+	public static int SHIP = 0;
+	public static int ENEMY = 1;
+	
 	public static int LAYER_CAVE = 8;
 	public static int LAYER_SHIP = 9;
 	public static int LAYER_GUI = 10;
 	public static int LAYER_BULLETS = 11;
 	public static int LAYER_ENEMIES = 12;
 	public static int LAYER_EFFECT = 13;
+	public static int LAYER_MINI_MAP = 14;
+	public static int LAYER_GUN_ENEMY = 15;
+	public static int LAYER_GUN_SHIP = 16;
 	
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ZONE_SQUARED = DIMENSION_ZONE * DIMENSION_ZONE;
@@ -41,8 +67,8 @@ public class Game : MonoBehaviour {
 	public static int LAYER_MASK_CAVE = 1 << LAYER_CAVE;
 	public static int LAYER_MASK_MOVEABLES = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_ENEMIES) );
 	public static int LAYER_MASK_ENEMIES_CAVE = ( (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_ENEMIES) );
-	public static int LAYER_MASK_CAMERA_WITHOUT_SHIP = ( (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_BULLETS) | (1 << Game.LAYER_EFFECT) | (1 << Game.LAYER_ENEMIES) );
-	public static int LAYER_MASK_CAMERA_WITH_SHIP = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_BULLETS) | (1 << Game.LAYER_EFFECT) | (1 << Game.LAYER_ENEMIES) );
+	public static int LAYER_MASK_CAMERA_WITHOUT_SHIP = ( (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_BULLETS) | (1 << Game.LAYER_GUN_ENEMY) | (1 << Game.LAYER_EFFECT) | (1 << Game.LAYER_ENEMIES) );
+	public static int LAYER_MASK_CAMERA_WITH_SHIP = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_GUN_SHIP) | (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_BULLETS) | (1 << Game.LAYER_EFFECT) | (1 << Game.LAYER_ENEMIES) );
 	
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);

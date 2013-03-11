@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Cave {
 	public List<Zone> zones;
 	
+	private Game game;
 	private Play play;
 	
 	private int dimZone;
@@ -20,6 +21,7 @@ public class Cave {
 	
 	public Cave(Play p) {
 		play = p;
+		game = play.game;
 		zones = new List<Zone>();
 		AddZone();
 		DigRooms(GetCurrentZone());
@@ -75,7 +77,7 @@ public class Cave {
 //			Debug.Log ("setting connectorsSet forid " + room.id);
 			
 			int digCount = 0;
-			int maxDig = Game.DIMENSION_ROOM*Game.DIMENSION_ROOM*Game.DIMENSION_ROOM;
+			int maxDig = Game.DIMENSION_ROOM_CUBED;
 			bool isAtLeastOneMinerActive = true;
 			int j=0;
 			while (j<10000 && isAtLeastOneMinerActive) {
@@ -120,7 +122,7 @@ public class Cave {
 	}
 	
 	private void CreateRoomMesh(Room room) {
-		RoomMesh roomMesh = (GameObject.Instantiate(play.roomMeshPrefab) as GameObject).GetComponent<RoomMesh>();
+		RoomMesh roomMesh = (GameObject.Instantiate(game.roomMeshPrefab) as GameObject).GetComponent<RoomMesh>();
 		roomMesh.Initialize(room);
 		room.roomMesh = roomMesh;
 	}
@@ -294,7 +296,7 @@ public class Cave {
 	}
 	
 	private void AddRoomConnector(GridPosition gP, IntTriple alignment) {
-		GameObject rC = GameObject.Instantiate(play.roomConnectorPrefab) as GameObject;
+		GameObject rC = GameObject.Instantiate(game.roomConnectorPrefab) as GameObject;
 		rC.transform.localScale *= RoomMesh.MESH_SCALE;
 		rC.transform.position = GetPositionFromGrid(gP);
 		if (alignment.x != 0) {
@@ -310,7 +312,7 @@ public class Cave {
 	}
 
 	private void AddZoneEntry(GridPosition gP, float rotation) {
-		GameObject rC = GameObject.Instantiate(play.roomEntryPrefab) as GameObject;
+		GameObject rC = GameObject.Instantiate(game.roomEntryPrefab) as GameObject;
 		rC.transform.localScale *= RoomMesh.MESH_SCALE;
 		rC.transform.position = GetPositionFromGrid(gP);
 		rC.transform.Rotate(new Vector3(rotation, 0f, 0f));

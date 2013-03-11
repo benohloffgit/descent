@@ -4,22 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Play : MonoBehaviour {	
-	public GameObject roomPrefab;
-	public GameObject roomMeshPrefab;
-	public GameObject testCubePrefab;
-	public GameObject shipPrefab;
-	public GameObject wallGunPrefab;
-	public GameObject wallLaserPrefab;
-	public GameObject mineTouchPrefab;
-	public GameObject mineBuilderPrefab;
-	public GameObject lightBulbPrefab;
-	public GameObject pyramidPrefab;
-	public GameObject spikePrefab;
-	public GameObject bullPrefab;
-	public GameObject roomEntryPrefab;
-	public GameObject roomConnectorPrefab;
-	public GameObject miniMapPrefab;
-	public GameObject gunPrefab;
 	
 	public Game game;
 	public Cave cave;
@@ -38,6 +22,8 @@ public class Play : MonoBehaviour {
 	private EnemyDistributor enemyDistributor;
 	private RaycastHit hit;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
+	private int currentGravitiyDirection;
+	private float lastGravitiyChange;
 
 	Vector3 tangent = Vector3.zero;
 	Vector3 binormal = Vector3.zero;
@@ -50,9 +36,8 @@ public class Play : MonoBehaviour {
 	private GridPosition shipGridPosition;
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
-	
-	// e_CLAZZ_NUMBER_NUMBER
-	
+	private static float GRAVITY_INTERVAL = 10.0f;
+		
 	void OnGUI() {
         Event e = Event.current;
         if (e.isKey && e.type == EventType.KeyDown) { // keydown and characters can come as seperate events!!!
@@ -70,7 +55,21 @@ public class Play : MonoBehaviour {
 			}
 		}
 		e.Use();
-    }
+ 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
+			Application.Quit();
+		}
+   	}
+	
+	void FixedUpdate() {
+/*		if (Time.time > lastGravitiyChange + GRAVITY_INTERVAL) {
+			currentGravitiyDirection++;
+			if (currentGravitiyDirection == Cave.ROOM_DIRECTIONS.Length) {
+				currentGravitiyDirection = 0;
+			}
+			//Physics.gravity = Cave.ROOM_DIRECTIONS[currentGravitiyDirection].GetVector3();
+			lastGravitiyChange = Time.time;
+		}*/
+	}
 	
 	void Update() {
 		// editor commands
@@ -200,14 +199,11 @@ public class Play : MonoBehaviour {
 		playGUI = new PlayGUI(this);
 		
 		// game setup
-		ship = (GameObject.Instantiate(shipPrefab) as GameObject).GetComponent<Ship>();
+		ship = (GameObject.Instantiate(game.shipPrefab) as GameObject).GetComponent<Ship>();
 		ship.Initialize(this, game);
 		playGUI.Initialize();
-//		playGUI.DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.health), MyGUI.GetDigitOfNumber(1, ship.health), MyGUI.GetDigitOfNumber(2, ship.health)});
-//		playGUI.DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, ship.shield), MyGUI.GetDigitOfNumber(1, ship.shield), MyGUI.GetDigitOfNumber(2, ship.shield)});
-//		playGUI.currentHealth = ship.health;
 		
-		GameObject newMiniMap = GameObject.Instantiate(miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		GameObject newMiniMap = GameObject.Instantiate(game.miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 		
@@ -220,6 +216,8 @@ public class Play : MonoBehaviour {
 		movement = new Movement(this);
 //		PlaceTestCubes();
 		PlaceEnemies();
+		currentGravitiyDirection = 0;
+		lastGravitiyChange = Time.time;
 	}
 	
 	public void Initialize(Game g, GameInput input) {
@@ -246,8 +244,8 @@ public class Play : MonoBehaviour {
 	}
 	
 	private void PlaceEnemies() {
-		enemyDistributor = new EnemyDistributor(game, this);
-//		enemyDistributor.Distribute();
+		enemyDistributor = new EnemyDistributor(this);
+		enemyDistributor.Distribute();
 	}
 	
 	private void PlaceTestCubes() {
@@ -274,16 +272,23 @@ public class Play : MonoBehaviour {
 	private void ExecuteKeyCommand() {
 		Debug.Log ("Key command is: " + keyCommand);
 		if (keyCommand.Substring(1, 1) == "e") {
-				Enemy e = enemyDistributor.CreateEnemy(keyCommand.Substring(2, 1), Convert.ToInt32(keyCommand.Substring(3, 2)));
+				Enemy e = enemyDistributor.CreateEnemy(null, keyCommand.Substring(2, 1), Convert.ToInt32(keyCommand.Substring(3, 2)));
 				e.transform.position = GetShipPosition();
 				Debug.Log ("Adding Enemy " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
+		} else if (keyCommand.Substring(1, 1) == "m") {
+				Mana m = enemyDistributor.CreateMana();
+				m.transform.position = GetShipPosition();
+				Debug.Log ("Adding Mana (Editor mode)");
+		} else if (keyCommand.Substring(1, 1) == "s") {
+				Spawn s = enemyDistributor.CreateSpawn(keyCommand.Substring(2, 1), Convert.ToInt32(keyCommand.Substring(3, 2)), GetShipGridPosition());
+				Debug.Log ("Adding Spawn  " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
 		}
 				
 		isInKeyboardMode = false;
 	}
 	
 	public void PlaceTestCube(GridPosition pos) {
-		Instantiate(testCubePrefab, cave.GetPositionFromGrid(pos), Quaternion.identity);
+		Instantiate(game.testCubePrefab, cave.GetPositionFromGrid(pos), Quaternion.identity);
 	}
 	
 	public void CachePositionalDataOfShip(Vector3 pos) {
@@ -342,17 +347,17 @@ public class Play : MonoBehaviour {
 		e.Damage(damage, contactPos);
 	}
 	
-	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float deviation, float speed, Collider col) {
+	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float accuracy, float speed, Collider col) {
 		GameObject newBullet;
 		if (weaponType == Weapon.TYPE_GUN) {
 			newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot);
 		} else {
 			newBullet = game.CreateFromPrefab().CreateLaserShot(pos, rot);
 		}
-		if (deviation != 0) {
+		if (accuracy != 0) {
 			Vector3.OrthoNormalize(ref dir, ref tangent, ref binormal);
-			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, deviation) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
-			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, deviation) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
+			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
+			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
 			dir = deviation1 * deviation2 * dir;
 		}
 		newBullet.rigidbody.AddForce(dir * speed);

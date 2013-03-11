@@ -25,7 +25,7 @@ public class MineBuilder : Enemy {
 	public enum Mode { ROAMING=0, HIDING=1, PATHFINDING=3, COVERFINDING=4 }
 	
 	public override void InitializeWeapon(int ix, int w, int m) {
-		weapons.Add(new Weapon(this, w, m, WEAPON_POSITIONS[ix]));
+		weapons.Add(new Weapon(transform, play, w, m, WEAPON_POSITIONS[ix], Game.ENEMY));
 	}
 	
 	void Start() {

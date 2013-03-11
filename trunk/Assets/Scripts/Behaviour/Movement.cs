@@ -333,6 +333,11 @@ public class Movement {
 			IntTriple cell = start.cellPosition;
 			int dimension = Game.DIMENSION_ROOM;
 			Room r = cave.GetCurrentZone().GetRoom(start);
+	
+	/* ------------------------------------------------------------------------------------- 	*/
+	/* TODO combine with function of cave GetNearestEmptyGridPositionFrom (same code) !!! 		*/
+	/* ------------------------------------------------------------------------------------- 	*/
+			
 //			Debug.Log ("Cover Find " + start + " "  + shipPos);
 			for (int shells=0; shells<4; shells++) {
 //				Debug.Log ("shells " + shells);

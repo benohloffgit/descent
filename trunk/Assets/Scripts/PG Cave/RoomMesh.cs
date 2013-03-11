@@ -39,7 +39,7 @@ public class RoomMesh : MonoBehaviour {
 	
 	private int duplicateVertices = 0;
 					
-	private	static float ISOVALUE = 0.34f; // between 0.31 and 0.35 ... (old: 0.1)
+	private	static float ISOVALUE = 0.325f; // between 0.31 and 0.35 ... (old: 0.1)
 	
 	public void Initialize(Room room) {		
 		MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
@@ -99,7 +99,7 @@ public class RoomMesh : MonoBehaviour {
 				}
 			}
 		}
-//		Debug.Log("gridCellIndex " + gridCellIndex);
+		//		Debug.Log("gridCellIndex " + gridCellIndex);
 		
 		Vector3[] newVertices = new Vector3[roomVerticesCount];
 		int[] newTriangles = new int[roomTrianglesCount];
@@ -270,8 +270,6 @@ public class RoomMesh : MonoBehaviour {
 		if (density1 == Room.ENTRY_EXIT_CELL_MARKER || density2 == Room.ENTRY_EXIT_CELL_MARKER) { // entry or exit cell
 			return Vector3.Lerp(point1, point2, 0.5f);
 		}
-		float mu;
-   		Vector3 p = new Vector3();
 
 		if (Mathf.Abs(ISOVALUE-density1) < 0.00001f) // ISOVALUE == density1
 	    	return point1 ;
@@ -279,11 +277,12 @@ public class RoomMesh : MonoBehaviour {
 	    	return point2;
 		if (Mathf.Abs(density1-density2) < 0.00001f) // density1 == density2
 	    	return point1;
-	  	mu = (ISOVALUE - density1) / (density2 - density1);
+		
+		float mu = (ISOVALUE - density1) / (density2 - density1);
+   		Vector3 p = new Vector3();
 	   	p.x = point1.x + mu * (point2.x - point1.x);
 	   	p.y = point1.y + mu * (point2.y - point1.y);
 	   	p.z = point1.z + mu * (point2.z - point1.z);
-	
 	   	return p;
 		/*
 		if (density2-density1 == 0f) {

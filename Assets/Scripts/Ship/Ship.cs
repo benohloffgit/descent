@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Ship : MonoBehaviour {
 	public GameObject shipHUDPrefab;
@@ -8,8 +9,8 @@ public class Ship : MonoBehaviour {
 	
 	public int health;
 	public int shield;
-	public float lastShotTime;
-	public float lastLaserTime;
+//	public float lastShotTime;
+//	public float lastLaserTime;
 		
 	private Play play;
 	private GameInput gameInput;
@@ -35,10 +36,20 @@ public class Ship : MonoBehaviour {
 	private static int HEALTH = 200;
 	private static int SHIELD = 50;
 	
-	private static Vector3[] CAMERA_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 3.0f, -12.0f)};
+	private static Vector3[] CAMERA_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 3.0f, -12.0f), new Vector3(-5f, 0f, 0f), new Vector3(5f, 0f, 0f), new Vector3(0, 0f, 5.0f)};
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0.81f, 0.16f), new Vector3(0, -0.81f, 0.16f), new Vector3(0, -0.37f, 1.65f),};
+	
+	private static int WEAPON_POSITION_WING_LEFT = 0;
+	private static int WEAPON_POSITION_WING_RIGHT = 1;
+	private static int WEAPON_POSITION_CENTER = 2;
 	
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;
+	private static int CAMERA_POSITION_LEFT = 2;
+	private static int CAMERA_POSITION_RIGHT = 3;
+	private static int CAMERA_POSITION_FRONT = 4;
+
+	public List<Weapon> weapons = new List<Weapon>();
 	
 //	private Vector3 collisionPoint = Vector3.zero;
 //	private Vector3 collisionNormal = Vector3.zero;
@@ -69,8 +80,13 @@ public class Ship : MonoBehaviour {
 		cameraPosition = CAMERA_POSITION_COCKPIT;
 		health = HEALTH;
 		shield = SHIELD;
-		lastShotTime = Time.time;
-		lastLaserTime = Time.time;
+		
+		Weapon w = new Weapon(transform, play, Weapon.TYPE_GUN, 9, WEAPON_POSITIONS[WEAPON_POSITION_CENTER], Game.SHIP);
+		weapons.Add(w);
+		w.weaponTransform.localEulerAngles = new Vector3(0,0,180f);
+		
+//		lastShotTime = Time.time;
+//		lastLaserTime = Time.time;
 	}
 	
 	void OnCollisionEnter(Collision c) {
@@ -129,13 +145,19 @@ public class Ship : MonoBehaviour {
 		if (cameraPosition == CAMERA_POSITIONS.Length) {
 			cameraPosition = CAMERA_POSITION_COCKPIT;
 		}
+		cameraTransform.localPosition = CAMERA_POSITIONS[cameraPosition];
+
 		if (cameraPosition == CAMERA_POSITION_COCKPIT) {
 			shipCamera.cullingMask = Game.LAYER_MASK_CAMERA_WITHOUT_SHIP;
+			cameraTransform.localRotation = Quaternion.identity;
+		} else if (cameraPosition == CAMERA_POSITION_BEHIND) {
+			shipCamera.cullingMask = Game.LAYER_MASK_CAMERA_WITH_SHIP;
+			cameraTransform.localRotation = Quaternion.identity;
 		} else {
 			shipCamera.cullingMask = Game.LAYER_MASK_CAMERA_WITH_SHIP;
+			cameraTransform.LookAt(transform, transform.up);
 		}
 		
-		cameraTransform.localPosition = CAMERA_POSITIONS[cameraPosition];
 	}
 	
 /*	void FixedUpdate () {
@@ -143,12 +165,7 @@ public class Ship : MonoBehaviour {
 			rigidbody.freezeRotation = false;
 		}
 	}*/
-			
-	void OnGUI() {
-		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit"))
-			Application.Quit();
-	}
-		
+					
 /*	private void Calibrate() {
 		if (Input.acceleration != Vector3.zero) {
 //			calibration = Quaternion.FromToRotation(Input.acceleration, new Vector3(0,0,-1.0f));

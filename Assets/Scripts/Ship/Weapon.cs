@@ -8,6 +8,7 @@ public class Weapon {
 	public static int TYPE_LASER = 2;
 		
 	public float lastShotTime;
+	public Transform weaponTransform;
 	
 	protected int type;
 	protected int model;
@@ -19,23 +20,45 @@ public class Weapon {
 	protected Vector3 position;
 	
 	private Play play;
-	private Enemy enemy;
-	private Transform weaponTransform;
-		
-	public Weapon(Enemy enemy_, int type_, int model_, Vector3 position_) {
-		enemy = enemy_;
-		play = enemy.play;
+	private Game game;
+	private Transform parent;
+	private int mountedTo;
+	private int layerMask;
+	private RaycastHit hit;
+
+	private static float MAX_RAYCAST_DISTANCE = Game.MAX_VISIBILITY_DISTANCE * 1.5f;
+
+	public Weapon(Transform parent_, Play play_, int type_, int model_, Vector3 position_, int mountedTo_) {
+		parent = parent_;
+		play = play_;
+		game = play.game;
 //		enemyTransform = enemy.transform;
 		type = type_;
 		model = model_;
 		position = position_;
 		lastShotTime = Time.time;
+		mountedTo = mountedTo_;		
 				
 		Initialize();
+		
+		if (mountedTo == Game.SHIP) {
+			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
+			weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
+			accuracy = 0f;
+		} else {
+			layerMask = Game.LAYER_MASK_SHIP_CAVE;
+			weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
+		}
 	}
 	
 	public void Shoot() {
-		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, weaponTransform.forward, accuracy, speed, enemy.collider);
+		Vector3 bulletPath;
+		if (Physics.Raycast(parent.position, parent.forward, out hit, MAX_RAYCAST_DISTANCE, layerMask)) {
+			bulletPath = (hit.point - weaponTransform.position).normalized;
+		} else {
+			bulletPath = parent.forward;
+		}
+		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, parent.collider);
 	}
 	
 	private void Initialize() {
@@ -45,20 +68,21 @@ public class Weapon {
 				switch (model) {
 					case 1:	accuracy = 4.0f; frequency = 2.0f; damage = 5; speed = 100f; break;
 					case 2:	accuracy = 4.0f; frequency = 1.0f; damage = 5; speed = 100f; break;
+					case 9:	accuracy = 4.0f; frequency = 0.2f; damage = 5; speed = 100f; break;
 				}
-				weaponGameObject = enemy.enemyDistributor.CreateGun(); break;
+				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
 			case 50:
 				switch (model) {
 					case 1: accuracy = 4.0f; frequency = 1.0f; damage = 10; speed = 400f; break;
 				}
-				weaponGameObject = enemy.enemyDistributor.CreateGun(); break;
+				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
 			default:
-				weaponGameObject = enemy.enemyDistributor.CreateGun(); break;
+				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
 		}
 		weaponTransform = weaponGameObject.transform;
 //		weaponTransform.position = enemy.transform.position;
-		weaponTransform.parent = enemy.transform;
-		weaponTransform.localPosition = enemy.transform.InverseTransformPoint(position);
+		weaponTransform.parent = parent.transform;
+		weaponTransform.localPosition = parent.InverseTransformPoint(position);
 	}
 	
 }

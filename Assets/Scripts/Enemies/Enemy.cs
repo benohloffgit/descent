@@ -16,7 +16,8 @@ public abstract class Enemy : MonoBehaviour {
 	
 	public Game game;
 	public Play play;
-	public EnemyDistributor enemyDistributor;
+	//public EnemyDistributor enemyDistributor;
+	private Spawn spawn;
 	
 	public string clazz;
 	public int number;
@@ -43,11 +44,13 @@ public abstract class Enemy : MonoBehaviour {
 		myRigidbody = GetComponent<Rigidbody>();
 	}
 
-	public void Initialize(EnemyDistributor enemyDistributor_, string clazz_, int number_, int health_, int shield_, float size_, float aggressiveness_, float movementForce_,
+	public void Initialize(Play play_, Spawn spawn_, string clazz_, int number_, int health_, int shield_,
+			float size_, float aggressiveness_, float movementForce_,
 			float turningForce_, int lookAtRange_, float lookAtToleranceAiming_, float lookAtToleranceRoaming_, int chaseRange_,
 			int[] weapons_, int[] models_) {
-		enemyDistributor = enemyDistributor_;
-		play = enemyDistributor.play;
+//		enemyDistributor = enemyDistributor_;
+		play = play_;
+		spawn = spawn_;
 		game = play.game;
 		clazz = clazz_;
 		number = number_;
@@ -78,6 +81,9 @@ public abstract class Enemy : MonoBehaviour {
 		health -= damage;
 		play.DisplayHit(contactPos, play.ship.transform.rotation);
 		if (health <= 0) {
+			if (spawn != null) {
+				spawn.Die(this);
+			}
 			Destroy(gameObject);
 			play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 		}

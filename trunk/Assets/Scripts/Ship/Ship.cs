@@ -36,12 +36,13 @@ public class Ship : MonoBehaviour {
 	private static int HEALTH = 200;
 	private static int SHIELD = 50;
 	
-	private static Vector3[] CAMERA_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 3.0f, -12.0f), new Vector3(-5f, 0f, 0f), new Vector3(5f, 0f, 0f), new Vector3(0, 0f, 5.0f)};
-	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0.81f, 0.16f), new Vector3(0, -0.81f, 0.16f), new Vector3(0, -0.37f, 1.65f),};
+	private static Vector3[] CAMERA_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 3.0f, -12.0f), new Vector3(-5f, 0f, 0f), new Vector3(5f, 0f, 0f), new Vector3(0, 0f, 5.0f), new Vector3(0, 12f, 0f)};
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(-1.014f, 0f, 1.664f), new Vector3(1.014f, 0f, 1.664f), new Vector3(0, -0.37f, 1.65f)};
+	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] { new Vector3(0,0,90f),  new Vector3(0,0,-90f),  new Vector3(0,0,180f)};
 	
-	private static int WEAPON_POSITION_WING_LEFT = 0;
-	private static int WEAPON_POSITION_WING_RIGHT = 1;
-	private static int WEAPON_POSITION_CENTER = 2;
+	public static int WEAPON_POSITION_WING_LEFT = 0;
+	public static int WEAPON_POSITION_WING_RIGHT = 1;
+	public static int WEAPON_POSITION_CENTER = 2;
 	
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;
@@ -81,9 +82,13 @@ public class Ship : MonoBehaviour {
 		health = HEALTH;
 		shield = SHIELD;
 		
-		Weapon w = new Weapon(transform, play, Weapon.TYPE_GUN, 9, WEAPON_POSITIONS[WEAPON_POSITION_CENTER], Game.SHIP);
+		Weapon w = new Weapon(transform, play, Weapon.TYPE_GUN, 9, WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);
 		weapons.Add(w);
-		w.weaponTransform.localEulerAngles = new Vector3(0,0,180f);
+		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT]; // turn upside down on center slot
+
+		w = new Weapon(transform, play, Weapon.TYPE_LASER, 2, WEAPON_POSITIONS[WEAPON_POSITION_WING_RIGHT], Game.SHIP);
+		weapons.Add(w);
+		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_RIGHT]; // turn upside down on center slot
 		
 //		lastShotTime = Time.time;
 //		lastLaserTime = Time.time;

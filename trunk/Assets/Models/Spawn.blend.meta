@@ -3,13 +3,15 @@ guid: f917c1f3875dbbb4384e9010b56aa02b
 ModelImporter:
   fileIDToRecycleName:
     4300000: Spawn
+    7400000: idle //// Spawn
+    7400002: Spawn //// Spawn
   serializedVersion: 10
   materials:
     importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 0
+    generateAnimations: 3
     bakeSimulation: 0
     splitAnimations: 1
     animationCompression: 1
@@ -17,7 +19,12 @@ ModelImporter:
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
-    clipAnimations: []
+    clipAnimations:
+    - name: Spawn
+      firstFrame: 40
+      lastFrame: 80
+      wrapMode: 2
+      loop: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
@@ -44,6 +51,51 @@ ModelImporter:
       data:
         first: 4
         second: 821a0600
+      data:
+        first: 111
+        second: 605fa900
+    A:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+    Armature:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    B:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+    C:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+    D:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    E:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
     Empty:
       data:
         first: 1
@@ -51,6 +103,13 @@ ModelImporter:
       data:
         first: 4
         second: 841a0600
+    F:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
     Lamp:
       data:
         first: 1
@@ -66,8 +125,5 @@ ModelImporter:
         first: 4
         second: 801a0600
       data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
+        first: 137
+        second: a00bd100

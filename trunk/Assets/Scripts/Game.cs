@@ -21,6 +21,7 @@ public class Game : MonoBehaviour {
 	public GameObject roomConnectorPrefab;
 	public GameObject miniMapPrefab;
 	public GameObject gunPrefab;
+	public GameObject laserGunPrefab;
 	public GameObject manaPrefab;
 	public GameObject spawnPrefab;
 

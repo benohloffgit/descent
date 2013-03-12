@@ -1,69 +1,44 @@
 using UnityEngine;
 using System.Collections;
 
-public class Pyramid : MonoBehaviour {
-	private Play play;
-	private Game game;
-		
-	private Rigidbody myRigidbody;
-	private RaycastHit hit;
+public class Pyramid : Enemy {
 	private GridPosition targetPosition;
-	private float lastShotTime;
 	private Mode mode;
 	private float currentAngleUp;
 
-	private static float SHOOTING_FREQUENCY = 1.0f;
-	private static float FORCE_MOVE = 5.0f;
-	private static int LOOK_AT_DISTANCE = 8; // measured in cubes
-	private static float SHOOTING_RANGE = RoomMesh.MESH_SCALE * LOOK_AT_DISTANCE;
-	private static Vector3 BULLET_POSITION = new Vector3(0,0,2.0f);
-	private static float LOOK_AT_ANGLE_TOLERANCE_AIMING = 0.5f;
-	private static float LOOK_AT_ANGLE_TOLERANCE_ROAMING = 30.0f;
-
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0.81f, 0.16f), new Vector3(0, -0.81f, 0.16f)};
+		
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2 }
 	
-	void Awake() {
-		myRigidbody = GetComponent<Rigidbody>();
-	}
-	
-	public void Initialize(Game g, Play p) {
-		game = g;
-		play = p;
+	public override void InitializeWeapon(int ix, int w, int m) {
+		weapons.Add(new Weapon(transform, play, w, m, WEAPON_POSITIONS[ix], Game.ENEMY));
 	}
 	
 	void Start() {
 		targetPosition = play.cave.GetGridFromPosition(transform.position);
-		lastShotTime = Time.time;
 		mode = Mode.ROAMING;
 	}
 		
 	void FixedUpdate() {
-		if (Time.time > lastShotTime + SHOOTING_FREQUENCY) {
-			Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
-			if (isShipVisible.magnitude <= SHOOTING_RANGE) {
-				mode = Mode.SHOOTING;
-			} else {
-				mode = Mode.ROAMING;
-			}
-			lastShotTime = Time.time;
-		}
-		if (mode == Mode.ROAMING) {
-			play.movement.Roam(myRigidbody, ref targetPosition, 3, 8, FORCE_MOVE);
-			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_ROAMING, ref currentAngleUp, Movement.LookAtMode.None);
-		} else if (mode == Mode.SHOOTING) {
+		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
+		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
 			Shoot();
+		}
+		
+		if (isShipVisible.magnitude <= shootingRange) {
 			mode = Mode.AIMING;
+		} else {
+			mode = Mode.ROAMING;
+		}
+		
+		if (mode == Mode.ROAMING) {
+			play.movement.Roam(myRigidbody, ref targetPosition, 3, 8, movementForce);
+			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);		
 		}
 		if (mode == Mode.AIMING) {
-			play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, FORCE_MOVE);
-			play.movement.LookAt(myRigidbody, play.ship.transform, LOOK_AT_DISTANCE, LOOK_AT_ANGLE_TOLERANCE_AIMING, ref currentAngleUp, Movement.LookAtMode.None);
+			play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, movementForce);
+			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 		}
-	}
-
-	private void Shoot() {
-		GameObject newBullet = game.CreateFromPrefab().CreateGunBullet(transform.position + transform.TransformDirection(BULLET_POSITION), transform.rotation);
-		Vector3 bulletDirection = transform.forward * Shot.SPEED;
-		newBullet.rigidbody.AddForce(bulletDirection);
 	}
 
 }

@@ -33,9 +33,11 @@ public class ShipControl {
 	public void DispatchGameInput() {
 		if (gameInput.isMobile) {
 		} else {
-			if ((Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.RightControl))  && Time.time > ship.weapons[0].lastShotTime + ship.weapons[0].frequency) {
-				ship.weapons[0].Shoot();
-				ship.weapons[0].lastShotTime = Time.time;
+			if ((Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.LeftControl))
+						&& ship.weapons[Ship.WEAPON_POSITION_WING_LEFT] != null
+						&& Time.time > ship.weapons[Ship.WEAPON_POSITION_WING_LEFT].lastShotTime + ship.weapons[Ship.WEAPON_POSITION_WING_LEFT].frequency) {
+				ship.weapons[Ship.WEAPON_POSITION_WING_LEFT].Shoot();
+				ship.weapons[Ship.WEAPON_POSITION_WING_LEFT].lastShotTime = Time.time;
 				
 /*				Vector3 bulletPath;
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
@@ -50,6 +52,12 @@ public class ShipControl {
 				newBullet.rigidbody.AddForce(new Vector3(bulletDirection.x, bulletDirection.y, bulletDirection.z + ship.rigidbody.velocity.z));
 //				Debug.Log (shipRelativeVelocity + " " + (bulletPath * GUN_BULLET_SPEED));
 				ship.lastShotTime = Time.time;*/
+			}
+			if ((Input.GetKeyDown("mouse 1") || Input.GetKeyDown(KeyCode.RightControl))
+						&& ship.weapons[Ship.WEAPON_POSITION_WING_RIGHT] != null
+						&& Time.time > ship.weapons[Ship.WEAPON_POSITION_WING_RIGHT].lastShotTime + ship.weapons[Ship.WEAPON_POSITION_WING_RIGHT].frequency) {
+				ship.weapons[Ship.WEAPON_POSITION_WING_RIGHT].Shoot();
+				ship.weapons[Ship.WEAPON_POSITION_WING_RIGHT].lastShotTime = Time.time;
 			}
 /*			if (Input.GetKeyDown("mouse 1") && Time.time > ship.lastLaserTime + RATE_OF_FIRE_LASER) {
 				Vector3 laserPath;

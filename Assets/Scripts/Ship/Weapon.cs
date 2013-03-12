@@ -6,6 +6,8 @@ public class Weapon {
 	
 	public static int TYPE_GUN = 1;
 	public static int TYPE_LASER = 2;
+	public static int TYPE_PHASER = 2;
+	public static int TYPE_GAUSS = 3;
 		
 	public float lastShotTime;
 	public Transform weaponTransform;
@@ -32,7 +34,6 @@ public class Weapon {
 		parent = parent_;
 		play = play_;
 		game = play.game;
-//		enemyTransform = enemy.transform;
 		type = type_;
 		model = model_;
 		position = position_;
@@ -58,7 +59,7 @@ public class Weapon {
 		} else {
 			bulletPath = parent.forward;
 		}
-		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, parent.collider);
+		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, damage, parent.collider);
 	}
 	
 	private void Initialize() {
@@ -71,16 +72,17 @@ public class Weapon {
 					case 9:	accuracy = 4.0f; frequency = 0.2f; damage = 5; speed = 100f; break;
 				}
 				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
-			case 50:
+			case 2:
 				switch (model) {
-					case 1: accuracy = 4.0f; frequency = 1.0f; damage = 10; speed = 400f; break;
+					case 1:	accuracy = 3.0f; frequency = 2.0f; damage = 10; speed = 200f; break;
+					case 2:	accuracy = 3.0f; frequency = 1.0f; damage = 10; speed = 200f; break;
+					case 9:	accuracy = 3.0f; frequency = 0.2f; damage = 10; speed = 200f; break;
 				}
-				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
+				weaponGameObject = GameObject.Instantiate(game.laserGunPrefab) as GameObject; break;
 			default:
 				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
 		}
 		weaponTransform = weaponGameObject.transform;
-//		weaponTransform.position = enemy.transform.position;
 		weaponTransform.parent = parent.transform;
 		weaponTransform.localPosition = parent.InverseTransformPoint(position);
 	}

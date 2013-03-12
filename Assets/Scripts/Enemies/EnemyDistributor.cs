@@ -34,7 +34,7 @@ public class EnemyDistributor {
 		foreach (Room r in play.cave.GetCurrentZone().roomList) {
 			if (r.id > 0) { // all rooms except entry
 				GridPosition empty = GetRandomEmptyGridPosition(r);
-				CreateSpawn(Enemy.CLAZZ_A, 5, empty);
+				CreateSpawn(Enemy.CLAZZ_A, 5, empty, 15.0f, 3, 10);
 			}
 		}
 		
@@ -99,7 +99,6 @@ public class EnemyDistributor {
 	public Pyramid CreatePyramid() {
 		GameObject p = GameObject.Instantiate(game.pyramidPrefab) as GameObject;
 		Pyramid pyramid = p.GetComponent<Pyramid>();
-		pyramid.Initialize(game, play);
 		return pyramid;
 	}
 
@@ -121,10 +120,11 @@ public class EnemyDistributor {
 		return mana;
 	}
 
-	public Spawn CreateSpawn(string enemyClazz, int enemyModel, GridPosition gridPos) {
+	public Spawn CreateSpawn(string enemyClazz, int enemyModel, GridPosition gridPos,
+				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY) {
 		GameObject p = GameObject.Instantiate(game.spawnPrefab) as GameObject;
 		Spawn spawn = p.GetComponentInChildren<Spawn>();
-		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel);
+		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, frequency, maxLiving, maxGenerated);
 		spawn.transform.position = gridPos.GetVector3() * RoomMesh.MESH_SCALE;
 		return spawn;
 	}

@@ -77,7 +77,7 @@ public abstract class Enemy : MonoBehaviour {
 	}
 	
 	public void Damage(int damage, Vector3 contactPos) {
-		Debug.Log (health);
+//		Debug.Log (health);
 		health -= damage;
 		play.DisplayHit(contactPos, play.ship.transform.rotation);
 		if (health <= 0) {

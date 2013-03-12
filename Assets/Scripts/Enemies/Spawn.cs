@@ -19,10 +19,10 @@ public class Spawn : MonoBehaviour {
 	private int numberGenerated;
 	private int currentlyLiving;
 	
-	private const int INFINITY = -1;
+	public const int INFINITY = -1;
 	
 	public void Initialize(EnemyDistributor enemyDistributor_, Play play_, GridPosition gridPos_,
-				string enemyClazz_, int enemyModel_, float frequency_ = 5.0f, int maxLiving_ = 3, int maxGenerated_ = INFINITY) {
+				string enemyClazz_, int enemyModel_, float frequency_, int maxLiving_, int maxGenerated_) {
 		enemyDistributor = enemyDistributor_;
 		play = play_;
 		game = play.game;
@@ -40,8 +40,13 @@ public class Spawn : MonoBehaviour {
 		numberGenerated = 0;
 		currentlyLiving = 0;
 	}
-	
-	void Update() {
+		
+	void FixedUpdate() {
+		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
+		if (isShipVisible != Vector3.zero) {
+			transform.LookAt(play.GetShipPosition());
+		}
+
 		if ( (maxGenerated == INFINITY || numberGenerated < maxGenerated) && currentlyLiving < maxLiving) { 
 			if (Time.time > lastTimeGenerated + frequency) {
 				Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel);
@@ -55,6 +60,7 @@ public class Spawn : MonoBehaviour {
 	
 	public void Die(Enemy e) {
 		currentlyLiving--;
+		lastTimeGenerated = Time.time;
 	}
 	
 }

@@ -347,12 +347,12 @@ public class Play : MonoBehaviour {
 		e.Damage(damage, contactPos);
 	}
 	
-	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float accuracy, float speed, Collider col) {
+	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float accuracy, float speed, int damage, Collider col) {
 		GameObject newBullet;
 		if (weaponType == Weapon.TYPE_GUN) {
-			newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot);
+			newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot, damage);
 		} else {
-			newBullet = game.CreateFromPrefab().CreateLaserShot(pos, rot);
+			newBullet = game.CreateFromPrefab().CreateLaserShot(pos, rot, damage);
 		}
 		if (accuracy != 0) {
 			Vector3.OrthoNormalize(ref dir, ref tangent, ref binormal);

@@ -3,16 +3,14 @@ using UnityEngine;
 
 public class Shot : MonoBehaviour {
 	public Game.Shot shotType;
-	
-	public static float SPEED = 100.0f;
-	public static float LASER_SPEED = 400.0f;
-	
+		
 	private Play play;
 	
-	private static int DAMAGE = 5;
+	private int damage;
 	
-	public void Initialize(Play p) {
+	public void Initialize(Play p, int damage_) {
 		play = p;
+		damage = damage_;
 	}
 	
 	void Start() {
@@ -22,11 +20,10 @@ public class Shot : MonoBehaviour {
 	void OnCollisionEnter(Collision c) {
 		CancelInvoke("DestroySelf");
 		if (c.collider.tag == Ship.TAG) {
-			play.DamageShip(DAMAGE);
+			play.DamageShip(damage);
 //			Debug.Log ("HIT Ship");
 		} else if (c.collider.tag == Enemy.TAG) {
-			Debug.Log ("HIT Enemy");
-			play.DamageEnemy(DAMAGE, c.collider.GetComponent<Enemy>(), c.contacts[0].point);
+			play.DamageEnemy(damage, c.collider.GetComponent<Enemy>(), c.contacts[0].point);
 		}
 		Destroy(gameObject);
 	}	

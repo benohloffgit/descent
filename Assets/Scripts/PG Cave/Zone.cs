@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 	
 public class Zone {
+	public int id;
 	public int dimension;
 	public Room[,,] rooms;
 	public List<Room> roomList;
@@ -15,10 +16,11 @@ public class Zone {
 	
 	private static IntDouble[] ENTRYEXIT_POSITIONS = new IntDouble[] { new IntDouble(0,1), new IntDouble(1,1), new IntDouble(2,1), new IntDouble(1,0), new IntDouble(1,2) };
 
-	public Zone(int dim, Cave c) {
-		dimension = dim;
-		cave = c;
-		rooms = new Room[dim,dim,dim];
+	public Zone(int dimension_, Cave cave_, int id_) {
+		dimension = dimension_;
+		cave = cave_;
+		id = id_;
+		rooms = new Room[dimension,dimension,dimension];
 		roomList = new List<Room>();
 		CreateRooms();
 	}

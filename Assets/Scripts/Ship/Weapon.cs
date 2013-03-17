@@ -16,7 +16,7 @@ public class Weapon {
 	protected int model;
 	protected float accuracy;
 	public float frequency;
-	protected int damage;
+	public int damage;
 	protected float speed;
 	
 	protected Vector3 position;

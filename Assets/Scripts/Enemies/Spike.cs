@@ -74,7 +74,7 @@ public class Spike : Enemy {
 				mode = Mode.PATHFINDING;
 				play.movement.AStarPath(aStarThreadState, cave.GetGridFromPosition(transform.position), play.GetShipGridPosition());
 			} else {
-				play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, movementForce);
+				play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			}
 		}
 		play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.None);

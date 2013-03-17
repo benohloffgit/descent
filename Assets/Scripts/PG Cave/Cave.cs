@@ -19,16 +19,16 @@ public class Cave {
 	public static IntTriple[] ZONE_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	public static IntTriple[] ROOM_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.BACKWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	
-	public Cave(Play p) {
+	public Cave(Play p, int zoneID) {
 		play = p;
 		game = play.game;
 		zones = new List<Zone>();
-		AddZone();
+		AddZone(zoneID);
 		DigRooms(GetCurrentZone());
 	}
 
-	public void AddZone() {
-		zones.Add(new Zone(Game.DIMENSION_ZONE, this));
+	public void AddZone(int id) {
+		zones.Add(new Zone(Game.DIMENSION_ZONE, this, id));
 	}
 	
 	public Zone GetCurrentZone() {

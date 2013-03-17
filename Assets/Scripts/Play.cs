@@ -39,7 +39,13 @@ public class Play : MonoBehaviour {
 	private static float GRAVITY_INTERVAL = 10.0f;
 		
 	void OnGUI() {
-        Event e = Event.current;
+ 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
+			Application.Quit();
+		}
+		GUI.Label(new Rect (20,Screen.height-70,500,50), "Active: " + enemyDistributor.enemiesActive + " Health: " + enemyDistributor.enemiesHealth
+				+ " FPS/s: " + enemyDistributor.enemiesFirepowerPerSecond);
+
+		Event e = Event.current;
         if (e.isKey && e.type == EventType.KeyDown) { // keydown and characters can come as seperate events!!!
 //			Debug.Log("> " + keyCommand + " "  + e.type + " " +  e.keyCode);
 			if (e.keyCode == KeyCode.Backslash) {
@@ -55,21 +61,18 @@ public class Play : MonoBehaviour {
 			}
 		}
 		e.Use();
- 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
-			Application.Quit();
-		}
    	}
 	
-	void FixedUpdate() {
-/*		if (Time.time > lastGravitiyChange + GRAVITY_INTERVAL) {
+/*	void FixedUpdate() {
+		if (Time.time > lastGravitiyChange + GRAVITY_INTERVAL) {
 			currentGravitiyDirection++;
 			if (currentGravitiyDirection == Cave.ROOM_DIRECTIONS.Length) {
 				currentGravitiyDirection = 0;
 			}
 			//Physics.gravity = Cave.ROOM_DIRECTIONS[currentGravitiyDirection].GetVector3();
 			lastGravitiyChange = Time.time;
-		}*/
-	}
+		}
+	}*/
 	
 	void Update() {
 		// editor commands
@@ -211,11 +214,12 @@ public class Play : MonoBehaviour {
 //		int seed = UnityEngine.Random.Range(1000000,9999999);
 		Debug.Log ("Seed: " + seed);
 		UnityEngine.Random.seed = seed;
-		cave = new Cave(this);
+		cave = new Cave(this, 1);
 		PlaceShip();
 		movement = new Movement(this);
 //		PlaceTestCubes();
-		PlaceEnemies();
+		enemyDistributor = new EnemyDistributor(this);
+		PlaceEnemies(1);
 		currentGravitiyDirection = 0;
 		lastGravitiyChange = Time.time;
 	}
@@ -243,9 +247,8 @@ public class Play : MonoBehaviour {
 		ship.transform.position = cave.GetCaveEntryPosition();
 	}
 	
-	private void PlaceEnemies() {
-		enemyDistributor = new EnemyDistributor(this);
-		enemyDistributor.Distribute();
+	private void PlaceEnemies(int coreModelNum) {
+		enemyDistributor.Distribute(coreModelNum);
 	}
 	
 	private void PlaceTestCubes() {
@@ -272,7 +275,7 @@ public class Play : MonoBehaviour {
 	private void ExecuteKeyCommand() {
 		Debug.Log ("Key command is: " + keyCommand);
 		if (keyCommand.Substring(1, 1) == "e") {
-				Enemy e = enemyDistributor.CreateEnemy(null, keyCommand.Substring(2, 1), Convert.ToInt32(keyCommand.Substring(3, 2)));
+				Enemy e = enemyDistributor.CreateEnemy(null, Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1)), Convert.ToInt32(keyCommand.Substring(3, 2)));
 				e.transform.position = GetShipPosition();
 				Debug.Log ("Adding Enemy " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
 		} else if (keyCommand.Substring(1, 1) == "m") {
@@ -280,7 +283,7 @@ public class Play : MonoBehaviour {
 				m.transform.position = GetShipPosition();
 				Debug.Log ("Adding Mana (Editor mode)");
 		} else if (keyCommand.Substring(1, 1) == "s") {
-				Spawn s = enemyDistributor.CreateSpawn(keyCommand.Substring(2, 1), Convert.ToInt32(keyCommand.Substring(3, 2)), GetShipGridPosition());
+				Spawn s = enemyDistributor.CreateSpawn(Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1)), Convert.ToInt32(keyCommand.Substring(3, 2)), GetShipGridPosition());
 				Debug.Log ("Adding Spawn  " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
 		}
 				

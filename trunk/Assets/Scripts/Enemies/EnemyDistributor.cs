@@ -8,9 +8,23 @@ public class EnemyDistributor {
 	
 	private ArrayList emptyCells;
 	private RaycastHit hit;
-		
+	
+	public int enemiesActive;
+	public int enemiesHealth;
+	public float enemiesFirepowerPerSecond;
+	public float enemiesHitRatio;
+	
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
-
+	
+	private static float[] ENEMY_SIZES = new float[] {1.0f, 0.5f, 1.5f, 0.7f, 1.3f, 0.3f, 0.7f, 1.7f, 2.0f, 1.0f};
+	private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
+	private static float[] ENEMY_MOVEMENT_FORCES = new float[] {5.0f, 10f, 7.5f, 2.5f, 12.5f, 6.0f, 8.0f, 4.0f, 15.0f, 3.0f, 7.0f, 9f};
+	private static float[] ENEMY_TURN_FORCES = new float[] {5.0f, 2.5f, 7.5f, 3.0f, 6.0f};
+	private static int[] ENEMY_LOOK_RANGES = new int[] {3,5,9,7,2,10,6,18,8,4,16,12,20};
+	private static int[] ENEMY_CHASE_RANGES = new int[] {4,6,12,8,2,10};
+	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
+	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
+	
 	public EnemyDistributor(Play play_) {
 		play = play_;
 		game = play.game;
@@ -29,12 +43,34 @@ public class EnemyDistributor {
 		}*/
 	}
 	
-	public void Distribute() {
+	public void Distribute(int enemyCoreModelNum) {
+		int enemyCoreClazz = Mathf.FloorToInt(enemyCoreModelNum / Enemy.CLAZZ_STEP);
+		int enemyCoreModel = enemyCoreModelNum % Enemy.CLAZZ_STEP;
 		
+		Debug.Log ("Distributing enemies based on enemyCoreModelNum: "+ enemyCoreModelNum +", enemyCoreClazz: " + enemyCoreClazz +", enemyCoreModel: " +enemyCoreModel);
+		
+		Zone zone = play.cave.GetCurrentZone();
+		int enemyClazzVariety = CalculateEnemyClazzVariety(zone.id);
+		Debug.Log ("enemyClazzVariety : " + enemyClazzVariety );
+		
+		float[] enemyClazzProbability = CalculateEnemyClazzProbability(enemyClazzVariety);
+				
 		foreach (Room r in play.cave.GetCurrentZone().roomList) {
-			if (r.id > 0) { // all rooms except entry
-				GridPosition empty = GetRandomEmptyGridPosition(r);
-				CreateSpawn(Enemy.CLAZZ_A, 5, empty, 15.0f, 3, 10);
+			if (r.id > -1) {  // ----  > 0 all rooms except entry
+				float rand = UnityEngine.Random.value;
+				for (int i=0; i<enemyClazzProbability.Length; i++) {
+					if (rand <= enemyClazzProbability[i]) {
+						int enemyClazzDelta = CalculateEnemyClazzDelta(enemyClazzVariety, enemyCoreClazz, i);
+						//Debug.Log ("enemyClazzDelta: " + enemyClazzDelta);
+						int enemyModel = CalculateEnemyModel(enemyCoreClazz, enemyCoreModel, enemyClazzDelta);
+						//Debug.Log ("enemyModel: " + enemyModel);
+						int enemyClazz = Mathf.Clamp(enemyCoreClazz + enemyClazzDelta, Enemy.CLAZZ_MIN, Enemy.CLAZZ_MAX);
+						Debug.Log ("enemyClazz/enemyModel: " + enemyClazz+"/"+enemyModel);
+						
+						CreateSpawn(enemyClazz, enemyModel, GetRandomEmptyGridPosition(r),
+							UnityEngine.Random.Range(5.0f, 15.0f), UnityEngine.Random.Range(2, 6), Spawn.INFINITY);
+					}
+				}
 			}
 		}
 		
@@ -120,7 +156,7 @@ public class EnemyDistributor {
 		return mana;
 	}
 
-	public Spawn CreateSpawn(string enemyClazz, int enemyModel, GridPosition gridPos,
+	public Spawn CreateSpawn(int enemyClazz, int enemyModel, GridPosition gridPos,
 				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY) {
 		GameObject p = GameObject.Instantiate(game.spawnPrefab) as GameObject;
 		Spawn spawn = p.GetComponentInChildren<Spawn>();
@@ -129,30 +165,60 @@ public class EnemyDistributor {
 		return spawn;
 	}
 	
-	public Enemy CreateEnemy(Spawn spawn, string clazz, int number) {
+	public void LoseHealth(int loss) {
+		enemiesHealth -= loss;
+	}
+	
+	public void RemoveEnemy(Enemy e) {
+		enemiesActive--;
+		enemiesFirepowerPerSecond -= e.firepowerPerSecond;
+	}
+	
+	public Enemy CreateEnemy(Spawn spawn, int clazz, int model) {
 		Enemy enemy;
-		if (clazz == Enemy.CLAZZ_A) {
+		if (clazz == Enemy.CLAZZ_A0) {
 			enemy = (Enemy)CreateBull();
-			switch (number) {
-												             //   health shield size    aggr    movF   turnF lookR aimTol roamTol chaseR
-				case 1:	enemy.Initialize(play, spawn, clazz, number, 10,	0,	1.0f,	2.5f,	5.0f,	5.0f,	4,	0.5f,	20.0f,	0, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
-				case 5:	enemy.Initialize(play, spawn, clazz, number, 20,	0,	0.5f,	10.0f,	5.0f,	5.0f,	4,	0.5f,	20.0f,	0, new int[] {Weapon.TYPE_GUN, Weapon.TYPE_GUN}, new int[] {1,2}); break;
-				case 11:enemy.Initialize(play, spawn, clazz, number, 20,	0,	0.5f,	5.0f,	10.0f,	5.0f,	4,	0.5f,	20.0f,	0, new int[] {Weapon.TYPE_LASER}, new int[] {1}); break;
+			enemy.Initialize(play, spawn, clazz, model,
+					CalculateEnemyHealth(clazz, model),
+					CalculateEnemyShield(clazz, model),
+					CalculateEnemySize(clazz, model),
+					CalculateEnemyAggressiveness(clazz, model),
+					CalculateEnemyMovementForce(clazz, model),
+					CalculateEnemyTurnForce(clazz, model),
+					CalculateEnemyLookRange(clazz, model),
+					CalculateEnemyChaseRange(clazz, model),
+				    CalculateEnemyRoamMin(clazz, model),
+					CalculateEnemyRoamMax(clazz, model),
+					new int[] {Weapon.TYPE_GUN}, new int[] {1});
+/*			switch (number) {
+												             //   health shield size    aggr  movF    turnF lookR chaseR, roamMin, roamMax
+				case 1:	enemy.Initialize(play, spawn, clazz, number, 10,	0,	1.0f,	2.5f,	5.0f,	5.0f,	4,	0,      2,     4, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 2:	enemy.Initialize(play, spawn, clazz, number, 10,	0,	1.0f,	2.5f,	5.0f,	5.0f,	4,	0,      2,     4, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 3:	enemy.Initialize(play, spawn, clazz, number, 10,	0,	1.0f,	2.5f,	5.0f,	5.0f,	4,	0,      2,     4, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 4:	enemy.Initialize(play, spawn, clazz, number, 10,	0,	1.0f,	2.5f,	5.0f,	5.0f,	4,	0,      2,     4, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 5:	enemy.Initialize(play, spawn, clazz, number, 10,	0,	1.0f,	2.5f,	5.0f,	5.0f,	4,	0,      2,     4, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 6:	enemy.Initialize(play, spawn, clazz, number, 10,	0,	1.0f,	2.5f,	5.0f,	5.0f,	4,	0,      2,     4, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 7:	enemy.Initialize(play, spawn, clazz, number, 20,	0,	0.5f,	10.0f,	5.0f,	5.0f,	4,	0,      2,     4, new int[] {Weapon.TYPE_GUN, Weapon.TYPE_GUN}, new int[] {1,2}); break;
+				case 8:enemy.Initialize(play, spawn, clazz, number, 20,	0,	0.5f,	5.0f,	10.0f,	5.0f,	4,	0,      2,     4, new int[] {Weapon.TYPE_LASER}, new int[] {1}); break;
 				default:break;
-			}
-		} else if (clazz == Enemy.CLAZZ_B) {
+			}*/
+		} else if (clazz == Enemy.CLAZZ_B1) {
 			enemy = (Enemy)CreateSpike();
-			switch (number) {
-												             //   health shield size    aggr    movF   turnF lookR aimTol roamTol chaseR
-				case 1:	enemy.Initialize(play, spawn, clazz, number, 10,	0,	1.0f,	2.5f,	7.5f,	5.0f,	8,	0.5f,	20.0f,	4, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
-				case 5:	enemy.Initialize(play, spawn, clazz, number, 20,	0,	0.5f,	10.0f,	5.0f,	5.0f,	8,	0.5f,	20.0f,	4, new int[] {Weapon.TYPE_GUN}, new int[] {2}); break;
-				case 11:enemy.Initialize(play, spawn, clazz, number, 20,	0,	0.5f,	5.0f,	10.0f,	5.0f,	8,	0.5f,	20.0f,	4, new int[] {Weapon.TYPE_LASER}, new int[] {1}); break;
+			switch (model) {
+												             //   health shield size    aggr  movF    turnF lookR chaseR, roamMin, roamMax
+				case 1:	enemy.Initialize(play, spawn, clazz, model, 10,	0,	1.0f,	2.5f,	7.5f,	5.0f,	8,	4,      3,     6, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
+				case 5:	enemy.Initialize(play, spawn, clazz, model, 20,	0,	0.5f,	10.0f,	5.0f,	5.0f,	8,	4,      3,     6, new int[] {Weapon.TYPE_GUN}, new int[] {2}); break;
+				case 11:enemy.Initialize(play, spawn, clazz, model, 20,	0,	0.5f,	5.0f,	10.0f,	5.0f,	8,	4,      3,     6, new int[] {Weapon.TYPE_LASER}, new int[] {1}); break;
 				default:break;
 			}
 			
 		} else {
 			enemy = (Enemy)CreateBull();
-		}		
+		}
+		
+		enemiesFirepowerPerSecond += enemy.firepowerPerSecond;
+		enemiesHealth += enemy.health;
+		enemiesActive++;
 		return enemy;
 	}
 	
@@ -171,5 +237,96 @@ public class EnemyDistributor {
 		return new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * ((UnityEngine.Random.Range(0,2) == 0) ? 1 : -1);
 	}
 		
+	// Super Formula stuff
+	
+	private int CalculateEnemyClazzVariety(int zoneID) {
+		return (int) Mathf.Ceil( Mathf.Sqrt(zoneID) );
+	}
+	
+	private float[] CalculateEnemyClazzProbability(int enemyClazzVariety) {
+		float[] result = new float[1];
+		switch (enemyClazzVariety) {
+			case 1: result = new float[] { 1.0f }; break;
+			case 2: result = new float[] { 0.3f, 1.0f }; break;
+			case 3: result = new float[] { 0.2f, 0.5f, 1.0f }; break;
+			case 4: result = new float[] { 0.15f, 0.3f, 0.55f, 1.0f }; break;
+			case 5: result = new float[] { 0.1f, 0.22f, 0.34f, 0.57f, 1.0f }; break;
+			case 6: result = new float[] { 0.075f, 0.17f, 0.29f, 0.43f, 0.6f, 1.0f }; break;
+			case 7: result = new float[] { 0.065f, 0.13f, 0.2f, 0.3f, 0.45f, 0.6f, 1.0f }; break;
+			case 8: result = new float[] { 0.06f, 0.12f, 0.2f, 0.29f, 0.39f, 0.50f, 0.65f, 1.0f }; break;
+			case 9: result = new float[] { 0.05f, 0.1f, 0.17f, 0.24f, 0.33f, 0.43f, 0.54f, 0.7f, 1.0f }; break;
+			case 10: result = new float[] { 0.03f, 0.1f, 0.16f, 0.23f, 0.31f, 0.4f, 0.5f, 0.55f, 0.75f, 1.0f }; break;
+		}
+		return result;
+	}
+
+	private int CalculateEnemyClazzDelta(int enemyClazzVariety, int coreClazz, int clazzProbabilityIndex) {
+		int classDelta = enemyClazzVariety - clazzProbabilityIndex;
+		// divide by 2 to adjust for clazz above or below coreClazz
+		int clazzDeltaRelative = Mathf.FloorToInt(classDelta / 2.0f);
+		if (clazzProbabilityIndex % 2 == 0) { // even
+			clazzDeltaRelative *= -1;
+		}
+		return coreClazz + clazzDeltaRelative;
+	}
+	
+	private int CalculateEnemyModel(int coreClazz, int coreModel, int enemyClazzDelta) {
+		float[] probabilities = new float[] { 0.1f, 0.3f, 0.6f, 1.0f };
+		float rand = UnityEngine.Random.value;
+		int modelDelta = 0;
+		for (int i=0; i<probabilities.Length; i++) {
+			if (rand <= probabilities[i]) {
+				modelDelta = (probabilities.Length-1) - i;
+				if (UnityEngine.Random.Range(0,2) == 0) { // 50:50
+					modelDelta *= -1;
+				}
+				i = probabilities.Length;
+			}
+		}
+		modelDelta += enemyClazzDelta * -3;
+		
+		return Mathf.Clamp(coreModel + modelDelta, Enemy.MODEL_MIN, Enemy.MODEL_MAX);
+		
+	}
+	
+	private int CalculateEnemyHealth(int clazz, int model) {
+		return (model * 10) / 2 + clazz * 20;
+	}
+
+	private int CalculateEnemyShield(int clazz, int model) {
+		return Mathf.FloorToInt(((model * 10) / 2 + clazz * 20) / 2f);
+	}
+	
+	private float CalculateEnemySize(int clazz, int model) {
+		return ENEMY_SIZES[(clazz + (model-1)) % 10];
+	}
+
+	private float CalculateEnemyAggressiveness(int clazz, int model) {
+		return ENEMY_AGGRESSIVENESSES[(clazz + (model-1)) % 11];
+	}
+	
+	private float CalculateEnemyMovementForce(int clazz, int model) {
+		return ENEMY_MOVEMENT_FORCES[(clazz + (model-1)) % 12];
+	}
+
+	private float CalculateEnemyTurnForce(int clazz, int model) {
+		return ENEMY_TURN_FORCES[(clazz + (model-1)) % 5];
+	}
+
+	private int CalculateEnemyLookRange(int clazz, int model) {
+		return ENEMY_LOOK_RANGES[(clazz + (model-1)) % 13];
+	}
+	
+	private int CalculateEnemyChaseRange(int clazz, int model) {
+		return ENEMY_CHASE_RANGES[(clazz + (model-1)) % 6];
+	}
+
+	private int CalculateEnemyRoamMin(int clazz, int model) {
+		return ENEMY_ROAM_MINS[(clazz + (model-1)) % 9];
+	}
+
+	private int CalculateEnemyRoamMax(int clazz, int model) {
+		return ENEMY_ROAM_MAXS[(clazz + (model-1)) % 9];
+	}
 }
 

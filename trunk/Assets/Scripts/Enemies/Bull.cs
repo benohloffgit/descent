@@ -32,11 +32,10 @@ public class Bull : Enemy {
 		}
 		
 		if (mode == Mode.ROAMING) {
-			play.movement.Roam(myRigidbody, ref targetPosition, 3, 8, movementForce);
+			play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);		
-		}
-		if (mode == Mode.AIMING) {
-			play.movement.Roam(myRigidbody, ref targetPosition, 2, 4, movementForce);
+		} else if (mode == Mode.AIMING) {
+			play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 		}
 	}

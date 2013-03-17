@@ -9,7 +9,7 @@ public class Spawn : MonoBehaviour {
 	
 	private GridPosition gridPos;
 	private Vector3 worldPos;
-	private string enemyClazz;
+	private int enemyClazz;
 	private int enemyModel;
 	private float frequency;
 	private int maxLiving;
@@ -22,7 +22,7 @@ public class Spawn : MonoBehaviour {
 	public const int INFINITY = -1;
 	
 	public void Initialize(EnemyDistributor enemyDistributor_, Play play_, GridPosition gridPos_,
-				string enemyClazz_, int enemyModel_, float frequency_, int maxLiving_, int maxGenerated_) {
+				int enemyClazz_, int enemyModel_, float frequency_, int maxLiving_, int maxGenerated_) {
 		enemyDistributor = enemyDistributor_;
 		play = play_;
 		game = play.game;
@@ -60,7 +60,12 @@ public class Spawn : MonoBehaviour {
 	
 	public void Die(Enemy e) {
 		currentlyLiving--;
+		enemyDistributor.RemoveEnemy(e);
 		lastTimeGenerated = Time.time;
+	}
+	
+	public void LoseHealth(int loss) {
+		enemyDistributor.LoseHealth(loss);
 	}
 	
 }

@@ -1,21 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\Enemy.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\EnemyDistributor.cs">
     <Files>
-      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="25" Column="93" />
-      <File FileName="Assets\Scripts\Game.cs" Line="24" Column="26" />
-      <File FileName="Assets\Scripts\Play.cs" Line="349" Column="2" />
-      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="47" Column="26" />
+      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="18" Column="1" />
+      <File FileName="Assets\Scripts\Game.cs" Line="90" Column="3" />
+      <File FileName="Assets\Scripts\Play.cs" Line="74" Column="4" />
+      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="97" Column="37" />
       <File FileName="Assets\Scripts\Ship\Ship.cs" Line="45" Column="8" />
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="187" Column="24" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="80" Column="3" />
-      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="62" Column="13" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="122" Column="2" />
-      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="43" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="20" Column="81" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="96" Column="46" />
+      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="19" Column="19" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="71" Column="8" />
+      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="53" Column="41" />
       <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="57" Column="63" />
       <File FileName="Assets\Scripts\PrefabFactory.cs" Line="40" Column="2" />
-      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="11" Column="36" />
+      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="26" Column="3" />
+      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="55" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

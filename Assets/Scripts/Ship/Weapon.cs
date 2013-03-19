@@ -4,10 +4,18 @@ using System.Collections;
 
 public class Weapon {
 	
-	public static int TYPE_GUN = 1;
-	public static int TYPE_LASER = 2;
-	public static int TYPE_PHASER = 2;
-	public static int TYPE_GAUSS = 3;
+	public const int TYPE_GUN = 1;
+	public const int TYPE_LASER = 2;
+	public const int TYPE_PHASER = 3;
+	public const int TYPE_GAUSS = 4;
+	public const int TYPE_MISSILE = 5;
+	public const int TYPE_GUIDED_MISSILE = 6;
+	public const int TYPE_CHARGED_MISSILE = 7;
+	public const int TYPE_MINE_SUICIDAL = 8;
+	public const int TYPE_MINE_TOUCH = 9;
+	public const int TYPE_MINE_INFRARED = 10;
+	public const int TYPE_MINE_TIMED = 11;
+	public const int TYPE_LASER_BEAM = 12;
 		
 	public float lastShotTime;
 	public Transform weaponTransform;
@@ -59,25 +67,34 @@ public class Weapon {
 		} else {
 			bulletPath = parent.forward;
 		}
-		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, damage, parent.collider);
+		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, damage, parent.collider, mountedTo);
 	}
 	
 	private void Initialize() {
 		GameObject weaponGameObject;
 		switch (type) {
-			case 1:
-				switch (model) {
+			case TYPE_GUN:
+				speed = 100f;
+				damage = model * 10; // 10-100
+				accuracy = 4.0f - model * 0.015f;
+				frequency = 3.0f - model * 0.02f;
+			
+			/*	switch (model) {
 					case 1:	accuracy = 4.0f; frequency = 2.0f; damage = 5; speed = 100f; break;
 					case 2:	accuracy = 4.0f; frequency = 1.0f; damage = 5; speed = 100f; break;
-					case 9:	accuracy = 4.0f; frequency = 0.2f; damage = 5; speed = 100f; break;
-				}
+					case 9:	accuracy = 4.0f; frequency = 0.3f; damage = 5; speed = 100f; break;
+				}*/
 				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
-			case 2:
-				switch (model) {
+			case TYPE_LASER:
+				speed = 200f;
+				damage = model * 20; // 20-200
+				accuracy = 3.0f - model * 0.01f;
+				frequency = 3.0f - model * 0.02f;
+/*				switch (model) {
 					case 1:	accuracy = 3.0f; frequency = 2.0f; damage = 10; speed = 200f; break;
 					case 2:	accuracy = 3.0f; frequency = 1.0f; damage = 10; speed = 200f; break;
 					case 9:	accuracy = 3.0f; frequency = 0.2f; damage = 10; speed = 200f; break;
-				}
+				}*/
 				weaponGameObject = GameObject.Instantiate(game.laserGunPrefab) as GameObject; break;
 			default:
 				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;

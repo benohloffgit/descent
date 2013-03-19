@@ -10,17 +10,16 @@ public class Bull : Enemy {
 		
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2 }
 	
-	public override void InitializeWeapon(int ix, int w, int m) {
-		weapons.Add(new Weapon(transform, play, w, m, WEAPON_POSITIONS[ix], Game.ENEMY));
-	}
-	
 	void Start() {
 		targetPosition = play.cave.GetGridFromPosition(transform.position);
 		mode = Mode.ROAMING;
 	}
+	
+	public override void InitializeWeapon(int ix, int w, int m) {
+		weapons.Add(new Weapon(transform, play, w, m, WEAPON_POSITIONS[ix], Game.ENEMY));
+	}
 		
-	void FixedUpdate() {
-		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
+	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
 		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
 			Shoot();
 		}

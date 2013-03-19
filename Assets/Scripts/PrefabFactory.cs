@@ -29,21 +29,19 @@ public class PrefabFactory {
 		hitTemplate.GetComponent<Hit>().enabled = false;
 	}
 	
-	public GameObject CreateGunBullet(Vector3 pos, Quaternion rot, int damage) {
+	public GameObject CreateGunBullet(Vector3 pos, Quaternion rot, int damage, int source) {
 		GameObject newBullet = GameObject.Instantiate(gunBulletTemplate, pos, rot) as GameObject;
 		Shot shot = newBullet.GetComponent<Shot>();
-		shot.Initialize(play, damage);
+		shot.Initialize(play, damage, source, Game.Shot.Bullet);
 		shot.enabled = true;
-		shot.shotType = Game.Shot.Bullet;
 		return newBullet;
 	}
 	
-	public GameObject CreateLaserShot(Vector3 pos, Quaternion rot, int damage) {
+	public GameObject CreateLaserShot(Vector3 pos, Quaternion rot, int damage, int source) {
 		GameObject newLaser = GameObject.Instantiate(laserShotTemplate, pos, rot) as GameObject;
 		Shot shot = newLaser.GetComponent<Shot>();
 		shot.enabled = true;
-		shot.Initialize(play, damage);
-		shot.shotType = Game.Shot.Laser;
+		shot.Initialize(play, damage, source, Game.Shot.Laser);
 		return newLaser;
 	}
 	

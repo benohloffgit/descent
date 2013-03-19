@@ -9,6 +9,7 @@ public class Ship : MonoBehaviour {
 	
 	public int health;
 	public int shield;
+	public float firepowerPerSecond;
 //	public float lastShotTime;
 //	public float lastLaserTime;
 		
@@ -86,12 +87,15 @@ public class Ship : MonoBehaviour {
 		weapons.Add(w);
 		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT]; // turn upside down on center slot
 
-		w = new Weapon(transform, play, Weapon.TYPE_LASER, 2, WEAPON_POSITIONS[WEAPON_POSITION_WING_RIGHT], Game.SHIP);
+/*		w = new Weapon(transform, play, Weapon.TYPE_LASER, 2, WEAPON_POSITIONS[WEAPON_POSITION_WING_RIGHT], Game.SHIP);
 		weapons.Add(w);
-		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_RIGHT]; // turn upside down on center slot
+		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_RIGHT]; // turn upside down on center slot*/
+
+		firepowerPerSecond = 0;
+		foreach (Weapon w1 in weapons) {
+			firepowerPerSecond += w1.damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
+		}
 		
-//		lastShotTime = Time.time;
-//		lastLaserTime = Time.time;
 	}
 	
 	void OnCollisionEnter(Collision c) {

@@ -19,8 +19,7 @@ public class Pyramid : Enemy {
 		mode = Mode.ROAMING;
 	}
 		
-	void FixedUpdate() {
-		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
+	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
 		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
 			Shoot();
 		}

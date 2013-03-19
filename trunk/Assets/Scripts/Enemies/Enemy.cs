@@ -5,6 +5,10 @@ using System.Collections.Generic;
 public abstract class Enemy : MonoBehaviour {
 	public static string TAG = "Enemy";
 	
+	/*   Wall gunner
+		Light bulb	
+		Mine dropper
+	*/
 	public static string CLAZZ_A = "a"; // bull
 	public static string CLAZZ_B = "b"; // spile
 	public static string CLAZZ_C = "c";
@@ -34,6 +38,8 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_MIN = 0;
 	public static int CLAZZ_MAX = 9;
 	
+	private static float DEACTIVATION_TIME = 5.0f;
+	
 	public Game game;
 	public Play play;
 	private Spawn spawn;
@@ -58,14 +64,19 @@ public abstract class Enemy : MonoBehaviour {
 	protected float lookAtToleranceAiming;
 	protected float lookAtToleranceRoaming;
 	
+	public bool isActive;
+	private float lastTimeShipVisible;
+	
 	protected List<Weapon> weapons = new List<Weapon>();
 
 	protected Rigidbody myRigidbody;
 	
 	public abstract void InitializeWeapon(int ix, int w, int m);
+	public abstract void DispatchFixedUpdate(Vector3 isShipVisible);
 	
 	void Awake() {
 		myRigidbody = GetComponent<Rigidbody>();
+		isActive = false;
 	}
 
 	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int health_, int shield_,
@@ -115,6 +126,23 @@ public abstract class Enemy : MonoBehaviour {
 			roamMinRange_, roamMaxRange_, weapons_, models_);		
 	}
 	
+	void FixedUpdate() {
+		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
+		if (isShipVisible != Vector3.zero) {
+			if (!isActive) {
+				isActive = true;
+				lastTimeShipVisible = Time.time;
+				spawn.ActivateEnemy(this);
+			}
+			DispatchFixedUpdate(isShipVisible);
+		} else {
+			if (isActive && Time.time > lastTimeShipVisible + DEACTIVATION_TIME) {
+				isActive = false;
+				spawn.DeactivateEnemy(this);
+			}
+		}
+	}
+	
 	public void Damage(int damage, Vector3 contactPos) {
 		play.DisplayHit(contactPos, play.ship.transform.rotation);
 
@@ -129,14 +157,15 @@ public abstract class Enemy : MonoBehaviour {
 		}
 		
 		if (health-damage <= 0) {
-			spawn.LoseHealth(health);
+			spawn.LoseHealth(this, health);
+			health = 0;
 			if (spawn != null) {
 				spawn.Die(this);
 			}
 			Destroy(gameObject);
 			play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 		} else {
-			spawn.LoseHealth(damage);
+			spawn.LoseHealth(this, damage);
 			health -= damage;
 		}
 	}

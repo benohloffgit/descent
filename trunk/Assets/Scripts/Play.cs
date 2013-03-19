@@ -25,6 +25,15 @@ public class Play : MonoBehaviour {
 	private int currentGravitiyDirection;
 	private float lastGravitiyChange;
 
+	private List<ShotStats> shipShotStats = new List<ShotStats>();
+	private List<ShotStats> enemyShotStats = new List<ShotStats>();
+	private float shipHitRatio;
+	private float enemyHitRatio;
+	private float shipToEnemyHitRatio;
+	private float activeEnemiesHealthToShipFPSRatio;
+	private float shipHealthToActiveEnemiesFPSRatio;
+	private float enemiesToShipFPSRatio;
+	
 	Vector3 tangent = Vector3.zero;
 	Vector3 binormal = Vector3.zero;
 	
@@ -37,14 +46,21 @@ public class Play : MonoBehaviour {
 
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
 	private static float GRAVITY_INTERVAL = 10.0f;
+	private static float STATS_INTERVAL = 10.0f;
+	private static float STATS_MIN = 0.01f;
 		
 	void OnGUI() {
  		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
 			Application.Quit();
 		}
-		GUI.Label(new Rect (20,Screen.height-70,500,50), "Active: " + enemyDistributor.enemiesActive + " Health: " + enemyDistributor.enemiesHealth
-				+ " FPS/s: " + enemyDistributor.enemiesFirepowerPerSecond);
-
+		GUI.Label(new Rect (20,Screen.height-90,500,80),
+				"Active-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +
+				"\nHealth E: " + enemyDistributor.enemiesHealthActive +"--"+ enemyDistributor.enemiesHealthActiveAvg.ToString("F2") +
+				"\nFPS S-E-S/E: " + ship.firepowerPerSecond.ToString("F2") +"--"+ enemyDistributor.enemiesFirepowerPerSecondActive.ToString("F2") +"--"+enemiesToShipFPSRatio.ToString("F2")+
+				"\nHealth/FPS S-E: " + activeEnemiesHealthToShipFPSRatio.ToString("F2") +"--"+ shipHealthToActiveEnemiesFPSRatio.ToString("F2") +
+				"\nHit/Miss S-E-S/E: " + shipHitRatio.ToString("F2") +"--"+enemyHitRatio.ToString("F2") + "--" + shipToEnemyHitRatio.ToString("F2")
+			);
+		
 		Event e = Event.current;
         if (e.isKey && e.type == EventType.KeyDown) { // keydown and characters can come as seperate events!!!
 //			Debug.Log("> " + keyCommand + " "  + e.type + " " +  e.keyCode);
@@ -197,6 +213,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
+		int zoneID = 8;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -214,14 +231,19 @@ public class Play : MonoBehaviour {
 //		int seed = UnityEngine.Random.Range(1000000,9999999);
 		Debug.Log ("Seed: " + seed);
 		UnityEngine.Random.seed = seed;
-		cave = new Cave(this, 1);
+		cave = new Cave(this, zoneID);
 		PlaceShip();
 		movement = new Movement(this);
 //		PlaceTestCubes();
 		enemyDistributor = new EnemyDistributor(this);
-		PlaceEnemies(1);
+		PlaceEnemies(zoneID);
 		currentGravitiyDirection = 0;
 		lastGravitiyChange = Time.time;
+		
+		shipHitRatio = 0;
+		enemyHitRatio = 0;
+		shipToEnemyHitRatio = 1.0f;
+		InvokeRepeating("UpdateStats", 0, 1.0f);
 	}
 	
 	public void Initialize(Game g, GameInput input) {
@@ -331,7 +353,39 @@ public class Play : MonoBehaviour {
 		}
 	}
 	
-	public void DamageShip(int damage) {
+	private void UpdateStats() {
+		shipHitRatio = Mathf.Max(GetShotStats(ref shipShotStats, shipHitRatio), STATS_MIN);
+		enemyHitRatio = Mathf.Max(GetShotStats(ref enemyShotStats, enemyHitRatio), STATS_MIN);
+		shipToEnemyHitRatio = shipHitRatio / enemyHitRatio;
+		activeEnemiesHealthToShipFPSRatio = enemyDistributor.enemiesHealthActive/ship.firepowerPerSecond;
+		shipHealthToActiveEnemiesFPSRatio = ship.health/enemyDistributor.enemiesFirepowerPerSecondActive;
+		enemiesToShipFPSRatio = enemyDistributor.enemiesFirepowerPerSecondActive/ship.firepowerPerSecond;
+	}
+
+	private float GetShotStats(ref List<ShotStats> shotStats, float startValue) {
+		float result = startValue;
+		if (shotStats.Count > 0) {
+			int last = 0;
+			foreach (ShotStats s in shotStats) {
+				if (Time.time > s.time + STATS_INTERVAL) {
+					last++;
+				} else {
+					break;
+				}
+			}
+			shotStats.RemoveRange(0, last);
+			if (shotStats.Count > 0) {
+				int hits = 0;
+				foreach (ShotStats s in shotStats) {
+					hits += s.val;
+				}
+				result = (float)hits / shotStats.Count;
+			}
+		}
+		return result;
+	}
+	
+	public void DamageShip(int damage, int source) {
 		if (ship.shield > 0) {
 			ship.shield -= damage * 2;
 			if (ship.shield < 0) {
@@ -342,20 +396,36 @@ public class Play : MonoBehaviour {
 			}
 		}
 		ship.health -= damage;
-//		playGUI.SetHealth(ship.health);
-//		playGUI.SetShield(ship.shield);
+		if (source == Game.ENEMY) {
+			enemyShotStats.Add(new ShotStats(ShotStats.HIT, Time.time));
+		} else {
+			shipShotStats.Add(new ShotStats(ShotStats.MISS, Time.time));
+		}
 	}
 	
-	public void DamageEnemy(int damage, Enemy e, Vector3 contactPos) {
+	public void DamageEnemy(int damage, Enemy e, Vector3 contactPos, int source) {
 		e.Damage(damage, contactPos);
+		if (source == Game.SHIP) {
+			shipShotStats.Add(new ShotStats(ShotStats.HIT, Time.time));
+		} else {
+			enemyShotStats.Add(new ShotStats(ShotStats.MISS, Time.time));
+		}
 	}
 	
-	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float accuracy, float speed, int damage, Collider col) {
+	public void DamageNothing(int source) {
+		if (source == Game.SHIP) {
+			shipShotStats.Add(new ShotStats(ShotStats.MISS, Time.time));
+		} else {
+			enemyShotStats.Add(new ShotStats(ShotStats.MISS, Time.time));
+		}
+	}
+	
+	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float accuracy, float speed, int damage, Collider col, int source) {
 		GameObject newBullet;
 		if (weaponType == Weapon.TYPE_GUN) {
-			newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot, damage);
+			newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot, damage, source);
 		} else {
-			newBullet = game.CreateFromPrefab().CreateLaserShot(pos, rot, damage);
+			newBullet = game.CreateFromPrefab().CreateLaserShot(pos, rot, damage, source);
 		}
 		if (accuracy != 0) {
 			Vector3.OrthoNormalize(ref dir, ref tangent, ref binormal);

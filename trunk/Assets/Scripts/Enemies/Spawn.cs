@@ -39,6 +39,7 @@ public class Spawn : MonoBehaviour {
 		lastTimeGenerated = Time.time;
 		numberGenerated = 0;
 		currentlyLiving = 0;
+		DistributeInitialSet();
 	}
 		
 	void FixedUpdate() {
@@ -58,15 +59,32 @@ public class Spawn : MonoBehaviour {
 		}
 	}
 	
+	private void DistributeInitialSet() {
+		Room r = play.cave.GetCurrentZone().GetRoom(gridPos);
+		for (int i=0; i<maxLiving; i++) {
+			Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel);
+			e.transform.position = r.GetRandomNonExitGridPosition().GetWorldVector3();
+			numberGenerated++;
+			currentlyLiving++;
+		}
+	}
+	
 	public void Die(Enemy e) {
 		currentlyLiving--;
 		enemyDistributor.RemoveEnemy(e);
 		lastTimeGenerated = Time.time;
 	}
 	
-	public void LoseHealth(int loss) {
-		enemyDistributor.LoseHealth(loss);
+	public void LoseHealth(Enemy e, int loss) {
+		enemyDistributor.LoseHealth(e, loss);
 	}
 	
+	public void ActivateEnemy(Enemy e) {
+		enemyDistributor.ActivateEnemy(e);
+	}
+	
+	public void DeactivateEnemy(Enemy e) {
+		enemyDistributor.DeactivateEnemy(e);
+	}
 }
 

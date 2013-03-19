@@ -39,7 +39,7 @@ public class MineBuilder : Enemy {
 		cave = play.cave;
 	}
 		
-	void FixedUpdate() {
+	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
 		if (mode == Mode.COVERFINDING) {
 			if (coverFindThreadState.IsFinishedNow()) {
 //				Debug.Log ("Mode.COVERFINDING finished " + coverFindThreadState.coverPosition);

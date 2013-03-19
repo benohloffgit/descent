@@ -108,5 +108,31 @@ public class Room {
 		}
 		return neighbours;
 	}
+	
+	public GridPosition GetRandomNonSpawnNonExitGridPosition () {
+		GridPosition result = GridPosition.ZERO;
+		bool cont = true;
+		while (cont) {
+			Cell c = emptyCells[UnityEngine.Random.Range(0, emptyCells.Count)];
+			if (!c.isSpawn && !c.isExit) {
+				result = new GridPosition(c.pos, pos);
+				cont = false;
+			}
+		}
+		return result;
+	}	
 
+	public GridPosition GetRandomNonExitGridPosition () {
+		GridPosition result = GridPosition.ZERO;
+		bool cont = true;
+		while (cont) {
+			Cell c = emptyCells[UnityEngine.Random.Range(0, emptyCells.Count)];
+			if (!c.isExit) {
+				result = new GridPosition(c.pos, pos);
+				cont = false;
+			}
+		}
+		return result;
+	}	
+	
 }

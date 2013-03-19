@@ -1,20 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\EnemyDistributor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\Weapon.cs">
     <Files>
-      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="18" Column="1" />
+      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="79" Column="34" />
+      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="24" Column="12" />
       <File FileName="Assets\Scripts\Game.cs" Line="90" Column="3" />
-      <File FileName="Assets\Scripts\Play.cs" Line="74" Column="4" />
+      <File FileName="Assets\Scripts\Play.cs" Line="423" Column="19" />
       <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="97" Column="37" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="45" Column="8" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="96" Column="46" />
-      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="19" Column="19" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="71" Column="8" />
-      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="53" Column="41" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="96" Column="92" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="10" Column="15" />
+      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="18" Column="1" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="345" Column="50" />
+      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="24" Column="20" />
       <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="57" Column="63" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="40" Column="2" />
-      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="26" Column="3" />
-      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="55" Column="23" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="37" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

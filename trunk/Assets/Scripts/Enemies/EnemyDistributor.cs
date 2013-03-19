@@ -9,15 +9,21 @@ public class EnemyDistributor {
 	private ArrayList emptyCells;
 	private RaycastHit hit;
 	
+	public int enemiesLiving;
 	public int enemiesActive;
 	public int enemiesHealth;
+	public int enemiesHealthActive;
+	public int enemiesHealthActiveAvg;
 	public float enemiesFirepowerPerSecond;
+	public float enemiesFirepowerPerSecondAvg;
+	public float enemiesFirepowerPerSecondActive;
+	public float enemiesFirepowerPerSecondAvgActive;
 	public float enemiesHitRatio;
 	
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
 	
 	private static float[] ENEMY_SIZES = new float[] {1.0f, 0.5f, 1.5f, 0.7f, 1.3f, 0.3f, 0.7f, 1.7f, 2.0f, 1.0f};
-	private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
+	/*unused*/private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
 	private static float[] ENEMY_MOVEMENT_FORCES = new float[] {5.0f, 10f, 7.5f, 2.5f, 12.5f, 6.0f, 8.0f, 4.0f, 15.0f, 3.0f, 7.0f, 9f};
 	private static float[] ENEMY_TURN_FORCES = new float[] {5.0f, 2.5f, 7.5f, 3.0f, 6.0f};
 	private static int[] ENEMY_LOOK_RANGES = new int[] {3,5,9,7,2,10,6,18,8,4,16,12,20};
@@ -29,6 +35,17 @@ public class EnemyDistributor {
 		play = play_;
 		game = play.game;
 				
+		enemiesLiving = 0;
+		enemiesActive = 0;
+		enemiesHealth = 0;
+		enemiesHealthActive = 0;
+		enemiesHealthActiveAvg = 0;
+		enemiesFirepowerPerSecond = 0;
+		enemiesFirepowerPerSecondActive = 0;
+		enemiesFirepowerPerSecondAvg = 0;
+		enemiesFirepowerPerSecondAvgActive = 0;
+		enemiesHitRatio = 0;
+		
 		// build array list of all empty cells
 /*		emptyCells = new ArrayList();
 		int emptyCellIx = 0;
@@ -67,7 +84,7 @@ public class EnemyDistributor {
 						int enemyClazz = Mathf.Clamp(enemyCoreClazz + enemyClazzDelta, Enemy.CLAZZ_MIN, Enemy.CLAZZ_MAX);
 						Debug.Log ("enemyClazz/enemyModel: " + enemyClazz+"/"+enemyModel);
 						
-						CreateSpawn(enemyClazz, enemyModel, GetRandomEmptyGridPosition(r),
+						CreateSpawn(enemyClazz, enemyModel, r.GetRandomNonSpawnNonExitGridPosition(),
 							UnityEngine.Random.Range(5.0f, 15.0f), UnityEngine.Random.Range(2, 6), Spawn.INFINITY);
 					}
 				}
@@ -85,18 +102,7 @@ public class EnemyDistributor {
 		}*/
 	}
 	
-	private GridPosition GetRandomEmptyGridPosition (Room r) {
-		GridPosition result = GridPosition.ZERO;
-		bool cont = true;
-		while (cont) {
-			Cell c = r.emptyCells[UnityEngine.Random.Range(0, r.emptyCells.Count)];
-			if (!c.isSpawn && !c.isExit) {
-				result = new GridPosition(c.pos, r.pos);
-				cont = false;
-			}
-		}
-		return result;
-	}
+
 
 	public LightBulb CreateLightBulb() {
 		GameObject lB = GameObject.Instantiate(game.lightBulbPrefab) as GameObject;
@@ -165,13 +171,42 @@ public class EnemyDistributor {
 		return spawn;
 	}
 	
-	public void LoseHealth(int loss) {
+	public void LoseHealth(Enemy e, int loss) {
 		enemiesHealth -= loss;
+		if (e.isActive) {
+			enemiesHealthActive -= loss;	
+			enemiesHealthActiveAvg = enemiesHealthActive / enemiesActive;
+		}
+	}
+	
+	public void ActivateEnemy(Enemy e) {
+		enemiesActive++;
+		enemiesFirepowerPerSecondActive += e.firepowerPerSecond;
+		enemiesFirepowerPerSecondAvgActive = enemiesFirepowerPerSecondActive / enemiesActive;
+		enemiesHealthActive += e.health;
+		enemiesHealthActiveAvg = enemiesHealthActive / enemiesActive;
+	}
+
+	public void DeactivateEnemy(Enemy e) {
+		enemiesActive--;
+		enemiesFirepowerPerSecondActive -= e.firepowerPerSecond;
+		enemiesHealthActive -= e.health;
+		if (enemiesActive > 0) {
+			enemiesFirepowerPerSecondAvgActive = enemiesFirepowerPerSecondActive / enemiesActive;
+			enemiesHealthActiveAvg = enemiesHealthActive / enemiesActive;
+		} else {
+			enemiesFirepowerPerSecondAvgActive = 0;
+			enemiesHealthActiveAvg = 0;
+		}
 	}
 	
 	public void RemoveEnemy(Enemy e) {
-		enemiesActive--;
+		enemiesLiving--;
+		if (e.isActive) {
+			DeactivateEnemy(e);
+		}
 		enemiesFirepowerPerSecond -= e.firepowerPerSecond;
+		enemiesFirepowerPerSecondAvg = enemiesFirepowerPerSecond / enemiesLiving;
 	}
 	
 	public Enemy CreateEnemy(Spawn spawn, int clazz, int model) {
@@ -204,21 +239,34 @@ public class EnemyDistributor {
 			}*/
 		} else if (clazz == Enemy.CLAZZ_B1) {
 			enemy = (Enemy)CreateSpike();
-			switch (model) {
+			enemy.Initialize(play, spawn, clazz, model,
+					CalculateEnemyHealth(clazz, model),
+					CalculateEnemyShield(clazz, model),
+					CalculateEnemySize(clazz, model),
+					CalculateEnemyAggressiveness(clazz, model),
+					CalculateEnemyMovementForce(clazz, model),
+					CalculateEnemyTurnForce(clazz, model),
+					CalculateEnemyLookRange(clazz, model),
+					CalculateEnemyChaseRange(clazz, model),
+				    CalculateEnemyRoamMin(clazz, model),
+					CalculateEnemyRoamMax(clazz, model),
+					new int[] {Weapon.TYPE_GUN}, new int[] {1});
+/*			switch (model) {
 												             //   health shield size    aggr  movF    turnF lookR chaseR, roamMin, roamMax
 				case 1:	enemy.Initialize(play, spawn, clazz, model, 10,	0,	1.0f,	2.5f,	7.5f,	5.0f,	8,	4,      3,     6, new int[] {Weapon.TYPE_GUN}, new int[] {1}); break;
 				case 5:	enemy.Initialize(play, spawn, clazz, model, 20,	0,	0.5f,	10.0f,	5.0f,	5.0f,	8,	4,      3,     6, new int[] {Weapon.TYPE_GUN}, new int[] {2}); break;
 				case 11:enemy.Initialize(play, spawn, clazz, model, 20,	0,	0.5f,	5.0f,	10.0f,	5.0f,	8,	4,      3,     6, new int[] {Weapon.TYPE_LASER}, new int[] {1}); break;
 				default:break;
-			}
+			}*/
 			
 		} else {
 			enemy = (Enemy)CreateBull();
 		}
 		
 		enemiesFirepowerPerSecond += enemy.firepowerPerSecond;
+		enemiesFirepowerPerSecondAvg = enemiesFirepowerPerSecond / enemiesLiving;
 		enemiesHealth += enemy.health;
-		enemiesActive++;
+		enemiesLiving++;
 		return enemy;
 	}
 	
@@ -290,11 +338,11 @@ public class EnemyDistributor {
 	}
 	
 	private int CalculateEnemyHealth(int clazz, int model) {
-		return (model * 10) / 2 + clazz * 20;
+		return model * 5 + clazz * 25;
 	}
 
 	private int CalculateEnemyShield(int clazz, int model) {
-		return Mathf.FloorToInt(((model * 10) / 2 + clazz * 20) / 2f);
+		return Mathf.FloorToInt((model * 5 + clazz * 25) / 2f);
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {

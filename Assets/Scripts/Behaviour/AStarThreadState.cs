@@ -30,7 +30,7 @@ public class AStarThreadState {
 	
 	public void Complete() {
 		isProcessing = false;
-		Debug.Log("AStar completed in " + (Time.realtimeSinceStartup-startTime));
+	//	Debug.Log("AStar completed in " + (Time.realtimeSinceStartup-startTime));
 	}
 	
 	public bool IsFinishedNow() {

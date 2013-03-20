@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class Room {
 	public int id; // 0=entry, 1=exit, 2... inbetween
@@ -44,10 +45,15 @@ public class Room {
 	}	
 	
 	public int GetCellDensity(IntTriple pos) {
+		try {
 		if (cells[pos.x, pos.y, pos.z] == null) {
 			return Cave.DENSITY_FILLED;
 		} else {
 			return Cave.DENSITY_EMPTY;
+		}
+		} catch (IndexOutOfRangeException e) {
+			Debug.Log ("Exception " +pos);
+			return Cave.DENSITY_FILLED;
 		}
 	}
 

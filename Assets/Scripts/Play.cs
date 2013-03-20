@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class Play : MonoBehaviour {	
 	
+	public int zoneID;
+	
 	public Game game;
 	public Cave cave;
 	public Movement movement;
@@ -213,7 +215,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
-		int zoneID = 8;
+		zoneID = 9;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -269,8 +271,8 @@ public class Play : MonoBehaviour {
 		ship.transform.position = cave.GetCaveEntryPosition();
 	}
 	
-	private void PlaceEnemies(int coreModelNum) {
-		enemyDistributor.Distribute(coreModelNum);
+	private void PlaceEnemies(int zoneID_) {
+		enemyDistributor.Distribute(zoneID_);
 	}
 	
 	private void PlaceTestCubes() {

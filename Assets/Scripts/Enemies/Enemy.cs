@@ -32,11 +32,12 @@ public abstract class Enemy : MonoBehaviour {
 	
 	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_K, CLAZZ_L};
 	
-	public static int CLAZZ_STEP = 100;
+	public static int CLAZZ_STEP = 99;
 	public static int MODEL_MIN = 0;
 	public static int MODEL_MAX = 98;
 	public static int CLAZZ_MIN = 0;
 	public static int CLAZZ_MAX = 9;
+	public static int DISTRIBUTION_CLAZZ_MAX = 8; // 8 clazzes
 	
 	private static float DEACTIVATION_TIME = 5.0f;
 	
@@ -48,6 +49,7 @@ public abstract class Enemy : MonoBehaviour {
 	public int clazzNum; // 0-9 
 	public int model; // 0-98 (1-99)
 	public int modelNum; // 0 - 998
+	public int modelClazzAEquivalent;
 	public int health;
 	public int shield;
 	public float firepowerPerSecond;
@@ -90,6 +92,7 @@ public abstract class Enemy : MonoBehaviour {
 		clazz = CLAZZES[clazzNum];
 		model = model_;
 		modelNum = clazzNum * CLAZZ_STEP + model;
+		modelClazzAEquivalent = model + EnemyDistributor.CLAZZ_A_EQUIVALENT_MODEL[clazzNum];
 		health = health_;
 		shield = shield_;
 		size = size_;

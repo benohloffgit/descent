@@ -91,7 +91,12 @@ public class Zone {
 	}
 	
 	public int GetCellDensity(GridPosition gP) {
-		return GetRoom(gP).GetCellDensity(gP.cellPosition);
+		try {
+			return GetRoom(gP).GetCellDensity(gP.cellPosition);
+		} catch (NullReferenceException e) {
+			Debug.Log ("NULL " + gP);
+			return Cave.DENSITY_EMPTY;
+		}
 	}
 	
 	public void AddRoom(int id, IntTriple pos) {
@@ -127,5 +132,9 @@ public class Zone {
 			}
 		}
 		return neighbours;
+	}
+	
+	public static int GetZone5StepID(int zoneID) {
+		return Mathf.FloorToInt(zoneID / 5.0f);
 	}
 }

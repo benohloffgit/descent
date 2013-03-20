@@ -10,8 +10,6 @@ public class Ship : MonoBehaviour {
 	public int health;
 	public int shield;
 	public float firepowerPerSecond;
-//	public float lastShotTime;
-//	public float lastLaserTime;
 		
 	private Play play;
 	private GameInput gameInput;
@@ -83,13 +81,7 @@ public class Ship : MonoBehaviour {
 		health = HEALTH;
 		shield = SHIELD;
 		
-		Weapon w = new Weapon(transform, play, Weapon.TYPE_GUN, 9, WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);
-		weapons.Add(w);
-		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT]; // turn upside down on center slot
-
-/*		w = new Weapon(transform, play, Weapon.TYPE_LASER, 2, WEAPON_POSITIONS[WEAPON_POSITION_WING_RIGHT], Game.SHIP);
-		weapons.Add(w);
-		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_RIGHT]; // turn upside down on center slot*/
+		AddWeapons();
 
 		firepowerPerSecond = 0;
 		foreach (Weapon w1 in weapons) {
@@ -188,6 +180,17 @@ public class Ship : MonoBehaviour {
 		shipHUD = GameObject.Instantiate(shipHUDPrefab) as GameObject;
 		Transform crossHair = shipHUD.transform.Find("Cross Hair");
 		crossHair.localScale /= (crossHair.renderer.material.mainTexture.width/(float)Screen.width) / (32.0f/(float)Screen.width);
+	}
+	
+	private void AddWeapons() {
+		int zone5 = Zone.GetZone5StepID(play.zoneID);
+			
+		Weapon w = new Weapon(transform, play, Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5], Weapon.SHIP_PRIMARY_WEAPON_MODELS[zone5], WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);
+		weapons.Add(w);
+		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT]; // turn upside down on center slot
+/*		w = new Weapon(transform, play, Weapon.TYPE_LASER, 2, WEAPON_POSITIONS[WEAPON_POSITION_WING_RIGHT], Game.SHIP);
+		weapons.Add(w);
+		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_RIGHT]; // turn upside down on center slot*/
 	}
 }
 

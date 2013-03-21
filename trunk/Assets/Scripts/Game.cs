@@ -40,6 +40,8 @@ public class Game : MonoBehaviour {
 
 	public static int MAX_WIDTH = 1536;
 	
+	public static Vector3 CELL_CENTER = new Vector3(0.5f,0.5f,0.5f);
+	
 	public static int SHIP = 0;
 	public static int ENEMY = 1;
 	

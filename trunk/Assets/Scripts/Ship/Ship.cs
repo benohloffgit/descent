@@ -10,6 +10,7 @@ public class Ship : MonoBehaviour {
 	public int health;
 	public int shield;
 	public float firepowerPerSecond;
+	public float lastMoveTime;
 		
 	private Play play;
 	private GameInput gameInput;
@@ -88,6 +89,7 @@ public class Ship : MonoBehaviour {
 			firepowerPerSecond += w1.damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
 		}
 		
+		lastMoveTime = Time.time;
 	}
 	
 	void OnCollisionEnter(Collision c) {
@@ -114,6 +116,7 @@ public class Ship : MonoBehaviour {
 	
 	public void Move(Vector3 direction) {
 		rigidbody.AddRelativeForce(direction * FORCE_MOVE);
+		lastMoveTime = Time.time;
 	}
 	
 	public void Turn(Vector3 direction) {

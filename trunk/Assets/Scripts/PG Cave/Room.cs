@@ -33,7 +33,10 @@ public class Room {
 		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId, true, false);
 		exits.Add(alignment, cells[pos.x, pos.y, pos.z]);
 		emptyCells.Add(cells[pos.x, pos.y, pos.z]);
-		//exitCell = pos;
+		
+/*		emptyCells.Add(cells[pos.x+1, pos.y, pos.z]);
+		emptyCells.Add(cells[pos.x+1, pos.y+1, pos.z]);
+		emptyCells.Add(cells[pos.x, pos.y+1, pos.z]);*/
 	}
 
 	public bool IsCellNotEmptiedByMiner(IntTriple pos, int minerId) {
@@ -45,16 +48,16 @@ public class Room {
 	}	
 	
 	public int GetCellDensity(IntTriple pos) {
-		try {
+//		try {
 		if (cells[pos.x, pos.y, pos.z] == null) {
 			return Cave.DENSITY_FILLED;
 		} else {
 			return Cave.DENSITY_EMPTY;
 		}
-		} catch (IndexOutOfRangeException e) {
-			Debug.Log ("Exception " +pos);
+/*		} catch (IndexOutOfRangeException e) {
+			Debug.Log ("Exception 01 " +pos);
 			return Cave.DENSITY_FILLED;
-		}
+		}*/
 	}
 
 	public int GetCellDensity(int x, int y, int z) {
@@ -67,9 +70,10 @@ public class Room {
 
 	public float GetIsovalueDensity(int x, int y, int z) {
 		float result = 0.3f;
+//		if (cells[x,y,z] != null && cells[x,y,z].isExit) return -0.3f;
 		if (cells[x,y,z] != null && cells[x,y,z].isExit) return ENTRY_EXIT_CELL_MARKER;
-//		if (x == entryCell.x && y == entryCell.y && z == entryCell.z) return ENTRY_EXIT_CELL_MARKER;
-//		if (x == exitCell.x && y == exitCell.y && z == exitCell.z) return ENTRY_EXIT_CELL_MARKER;
+//		if (cells[x,y,z] != null && cells[x,y,z].isExit) return result + ISOVALUE_PER_NEIGHBOUR * 3;
+//		if (cells[x,y,z] != null && cells[x-1,y-1,z] != null && cells[x-1,y-1,z].isExit) return result + ISOVALUE_PER_NEIGHBOUR * 3;
 		if (x == 0 || x == dimension-1 || y == 0 || y == dimension-1 || z == 0 || z == dimension -1) return result;
 		result += ISOVALUE_PER_NEIGHBOUR * GetNumberOfNeighbourCellsWithDensity(x, y, z, Cave.DENSITY_EMPTY);
 		if (result == 0.999) result = 1.0f;

@@ -22,6 +22,7 @@ public struct GridPosition {
 
 	public Vector3 GetVector3() {
 		return roomPosition.GetVector3() * Game.DIMENSION_ROOM + cellPosition.GetVector3();
+//		return roomPosition.GetVector3() * Game.DIMENSION_ROOM + cellPosition.GetVector3() + Game.CELL_CENTER;
 	}
 	
 	public Vector3 GetWorldVector3() {

@@ -173,15 +173,8 @@ public class Cave {
 		Room entryRoom = GetCurrentZone().roomList[0];
 //		Debug.Log ("entryRoom pos " +entryRoom.pos +" " + entryRoom.entryCell);
 		return (entryRoom.pos.GetVector3() * Game.DIMENSION_ROOM + entryRoom.exits[IntTriple.BACKWARD].pos.GetVector3()) * RoomMesh.MESH_SCALE;
-//		return (entryRoom.pos.GetVector3() * Game.DIMENSION_ROOM + entryRoom.entryCell.GetVector3()) * RoomMesh.MESH_SCALE;
+//		return (entryRoom.pos.GetVector3() * Game.DIMENSION_ROOM + entryRoom.exits[IntTriple.BACKWARD].pos.GetVector3()+Game.CELL_CENTER) * RoomMesh.MESH_SCALE;
 	}
-	
-	// return pos in marching cube grid
-/*	public static Vector3 GetCubePosition(Vector3 position) {
-		Vector3 cubePos = position / RoomMesh.MESH_SCALE;
-		// centered in cube
-		return new Vector3(Mathf.RoundToInt(cubePos.x), Mathf.RoundToInt(cubePos.y), Mathf.RoundToInt(cubePos.z));
-	}*/
 	
 	public int GetCellDensity(GridPosition gridPosition) {
 		return GetCurrentZone().GetCellDensity(gridPosition);
@@ -334,23 +327,26 @@ public class Cave {
 	
 	public GridPosition GetGridFromPosition(Vector3 position) {
 		Vector3 unscaled = position / RoomMesh.MESH_SCALE;
-		IntTriple preCell = new IntTriple(Mathf.RoundToInt(unscaled.x),Mathf.RoundToInt(unscaled.y),Mathf.RoundToInt(unscaled.z));
-		// centered in cube
-		IntTriple cellPos = new IntTriple(Mathf.RoundToInt(cellVector.x), Mathf.RoundToInt(cellVector.y), Mathf.RoundToInt(cellVector.z));
-
-		IntTriple roomPos = new IntTriple(Mathf.FloorToInt(roomVector.x), Mathf.FloorToInt(roomVector.y), Mathf.FloorToInt(roomVector.z));
+		IntTriple cellPos = new IntTriple(Mathf.RoundToInt(unscaled.x),Mathf.RoundToInt(unscaled.y),Mathf.RoundToInt(unscaled.z));
+		IntTriple roomPos = cellPos / Game.DIMENSION_ROOM;
+		cellPos %= Game.DIMENSION_ROOM;
+		if (roomPos.x == 0 || cellPos.x < 0 || cellPos.x > 15 || cellPos.y < 0 || cellPos.y > 15 || cellPos.z < 0 || cellPos.z > 15) {
+			Debug.Log (position +" " +  cellPos + " " + roomPos);
+		}
+		
+/*		IntTriple roomPos = new IntTriple(Mathf.FloorToInt(roomVector.x), Mathf.FloorToInt(roomVector.y), Mathf.FloorToInt(roomVector.z));
 		Vector3 cellVector = unscaled - (roomPos * Game.DIMENSION_ROOM).GetVector3();
 		if (cellVector.z < 0) {
 			Debug.Log (position);
 		}
 		// centered in cube
-		IntTriple cellPos = new IntTriple(Mathf.RoundToInt(cellVector.x), Mathf.RoundToInt(cellVector.y), Mathf.RoundToInt(cellVector.z));
+		IntTriple cellPos = new IntTriple(Mathf.RoundToInt(cellVector.x), Mathf.RoundToInt(cellVector.y), Mathf.RoundToInt(cellVector.z));*/
 		return new GridPosition(cellPos, roomPos);
 	}
-	
 		
 	public Vector3 GetPositionFromGrid(GridPosition gP) {
 		return (gP.roomPosition.GetVector3() * Game.DIMENSION_ROOM + gP.cellPosition.GetVector3()) * RoomMesh.MESH_SCALE;
+//		return (gP.roomPosition.GetVector3() * Game.DIMENSION_ROOM + gP.cellPosition.GetVector3()+Game.CELL_CENTER) * RoomMesh.MESH_SCALE;
 	}
 	
 	public static int GetRandomNumberFromPool(int[] pool) {

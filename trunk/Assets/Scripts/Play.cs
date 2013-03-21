@@ -215,7 +215,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
-		zoneID = 9;
+		zoneID = 4;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -315,7 +315,10 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void PlaceTestCube(GridPosition pos) {
-		Instantiate(game.testCubePrefab, cave.GetPositionFromGrid(pos), Quaternion.identity);
+		GameObject o = Instantiate(game.testCubePrefab, cave.GetPositionFromGrid(pos), Quaternion.identity) as GameObject;
+		if (pos.cellPosition == IntTriple.ZERO) {
+			Debug.Log (pos + " " + o.transform.position);
+		}
 	}
 	
 	public void CachePositionalDataOfShip(Vector3 pos) {
@@ -430,6 +433,9 @@ public class Play : MonoBehaviour {
 			newBullet = game.CreateFromPrefab().CreateLaserShot(pos, rot, damage, source);
 		}
 		if (accuracy != 0) {
+			// improve accurcy the longer the ship stands still - 4seconds
+			accuracy = Mathf.Max(0f, accuracy - (accuracy/240.0f) * (Time.time-ship.lastMoveTime) * 60.0f);
+			
 			Vector3.OrthoNormalize(ref dir, ref tangent, ref binormal);
 			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
 			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);

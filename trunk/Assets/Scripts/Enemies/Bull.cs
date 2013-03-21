@@ -19,12 +19,12 @@ public class Bull : Enemy {
 		weapons.Add(new Weapon(transform, play, w, m, WEAPON_POSITIONS[ix], Game.ENEMY));
 	}
 		
-	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
-		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
-			Shoot();
+	public override void DispatchFixedUpdate(Vector3 isShipVisible) {		
+		if (isShipVisible.magnitude <= shootingRange) {
+			aggressiveness = Enemy.AGGRESSIVENESS_ON;
 		}
 		
-		if (isShipVisible.magnitude <= shootingRange) {
+		if (aggressiveness > Enemy.AGGRESSIVENESS_OFF) {
 			mode = Mode.AIMING;
 		} else {
 			mode = Mode.ROAMING;
@@ -35,7 +35,7 @@ public class Bull : Enemy {
 			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);		
 		} else if (mode == Mode.AIMING) {
 			play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
-			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 		}
 	}
 

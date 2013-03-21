@@ -32,6 +32,7 @@ public struct IntTriple {
 	}
 	
 	public Vector3 GetVector3() {
+		//return new UnityEngine.Vector3(x+0.5f, y+0.5f, z+0.5f);
 		return new UnityEngine.Vector3(x, y, z);
 	}
 	
@@ -87,6 +88,14 @@ public struct IntTriple {
 		return new IntTriple(t1.x*i, t1.y*i, t1.z*i);
 	}
 	
+	public static IntTriple operator /(IntTriple t1, int i) {
+		return new IntTriple(Mathf.FloorToInt(t1.x/i), Mathf.FloorToInt(t1.y/i), Mathf.FloorToInt(t1.z/i));
+	}
+
+	public static IntTriple operator %(IntTriple t1, int i) {
+		return new IntTriple(t1.x%i, t1.y%i, t1.z%i);
+	}
+
 	public static IntTriple operator -(IntTriple t1, IntTriple t2) {
 		return new IntTriple(t1.x-t2.x, t1.y-t2.y, t1.z-t2.z);
 	}

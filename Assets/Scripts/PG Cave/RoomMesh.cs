@@ -38,10 +38,12 @@ public class RoomMesh : MonoBehaviour {
 	private	int[,,,] gridTriangles;
 	
 	private int duplicateVertices = 0;
+	private bool omitTriangle = false;
 					
 	private	static float ISOVALUE = 0.325f; // between 0.31 and 0.35 ... (old: 0.1)
 	
-	public void Initialize(Room room) {		
+	public void Initialize(Room room_) {		
+		room = room_;
 		MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
 		mesh = new Mesh();
 		meshFilter.mesh = mesh;
@@ -68,6 +70,7 @@ public class RoomMesh : MonoBehaviour {
 		for (int x=0; x< Game.DIMENSION_ROOM; x++) {
 			for (int y=0; y< Game.DIMENSION_ROOM; y++) {
 				for (int z=0; z< Game.DIMENSION_ROOM; z++) {
+//					cubeCoords[x,y,z] = new Vector3(x, y, z) - Game.CELL_CENTER + room.pos.GetVector3() * Game.DIMENSION_ROOM;
 					cubeCoords[x,y,z] = new Vector3(x, y, z) + room.pos.GetVector3() * Game.DIMENSION_ROOM;
 				}
 			}
@@ -123,6 +126,7 @@ public class RoomMesh : MonoBehaviour {
 		mesh.RecalculateNormals();
 //		Debug.Log("normals : " + mesh.normals.Length);
 	
+//		transform.position -= 5*Game.CELL_CENTER;
 		transform.localScale = new Vector3(MESH_SCALE,MESH_SCALE,MESH_SCALE);
 				
 		MeshCollider mC = GetComponent<MeshCollider>() as MeshCollider;
@@ -224,32 +228,39 @@ public class RoomMesh : MonoBehaviour {
 			vertlist[11] = InterpolateVertex(gridCellCoords[gridCell,3],gridCellCoords[gridCell,7],gridCellDensity[gridCell,3],gridCellDensity[gridCell,7]);
 		}
 		
-	   /* Create the triangles */   
-		for (int i=0; TRIANGLE_TABLE[cubeindex][i] != -1; i+=3) {
-			for (int j=0; j<3; j++) {
-//				if (cubeindex == 23) Debug.Log ("triangle table values: " +TRIANGLE_TABLE[cubeindex][i+j]);
-				Vector3 vertex = vertlist[TRIANGLE_TABLE[cubeindex][i+j]];
-				gridVertices[x,y,z,i+j] = vertex;
-				int uniqueVertexIndex = FetchUniqueVertexIndex(x,y,z,vertex);
-				
-				if (uniqueVertexIndex == -1) {
-					gridTriangles[x,y,z,i+j] = roomVerticesCount;
-					roomVertices[roomVerticesCount] = vertex;
-					roomTriangles[roomTrianglesCount+j] = roomVerticesCount;
-					roomVerticesCount++;
-				} else {
-					duplicateVertices++;
-					gridTriangles[x,y,z,i+j] = uniqueVertexIndex;
-					roomTriangles[roomTrianglesCount+j] = uniqueVertexIndex;
+//		Debug.Log ("x,y,z : " +x+","+y+","+z);//+  room.cells[x,y,z].isExit);
+//		else {
+		   /* Create the triangles */   
+			for (int i=0; TRIANGLE_TABLE[cubeindex][i] != -1; i+=3) {
+				for (int j=0; j<3; j++) {
+	//				if (cubeindex == 23) Debug.Log ("triangle table values: " +TRIANGLE_TABLE[cubeindex][i+j]);
+					Vector3 vertex = vertlist[TRIANGLE_TABLE[cubeindex][i+j]];
+/*					if (room.cells[x,y,z] != null && room.cells[x,y,z].isExit) {
+						Debug.Log ("x,y,z : " +x+","+y+","+z + " " + vertex);//room.cells[x,y,z].isExit);
+					}*/
+			
+					gridVertices[x,y,z,i+j] = vertex;
+					int uniqueVertexIndex = FetchUniqueVertexIndex(x,y,z,vertex);
+					
+					if (uniqueVertexIndex == -1) {
+						gridTriangles[x,y,z,i+j] = roomVerticesCount;
+						roomVertices[roomVerticesCount] = vertex;
+						roomTriangles[roomTrianglesCount+j] = roomVerticesCount;
+						roomVerticesCount++;
+					} else {
+						duplicateVertices++;
+						gridTriangles[x,y,z,i+j] = uniqueVertexIndex;
+						roomTriangles[roomTrianglesCount+j] = uniqueVertexIndex;
+					}
+	/*				if (roomTrianglesCount == 3222) { // DONE 2697, 3387 -- OPEN 2703, 3375, 2691, 1830
+						Debug.Log ("building triangle 3219: " + vertex + " cubeindex " + cubeindex + " gridCell " + gridCell);
+						Debug.Log ("x,y,z: " + x+","+y+","+z);
+						Debug.Log ("EdgeTable value : " + EDGE_TABLE[cubeindex]);
+					}*/
 				}
-/*				if (roomTrianglesCount == 3222) { // DONE 2697, 3387 -- OPEN 2703, 3375, 2691, 1830
-					Debug.Log ("building triangle 3219: " + vertex + " cubeindex " + cubeindex + " gridCell " + gridCell);
-					Debug.Log ("x,y,z: " + x+","+y+","+z);
-					Debug.Log ("EdgeTable value : " + EDGE_TABLE[cubeindex]);
-				}*/
-			}
-			roomTrianglesCount+=3;
-		}   
+				roomTrianglesCount+=3;
+//			}  
+		}
 	}
 	
 	private int FetchUniqueVertexIndex(int x, int y, int z, Vector3 vertex) {
@@ -267,9 +278,21 @@ public class RoomMesh : MonoBehaviour {
 	}*/
 	
 	private Vector3 InterpolateVertex(Vector3 point1, Vector3 point2, float density1, float density2) {
-		if (density1 == Room.ENTRY_EXIT_CELL_MARKER || density2 == Room.ENTRY_EXIT_CELL_MARKER) { // entry or exit cell
+		if (density1 == Room.ENTRY_EXIT_CELL_MARKER || density2 == Room.ENTRY_EXIT_CELL_MARKER) {
 			return Vector3.Lerp(point1, point2, 0.5f);
 		}
+/*		if (density1 == -0.3f) {
+			density1 = 0.3f;
+			omitTriangle = true;
+			Debug.Log (point1);
+		} else if(density2 == -0.3f) {
+			Debug.Log (point1 + " " + point2 + " " + density1 + " " + density2);
+			density2 = 0.3f;
+			omitTriangle = true;
+			Debug.Log (point1);
+//			return Vector3.Lerp(point1, point2, 0.5f);
+		}*/
+//		if (density1 == Room.ENTRY_EXIT_CELL_MARKER) {
 
 		if (Mathf.Abs(ISOVALUE-density1) < 0.00001f) // ISOVALUE == density1
 	    	return point1 ;
@@ -284,12 +307,6 @@ public class RoomMesh : MonoBehaviour {
 	   	p.y = point1.y + mu * (point2.y - point1.y);
 	   	p.z = point1.z + mu * (point2.z - point1.z);
 	   	return p;
-		/*
-		if (density2-density1 == 0f) {
-			return Vector3.Lerp(point1, point2, 0.5f);
-		} else {
-			return Vector3.Lerp(point1, point2, 0.5f);
-		}*/
 	}
 
 	private static int[] EDGE_TABLE = new int[] {

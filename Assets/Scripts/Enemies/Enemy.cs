@@ -38,6 +38,9 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_MIN = 0;
 	public static int CLAZZ_MAX = 9;
 	public static int DISTRIBUTION_CLAZZ_MAX = 8; // 8 clazzes
+	public static float AGGRESSIVENESS_ON = 1.0f;
+	public static float AGGRESSIVENESS_OFF = 0f;
+	public static float AGGRESSIVENESS_DECREASE = 0.0016f;
 	
 	private static float DEACTIVATION_TIME = 5.0f;
 	
@@ -96,7 +99,7 @@ public abstract class Enemy : MonoBehaviour {
 		health = health_;
 		shield = shield_;
 		size = size_;
-		aggressiveness = aggressiveness_;
+		aggressiveness = 0;//aggressiveness_;
 		movementForce = movementForce_;
 		turningForce = turningForce_;
 		lookAtRange = lookAtRange_;
@@ -144,6 +147,10 @@ public abstract class Enemy : MonoBehaviour {
 				spawn.DeactivateEnemy(this);
 			}
 		}
+		if (aggressiveness > AGGRESSIVENESS_OFF) {
+			Shoot();
+			aggressiveness -= AGGRESSIVENESS_DECREASE;
+		}
 	}
 	
 	public void Damage(int damage, Vector3 contactPos) {
@@ -170,11 +177,12 @@ public abstract class Enemy : MonoBehaviour {
 		} else {
 			spawn.LoseHealth(this, damage);
 			health -= damage;
+			aggressiveness = AGGRESSIVENESS_ON;
 		}
 	}
 	
 	protected void Shoot() {
-		if (aggressiveness > 0) {
+		if (aggressiveness > AGGRESSIVENESS_OFF) {
 			foreach (Weapon w in weapons) {
 				if (Time.time > w.lastShotTime + w.frequency) {
 					w.Shoot();
@@ -182,6 +190,8 @@ public abstract class Enemy : MonoBehaviour {
 				}
 				
 			}
+		} else {
+			aggressiveness = AGGRESSIVENESS_OFF;
 		}
 	}
 	

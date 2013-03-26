@@ -1,21 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PG Cave\RoomMiner.cs">
     <Files>
-      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="23" Column="50" />
-      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="95" Column="2" />
-      <File FileName="Assets\Scripts\Game.cs" Line="43" Column="1" />
-      <File FileName="Assets\Scripts\Play.cs" Line="436" Column="1" />
-      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="77" Column="14" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="119" Column="28" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="194" Column="6" />
-      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="85" Column="13" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="90" Column="1" />
-      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="93" Column="27" />
-      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="74" Column="1" />
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="348" Column="92" />
-      <File FileName="Assets\Scripts\PG Cave\RoomMesh.cs" Line="285" Column="20" />
-      <File FileName="Assets\Scripts\PG Cave\RoomMiner.cs" Line="29" Column="19" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="200" Column="4" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="88" Column="3" />
+      <File FileName="Assets\Scripts\GUI\MyGUI.cs" Line="328" Column="21" />
+      <File FileName="Assets\Scripts\GUI\LabelCC.cs" Line="22" Column="19" />
+      <File FileName="Assets\Scripts\GUI\Container.cs" Line="158" Column="14" />
+      <File FileName="Assets\Scripts\Play.cs" Line="235" Column="21" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="27" Column="8" />
+      <File FileName="Assets\Scripts\Game.cs" Line="72" Column="43" />
+      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="89" Column="35" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="210" Column="31" />
+      <File FileName="Assets\Scripts\PG Cave\RoomMiner.cs" Line="152" Column="1" />
+      <File FileName="Assets\Scripts\PG Cave\IntTriple.cs" Line="59" Column="13" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -41,7 +41,7 @@ public class TextInput : MonoBehaviour, Focussable {
 	}
 
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgrOff, Transform backgrOn, float tM, float size, MyGUI.GUIAlignment alignLeftRightCenter,
-						int mL, int textureID, Vector4 uvMapCursor, int textureIDButton, Vector4 uvMapButton, TextInputDelegate tIU) {
+						int mL, int textureID, Vector4 uvMapCursor, int textureIDText, int textureIDButton, Vector4 uvMapButton, TextInputDelegate tIU) {
 		myGUI = mG;
 		containerID = cID;
 		backgroundOff = backgrOff;
@@ -50,7 +50,7 @@ public class TextInput : MonoBehaviour, Focussable {
 		maxLength = mL;
 		inputString = t;
 		textMargin = tM;
-		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter);
+		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureIDText);
 
 		Vector3 textSize = text.GetSize();
 		backgroundOff.transform.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin*2, 1.0f);

@@ -69,9 +69,11 @@ public class Weapon {
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
 			accuracy = 0f;
 			frequency = 0.2f;
+			damage =  Mathf.RoundToInt(Zone.GetZone5StepID(play.zoneID) * 12.5f + 2.5f);
 		} else {
 			layerMask = Game.LAYER_MASK_SHIP_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
+			damage =  Mathf.RoundToInt( (Zone.GetZone5StepID(play.zoneID) + 1) * 12.5f + 2.5f); // 1 5step zone better
 		}
 	}
 	
@@ -104,7 +106,6 @@ public class Weapon {
 				frequency = 3.0f - model * 0.02f;
 				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
 		}
-		damage =  Mathf.RoundToInt(Zone.GetZone5StepID(play.zoneID)  * 12.5f + 2.5f);
 				
 		weaponTransform = weaponGameObject.transform;
 		weaponTransform.parent = parent.transform;

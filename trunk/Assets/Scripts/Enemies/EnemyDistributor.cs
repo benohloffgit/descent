@@ -207,6 +207,7 @@ public class EnemyDistributor {
 	
 	public void RemoveEnemy(Enemy e) {
 		enemiesLiving--;
+		play.playGUI.RemoveEnemy(e);
 		if (e.isActive) {
 			DeactivateEnemy(e);
 		}
@@ -218,35 +219,22 @@ public class EnemyDistributor {
 		Enemy enemy;
 		if (clazz == Enemy.CLAZZ_A0) {
 			enemy = (Enemy)CreateBull();
-			enemy.Initialize(play, spawn, clazz, model,
-					CalculateEnemyHealth(clazz, model),
-					CalculateEnemyShield(clazz, model),
-					CalculateEnemySize(clazz, model),
-					CalculateEnemyAggressiveness(clazz, model),
-					CalculateEnemyMovementForce(clazz, model),
-					CalculateEnemyTurnForce(clazz, model),
-					CalculateEnemyLookRange(clazz, model),
-					CalculateEnemyChaseRange(clazz, model),
-				    CalculateEnemyRoamMin(clazz, model),
-					CalculateEnemyRoamMax(clazz, model),
-					new int[] {Weapon.TYPE_GUN}, new int[] {1});
 		} else if (clazz == Enemy.CLAZZ_B1) {
 			enemy = (Enemy)CreateSpike();
-			enemy.Initialize(play, spawn, clazz, model,
-					CalculateEnemyHealth(clazz, model),
-					CalculateEnemyShield(clazz, model),
-					CalculateEnemySize(clazz, model),
-					CalculateEnemyAggressiveness(clazz, model),
-					CalculateEnemyMovementForce(clazz, model),
-					CalculateEnemyTurnForce(clazz, model),
-					CalculateEnemyLookRange(clazz, model),
-					CalculateEnemyChaseRange(clazz, model),
-				    CalculateEnemyRoamMin(clazz, model),
-					CalculateEnemyRoamMax(clazz, model),
-					new int[] {Weapon.TYPE_LASER}, new int[] {1});
 		} else {
 			enemy = (Enemy)CreateBull();
 		}
+		enemy.Initialize(play, spawn, clazz, model,
+				CalculateEnemyHealth(clazz, model),
+				CalculateEnemyShield(clazz, model),
+				CalculateEnemySize(clazz, model),
+				CalculateEnemyAggressiveness(clazz, model),
+				CalculateEnemyMovementForce(clazz, model),
+				CalculateEnemyTurnForce(clazz, model),
+				CalculateEnemyLookRange(clazz, model),
+				CalculateEnemyChaseRange(clazz, model),
+			    CalculateEnemyRoamMin(clazz, model),
+				CalculateEnemyRoamMax(clazz, model));
 		
 		enemiesFirepowerPerSecond += enemy.firepowerPerSecond;
 		enemiesFirepowerPerSecondAvg = enemiesFirepowerPerSecond / enemiesLiving;
@@ -293,7 +281,7 @@ public class EnemyDistributor {
 		return result;
 	}
 
-	private int CalculateEnemyClazzDelta(int enemyClazzVariety, int coreClazz, int clazzProbabilityIndex) {
+/*	private int CalculateEnemyClazzDelta(int enemyClazzVariety, int coreClazz, int clazzProbabilityIndex) {
 		int classDelta = enemyClazzVariety - clazzProbabilityIndex;
 		// divide by 2 to adjust for clazz above or below coreClazz
 		int clazzDeltaRelative = Mathf.FloorToInt(classDelta / 2.0f);
@@ -301,7 +289,7 @@ public class EnemyDistributor {
 			clazzDeltaRelative *= -1;
 		}
 		return coreClazz + clazzDeltaRelative;
-	}
+	}*/
 
 	private int CalculateEnemyEquivalentClazzAModel(int zoneID, int clazz) {
 		int model = CLAZZ_A_EQUIVALENT_MODEL[clazz] + zoneID- CLAZZ_A_EQUIVALENT_MODEL[clazz];

@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Ship : MonoBehaviour {
+	public static string TAG = "Ship";
+	
 	public GameObject shipHUDPrefab;
 	public Game game;
 	
@@ -22,13 +24,11 @@ public class Ship : MonoBehaviour {
 	private Transform headlight;
 	private RaycastHit hit;
 	private Transform cameraTransform;
-	private Camera shipCamera;
+	public Camera shipCamera;
 	
 	private bool isHeadlightOn;
 	private int cameraPosition;
-	
-	public static string TAG = "Ship";
-	
+		
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 5.0f;
 	private static float FORCE_YAW = 3.5f;
@@ -91,7 +91,7 @@ public class Ship : MonoBehaviour {
 		
 		lastMoveTime = Time.time;
 	}
-	
+		
 	void OnCollisionEnter(Collision c) {
 		//Move(c.impactForceSum*5f);
 		 //Vector3.Dot(col.contacts[0].normal,col.relativeVelocity) * rigidbody.mass

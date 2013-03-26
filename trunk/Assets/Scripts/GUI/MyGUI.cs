@@ -29,7 +29,7 @@ public class MyGUI : MonoBehaviour {
 	
 	private Game game;
 	public GameInput gameInput;
-	private Camera guiCamera;
+	public Camera guiCamera;
 	
 	public Dictionary<int, Container> containers;
 	public Dictionary<int, Label> labels;
@@ -158,11 +158,11 @@ public class MyGUI : MonoBehaviour {
 	
 	// add floating
 	public int AddLabel(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, float textMargin,
-					float size, int textureIx, Vector4 uvMap) {
+					float size, int textureIDText, int textureIDBackground, Vector4 uvMap) {
 //		if (text != " ") {
 			LabelCC l;
 			l = (GameObject.Instantiate(labelBitmapPrefab) as GameObject).GetComponent<LabelCC>();
-			l.Initialize(this, text, containerID, CreateBackground(background, textureIx, uvMap), textMargin, size, alignLeftRightCenter);
+			l.Initialize(this, text, containerID, CreateBackground(background, textureIDBackground, uvMap), textMargin, size, alignLeftRightCenter, textureIDText);
 			labelsCC.Add(l.gameObject.GetInstanceID(), l);
 			containers[containerID].AddElement(l.transform, l.GetSize());
 			return l.gameObject.GetInstanceID();
@@ -178,11 +178,11 @@ public class MyGUI : MonoBehaviour {
 	
 	// add with position
 	public int AddLabel(string text, int containerID, Vector3 scale, GUIAlignment alignLeftRightCenter, float borderLeftRight,
-					GUIAlignment alignTopBottomCenter, float borderTopBottom, float textMargin, float size, GUIBackground background,
-					Vector4 uvMap, int textureID) {
+					GUIAlignment alignTopBottomCenter, float borderTopBottom, float textMargin, float size, int textureIDText, GUIBackground background,
+					Vector4 uvMap, int textureIDBackground) {
 		LabelCC l;
 		l = (GameObject.Instantiate(labelBitmapPrefab) as GameObject).GetComponent<LabelCC>();
-		l.Initialize(this, text, containerID, CreateBackground(background, textureID, uvMap), textMargin, size, alignLeftRightCenter, scale);
+		l.Initialize(this, text, containerID, CreateBackground(background, textureIDBackground, uvMap), textMargin, size, alignLeftRightCenter, scale, textureIDText);
 		labelsCC.Add(l.gameObject.GetInstanceID(), l);
 		containers[containerID].AddElement(l.transform, l.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 		return l.gameObject.GetInstanceID();
@@ -190,18 +190,18 @@ public class MyGUI : MonoBehaviour {
 
 	// add floating
 	public int AddImageLabel(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, Vector4 textMargin,
-					float size, int textureIx, Vector4 uvMap, int textureIdImage, Vector4 uvMapImage, float scaleImage) {
+					float size, int textureIDText, int textureIDBackground, Vector4 uvMap, int textureIDImage, Vector4 uvMapImage, float scaleImage) {
 		LabelCC l;
 		l = (GameObject.Instantiate(labelBitmapPrefab) as GameObject).GetComponent<LabelCC>();
-		l.Initialize(this, text, containerID, CreateBackground(background, textureIx, uvMap), textMargin, size, alignLeftRightCenter,
-			CreateBackground(GUIBackground.Quad, textureIdImage, uvMapImage), scaleImage);
+		l.Initialize(this, text, containerID, CreateBackground(background, textureIDBackground, uvMap), textMargin, size, alignLeftRightCenter,
+			CreateBackground(GUIBackground.Quad, textureIDImage, uvMapImage), scaleImage, textureIDText);
 		labelsCC.Add(l.gameObject.GetInstanceID(), l);
 		containers[containerID].AddElement(l.transform, l.GetSize());
 		return l.gameObject.GetInstanceID();
 	}
 	
 	public int AddTextInput(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, float textMargin,
-					float size,
+					float size, int textureIDText,
 					int textureIDBackgr, Vector4 uvMap,
 					int textureIDBackgrEdit, Vector4 uvMapEdit,
 					int textureIDCursor, Vector4 uvMapCursor,
@@ -211,28 +211,28 @@ public class MyGUI : MonoBehaviour {
 		tI.Initialize(this, text, containerID,
 				CreateBackground(background, textureIDBackgr, uvMap),
 				CreateBackground(background, textureIDBackgrEdit, uvMapEdit),
-				textMargin, size, alignLeftRightCenter, maxLength, textureIDCursor, uvMapCursor, textureIDButton, uvMapButton, textInputUpdated);
+				textMargin, size, alignLeftRightCenter, maxLength, textureIDCursor, uvMapCursor, textureIDText, textureIDButton, uvMapButton, textInputUpdated);
 		textInputs.Add(tI.gameObject.GetInstanceID(), tI);
 		containers[containerID].AddElement(tI.transform, tI.GetSize());
 		return tI.gameObject.GetInstanceID();
 	}
 	
 	public int AddDropdown(string[] options, int selectedOption, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, float textMargin,
-							float size, int textureID, Vector4 uvMap, DropdownDelegate dropdownSelect,
+							float size, int textureIDText, int textureIDBackground, Vector4 uvMap, DropdownDelegate dropdownSelect,
 							OpenRadioBoxDelegate openDropdown, Vector4 uvMapDropdownOpenButton, int textureIDButton) {
 		Dropdown d = (GameObject.Instantiate(dropdownPrefab) as GameObject).GetComponent<Dropdown>();
-		d.Initialize(this, options, selectedOption, containerID, CreateBackground(background, textureID, uvMap),
-				textMargin, size, alignLeftRightCenter, dropdownSelect, openDropdown, textureIDButton, uvMapDropdownOpenButton);
+		d.Initialize(this, options, selectedOption, containerID, CreateBackground(background, textureIDBackground, uvMap),
+				textMargin, size, alignLeftRightCenter, dropdownSelect, openDropdown, textureIDText, textureIDButton, uvMapDropdownOpenButton);
 		dropdowns.Add(d.gameObject.GetInstanceID(), d);
 		containers[containerID].AddElement(d.transform, d.GetSize());
 		return d.gameObject.GetInstanceID();
 	}
 	
 	public int AddRadio(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, float textMargin,
-						float size, int textureIx, Vector4 uvMap, DropdownDelegate dropdownSelect, int id, Vector4 uvMapRadioButtonOn, Vector4 uvMapRadioButtonOff
+						float size, int textureIDText, int textureIDBackground, Vector4 uvMap, DropdownDelegate dropdownSelect, int id, Vector4 uvMapRadioButtonOn, Vector4 uvMapRadioButtonOff
 						, RadioBox rB) {
 		Radio r = (GameObject.Instantiate(radioPrefab) as GameObject).GetComponent<Radio>();
-		r.Initialize(this, text, containerID, CreateBackground(background, textureIx, uvMap), textMargin, size, alignLeftRightCenter, dropdownSelect, id, uvMapRadioButtonOn, uvMapRadioButtonOff, textureIx, rB);
+		r.Initialize(this, text, containerID, CreateBackground(background, textureIDBackground, uvMap), textMargin, size, alignLeftRightCenter, dropdownSelect, id, uvMapRadioButtonOn, uvMapRadioButtonOff, textureIDText, textureIDBackground, rB);
 		containers[containerID].AddElement(r.transform, r.GetSize());
 		return r.gameObject.GetInstanceID();
 	}
@@ -337,18 +337,18 @@ public class MyGUI : MonoBehaviour {
 		t.parent = parentT;
 		Vector3 reposition = Vector3.zero;
 		if (alignLeftRightCenter == MyGUI.GUIAlignment.Left) {
-			reposition.x = -sizeParentT.x/2 + sizeT.x/2 + borderLeftRight;
+			reposition.x = -sizeParentT.x/2 + sizeT.x/2 + (sizeParentT.x/2) * borderLeftRight;
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Right) {
-			reposition.x = sizeParentT.x/2 - sizeT.x/2 - borderLeftRight;
+			reposition.x = sizeParentT.x/2 - sizeT.x/2 - (sizeParentT.x/2) * borderLeftRight;
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Center) {
-			reposition.x = borderLeftRight;
+			reposition.x = (sizeParentT.x/2) * borderLeftRight;
 		}
 		if (alignTopBottomCenter == MyGUI.GUIAlignment.Top) {
-			reposition.y = sizeParentT.y/2 - sizeT.y/2 - borderTopBottom;
+			reposition.y = sizeParentT.y/2 - sizeT.y/2 - (sizeParentT.y/2) * borderTopBottom;
 		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Bottom) {
-			reposition.y = -sizeParentT.y/2 + sizeT.y/2 + borderTopBottom;
+			reposition.y = -sizeParentT.y/2 + sizeT.y/2 + (sizeParentT.y/2) * borderTopBottom;
 		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Center) {
-			reposition.y = borderTopBottom;
+			reposition.y = (sizeParentT.y/2) * borderTopBottom;
 		}
 		t.position = center + reposition;
 	}
@@ -358,7 +358,11 @@ public class MyGUI : MonoBehaviour {
 		uv.y += rectify;
 		return uv;
 	}
-
+	
+	public void SetActiveTextMaterial(int materialID) {
+		activeTextMaterial = textureAtlas[materialID];
+	}
+	
 	private Material GetTextMaterial() {
 		Material m = textureAtlas[4];
 		switch (game.state.lang) {

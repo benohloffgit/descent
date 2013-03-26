@@ -17,11 +17,11 @@ public class TextCC : MonoBehaviour {
 		myRenderer = GetComponent<Renderer>();
 	}
 
-	public void Initialize(MyGUI mG, string text, float size, int cID, Vector4 tM, MyGUI.GUIAlignment align) {
-		Initialize (mG, text, size, cID, tM, align, false);
+	public void Initialize(MyGUI mG, string text, float size, int cID, Vector4 tM, MyGUI.GUIAlignment align, int textureID) {
+		Initialize (mG, text, size, cID, tM, align, false, textureID);
 	}
 	
-	public void Initialize(MyGUI mG, string text, float size, int cID, Vector4 tM, MyGUI.GUIAlignment align, bool noBr) {
+	public void Initialize(MyGUI mG, string text, float size, int cID, Vector4 tM, MyGUI.GUIAlignment align, bool noBr, int textureID) {
 		myGUI = mG;
 		textMargin = tM;
 		containerID = cID;
@@ -29,16 +29,16 @@ public class TextCC : MonoBehaviour {
 		noBreak = noBr;
 		transform.localScale *= size;
 		textMesh.renderer.material = mG.activeTextMaterial;
-		textMesh.Font = mG.activeFont;
+		textMesh.Font = mG.bitmapFonts[textureID];
 		SetText(text);
 	}
 	
-	public void Initialize(MyGUI mG, string text, float size, int cID, float tM, MyGUI.GUIAlignment align, bool noBr) {
-		Initialize(mG, text, size, cID, new Vector4(tM, tM, tM, tM), align, noBr);
+	public void Initialize(MyGUI mG, string text, float size, int cID, float tM, MyGUI.GUIAlignment align, bool noBr, int textureID) {
+		Initialize(mG, text, size, cID, new Vector4(tM, tM, tM, tM), align, noBr, textureID);
 	}
 	
-	public void Initialize(MyGUI mG, string text, float size, int cID, float tM, MyGUI.GUIAlignment align) {
-		Initialize(mG, text, size, cID, new Vector4(tM, tM, tM, tM), align);
+	public void Initialize(MyGUI mG, string text, float size, int cID, float tM, MyGUI.GUIAlignment align, int textureID) {
+		Initialize(mG, text, size, cID, new Vector4(tM, tM, tM, tM), align, textureID);
 	}
 	
 	public Vector3 GetSize() {

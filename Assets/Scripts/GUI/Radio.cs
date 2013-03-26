@@ -17,14 +17,14 @@ public class Radio : MonoBehaviour {
 	}
 
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
-				DropdownDelegate dS, int rID, Vector4 uvMapRadioButtonOn, Vector4 uvMapRadioButtonOff, int textureIDButton, RadioBox rB) {
+				DropdownDelegate dS, int rID, Vector4 uvMapRadioButtonOn, Vector4 uvMapRadioButtonOff, int textureIDText, int textureIDButton, RadioBox rB) {
 		myGUI = mG;
 		dropdownSelect = dS;
 		radioID = rID;
 		radioBox = rB;
 		containerID = cID;
 		background = backgr;
-		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, true);
+		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, true, textureIDText);
 
 		Vector3 textSize = text.GetSize();
 		background.transform.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin*2, 1.0f);

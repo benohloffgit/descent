@@ -29,14 +29,14 @@ public class Dropdown : MonoBehaviour, Focussable {
 	}
 	
 	public void Initialize(MyGUI mG, string[] os, int selectedOption, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter, DropdownDelegate dE,
-							OpenRadioBoxDelegate oD, int textureIDButton, Vector4 uvMapDropdownOpenButton) {
+							OpenRadioBoxDelegate oD, int textureIDText, int textureIDButton, Vector4 uvMapDropdownOpenButton) {
 		myGUI = mG;
 		dropdownExecute = dE;
 		options = os;
 		openDropdown = oD;
 		containerID = cID;
 		background = backgr;
-		text.Initialize(mG, os[selectedOption], size, cID, textMargin, alignLeftRightCenter, true);
+		text.Initialize(mG, os[selectedOption], size, cID, textMargin, alignLeftRightCenter, true, textureIDText);
 
 		Vector3 textSize = text.GetSize();
 		background.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin*2, 1.0f);

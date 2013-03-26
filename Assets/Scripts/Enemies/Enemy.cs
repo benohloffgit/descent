@@ -71,6 +71,8 @@ public abstract class Enemy : MonoBehaviour {
 	
 	public bool isActive;
 	private float lastTimeShipVisible;
+	public float lastTimeHUDInfoRequested;
+	public float radius;
 	
 	protected List<Weapon> weapons = new List<Weapon>();
 
@@ -82,12 +84,14 @@ public abstract class Enemy : MonoBehaviour {
 	void Awake() {
 		myRigidbody = GetComponent<Rigidbody>();
 		isActive = false;
+		radius = collider.bounds.extents.magnitude;
+//		Debug.Log (radius);
 	}
 
 	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int health_, int shield_,
 			float size_, float aggressiveness_, float movementForce_,
 			float turningForce_, int lookAtRange_, int chaseRange_,
-			int roamMinRange_, int roamMaxRange_, int[] weapons_, int[] models_) {		
+			int roamMinRange_, int roamMaxRange_) {		
 		play = play_;
 		spawn = spawn_;
 		game = play.game;
@@ -108,10 +112,12 @@ public abstract class Enemy : MonoBehaviour {
 		roamMaxRange = roamMaxRange_;
 		
 		firepowerPerSecond = 0;
-		for (int i=0; i<weapons_.Length; i++) {
-			InitializeWeapon(i, weapons_[i], models_[i]);
-			firepowerPerSecond += weapons[i].damage / weapons[i].frequency;
-		}
+//		for (int i=0; i<weapons_.Length; i++) {
+			int zone5 = Zone.GetZone5StepID(play.zoneID);
+			InitializeWeapon(0, Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5], Weapon.SHIP_PRIMARY_WEAPON_MODELS[zone5]);
+		
+			firepowerPerSecond += weapons[0].damage / weapons[0].frequency;
+//		}
 		
 		// derived values
 		shootingRange = RoomMesh.MESH_SCALE * lookAtRange;
@@ -125,11 +131,12 @@ public abstract class Enemy : MonoBehaviour {
 	public void Initialize(Play play_, Spawn spawn_, string clazz_, int model_, int health_, int shield_,
 			float size_, float aggressiveness_, float movementForce_,
 			float turningForce_, int lookAtRange_, int chaseRange_,
-			int roamMinRange_, int roamMaxRange_, int[] weapons_, int[] models_) {
+			int roamMinRange_, int roamMaxRange_) {
+		
 		Initialize(play_, spawn_, CLAZZ_NUM(clazz_), model_, health_, shield_,
 			size_, aggressiveness_, movementForce_,
 			turningForce_, lookAtRange_, chaseRange_,
-			roamMinRange_, roamMaxRange_, weapons_, models_);		
+			roamMinRange_, roamMaxRange_);		
 	}
 	
 	void FixedUpdate() {

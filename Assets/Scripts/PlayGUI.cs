@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayGUI {
 //	public int currentHealth;
@@ -29,10 +30,23 @@ public class PlayGUI {
 //	private int ticks;
 	
 	private float lastTime;
-
+	
+	private RaycastHit hit;
+	private List<Enemy> enemyHUDInfo = new List<Enemy>();
+	private int topContainer;
+	private Transform shipTransform;
+	private Camera shipCamera;
+	
+	private static int MAX_ENEMY_HUD_INFOS = 5;
+	private static float ENEMY_HUD_INFO_MAX_TIME = 5.0f;
+	
+	private static Vector3 ENEMY_HUD_OFFSET_GLOBAL = new Vector3(0.5f, 0.5f, 0f);
+	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(1.0f, -1.0f, 0f);
 	private static float TICK_DELTA = 0.1f;
 	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
 												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
+	
+	private int[] enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
 	
 	public PlayGUI(Play p) {
 		play = p;
@@ -46,26 +60,31 @@ public class PlayGUI {
 		
 		Vector3 fullSize = gui.containers[container].GetSize();
 		Vector3 screenCenter = gui.containers[container].GetCenter();
-		int topContainer = gui.AddContainer(container, fullSize, new Vector2(screenCenter.x, screenCenter.y), true);
+		topContainer = gui.AddContainer(container, fullSize, new Vector2(screenCenter.x, screenCenter.y), true);
 
 		// ship health
-		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.025f, MyGUI.GUIAlignment.Top, 0.07f);
+		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.02f, MyGUI.GUIAlignment.Top, 0.14f);
 		int imageId;
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
 		healthDigit0 = gui.images[imageId];
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.05f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
 		healthDigit1 = gui.images[imageId];
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0.1f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 3.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
 		healthDigit2 = gui.images[imageId];
 		
 		// ship shield
-		int shieldContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.025f, MyGUI.GUIAlignment.Top, 0.01f);
+		int shieldContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.02f, MyGUI.GUIAlignment.Top, 0.01f);
 		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 0.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit0 = gui.images[imageId];
-		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 0.05f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
+		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit1 = gui.images[imageId];
-		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 0.1f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
-		shieldDigit2 = gui.images[imageId];		
+		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 3.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
+		shieldDigit2 = gui.images[imageId];
+		
+		gui.SetActiveTextMaterial(5);
+		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
+			enemyHUDInfoLabels[i] = gui.AddLabel("b", topContainer, new Vector3(1f,1f,1f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Center, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+		}
 		
 //		ticks = 0;
 		count = new int[3];
@@ -78,6 +97,8 @@ public class PlayGUI {
 		toBeDisplayedShield = displayedShield;
 		DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, play.ship.health), MyGUI.GetDigitOfNumber(1, play.ship.health), MyGUI.GetDigitOfNumber(2, play.ship.health)});
 		DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, play.ship.shield), MyGUI.GetDigitOfNumber(1, play.ship.shield), MyGUI.GetDigitOfNumber(2, play.ship.shield)});
+		shipTransform = play.ship.transform;
+		shipCamera = play.ship.shipCamera;
 	}
 	
 /*	public void SetHealth(int newHealth) {
@@ -116,7 +137,11 @@ public class PlayGUI {
 		shieldDigit1.SetUVMapping(DIGITS[count[1]]);
 		shieldDigit2.SetUVMapping(DIGITS[count[2]]);
 	}
-	
+
+/*	public void DispatchOnGUI() {
+		GUI.Label(new Rect (Screen.width/2,Screen.height/2,50,50), "bla"	);
+	}*/
+		
 	public void DispatchUpdate() {
 		if (toBeDisplayedShield != play.ship.shield) {
 			SetCount(displayedShield);
@@ -134,6 +159,58 @@ public class PlayGUI {
 			LowerCount();
 			displayedHealth--;
 			DisplayHealth();
+		}
+	}
+	
+	public void DispatchFixedUpdate() {
+		// Enemy target info
+//		Debug.Log (shipTransform.position + " " + shipTransform.forward);
+		if (Physics.Raycast(shipTransform.position, shipTransform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
+			if (hit.collider.tag == Enemy.TAG) {
+				Enemy e = hit.transform.GetComponent<Enemy>();
+				e.lastTimeHUDInfoRequested = Time.time;
+				if (!enemyHUDInfo.Contains(e)) {
+					enemyHUDInfo.Add(e);
+					if (enemyHUDInfo.Count > MAX_ENEMY_HUD_INFOS) {
+						enemyHUDInfo.RemoveAt(0);
+					}
+				}
+			}
+		}
+				
+		int removed = 0;
+		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
+			if (enemyHUDInfo.Count > i) {
+				if (enemyHUDInfo[i-removed].lastTimeHUDInfoRequested + ENEMY_HUD_INFO_MAX_TIME > Time.time ) {					
+					ShowEnemyHUDInfo(i, enemyHUDInfo[i-removed]);
+				} else {
+					enemyHUDInfo.RemoveAt(i-removed);
+					removed++;
+					gui.labelsCC[enemyHUDInfoLabels[i]].myRenderer.enabled = false;
+				}
+			} else {
+				gui.labelsCC[enemyHUDInfoLabels[i]].myRenderer.enabled = false;
+			}
+		}
+	}
+	
+	private void ShowEnemyHUDInfo(int index, Enemy e) {
+//		Debug.Log (e.transform.TransformDirection(e.transform.localScale));
+		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
+			+ play.ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f);
+		gui.labelsCC[enemyHUDInfoLabels[index]].SetText(
+			e.clazz.ToUpper() + " " + e.model.ToString("00") + " (" + Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
+		);
+		gui.labelsCC[enemyHUDInfoLabels[index]].transform.localPosition = new Vector2(
+			Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f),
+			Mathf.Clamp(p.y - ENEMY_HUD_OFFSET_GLOBAL.y, -0.45f, 0.45f)
+		);
+		gui.labelsCC[enemyHUDInfoLabels[index]].myRenderer.enabled = true;
+	}
+	
+	public void RemoveEnemy(Enemy e) {
+		if (enemyHUDInfo.Contains(e)) {
+			enemyHUDInfo.Remove(e);
 		}
 	}
 	

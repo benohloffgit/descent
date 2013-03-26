@@ -15,7 +15,7 @@ public class Play : MonoBehaviour {
 	public bool isMiniMapOn;
 	public bool isMiniMapFollowOn;
 	private MiniMap miniMap;
-	private PlayGUI playGUI;
+	public PlayGUI playGUI;
 	private string keyCommand;
 	public bool isInKeyboardMode;
 	
@@ -46,12 +46,12 @@ public class Play : MonoBehaviour {
 //	private Vector3 shipPosition;
 	private GridPosition shipGridPosition;
 
-	private static float MAX_RAYCAST_DISTANCE = 100.0f;
+	//private static float MAX_RAYCAST_DISTANCE = 100.0f;
 	private static float GRAVITY_INTERVAL = 10.0f;
 	private static float STATS_INTERVAL = 10.0f;
 	private static float STATS_MIN = 0.01f;
 		
-	void OnGUI() {
+	void OnGUI() {		
  		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
 			Application.Quit();
 		}
@@ -77,8 +77,8 @@ public class Play : MonoBehaviour {
 					keyCommand += e.character;
 				}
 			}
+			e.Use();
 		}
-		e.Use();
    	}
 	
 /*	void FixedUpdate() {
@@ -111,7 +111,7 @@ public class Play : MonoBehaviour {
 				Debug.Log ("Adding Light Bulb (Editor mode)");
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha4)) {				
-				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
+				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {
 					WallGun wallGun = enemyDistributor.CreateWallGun();
 					enemyDistributor.PlaceOnWall(wallGun.gameObject, hit);
 					Debug.Log ("Adding Wall Gun (Editor mode)");
@@ -210,12 +210,15 @@ public class Play : MonoBehaviour {
 				}
 			}
 		}
-		
 		playGUI.DispatchUpdate();
 	}
 	
+	void FixedUpdate() {
+		playGUI.DispatchFixedUpdate();
+	}
+	
 	public void Restart() {
-		zoneID = 4;
+		zoneID = 6;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -229,7 +232,7 @@ public class Play : MonoBehaviour {
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 		
-		int seed = 1922614; //123456789;
+		int seed = 7975450; //1922614; //123456789;
 //		int seed = UnityEngine.Random.Range(1000000,9999999);
 		Debug.Log ("Seed: " + seed);
 		UnityEngine.Random.seed = seed;

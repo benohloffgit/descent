@@ -145,12 +145,16 @@ public class RoomMiner {
 					cave.SetAllMinersInactive();
 				} else {
 					int biggestFactor = delta.GetBiggestFactor();
-					if (biggestFactor == 0) {
-						pos.x += delta.x/Mathf.Abs(delta.x);
-					} else if (biggestFactor == 1) {
-						pos.y += delta.y/Mathf.Abs(delta.y);
-					} else {
-						pos.z += delta.z/Mathf.Abs(delta.z);
+					try {
+						if (biggestFactor == 0) {
+							pos.x += delta.x/Mathf.Abs(delta.x);
+						} else if (biggestFactor == 1) {
+							pos.y += delta.y/Mathf.Abs(delta.y);
+						} else {
+							pos.z += delta.z/Mathf.Abs(delta.z);
+						}
+					} catch (DivideByZeroException e) {
+						Game.DefNull(e);
 					}
 				}
 			}

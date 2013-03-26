@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class LabelCC : MonoBehaviour {
 	public Transform background;
+	public Renderer myRenderer;
 	private TextCC text;
 	private MyGUI myGUI;
 //	private int containerID;
@@ -10,10 +11,15 @@ public class LabelCC : MonoBehaviour {
 	
 	void Awake() {
 		text = GetComponentInChildren<TextCC>();
+		myRenderer = GetComponentInChildren<Renderer>();
 	}
 	
 	public TextCC GetText() {
 		return text;
+	}
+	
+	public void SetText(string t) {
+		text.SetText(t);
 	}
 	
 	public Vector3 GetSize() {
@@ -21,11 +27,11 @@ public class LabelCC : MonoBehaviour {
 	}
 
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
-			Vector3 scale) {
+			Vector3 scale, int textureID) {
 		myGUI = mG;
 //		containerID = cID;
 		background = backgr;
-		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter);
+		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
 
 //		Vector3 textSize = text.GetSize();
 		background.transform.localScale = scale;
@@ -33,11 +39,11 @@ public class LabelCC : MonoBehaviour {
 		background.transform.parent = transform;
 	}
 	
-	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter) {
+	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter, int textureID) {
 		myGUI = mG;
 //		containerID = cID;
 		background = backgr;
-		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter);
+		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
 
 		Vector3 textSize = text.GetSize();
 		background.transform.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin*2, 1.0f);
@@ -47,12 +53,12 @@ public class LabelCC : MonoBehaviour {
 	
 	// initialize as image label
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, Vector4 textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
-			Transform imageT, float scaleImage) {
+			Transform imageT, float scaleImage, int textureID) {
 		myGUI = mG;
 //		containerID = cID;
 		background = backgr;
 		labelImage = imageT;
-		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter);
+		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
 		
 		Vector3 textSize = text.GetSize();
 //		transform.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin.z + textMargin.w, 1.0f);

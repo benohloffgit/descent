@@ -7,6 +7,7 @@ public class PlayGUI {
 //	public int currentShield;
 	
 	private Play play;
+	private Ship ship;
 	
 	private MyGUI gui;
 	private int container;
@@ -42,7 +43,7 @@ public class PlayGUI {
 	
 	private static Vector3 ENEMY_HUD_OFFSET_GLOBAL = new Vector3(0.5f, 0.5f, 0f);
 	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(1.0f, -1.0f, 0f);
-	private static float TICK_DELTA = 0.1f;
+	private static float TICK_DELTA = 0.05f;
 	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
 												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
 	
@@ -91,14 +92,15 @@ public class PlayGUI {
 	}
 	
 	public void Initialize() {
-		displayedHealth = play.ship.health;
-		displayedShield = play.ship.shield;
+		ship = play.ship;
+		displayedHealth = ship.healthPercentage;
+		displayedShield = ship.shieldPercentage;
 		toBeDisplayedHealth = displayedHealth;
 		toBeDisplayedShield = displayedShield;
-		DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, play.ship.health), MyGUI.GetDigitOfNumber(1, play.ship.health), MyGUI.GetDigitOfNumber(2, play.ship.health)});
-		DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, play.ship.shield), MyGUI.GetDigitOfNumber(1, play.ship.shield), MyGUI.GetDigitOfNumber(2, play.ship.shield)});
-		shipTransform = play.ship.transform;
-		shipCamera = play.ship.shipCamera;
+		DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.healthPercentage), MyGUI.GetDigitOfNumber(1, ship.healthPercentage), MyGUI.GetDigitOfNumber(2, ship.healthPercentage)});
+		DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, ship.shieldPercentage), MyGUI.GetDigitOfNumber(1, ship.shieldPercentage), MyGUI.GetDigitOfNumber(2, ship.shieldPercentage)});
+		shipTransform = ship.transform;
+		shipCamera = ship.shipCamera;
 	}
 	
 /*	public void SetHealth(int newHealth) {
@@ -122,6 +124,7 @@ public class PlayGUI {
 	}
 	
 	private void DisplayHealth() {
+//		Debug.Log (count[2] +" " + count[1] +" " +count[0]);
 		healthDigit0.SetUVMapping(DIGITS[count[0]]);
 		healthDigit1.SetUVMapping(DIGITS[count[1]]);
 		healthDigit2.SetUVMapping(DIGITS[count[2]]);
@@ -143,21 +146,29 @@ public class PlayGUI {
 	}*/
 		
 	public void DispatchUpdate() {
-		if (toBeDisplayedShield != play.ship.shield) {
+		if (toBeDisplayedShield != ship.shieldPercentage) {
 			SetCount(displayedShield);
-			toBeDisplayedShield = play.ship.shield;
-		} else if (displayedShield == play.ship.shield && toBeDisplayedHealth != play.ship.health) {
+			toBeDisplayedShield = ship.shieldPercentage;
+		} else if (displayedShield == ship.shieldPercentage && toBeDisplayedHealth != ship.healthPercentage) {
 			SetCount(displayedHealth);
-			toBeDisplayedHealth = play.ship.health;
+			toBeDisplayedHealth = ship.healthPercentage;
 		}
 			
 		if (displayedShield > toBeDisplayedShield && Time.time > lastTime + TICK_DELTA) {
 			LowerCount();
 			displayedShield--;
 			DisplayShield();
+		} else if (displayedShield < toBeDisplayedShield && Time.time > lastTime + TICK_DELTA) {
+			RaiseCount();
+			displayedShield++;
+			DisplayShield();
 		} else if (displayedHealth > toBeDisplayedHealth && Time.time > lastTime + TICK_DELTA) {
 			LowerCount();
 			displayedHealth--;
+			DisplayHealth();
+		} else if (displayedHealth < toBeDisplayedHealth && Time.time > lastTime + TICK_DELTA) {
+			RaiseCount();
+			displayedHealth++;
 			DisplayHealth();
 		}
 	}
@@ -215,6 +226,9 @@ public class PlayGUI {
 	}
 	
 	private void LowerCount() {
+		
+		// count[0] is rightmost!
+
 		if (count[0] == 0) {
 			count[0] = 9;
 			if (count[1] == 0) {
@@ -229,6 +243,28 @@ public class PlayGUI {
 			}
 		} else {
 			count[0]--;
+		}
+		lastTime = Time.time;
+	}
+
+	private void RaiseCount() {
+		
+		// count[0] is rightmost!
+
+		if (count[0] == 9) {
+			count[0] = 0;
+			if (count[1] == 9) {
+				count[1] = 0;
+				if (count[2] == 9) {
+					// should not happen
+				} else {
+					count[2]++;
+				}
+			} else {
+				count[1]++;
+			}
+		} else {
+			count[0]++;
 		}
 		lastTime = Time.time;
 	}

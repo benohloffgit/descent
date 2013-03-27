@@ -330,9 +330,9 @@ public class Cave {
 		IntTriple cellPos = new IntTriple(Mathf.RoundToInt(unscaled.x),Mathf.RoundToInt(unscaled.y),Mathf.RoundToInt(unscaled.z));
 		IntTriple roomPos = cellPos / Game.DIMENSION_ROOM;
 		cellPos %= Game.DIMENSION_ROOM;
-		if (roomPos.x == 0 || cellPos.x < 0 || cellPos.x > 15 || cellPos.y < 0 || cellPos.y > 15 || cellPos.z < 0 || cellPos.z > 15) {
-			Debug.Log (position +" " +  cellPos + " " + roomPos);
-		}
+//		if (roomPos.x == 0 || cellPos.x < 0 || cellPos.x > 15 || cellPos.y < 0 || cellPos.y > 15 || cellPos.z < 0 || cellPos.z > 15) {
+//			Debug.Log (position +" " +  cellPos + " " + roomPos);
+//		}
 		
 /*		IntTriple roomPos = new IntTriple(Mathf.FloorToInt(roomVector.x), Mathf.FloorToInt(roomVector.y), Mathf.FloorToInt(roomVector.z));
 		Vector3 cellVector = unscaled - (roomPos * Game.DIMENSION_ROOM).GetVector3();

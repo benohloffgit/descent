@@ -6,7 +6,6 @@ public class EnemyDistributor {
 	private Play play;
 	private Game game;
 	
-	private ArrayList emptyCells;
 	private RaycastHit hit;
 	
 	public int enemiesLiving;
@@ -47,19 +46,6 @@ public class EnemyDistributor {
 		enemiesFirepowerPerSecondAvg = 0;
 		enemiesFirepowerPerSecondAvgActive = 0;
 		enemiesHitRatio = 0;
-		
-		// build array list of all empty cells
-/*		emptyCells = new ArrayList();
-		int emptyCellIx = 0;
-		for (int x=0; x<room.dimension; x++) {
-			for (int y=0; y<room.dimension; y++) {
-				for (int z=0; z<room.dimension; z++) {
-					if (room.GetCellDensity(x,y,z) == CaveDigger.DENSITY_EMPTY) {
-						emptyCells.Add(new IntTriple(x, y, z));
-					}
-				}
-			}
-		}*/
 	}
 	
 	public void Distribute(int zoneID) {
@@ -78,7 +64,7 @@ public class EnemyDistributor {
 		foreach (Room r in play.cave.GetCurrentZone().roomList) {
 			if (r.id > -1) {  // ----  > 0 all rooms except entry
 				float rand = UnityEngine.Random.value;
-				for (int enemyClazz=0; enemyClazz<enemyClazzProbability.Length; enemyClazz++) {
+				for (int enemyClazz=0; enemyClazz < enemyClazzProbability.Length; enemyClazz++) {
 					if (rand <= enemyClazzProbability[enemyClazz]) {
 					//	int enemyClazzDelta = CalculateEnemyClazzDelta(enemyClazzVariety, enemyCoreClazz, i);
 						//Debug.Log ("enemyClazzDelta: " + enemyClazzDelta);
@@ -89,7 +75,7 @@ public class EnemyDistributor {
 						int enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
 						Debug.Log ("enemyClazz/enemyModel (equivalent A): " + enemyClazz+"/" + " " +enemyModel);
 						
-						CreateSpawn(enemyClazz, enemyModel, r.GetRandomNonSpawnNonExitGridPosition(),
+						CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel, r.GetRandomNonSpawnNonExitGridPosition(),
 							UnityEngine.Random.Range(5.0f, 15.0f), UnityEngine.Random.Range(1, 5), UnityEngine.Random.Range(3, 7)); // Spawn.INFINITY
 					}
 				}
@@ -167,11 +153,11 @@ public class EnemyDistributor {
 		return mana;
 	}
 
-	public Spawn CreateSpawn(int enemyClazz, int enemyModel, GridPosition gridPos,
+	public Spawn CreateSpawn(int enemyClazz, int enemyModel, int enemyEquivalentClazzAModel, GridPosition gridPos,
 				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY) {
 		GameObject p = GameObject.Instantiate(game.spawnPrefab) as GameObject;
 		Spawn spawn = p.GetComponentInChildren<Spawn>();
-		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, frequency, maxLiving, maxGenerated);
+		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel, frequency, maxLiving, maxGenerated);
 		spawn.transform.position = gridPos.GetVector3() * RoomMesh.MESH_SCALE;
 		return spawn;
 	}
@@ -207,15 +193,19 @@ public class EnemyDistributor {
 	
 	public void RemoveEnemy(Enemy e) {
 		enemiesLiving--;
-		play.playGUI.RemoveEnemy(e);
+		play.RemoveEnemy(e);
 		if (e.isActive) {
 			DeactivateEnemy(e);
 		}
 		enemiesFirepowerPerSecond -= e.firepowerPerSecond;
 		enemiesFirepowerPerSecondAvg = enemiesFirepowerPerSecond / enemiesLiving;
 	}
-	
+
 	public Enemy CreateEnemy(Spawn spawn, int clazz, int model) {
+		return CreateEnemy(spawn, clazz, model, model + CLAZZ_A_EQUIVALENT_MODEL[clazz]);
+	}
+
+	public Enemy CreateEnemy(Spawn spawn, int clazz, int model, int enemyEquivalentClazzAModel) {
 		Enemy enemy;
 		if (clazz == Enemy.CLAZZ_A0) {
 			enemy = (Enemy)CreateBull();
@@ -224,9 +214,9 @@ public class EnemyDistributor {
 		} else {
 			enemy = (Enemy)CreateBull();
 		}
-		enemy.Initialize(play, spawn, clazz, model,
-				CalculateEnemyHealth(clazz, model),
-				CalculateEnemyShield(clazz, model),
+		enemy.Initialize(play, spawn, clazz, model, enemyEquivalentClazzAModel,
+				CalculateEnemyHealth(clazz, enemyEquivalentClazzAModel),
+				CalculateEnemyShield(clazz, enemyEquivalentClazzAModel),
 				CalculateEnemySize(clazz, model),
 				CalculateEnemyAggressiveness(clazz, model),
 				CalculateEnemyMovementForce(clazz, model),

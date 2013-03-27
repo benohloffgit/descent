@@ -11,6 +11,11 @@ public class Ship : MonoBehaviour {
 	
 	public int health;
 	public int shield;
+	public int healthPercentage;
+	public int shieldPercentage;
+	private int maxHealth;
+	private int maxShield;
+	
 	public float firepowerPerSecond;
 	public float lastMoveTime;
 		
@@ -33,8 +38,8 @@ public class Ship : MonoBehaviour {
 	private static float FORCE_TURN = 5.0f;
 	private static float FORCE_YAW = 3.5f;
 	
-	private static int HEALTH = 200;
-	private static int SHIELD = 50;
+//	private static int HEALTH = 200;
+//	private static int SHIELD = 50;
 	
 	private static Vector3[] CAMERA_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 3.0f, -12.0f), new Vector3(-5f, 0f, 0f), new Vector3(5f, 0f, 0f), new Vector3(0, 0f, 5.0f), new Vector3(0, 12f, 0f)};
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(-1.014f, 0f, 1.664f), new Vector3(1.014f, 0f, 1.664f), new Vector3(0, -0.37f, 1.65f)};
@@ -79,8 +84,12 @@ public class Ship : MonoBehaviour {
 		isHeadlightOn = true;
 		SwitchHeadlight();
 		cameraPosition = CAMERA_POSITION_COCKPIT;
-		health = HEALTH;
-		shield = SHIELD;
+		maxHealth = CalculateHealth();
+		maxShield = maxHealth / 2;
+		health = maxHealth;
+		shield = maxShield;
+		healthPercentage = 100;
+		shieldPercentage = 100;
 		
 		AddWeapons();
 
@@ -125,6 +134,31 @@ public class Ship : MonoBehaviour {
 
 	public void Yaw(Vector3 direction) {
 		rigidbody.AddRelativeTorque(direction * FORCE_YAW);
+	}
+	
+	public void Damage(int damage) {
+		if (shield > 0) {
+			shield -= damage * 2;
+			if (shield < 0) {
+				damage = Mathf.Abs(shield);
+				shield = 0;
+			} else {
+				damage = 0;
+			}
+		}
+		health -= damage;
+		healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
+		shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
+		if (health == 0) {
+			Time.timeScale = 0f;
+		}
+		//Debug.Log (damage +" " + shield + " " +  maxShield+ " "+ health + " " + healthPercentage + " " +  shieldPercentage);
+	}
+	
+	public void Heal(int amount) { // percentage of maxHealth
+//		Debug.Log (amount + " " + Mathf.RoundToInt(maxHealth * ((float)amount/100f)) + " " + health);
+		health = Mathf.Min(maxHealth, health + Mathf.RoundToInt(maxHealth * ((float)amount/100f)));
+		healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
 	}
 	
 	public Vector3 IsVisibleFrom(Vector3 fromPos) {
@@ -195,6 +229,13 @@ public class Ship : MonoBehaviour {
 		weapons.Add(w);
 		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_RIGHT]; // turn upside down on center slot*/
 	}
+	
+	private int CalculateHealth() {
+		int zone5 = Zone.GetZone5StepID(play.zoneID);
+		
+		return zone5 * 180;
+	}
+	
 }
 
 

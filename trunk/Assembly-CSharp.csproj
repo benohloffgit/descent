@@ -114,6 +114,8 @@
      <Compile Include="Assets\Scripts\PlayGUI.cs" />
      <Compile Include="Assets\Scripts\PrefabFactory.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />
+     <Compile Include="Assets\Scripts\Ship\CollecteableHealth.cs" />
+     <Compile Include="Assets\Scripts\Ship\CollecteablesDistributor.cs" />
      <Compile Include="Assets\Scripts\Ship\Explosion.cs" />
      <Compile Include="Assets\Scripts\Ship\Hit.cs" />
      <Compile Include="Assets\Scripts\Ship\MiniMap.cs" />

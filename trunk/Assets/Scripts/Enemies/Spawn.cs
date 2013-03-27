@@ -11,6 +11,7 @@ public class Spawn : MonoBehaviour {
 	private Vector3 worldPos;
 	private int enemyClazz;
 	private int enemyModel;
+	private int enemyEquivalentClazzAModel;
 	private float frequency;
 	private int maxLiving;
 	private int maxGenerated;
@@ -28,7 +29,7 @@ public class Spawn : MonoBehaviour {
 	}
 	
 	public void Initialize(EnemyDistributor enemyDistributor_, Play play_, GridPosition gridPos_,
-				int enemyClazz_, int enemyModel_, float frequency_, int maxLiving_, int maxGenerated_) {
+				int enemyClazz_, int enemyModel_, int enemyEquivalentClazzAModel_ ,float frequency_, int maxLiving_, int maxGenerated_) {
 		enemyDistributor = enemyDistributor_;
 		play = play_;
 		game = play.game;
@@ -36,6 +37,7 @@ public class Spawn : MonoBehaviour {
 		worldPos = gridPos.GetWorldVector3();
 		enemyClazz = enemyClazz_;
 		enemyModel = enemyModel_;
+		enemyEquivalentClazzAModel = enemyEquivalentClazzAModel_;
 		frequency = frequency_;
 		maxLiving = maxLiving_;
 		maxGenerated = maxGenerated_;
@@ -58,7 +60,7 @@ public class Spawn : MonoBehaviour {
 	
 			if ( (maxGenerated == INFINITY || numberGenerated < maxGenerated) && currentlyLiving < maxLiving) { 
 				if (Time.time > lastTimeGenerated + frequency) {
-					Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel);
+					Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel, enemyEquivalentClazzAModel);
 					e.transform.position = worldPos;
 					numberGenerated++;
 					currentlyLiving++;
@@ -74,7 +76,7 @@ public class Spawn : MonoBehaviour {
 	private void DistributeInitialSet() {
 		Room r = play.cave.GetCurrentZone().GetRoom(gridPos);
 		for (int i=0; i<maxLiving; i++) {
-			Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel);
+			Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel, enemyEquivalentClazzAModel);
 			e.transform.position = r.GetRandomNonExitGridPosition().GetWorldVector3();
 			numberGenerated++;
 			currentlyLiving++;

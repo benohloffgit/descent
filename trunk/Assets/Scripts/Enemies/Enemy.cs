@@ -88,7 +88,7 @@ public abstract class Enemy : MonoBehaviour {
 //		Debug.Log (radius);
 	}
 
-	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int health_, int shield_,
+	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int enemyEquivalentClazzAModel_, int health_, int shield_,
 			float size_, float aggressiveness_, float movementForce_,
 			float turningForce_, int lookAtRange_, int chaseRange_,
 			int roamMinRange_, int roamMaxRange_) {		
@@ -99,7 +99,7 @@ public abstract class Enemy : MonoBehaviour {
 		clazz = CLAZZES[clazzNum];
 		model = model_;
 		modelNum = clazzNum * CLAZZ_STEP + model;
-		modelClazzAEquivalent = model + EnemyDistributor.CLAZZ_A_EQUIVALENT_MODEL[clazzNum];
+		modelClazzAEquivalent = enemyEquivalentClazzAModel_;
 		health = health_;
 		shield = shield_;
 		size = size_;
@@ -113,7 +113,7 @@ public abstract class Enemy : MonoBehaviour {
 		
 		firepowerPerSecond = 0;
 //		for (int i=0; i<weapons_.Length; i++) {
-			int zone5 = Zone.GetZone5StepID(play.zoneID);
+			int zone5 = Zone.GetZone5StepID(modelClazzAEquivalent);
 			InitializeWeapon(0, Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5], Weapon.SHIP_PRIMARY_WEAPON_MODELS[zone5]);
 		
 			firepowerPerSecond += weapons[0].damage / weapons[0].frequency;
@@ -128,12 +128,12 @@ public abstract class Enemy : MonoBehaviour {
 		transform.localScale *= size;
 	}
 	
-	public void Initialize(Play play_, Spawn spawn_, string clazz_, int model_, int health_, int shield_,
+	public void Initialize(Play play_, Spawn spawn_, string clazz_, int model_, int enemyEquivalentClazzAModel_, int health_, int shield_,
 			float size_, float aggressiveness_, float movementForce_,
 			float turningForce_, int lookAtRange_, int chaseRange_,
 			int roamMinRange_, int roamMaxRange_) {
 		
-		Initialize(play_, spawn_, CLAZZ_NUM(clazz_), model_, health_, shield_,
+		Initialize(play_, spawn_, CLAZZ_NUM(clazz_), model_, enemyEquivalentClazzAModel_, health_, shield_,
 			size_, aggressiveness_, movementForce_,
 			turningForce_, lookAtRange_, chaseRange_,
 			roamMinRange_, roamMaxRange_);		

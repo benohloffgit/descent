@@ -11,6 +11,8 @@ public class PrefabFactory {
 	private GameObject breadcrumbTemplate;
 	private GameObject explosionTemplate;
 	private GameObject hitTemplate;
+	private GameObject healthTemplate;
+	private GameObject shieldTemplate;
 	
 	public PrefabFactory(Game g) {
 		game = g;
@@ -27,6 +29,8 @@ public class PrefabFactory {
 		explosionTemplate.GetComponent<Explosion>().enabled = false;
 		hitTemplate = GameObject.Instantiate(game.hitPrefab) as GameObject;
 		hitTemplate.GetComponent<Hit>().enabled = false;
+		healthTemplate = GameObject.Instantiate(game.healthPrefab) as GameObject;
+		shieldTemplate = GameObject.Instantiate(game.shieldPrefab) as GameObject;
 	}
 	
 	public GameObject CreateGunBullet(Vector3 pos, Quaternion rot, int damage, int source) {
@@ -50,6 +54,13 @@ public class PrefabFactory {
 		return newBreadcrumb;
 	}
 
+	public GameObject CreateHealth(Vector3 pos, Quaternion rot, int amount) {
+		GameObject newHealth = GameObject.Instantiate(healthTemplate, pos, rot) as GameObject;
+		CollecteableHealth health = newHealth.GetComponent<CollecteableHealth>();
+		health.Initialize(play, amount);
+		return newHealth;
+	}
+	
 	public GameObject CreateExplosion(Vector3 pos, Quaternion rot) {
 		GameObject newExplosion = GameObject.Instantiate(explosionTemplate, pos, rot) as GameObject;
 		Explosion explosion = newExplosion.GetComponent<Explosion>();

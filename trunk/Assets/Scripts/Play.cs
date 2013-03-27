@@ -22,6 +22,7 @@ public class Play : MonoBehaviour {
 //	private GameInput gI;
 	private State state;
 	private EnemyDistributor enemyDistributor;
+	private CollecteablesDistributor collecteablesDistributor;
 	private RaycastHit hit;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private int currentGravitiyDirection;
@@ -218,7 +219,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
-		zoneID = 6;
+		zoneID = 9;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -232,16 +233,18 @@ public class Play : MonoBehaviour {
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 		
-		int seed = 7975450; //1922614; //123456789;
-//		int seed = UnityEngine.Random.Range(1000000,9999999);
+//		int seed = 7787612; //1922614; //123456789;
+		int seed = UnityEngine.Random.Range(1000000,9999999);
 		Debug.Log ("Seed: " + seed);
 		UnityEngine.Random.seed = seed;
 		cave = new Cave(this, zoneID);
 		PlaceShip();
 		movement = new Movement(this);
-//		PlaceTestCubes();
 		enemyDistributor = new EnemyDistributor(this);
 		PlaceEnemies(zoneID);
+		
+		collecteablesDistributor = new CollecteablesDistributor(this);
+			
 		currentGravitiyDirection = 0;
 		lastGravitiyChange = Time.time;
 		
@@ -310,7 +313,9 @@ public class Play : MonoBehaviour {
 				m.transform.position = GetShipPosition();
 				Debug.Log ("Adding Mana (Editor mode)");
 		} else if (keyCommand.Substring(1, 1) == "s") {
-				Spawn s = enemyDistributor.CreateSpawn(Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1)), Convert.ToInt32(keyCommand.Substring(3, 2)), GetShipGridPosition());
+				int clazz = Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1));
+				int model = Convert.ToInt32(keyCommand.Substring(3, 2));
+				Spawn s = enemyDistributor.CreateSpawn(clazz, model, model + EnemyDistributor.CLAZZ_A_EQUIVALENT_MODEL[clazz], GetShipGridPosition());
 				Debug.Log ("Adding Spawn  " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
 		}
 				
@@ -394,21 +399,13 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void DamageShip(int damage, int source) {
-		if (ship.shield > 0) {
-			ship.shield -= damage * 2;
-			if (ship.shield < 0) {
-				damage = Mathf.Abs(ship.shield);
-				ship.shield = 0;
-			} else {
-				damage = 0;
-			}
-		}
-		ship.health -= damage;
+		ship.Damage(damage);
 		if (source == Game.ENEMY) {
 			enemyShotStats.Add(new ShotStats(ShotStats.HIT, Time.time));
 		} else {
 			shipShotStats.Add(new ShotStats(ShotStats.MISS, Time.time));
 		}
+		
 	}
 	
 	public void DamageEnemy(int damage, Enemy e, Vector3 contactPos, int source) {
@@ -455,6 +452,15 @@ public class Play : MonoBehaviour {
 
 	public void DisplayHit(Vector3 pos, Quaternion rot) {
 		game.CreateFromPrefab().CreateHit(pos, rot);
+	}
+	
+	public void RemoveEnemy(Enemy e) {
+		collecteablesDistributor.DistributeOnEnemyDeath(e);
+		playGUI.RemoveEnemy(e);
+	}
+	
+	public void HealShip(int amount) {
+		ship.Heal(amount);
 	}
 }
 

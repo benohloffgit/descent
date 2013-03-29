@@ -60,6 +60,13 @@ public class PrefabFactory {
 		health.Initialize(play, amount);
 		return newHealth;
 	}
+
+	public GameObject CreateShield(Vector3 pos, Quaternion rot, int amount) {
+		GameObject newShield = GameObject.Instantiate(shieldTemplate, pos, rot) as GameObject;
+		CollecteableShield shield = newShield.GetComponent<CollecteableShield>();
+		shield.Initialize(play, amount);
+		return newShield;
+	}
 	
 	public GameObject CreateExplosion(Vector3 pos, Quaternion rot) {
 		GameObject newExplosion = GameObject.Instantiate(explosionTemplate, pos, rot) as GameObject;

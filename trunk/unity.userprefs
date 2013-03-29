@@ -1,21 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\CollecteableHealth.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\Ship.cs">
     <Files>
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="261" Column="16" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="136" Column="56" />
-      <File FileName="Assets\Scripts\GUI\LabelCC.cs" Line="22" Column="19" />
-      <File FileName="Assets\Scripts\GUI\Container.cs" Line="158" Column="14" />
-      <File FileName="Assets\Scripts\Play.cs" Line="237" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="159" Column="3" />
-      <File FileName="Assets\Scripts\Game.cs" Line="77" Column="218" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="52" Column="43" />
-      <File FileName="Assets\Scripts\PG Cave\RoomMiner.cs" Line="152" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="52" Column="13" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="106" Column="1" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="194" Column="69" />
+      <File FileName="Assets\Scripts\GUI\Container.cs" Line="160" Column="14" />
+      <File FileName="Assets\Scripts\Play.cs" Line="222" Column="14" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="275" Column="14" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="76" Column="66" />
+      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="103" Column="4" />
       <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="10" Column="52" />
-      <File FileName="Assets\Scripts\Ship\CollecteableHealth.cs" Line="16" Column="17" />
-      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="34" Column="3" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="42" Column="74" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="68" Column="19" />
+      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="40" Column="24" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -191,7 +191,7 @@ public abstract class Enemy : MonoBehaviour {
 	protected void Shoot() {
 		if (aggressiveness > AGGRESSIVENESS_OFF) {
 			foreach (Weapon w in weapons) {
-				if (Time.time > w.lastShotTime + w.frequency) {
+				if (Time.time > w.lastShotTime + w.frequency && w.ammunition > 0) {
 					w.Shoot();
 					w.lastShotTime = Time.time;
 				}

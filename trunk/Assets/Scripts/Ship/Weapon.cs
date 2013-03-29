@@ -4,6 +4,8 @@ using System.Collections;
 
 public class Weapon {
 	
+	public const int TYPE_EMPTY = 0;
+	
 	public const int TYPE_GUN = 1;
 	public const int TYPE_LASER = 2;
 	public const int TYPE_TWIN_GUN = 3;
@@ -13,26 +15,31 @@ public class Weapon {
 	public const int TYPE_TWIN_PHASER = 7;
 	public const int TYPE_TWIN_GAUSS = 8;
 	
-	public const int TYPE_MISSILE = 9;
-	public const int TYPE_GUIDED_MISSILE = 10;
-	public const int TYPE_CHARGED_MISSILE = 11;
+	public const int TYPE_MISSILE = 1;
+	public const int TYPE_GUIDED_MISSILE = 2;
+	public const int TYPE_CHARGED_MISSILE = 3;
+	public const int TYPE_TRIPLET_GUIDED_MISSILE = 4;
 	
-	public const int TYPE_MINE_SUICIDAL = 12;
-	public const int TYPE_MINE_TOUCH = 13;
-	public const int TYPE_MINE_INFRARED = 14;
-	public const int TYPE_MINE_TIMED = 15;
-	public const int TYPE_LASER_BEAM = 16;
+	public const int TYPE_MINE_SUICIDAL = 13;
+	public const int TYPE_MINE_TOUCH = 14;
+	public const int TYPE_MINE_INFRARED = 15;
+	public const int TYPE_MINE_TIMED = 16;
+	public const int TYPE_LASER_BEAM = 17;
+
+	public static string[] PRIMARY_TYPES = new string[] {"", "Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
+
+	public static string[] SECONDARY_TYPES = new string[] {"Missile", "Guided Missile", "Charged Missile", "Triplet Missile"};
 	
-		
 	public float lastShotTime;
 	public Transform weaponTransform;
 	
-	protected int type;
-	protected int model;
+	public int type;
+	public int model;
 	protected float accuracy;
 	public float frequency;
 	public int damage;
 	protected float speed;
+	public int ammunition;
 	
 	protected Vector3 position;
 	
@@ -49,15 +56,22 @@ public class Weapon {
 	public static int[] SHIP_PRIMARY_WEAPON_MODELS = new int[] { // per 5 zones, 64 = 320 zones
 		1,2,1,3,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2, 5,6,3,7,8,4, 5,6,7,8,
 	};
+	public static int[] SHIP_SECONDARY_WEAPON_TYPES = new int[] {
+		0,0,1,1,2,1,1, 2,3,1,1,2,1,1,2, 3,4,2,2,3,2,2,3, 4,1,3,3,4,3,3,4, 1,2,4,4,1,4,4,1, 2,3,1,1,2,1,1,2, 3,4,2,2,3,2,2, 3,4,3,3,4,3, 4,4,4,4
+	};
+	public static int[] SHIP_SECONDARY_WEAPON_MODELS = new int[] {
+		0,0,1,2,1,3,4, 2,1,5,6,3,7,8,4, 2,1,5,6,3,7,8,4, 2,9,5,6,3,7,8,4, 10,9,5,6,11,7,8,12, 10,9,13,14,11,15,16,12, 10,9,13,14,11,15,16, 12,10,13,14,11,15, 12,13,14,15
+	};
 
 	private static float MAX_RAYCAST_DISTANCE = Game.MAX_VISIBILITY_DISTANCE * 1.5f;
 	
-	public Weapon(Transform parent_, Play play_, int type_, int model_, Vector3 position_, int mountedTo_) {
+	public Weapon(Transform parent_, Play play_, int type_, int model_, Vector3 position_, int mountedTo_, int ammunition_ = -1) {
 		parent = parent_;
 		play = play_;
 		game = play.game;
 		type = type_;
 		model = model_;
+		ammunition = ammunition_;
 		position = position_;
 		lastShotTime = Time.time;
 		mountedTo = mountedTo_;		
@@ -85,6 +99,9 @@ public class Weapon {
 			bulletPath = parent.forward;
 		}
 		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, damage, parent.collider, mountedTo);
+		if (ammunition > 0) {
+			ammunition--;
+		}
 	}
 	
 	private void Initialize() {

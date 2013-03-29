@@ -104,6 +104,7 @@ public class GameInput : MonoBehaviour {
 				wasTouchDown[0] = true;
 				startTouchPosition[0] = touchPosition[0];
 				if (fingerCount+1 <= maxTouchFingers) fingerCount++;
+				Screen.lockCursor = true;
 			}
 			if (Input.GetButtonUp("Fire1")) {
 				isTouchUp[0] = true;

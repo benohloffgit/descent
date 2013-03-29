@@ -17,6 +17,8 @@ public class PlayGUI {
 	private int displayedShield;
 	private int toBeDisplayedHealth;
 	private int toBeDisplayedShield;
+	private int primaryWeaponLabel;
+	private int secondaryWeaponLabel;
 	private Image healthDigit0;
 	private Image healthDigit1;
 	private Image healthDigit2;
@@ -27,10 +29,12 @@ public class PlayGUI {
 //	private int shieldTicks;
 //	private int[] healthCount;
 //	private int[] shieldCount;
-	private int[] count;
+	private int[] healthCount;
+	private int[] shieldCount;
 //	private int ticks;
 	
-	private float lastTime;
+	private float lastHealthCountTime;
+	private float lastShieldCountTime;
 	
 	private RaycastHit hit;
 	private List<Enemy> enemyHUDInfo = new List<Enemy>();
@@ -84,11 +88,16 @@ public class PlayGUI {
 		
 		gui.SetActiveTextMaterial(5);
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
-			enemyHUDInfoLabels[i] = gui.AddLabel("b", topContainer, new Vector3(1f,1f,1f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Center, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+			enemyHUDInfoLabels[i] = gui.AddLabel("b", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
 		}
 		
+		gui.SetActiveTextMaterial(4);
+		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, 0f, 0.3f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+		
 //		ticks = 0;
-		count = new int[3];
+		healthCount = new int[3];
+		shieldCount = new int[3];
 	}
 	
 	public void Initialize() {
@@ -113,32 +122,37 @@ public class PlayGUI {
 		}
 	}*/
 
-	public void SetCount(int v) {
-		count = new int[] { MyGUI.GetDigitOfNumber(0, v), MyGUI.GetDigitOfNumber(1, v), MyGUI.GetDigitOfNumber(2, v)}; // right to left
-		lastTime = Time.time;
+	public void SetHealthCount(int v) {
+		healthCount = new int[] { MyGUI.GetDigitOfNumber(0, v), MyGUI.GetDigitOfNumber(1, v), MyGUI.GetDigitOfNumber(2, v)}; // right to left
+		lastHealthCountTime = Time.time;
+	}
+
+	public void SetShieldCount(int v) {
+		shieldCount = new int[] { MyGUI.GetDigitOfNumber(0, v), MyGUI.GetDigitOfNumber(1, v), MyGUI.GetDigitOfNumber(2, v)}; // right to left
+		lastShieldCountTime = Time.time;
 	}
 	
 	public void DisplayHealth(int[] digits) {
-		count = digits;
+		healthCount = digits;
 		DisplayHealth();
 	}
 	
 	private void DisplayHealth() {
 //		Debug.Log (count[2] +" " + count[1] +" " +count[0]);
-		healthDigit0.SetUVMapping(DIGITS[count[0]]);
-		healthDigit1.SetUVMapping(DIGITS[count[1]]);
-		healthDigit2.SetUVMapping(DIGITS[count[2]]);
+		healthDigit0.SetUVMapping(DIGITS[healthCount[0]]);
+		healthDigit1.SetUVMapping(DIGITS[healthCount[1]]);
+		healthDigit2.SetUVMapping(DIGITS[healthCount[2]]);
 	}
 	
 	public void DisplayShield(int[] digits) {
-		count = digits;
+		shieldCount = digits;
 		DisplayShield();
 	}
 	
 	private void DisplayShield() {
-		shieldDigit0.SetUVMapping(DIGITS[count[0]]);
-		shieldDigit1.SetUVMapping(DIGITS[count[1]]);
-		shieldDigit2.SetUVMapping(DIGITS[count[2]]);
+		shieldDigit0.SetUVMapping(DIGITS[shieldCount[0]]);
+		shieldDigit1.SetUVMapping(DIGITS[shieldCount[1]]);
+		shieldDigit2.SetUVMapping(DIGITS[shieldCount[2]]);
 	}
 
 /*	public void DispatchOnGUI() {
@@ -147,27 +161,31 @@ public class PlayGUI {
 		
 	public void DispatchUpdate() {
 		if (toBeDisplayedShield != ship.shieldPercentage) {
-			SetCount(displayedShield);
+			SetShieldCount(displayedShield);
 			toBeDisplayedShield = ship.shieldPercentage;
 		} else if (displayedShield == ship.shieldPercentage && toBeDisplayedHealth != ship.healthPercentage) {
-			SetCount(displayedHealth);
+			SetHealthCount(displayedHealth);
 			toBeDisplayedHealth = ship.healthPercentage;
 		}
 			
-		if (displayedShield > toBeDisplayedShield && Time.time > lastTime + TICK_DELTA) {
-			LowerCount();
+		if (displayedShield > toBeDisplayedShield && Time.time > lastShieldCountTime + TICK_DELTA) {
+			LowerCount(ref shieldCount);
+			lastShieldCountTime = Time.time;
 			displayedShield--;
 			DisplayShield();
-		} else if (displayedShield < toBeDisplayedShield && Time.time > lastTime + TICK_DELTA) {
-			RaiseCount();
+		} else if (displayedShield < toBeDisplayedShield && Time.time > lastShieldCountTime + TICK_DELTA) {
+			RaiseCount(ref shieldCount);
+			lastShieldCountTime = Time.time;
 			displayedShield++;
 			DisplayShield();
-		} else if (displayedHealth > toBeDisplayedHealth && Time.time > lastTime + TICK_DELTA) {
-			LowerCount();
+		} else if (displayedHealth > toBeDisplayedHealth && Time.time > lastHealthCountTime + TICK_DELTA) {
+			LowerCount(ref healthCount);
+			lastHealthCountTime = Time.time;
 			displayedHealth--;
 			DisplayHealth();
-		} else if (displayedHealth < toBeDisplayedHealth && Time.time > lastTime + TICK_DELTA) {
-			RaiseCount();
+		} else if (displayedHealth < toBeDisplayedHealth && Time.time > lastHealthCountTime + TICK_DELTA) {
+			RaiseCount(ref healthCount);
+			lastHealthCountTime = Time.time;
 			displayedHealth++;
 			DisplayHealth();
 		}
@@ -225,7 +243,7 @@ public class PlayGUI {
 		}
 	}
 	
-	private void LowerCount() {
+	private void LowerCount(ref int[] count) {
 		
 		// count[0] is rightmost!
 
@@ -244,10 +262,9 @@ public class PlayGUI {
 		} else {
 			count[0]--;
 		}
-		lastTime = Time.time;
 	}
 
-	private void RaiseCount() {
+	private void RaiseCount(ref int[] count) {
 		
 		// count[0] is rightmost!
 
@@ -266,7 +283,6 @@ public class PlayGUI {
 		} else {
 			count[0]++;
 		}
-		lastTime = Time.time;
 	}
 	
 	private void CloseDialog() {
@@ -275,7 +291,13 @@ public class PlayGUI {
 		gui.DeleteGUIInFocus();
 	}
 	
-
+	public void DisplayPrimaryWeapon(Weapon w) {
+		gui.labelsCC[primaryWeaponLabel].SetText("T: " + Weapon.PRIMARY_TYPES[w.type] + " M: " + w.model);
+	}
+	
+	public void DisplaySecondaryWeapon(Weapon w) {
+		gui.labelsCC[secondaryWeaponLabel].SetText("T: " + Weapon.SECONDARY_TYPES[w.type] + " M: " + w.model);
+	}
 }
 
 /*

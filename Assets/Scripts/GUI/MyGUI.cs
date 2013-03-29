@@ -341,6 +341,28 @@ public class MyGUI : MonoBehaviour {
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Right) {
 			reposition.x = sizeParentT.x/2 - sizeT.x/2 - (sizeParentT.x/2) * borderLeftRight;
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Center) {
+			reposition.x = 0;
+		}
+		if (alignTopBottomCenter == MyGUI.GUIAlignment.Top) {
+			reposition.y = sizeParentT.y/2 - sizeT.y/2 - (sizeParentT.y/2) * borderTopBottom;
+		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Bottom) {
+			reposition.y = -sizeParentT.y/2 + sizeT.y/2 + (sizeParentT.y/2) * borderTopBottom;
+		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Center) {
+			reposition.y = 0;
+		}
+		t.position = center + reposition;
+	}
+
+/*	public static void Align(Vector3 center, Vector3 sizeT, Vector3 sizeParentT, Transform t,
+				Transform parentT, GUIAlignment alignLeftRightCenter, float borderLeftRight,
+				GUIAlignment alignTopBottomCenter, float borderTopBottom) {
+		t.parent = parentT;
+		Vector3 reposition = Vector3.zero;
+		if (alignLeftRightCenter == MyGUI.GUIAlignment.Left) {
+			reposition.x = -sizeParentT.x/2 + sizeT.x/2 + (sizeParentT.x/2) * borderLeftRight;
+		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Right) {
+			reposition.x = sizeParentT.x/2 - sizeT.x/2 - (sizeParentT.x/2) * borderLeftRight;
+		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Center) {
 			reposition.x = (sizeParentT.x/2) * borderLeftRight;
 		}
 		if (alignTopBottomCenter == MyGUI.GUIAlignment.Top) {
@@ -351,7 +373,7 @@ public class MyGUI : MonoBehaviour {
 			reposition.y = (sizeParentT.y/2) * borderTopBottom;
 		}
 		t.position = center + reposition;
-	}
+	}*/
 	
 	public static Vector2 RectifyUV(Vector2 uv, float rectify) {
 		uv.x += rectify;

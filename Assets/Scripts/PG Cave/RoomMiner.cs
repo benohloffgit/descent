@@ -19,6 +19,25 @@ public class RoomMiner {
 	public enum Type { QuitOnConnection=0, QuitOn40Percent=1, WeightBased=2 }
 
 	private static int MINE_COUNT_MAX_WHEN_QUIT_ON_CONNECTION = 250;
+
+	public RoomMiner(Cave c, IntTriple p, Room r, int i, RoomMiner.Type t) {
+		cave = c;
+		pos = p;
+		room = r;
+		id = i;
+		type = t;
+		mineCount = 1;
+		
+/*		if (type == Type.WeightBased) {
+			weightedCells = new List<IntTriple>();
+			weightedCells.Add(new IntTriple(4,4,4));
+			weightedCells.Add(new IntTriple(12,12,4));
+			weightedCells.Add(new IntTriple(4,12,12));
+			weightedCells.Add(new IntTriple(4,4,12));
+		}*/
+			
+//		Debug.Log ("miner created with id " + id);
+	}
 	
 	public RoomMiner(Cave c, IntTriple p, IntTriple alignment, Room r, int i, RoomMiner.Type t) {
 		cave = c;

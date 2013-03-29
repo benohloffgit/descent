@@ -219,7 +219,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
-		zoneID = 9;
+		zoneID = 30;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -462,5 +462,13 @@ public class Play : MonoBehaviour {
 	public void HealShip(int amount) {
 		ship.Heal(amount);
 	}
+
+	public void ShieldShip(int amount) {
+		ship.Shield(amount);
+	}
+	
+	public void AddMissile(int type) {
+	}
+	
 }
 

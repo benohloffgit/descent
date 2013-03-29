@@ -56,7 +56,13 @@ public class Cave {
 					AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
 				}
 				if (i > 1) { // all rooms other than entry or exit room
-					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
+					if (neighbours.Count == 1) { // additional dead end room with just one exit, we have to add a second miner
+						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+						startingCell = SetEntryExit(alignment, 0, Game.DIMENSION_ROOM, 4);
+						roomMiners.Add(new RoomMiner(this, startingCell, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+					} else {
+						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
+					}
 				} else {
 					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 				}

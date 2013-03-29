@@ -15,6 +15,9 @@ public class Ship : MonoBehaviour {
 	public int shieldPercentage;
 	private int maxHealth;
 	private int maxShield;
+	public int currentPrimaryWeapon;
+	public int currentSecondaryWeapon;
+	public bool hasSecondaryWeapon;
 	
 	public float firepowerPerSecond;
 	public float lastMoveTime;
@@ -54,8 +57,13 @@ public class Ship : MonoBehaviour {
 	private static int CAMERA_POSITION_LEFT = 2;
 	private static int CAMERA_POSITION_RIGHT = 3;
 	private static int CAMERA_POSITION_FRONT = 4;
-
-	public List<Weapon> weapons = new List<Weapon>();
+	
+	public static int SECONDARY_WEAPON_MISSILE_START = 10;
+	public static int SECONDARY_WEAPON_MISSILE_GUIDED_START = 20;
+	public static int SECONDARY_WEAPON_MISSILE_CHARGED_START = 30;
+	
+	public List<Weapon> primaryWeapons = new List<Weapon>();
+	public List<Weapon> secondaryWeapons = new List<Weapon>();
 	
 //	private Vector3 collisionPoint = Vector3.zero;
 //	private Vector3 collisionNormal = Vector3.zero;
@@ -71,6 +79,11 @@ public class Ship : MonoBehaviour {
 		headlight = transform.FindChild("Headlight");
 		cameraTransform = transform.FindChild("Camera");
 		shipCamera = cameraTransform.GetComponent<Camera>();
+	}
+	
+	void Start() {
+		play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
+		play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
 	}
 	
 	public void Initialize(Play p, Game g) {
@@ -94,7 +107,7 @@ public class Ship : MonoBehaviour {
 		AddWeapons();
 
 		firepowerPerSecond = 0;
-		foreach (Weapon w1 in weapons) {
+		foreach (Weapon w1 in primaryWeapons) {
 			firepowerPerSecond += w1.damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
 		}
 		
@@ -138,7 +151,7 @@ public class Ship : MonoBehaviour {
 	
 	public void Damage(int damage) {
 		if (shield > 0) {
-			shield -= damage * 2;
+			shield -= damage;
 			if (shield < 0) {
 				damage = Mathf.Abs(shield);
 				shield = 0;
@@ -150,6 +163,7 @@ public class Ship : MonoBehaviour {
 		healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
 		shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
 		if (health == 0) {
+			// stop game
 			Time.timeScale = 0f;
 		}
 		//Debug.Log (damage +" " + shield + " " +  maxShield+ " "+ health + " " + healthPercentage + " " +  shieldPercentage);
@@ -159,6 +173,11 @@ public class Ship : MonoBehaviour {
 //		Debug.Log (amount + " " + Mathf.RoundToInt(maxHealth * ((float)amount/100f)) + " " + health);
 		health = Mathf.Min(maxHealth, health + Mathf.RoundToInt(maxHealth * ((float)amount/100f)));
 		healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
+	}
+
+	public void Shield(int amount) { // percentage of maxHealth
+		shield = Mathf.Min(maxShield, shield + Mathf.RoundToInt(maxShield * ((float)amount/100f)));
+		shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
 	}
 	
 	public Vector3 IsVisibleFrom(Vector3 fromPos) {
@@ -197,13 +216,7 @@ public class Ship : MonoBehaviour {
 		}
 		
 	}
-	
-/*	void FixedUpdate () {
-		if (rigidbody.freezeRotation) {
-			rigidbody.freezeRotation = false;
-		}
-	}*/
-					
+		
 /*	private void Calibrate() {
 		if (Input.acceleration != Vector3.zero) {
 //			calibration = Quaternion.FromToRotation(Input.acceleration, new Vector3(0,0,-1.0f));
@@ -222,18 +235,66 @@ public class Ship : MonoBehaviour {
 	private void AddWeapons() {
 		int zone5 = Zone.GetZone5StepID(play.zoneID);
 			
-		Weapon w = new Weapon(transform, play, Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5], Weapon.SHIP_PRIMARY_WEAPON_MODELS[zone5], WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);
-		weapons.Add(w);
-		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT]; // turn upside down on center slot
-/*		w = new Weapon(transform, play, Weapon.TYPE_LASER, 2, WEAPON_POSITIONS[WEAPON_POSITION_WING_RIGHT], Game.SHIP);
-		weapons.Add(w);
-		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_RIGHT]; // turn upside down on center slot*/
+		// secondary weapons
+		int lastLowestTypePrimary = Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5] + 1;
+		int lastLowestTypeSecondary = Weapon.SHIP_SECONDARY_WEAPON_TYPES[zone5] + 1;
+		for (int i=zone5; i >= 0; i--) {
+			if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[i] < lastLowestTypePrimary && Weapon.SHIP_PRIMARY_WEAPON_TYPES[i] != 0) {
+				Weapon w = new Weapon(transform, play, Weapon.SHIP_PRIMARY_WEAPON_TYPES[i], Weapon.SHIP_PRIMARY_WEAPON_MODELS[i], WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);
+				primaryWeapons.Add(w);
+				w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT];
+				lastLowestTypePrimary = Weapon.SHIP_PRIMARY_WEAPON_TYPES[i];
+				Debug.Log ("adding primary weapon type/model " + Weapon.SHIP_PRIMARY_WEAPON_TYPES[i]+"/"+Weapon.SHIP_PRIMARY_WEAPON_MODELS[i]);
+			}	
+			if (Weapon.SHIP_SECONDARY_WEAPON_TYPES[i] < lastLowestTypeSecondary && Weapon.SHIP_SECONDARY_WEAPON_TYPES[i] != 0) {
+				Weapon w = new Weapon(transform, play, Weapon.SHIP_SECONDARY_WEAPON_TYPES[i], Weapon.SHIP_SECONDARY_WEAPON_MODELS[i], WEAPON_POSITIONS[WEAPON_POSITION_CENTER], Game.SHIP, 5);
+				secondaryWeapons.Add(w);
+				w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_CENTER];
+				lastLowestTypeSecondary = Weapon.SHIP_SECONDARY_WEAPON_TYPES[i];
+				Debug.Log ("adding secondary weapon type/model " + Weapon.SHIP_SECONDARY_WEAPON_TYPES[i]+"/"+Weapon.SHIP_SECONDARY_WEAPON_MODELS[i]);
+			}
+		}
+		
+		currentPrimaryWeapon = 0;
+		currentSecondaryWeapon = 0;
 	}
 	
 	private int CalculateHealth() {
 		int zone5 = Zone.GetZone5StepID(play.zoneID);
 		
 		return zone5 * 180;
+	}
+	
+	public void ShootPrimary() {
+		if (Time.time > primaryWeapons[currentPrimaryWeapon].lastShotTime + primaryWeapons[currentPrimaryWeapon].frequency) {
+			primaryWeapons[currentPrimaryWeapon].Shoot();
+			primaryWeapons[currentPrimaryWeapon].lastShotTime = Time.time;
+		}
+	}
+
+	public void ShootSecondary() {
+		if (secondaryWeapons.Count > 0
+				&& Time.time > secondaryWeapons[currentSecondaryWeapon].lastShotTime + secondaryWeapons[currentSecondaryWeapon].frequency
+				&& secondaryWeapons[currentSecondaryWeapon].ammunition > 0) {
+			secondaryWeapons[currentSecondaryWeapon].Shoot();
+			secondaryWeapons[currentSecondaryWeapon].lastShotTime = Time.time;
+		}
+	}
+	
+	public void CyclePrimary() {
+		currentPrimaryWeapon++;
+		if (currentPrimaryWeapon == primaryWeapons.Count) {
+			currentPrimaryWeapon = 0;
+		}
+		play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
+	}
+
+	public void CycleSecondary() {
+		currentSecondaryWeapon++;
+		if (currentSecondaryWeapon == secondaryWeapons.Count) {
+			currentSecondaryWeapon = 0;
+		}
+		play.playGUI.DisplayPrimaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
 	}
 	
 }

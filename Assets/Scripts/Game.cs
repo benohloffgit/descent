@@ -102,7 +102,7 @@ public class Game : MonoBehaviour {
 		volume = AudioListener.volume;
 		showTrialDialog = false;
 //		Debug.Log ("MAX_VISIBILITY_DISTANCE " + MAX_VISIBILITY_DISTANCE);
-		Screen.lockCursor = true;
+//		Screen.lockCursor = true;
 		//Screen.showCursor = false;
 	}
 	

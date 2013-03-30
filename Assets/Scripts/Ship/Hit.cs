@@ -5,9 +5,11 @@ public class Hit : MonoBehaviour {
 	
 	private Play play;
 	private float randomSizer;
+	private Vector3 towardsShip;
 		
 	public void Initialize(Play p) {
 		play = p;
+		towardsShip = (play.ship.transform.position-transform.position).normalized;
 	}
 	
 	void Start() {
@@ -16,9 +18,10 @@ public class Hit : MonoBehaviour {
 		randomSizer = 1.05f + 0.05f * UnityEngine.Random.value;
 	}
 	
-	void Update() {
+	void FixedUpdate() {
 		transform.localScale *= randomSizer;
 		transform.Rotate(Vector3.forward, 1.0f);
+		transform.Translate(towardsShip * 2.0f * Time.deltaTime, Space.World);
 	}
 
 	private void DestroySelf() {

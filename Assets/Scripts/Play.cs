@@ -37,9 +37,6 @@ public class Play : MonoBehaviour {
 	private float shipHealthToActiveEnemiesFPSRatio;
 	private float enemiesToShipFPSRatio;
 	
-	Vector3 tangent = Vector3.zero;
-	Vector3 binormal = Vector3.zero;
-	
 	private GridPosition testPathStart;
 	private GridPosition testPathEnd;
 	
@@ -398,8 +395,7 @@ public class Play : MonoBehaviour {
 		return result;
 	}
 	
-	public void DamageShip(int damage, int source) {
-		ship.Damage(damage);
+	public void DamageShip(int source) {
 		if (source == Game.ENEMY) {
 			enemyShotStats.Add(new ShotStats(ShotStats.HIT, Time.time));
 		} else {
@@ -408,8 +404,7 @@ public class Play : MonoBehaviour {
 		
 	}
 	
-	public void DamageEnemy(int damage, Enemy e, Vector3 contactPos, int source) {
-		e.Damage(damage, contactPos);
+	public void DamageEnemy(int source) {
 		if (source == Game.SHIP) {
 			shipShotStats.Add(new ShotStats(ShotStats.HIT, Time.time));
 		} else {
@@ -425,7 +420,7 @@ public class Play : MonoBehaviour {
 		}
 	}
 	
-	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float accuracy, float speed, int damage, Collider col, int source) {
+/*	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float accuracy, float speed, int damage, Collider col, int source) {
 		GameObject newBullet;
 		if (weaponType == Weapon.TYPE_GUN) {
 			newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot, damage, source);
@@ -444,7 +439,7 @@ public class Play : MonoBehaviour {
 		newBullet.rigidbody.AddForce(dir * speed);
 		Physics.IgnoreCollision(col, newBullet.collider);
 //		Debug.Log (dir + " " + (deviation1 * deviation2 * dir));
-	}
+	}*/
 	
 	public void DisplayExplosion(Vector3 pos, Quaternion rot) {
 		game.CreateFromPrefab().CreateExplosion(pos, rot);

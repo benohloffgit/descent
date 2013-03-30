@@ -88,7 +88,7 @@ public class PlayGUI {
 		
 		gui.SetActiveTextMaterial(5);
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
-			enemyHUDInfoLabels[i] = gui.AddLabel("b", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+			enemyHUDInfoLabels[i] = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
 		}
 		
 		gui.SetActiveTextMaterial(4);
@@ -243,10 +243,8 @@ public class PlayGUI {
 		}
 	}
 	
-	private void LowerCount(ref int[] count) {
-		
+	private void LowerCount(ref int[] count) {	
 		// count[0] is rightmost!
-
 		if (count[0] == 0) {
 			count[0] = 9;
 			if (count[1] == 0) {
@@ -264,10 +262,8 @@ public class PlayGUI {
 		}
 	}
 
-	private void RaiseCount(ref int[] count) {
-		
+	private void RaiseCount(ref int[] count) {		
 		// count[0] is rightmost!
-
 		if (count[0] == 9) {
 			count[0] = 0;
 			if (count[1] == 9) {
@@ -296,94 +292,6 @@ public class PlayGUI {
 	}
 	
 	public void DisplaySecondaryWeapon(Weapon w) {
-		gui.labelsCC[secondaryWeaponLabel].SetText("T: " + Weapon.SECONDARY_TYPES[w.type] + " M: " + w.model);
+		gui.labelsCC[secondaryWeaponLabel].SetText("T: " + Weapon.SECONDARY_TYPES[w.type] + " M: " + w.model + " ("+ w.ammunition +")");
 	}
 }
-
-/*
- * 
-private var currentScore : int;
-private var ticks : int;
-private var count : int[];
-private var lastTick : float;
-private var challengeModeOn : boolean;
-
-private static var tickDelta : float = 0.05;
-
-function Awake() {
-	currentScoreSection = transform.Find("CurrentScore").gameObject;
-	scoreDigits = currentScoreSection.GetComponentsInChildren.<GUITexture>();
-	newPointsSection = transform.Find("NewPoints").gameObject;
-	newPointsDigits = newPointsSection.GetComponentsInChildren.<GUITexture>();
-}
-
-public function Initialize(g : Game, p : Play) {
-	game = g;
-	play = p;
-}
-
-function Update() {
-	if (challengeModeOn && ticks > 0 && Time.time > lastTick + tickDelta) {
-		if (count[1] == 9) {
-			count[1] = 0;
-			if (count[2] == 9) {
-				count[2] = 0;
-				if (count[3] == 9) {
-					count[3] = 0;
-					if (count[4] == 9) {
-						// should not happen
-					} else {
-						count[4]++;
-					}
-				} else {
-					count[3]++;
-				}
-			} else {
-				count[2]++;
-			}
-		} else {
-			count[1]++;
-		}
-		if (ticks == 1) {
-			count[0] = Play.GetDigitOfNumber(0, currentScore);
-		} else {
-			count[0] = Random.Range(0,10);
-		}
-		DisplayScore(count);
-		lastTick = Time.time;
-		ticks--;
-	}
-}
-
-public function Reset(cMOn : boolean) {
-	challengeModeOn = cMOn;
-	currentScore = 0;
-	ticks = 0;
-	count = [0,0,0,0,0];
-	DisplayScore(count);
-	if (challengeModeOn) {
-		currentScoreSection.SetActiveRecursively(true);
-		newPointsSection.SetActiveRecursively(true);
-	} else {
-		currentScoreSection.SetActiveRecursively(false);
-		newPointsSection.SetActiveRecursively(false);
-	}
-}
-
-public function SetScore(nP : int, cS : int) {
-	ticks = Mathf.Floor(cS/10.0) - Mathf.Floor(currentScore/10.0);
-	currentScore = cS;
-	DisplayNewPoints(nP);
-	lastTick = Time.time;
-}
-
-private function DisplayScore(digits : int[]) {
-	if (challengeModeOn) {
-		scoreDigits[0].texture = game.numberTextures[digits[0]];
-		scoreDigits[1].texture = game.numberTextures[digits[1]];
-		scoreDigits[2].texture = game.numberTextures[digits[2]];
-		scoreDigits[3].texture = game.numberTextures[digits[3]];
-		scoreDigits[4].texture = game.numberTextures[digits[4]];
-	}	
-}
-*/

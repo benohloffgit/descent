@@ -4,6 +4,9 @@ using System.Collections;
 
 public class Weapon {
 	
+	public static int PRIMARY = 0;
+	public static int SECONDARY = 1;
+	
 	public const int TYPE_EMPTY = 0;
 	
 	public const int TYPE_GUN = 1;
@@ -28,13 +31,14 @@ public class Weapon {
 
 	public static string[] PRIMARY_TYPES = new string[] {"", "Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
 
-	public static string[] SECONDARY_TYPES = new string[] {"Missile", "Guided Missile", "Charged Missile", "Triplet Missile"};
+	public static string[] SECONDARY_TYPES = new string[] {"", "Missile", "Guided Missile", "Charged Missile", "Triplet Missile"};
 	
 	public float lastShotTime;
 	public Transform weaponTransform;
 	
 	public int type;
 	public int model;
+	public int mount;
 	protected float accuracy;
 	public float frequency;
 	public int damage;
@@ -42,13 +46,18 @@ public class Weapon {
 	public int ammunition;
 	
 	protected Vector3 position;
-	
+	private Vector3 tangent = Vector3.zero;
+	private Vector3 binormal = Vector3.zero;
+	private bool isReloaded;
+		
 	private Play play;
 	private Game game;
+	private Ship ship;
 	private Transform parent;
 	private int mountedTo;
 	private int layerMask;
 	private RaycastHit hit;
+	private Shot loadedShot;
 
 	public static int[] SHIP_PRIMARY_WEAPON_TYPES = new int[] { // per 5 zones, 64 = 320 zones
 		1,1,2,1,1,2,3, 1,1,2,1,1,2,3,4, 2,2,3,2,2,3,4,5, 3,3,4,3,3,4,5,6, 4,4,5,4,4,5,6,7, 5,5,6,5,5,6,7,8, 6,6,7,6,6,7,8, 7,7,8,7,7,8, 8,8,8,8
@@ -65,16 +74,19 @@ public class Weapon {
 
 	private static float MAX_RAYCAST_DISTANCE = Game.MAX_VISIBILITY_DISTANCE * 1.5f;
 	
-	public Weapon(Transform parent_, Play play_, int type_, int model_, Vector3 position_, int mountedTo_, int ammunition_ = -1) {
+	public Weapon(int mount_, Transform parent_, Play play_, int type_, int model_, Vector3 position_, int mountedTo_, int ammunition_ = -1) {
+		mount = mount_;
 		parent = parent_;
 		play = play_;
+		ship = play.ship;
 		game = play.game;
 		type = type_;
 		model = model_;
 		ammunition = ammunition_;
 		position = position_;
 		lastShotTime = Time.time;
-		mountedTo = mountedTo_;		
+		mountedTo = mountedTo_;
+		isReloaded = false;
 				
 		Initialize();
 		
@@ -82,13 +94,16 @@ public class Weapon {
 			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
 			accuracy = 0f;
-			frequency = 0.2f;
+			if (mount == Weapon.PRIMARY) {
+				frequency = 0.2f;
+			}
 			damage =  Mathf.RoundToInt(Zone.GetZone5StepID(play.zoneID) * 12.5f + 2.5f);
 		} else {
 			layerMask = Game.LAYER_MASK_SHIP_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
 			damage =  Mathf.RoundToInt( (Zone.GetZone5StepID(play.zoneID) + 1) * 12.5f + 2.5f); // 1 5step zone better
 		}
+		
 	}
 	
 	public void Shoot() {
@@ -98,36 +113,116 @@ public class Weapon {
 		} else {
 			bulletPath = parent.forward;
 		}
-		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, damage, parent.collider, mountedTo);
+//		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, damage, parent.collider, mountedTo);
+		loadedShot.enabled = true;
+		loadedShot.gameObject.layer = Game.LAYER_BULLETS;
+		loadedShot.rigidbody.isKinematic = false;
+		loadedShot.transform.parent = null;
+		
+		if (accuracy != 0) {
+			// improve accurcy the longer the ship stands still - 4seconds
+			accuracy = Mathf.Max(0f, accuracy - (accuracy/240.0f) * (Time.time-ship.lastMoveTime) * 60.0f);
+			
+			Vector3.OrthoNormalize(ref bulletPath, ref tangent, ref binormal);
+			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
+			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
+			bulletPath = deviation1 * deviation2 * bulletPath;
+		}
+		loadedShot.rigidbody.AddForce(bulletPath * speed);
+		Physics.IgnoreCollision(parent.collider, loadedShot.collider);
+		lastShotTime = Time.time;
+		isReloaded = false;
+	}
+		
+	public void Mount() {
+		weaponTransform.renderer.enabled = true;
+	}
+	
+	public void Unmount() {
+		weaponTransform.renderer.enabled = false;
+	}
+	
+	public bool IsReloaded() {
+		if (isReloaded) {
+			return true;
+		} else {
+			if (Time.time > lastShotTime + frequency && (ammunition == -1 || ammunition > 0)) {
+				Reload();
+				return true;
+			}
+		}
+		return false;
+	}
+		
+	private void Reload() {
+		if (mount == Weapon.PRIMARY) {
+			if (type == Weapon.TYPE_GUN) {
+				loadedShot = game.CreateFromPrefab().CreateGunShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_LASER) {
+				loadedShot = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else {
+				loadedShot = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			}			
+		} else {
+			if (type == Weapon.TYPE_MISSILE) {
+				loadedShot = game.CreateFromPrefab().CreateMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else {
+				loadedShot = game.CreateFromPrefab().CreateMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			}
+			loadedShot.rigidbody.isKinematic = true;
+		}
 		if (ammunition > 0) {
 			ammunition--;
 		}
+		loadedShot.transform.parent = weaponTransform;
+		isReloaded = true;
 	}
 	
 	private void Initialize() {
 		GameObject weaponGameObject;
-		switch (type) {
-			case TYPE_GUN:
-				speed = 100f;
-				accuracy = 4.0f - model * 0.015f;
-				frequency = 3.0f - model * 0.02f;			
-				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
-			case TYPE_LASER:
-				speed = 200f;
-				accuracy = 3.0f - model * 0.01f;
-				frequency = 3.0f - model * 0.02f;
-				weaponGameObject = GameObject.Instantiate(game.laserGunPrefab) as GameObject; break;
-			default:
-				speed = 100f;
-				accuracy = 4.0f - model * 0.015f;
-				frequency = 3.0f - model * 0.02f;
-				weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
+		if (mount == PRIMARY) {
+			switch (type) {
+				case TYPE_GUN:
+					speed = 100f;
+					accuracy = 4.0f - model * 0.015f;
+					frequency = 3.0f - model * 0.02f;			
+					weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
+				case TYPE_LASER:
+					speed = 200f;
+					accuracy = 3.0f - model * 0.01f;
+					frequency = 3.0f - model * 0.02f;
+					weaponGameObject = GameObject.Instantiate(game.laserGunPrefab) as GameObject; break;
+				default:
+					speed = 100f;
+					accuracy = 4.0f - model * 0.015f;
+					frequency = 3.0f - model * 0.02f;
+					weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
+			}
+		} else {
+			switch (type) {
+				case TYPE_MISSILE:
+					speed = 50f;
+					accuracy = 4.0f - model * 0.015f;
+					frequency = 4.0f - model * 0.02f;			
+					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
+				case TYPE_GUIDED_MISSILE:
+					speed = 50f;
+					accuracy = 3.0f - model * 0.01f;
+					frequency = 6.0f - model * 0.02f;
+					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
+				default:
+					speed = 50f;
+					accuracy = 4.0f - model * 0.015f;
+					frequency = 6.0f - model * 0.02f;
+					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
+			}
 		}
 				
 		weaponTransform = weaponGameObject.transform;
 		weaponTransform.parent = parent.transform;
 		weaponTransform.localPosition = parent.InverseTransformPoint(position);
+		Unmount();
 	}
-
+	
 }
 

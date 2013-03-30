@@ -68,13 +68,17 @@ public abstract class Enemy : MonoBehaviour {
 	protected int roamMaxRange;
 	protected float lookAtToleranceAiming;
 	protected float lookAtToleranceRoaming;
+	public int currentPrimaryWeapon;
+	public int currentSecondaryWeapon;
 	
 	public bool isActive;
 	private float lastTimeShipVisible;
 	public float lastTimeHUDInfoRequested;
 	public float radius;
+	protected bool canBeDeactivated;
 	
-	protected List<Weapon> weapons = new List<Weapon>();
+	public List<Weapon> primaryWeapons = new List<Weapon>();
+	public List<Weapon> secondaryWeapons = new List<Weapon>();
 
 	protected Rigidbody myRigidbody;
 	
@@ -111,17 +115,24 @@ public abstract class Enemy : MonoBehaviour {
 		roamMinRange = roamMinRange_;
 		roamMaxRange = roamMaxRange_;
 		
+		canBeDeactivated = true;
 		firepowerPerSecond = 0;
-//		for (int i=0; i<weapons_.Length; i++) {
-			int zone5 = Zone.GetZone5StepID(modelClazzAEquivalent);
-			InitializeWeapon(0, Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5], Weapon.SHIP_PRIMARY_WEAPON_MODELS[zone5]);
+		int zone5 = Zone.GetZone5StepID(modelClazzAEquivalent);
+		InitializeWeapon(Weapon.PRIMARY, Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5], Weapon.SHIP_PRIMARY_WEAPON_MODELS[zone5]);
+	
+		firepowerPerSecond += primaryWeapons[0].damage / primaryWeapons[0].frequency;
 		
-			firepowerPerSecond += weapons[0].damage / weapons[0].frequency;
-//		}
+		currentPrimaryWeapon = 0;
+		currentSecondaryWeapon = 0;
+		
+		primaryWeapons[currentPrimaryWeapon].Mount();
+		if (secondaryWeapons.Count > 0) {
+			secondaryWeapons[currentSecondaryWeapon].Mount();
+		}
 		
 		// derived values
 		shootingRange = RoomMesh.MESH_SCALE * lookAtRange;
-		chasingRange = RoomMesh.MESH_SCALE * chaseRange;
+		chasingRange = RoomMesh.MESH_SCALE * (lookAtRange-2);//RoomMesh.MESH_SCALE * chaseRange;
 		lookAtToleranceAiming = 0.5f;
 		lookAtToleranceRoaming = 20.0f;
 		
@@ -140,6 +151,10 @@ public abstract class Enemy : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
+		if (currentSecondaryWeapon > 0) {
+			secondaryWeapons[currentSecondaryWeapon].IsReloaded();
+		}
+		
 		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
 		if (isShipVisible != Vector3.zero) {
 			if (!isActive) {
@@ -148,7 +163,7 @@ public abstract class Enemy : MonoBehaviour {
 				spawn.ActivateEnemy(this);
 			}
 			DispatchFixedUpdate(isShipVisible);
-		} else {
+		} else if (canBeDeactivated) {
 			if (isActive && Time.time > lastTimeShipVisible + DEACTIVATION_TIME) {
 				isActive = false;
 				spawn.DeactivateEnemy(this);
@@ -160,9 +175,7 @@ public abstract class Enemy : MonoBehaviour {
 		}
 	}
 	
-	public void Damage(int damage, Vector3 contactPos) {
-		play.DisplayHit(contactPos, play.ship.transform.rotation);
-
+	public void Damage(int damage) {
 		if (shield > 0) {
 			shield -= damage * 2;
 			if (shield < 0) {
@@ -190,12 +203,11 @@ public abstract class Enemy : MonoBehaviour {
 	
 	protected void Shoot() {
 		if (aggressiveness > AGGRESSIVENESS_OFF) {
-			foreach (Weapon w in weapons) {
-				if (Time.time > w.lastShotTime + w.frequency && w.ammunition > 0) {
-					w.Shoot();
-					w.lastShotTime = Time.time;
-				}
-				
+			if (primaryWeapons[currentPrimaryWeapon].IsReloaded()) {
+				primaryWeapons[currentPrimaryWeapon].Shoot();
+			}				
+			if (secondaryWeapons.Count > 0 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+				secondaryWeapons[currentSecondaryWeapon].Shoot();
 			}
 		} else {
 			aggressiveness = AGGRESSIVENESS_OFF;

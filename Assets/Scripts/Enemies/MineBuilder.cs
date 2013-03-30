@@ -24,8 +24,12 @@ public class MineBuilder : Enemy {
 
 	public enum Mode { ROAMING=0, HIDING=1, PATHFINDING=3, COVERFINDING=4 }
 	
-	public override void InitializeWeapon(int ix, int w, int m) {
-		weapons.Add(new Weapon(transform, play, w, m, WEAPON_POSITIONS[ix], Game.ENEMY));
+	public override void InitializeWeapon(int mount, int w, int m) {
+		if (mount == Weapon.PRIMARY) {
+			primaryWeapons.Add(new Weapon(mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY));
+		} else {
+			secondaryWeapons.Add(new Weapon(mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY));
+		}
 	}
 	
 	void Start() {

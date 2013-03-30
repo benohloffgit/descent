@@ -22,12 +22,14 @@ public class Game : MonoBehaviour {
 	public GameObject miniMapPrefab;
 	public GameObject gunPrefab;
 	public GameObject laserGunPrefab;
+	public GameObject missileLauncherPrefab;
 	public GameObject manaPrefab;
 	public GameObject spawnPrefab;
 
 	// those are objects create while game is running (after cave generation)
 	public GameObject gunBulletPrefab;
 	public GameObject laserShotPrefab;
+	public GameObject missileShotPrefab;
 	public GameObject breadcrumbPrefab;
 	public GameObject explosionPrefab;
 	public GameObject hitPrefab;
@@ -38,7 +40,7 @@ public class Game : MonoBehaviour {
 	public GameInput gameInput;
 	public bool isInitialized = false;
 	public enum Mode { Menu=0, Dialog=1, Play=2, None=3, Preferences=4 }
-	public enum Shot { Bullet=0, Laser=1 }
+//	public enum Shot { Bullet=0, Laser=1, Missile=2 }
 
 	public static int MAX_WIDTH = 1536;
 	

@@ -8,6 +8,7 @@ public class PrefabFactory {
 
 	private GameObject gunBulletTemplate;
 	private GameObject laserShotTemplate;
+	private GameObject missileShotTemplate;
 	private GameObject breadcrumbTemplate;
 	private GameObject explosionTemplate;
 	private GameObject hitTemplate;
@@ -24,6 +25,8 @@ public class PrefabFactory {
 		gunBulletTemplate.GetComponent<Shot>().enabled = false;
 		laserShotTemplate = GameObject.Instantiate(game.laserShotPrefab) as GameObject;
 		laserShotTemplate.GetComponent<Shot>().enabled = false;
+		missileShotTemplate = GameObject.Instantiate(game.missileShotPrefab) as GameObject;
+		missileShotTemplate.GetComponent<Shot>().enabled = false;
 		breadcrumbTemplate = GameObject.Instantiate(game.breadcrumbPrefab) as GameObject;
 		explosionTemplate = GameObject.Instantiate(game.explosionPrefab) as GameObject;
 		explosionTemplate.GetComponent<Explosion>().enabled = false;
@@ -33,20 +36,28 @@ public class PrefabFactory {
 		shieldTemplate = GameObject.Instantiate(game.shieldPrefab) as GameObject;
 	}
 	
-	public GameObject CreateGunBullet(Vector3 pos, Quaternion rot, int damage, int source) {
+	public Shot CreateGunShot(Vector3 pos, Quaternion rot, int damage, int source) {
 		GameObject newBullet = GameObject.Instantiate(gunBulletTemplate, pos, rot) as GameObject;
 		Shot shot = newBullet.GetComponent<Shot>();
-		shot.Initialize(play, damage, source, Game.Shot.Bullet);
-		shot.enabled = true;
-		return newBullet;
+		shot.Initialize(play, damage, source, Shot.BULLET);
+		shot.enabled = false;
+		return shot;
 	}
 	
-	public GameObject CreateLaserShot(Vector3 pos, Quaternion rot, int damage, int source) {
+	public Shot CreateLaserShot(Vector3 pos, Quaternion rot, int damage, int source) {
 		GameObject newLaser = GameObject.Instantiate(laserShotTemplate, pos, rot) as GameObject;
 		Shot shot = newLaser.GetComponent<Shot>();
-		shot.enabled = true;
-		shot.Initialize(play, damage, source, Game.Shot.Laser);
-		return newLaser;
+		shot.Initialize(play, damage, source, Shot.BULLET);
+		shot.enabled = false;
+		return shot;
+	}
+
+	public Shot CreateMissileShot(Vector3 pos, Quaternion rot, int damage, int source) {
+		GameObject newMissile = GameObject.Instantiate(missileShotTemplate, pos, rot) as GameObject;
+		Shot shot = newMissile.GetComponent<Shot>();
+		shot.Initialize(play, damage, source, Shot.MISSILE);
+		shot.enabled = false;
+		return shot;
 	}
 	
 	public GameObject CreateBreadcrumb(Vector3 pos, Quaternion rot) {

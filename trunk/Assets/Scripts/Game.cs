@@ -33,8 +33,10 @@ public class Game : MonoBehaviour {
 	public GameObject breadcrumbPrefab;
 	public GameObject explosionPrefab;
 	public GameObject hitPrefab;
-	public GameObject healthPrefab;
-	public GameObject shieldPrefab;
+	// drops
+	public GameObject healthDropPrefab;
+	public GameObject shieldDropPrefab;
+	public GameObject missileDropPrefab;
 	
 	public State state;
 	public GameInput gameInput;

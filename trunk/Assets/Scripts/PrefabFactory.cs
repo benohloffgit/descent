@@ -12,8 +12,9 @@ public class PrefabFactory {
 	private GameObject breadcrumbTemplate;
 	private GameObject explosionTemplate;
 	private GameObject hitTemplate;
-	private GameObject healthTemplate;
-	private GameObject shieldTemplate;
+	private GameObject healthDropTemplate;
+	private GameObject shieldDropTemplate;
+	private GameObject missileDropTemplate;
 	
 	public PrefabFactory(Game g) {
 		game = g;
@@ -32,8 +33,9 @@ public class PrefabFactory {
 		explosionTemplate.GetComponent<Explosion>().enabled = false;
 		hitTemplate = GameObject.Instantiate(game.hitPrefab) as GameObject;
 		hitTemplate.GetComponent<Hit>().enabled = false;
-		healthTemplate = GameObject.Instantiate(game.healthPrefab) as GameObject;
-		shieldTemplate = GameObject.Instantiate(game.shieldPrefab) as GameObject;
+		healthDropTemplate = GameObject.Instantiate(game.healthDropPrefab) as GameObject;
+		shieldDropTemplate = GameObject.Instantiate(game.shieldDropPrefab) as GameObject;
+		missileDropTemplate = GameObject.Instantiate(game.missileDropPrefab) as GameObject;
 	}
 	
 	public Shot CreateGunShot(Vector3 pos, Quaternion rot, int damage, int source) {
@@ -59,24 +61,39 @@ public class PrefabFactory {
 		shot.enabled = false;
 		return shot;
 	}
+
+	public Shot CreateGuidedMissileShot(Vector3 pos, Quaternion rot, int damage, int source) {
+		GameObject newMissile = GameObject.Instantiate(missileShotTemplate, pos, rot) as GameObject;
+		Shot shot = newMissile.GetComponent<Shot>();
+		shot.Initialize(play, damage, source, Shot.GUIDED);
+		shot.enabled = false;
+		return shot;
+	}
 	
 	public GameObject CreateBreadcrumb(Vector3 pos, Quaternion rot) {
 		GameObject newBreadcrumb = GameObject.Instantiate(breadcrumbTemplate, pos, rot) as GameObject;
 		return newBreadcrumb;
 	}
 
-	public GameObject CreateHealth(Vector3 pos, Quaternion rot, int amount) {
-		GameObject newHealth = GameObject.Instantiate(healthTemplate, pos, rot) as GameObject;
-		CollecteableHealth health = newHealth.GetComponent<CollecteableHealth>();
-		health.Initialize(play, amount);
-		return newHealth;
+	public GameObject CreateHealthDrop(Vector3 pos, Quaternion rot, int amount) {
+		GameObject newHealthDrop = GameObject.Instantiate(healthDropTemplate, pos, rot) as GameObject;
+		CollecteableHealth healthDrop = newHealthDrop.GetComponent<CollecteableHealth>();
+		healthDrop.Initialize(play, amount);
+		return newHealthDrop;
 	}
 
-	public GameObject CreateShield(Vector3 pos, Quaternion rot, int amount) {
-		GameObject newShield = GameObject.Instantiate(shieldTemplate, pos, rot) as GameObject;
-		CollecteableShield shield = newShield.GetComponent<CollecteableShield>();
-		shield.Initialize(play, amount);
-		return newShield;
+	public GameObject CreateShieldDrop(Vector3 pos, Quaternion rot, int amount) {
+		GameObject newShieldDrop = GameObject.Instantiate(shieldDropTemplate, pos, rot) as GameObject;
+		CollecteableShield shieldDrop = newShieldDrop.GetComponent<CollecteableShield>();
+		shieldDrop.Initialize(play, amount);
+		return newShieldDrop;
+	}
+
+	public GameObject CreateMissileDrop(Vector3 pos, Quaternion rot, int type, int amount) {
+		GameObject newMissileDrop = GameObject.Instantiate(missileDropTemplate, pos, rot) as GameObject;
+		CollecteableMissile missileDrop = newMissileDrop.GetComponent<CollecteableMissile>();
+		missileDrop.Initialize(play, type, amount);
+		return newMissileDrop;
 	}
 	
 	public GameObject CreateExplosion(Vector3 pos, Quaternion rot) {

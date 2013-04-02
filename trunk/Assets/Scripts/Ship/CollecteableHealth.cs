@@ -10,11 +10,18 @@ public class CollecteableHealth : MonoBehaviour {
 		play = play_;
 		amount = amount_;
 	}
-
-	void OnCollisionEnter(Collision c) {
-		if (c.collider.tag == Ship.TAG) {
+	
+	void OnTriggerEnter(Collider other) {
+		if (other.tag == Ship.TAG) {
 			play.HealShip(amount);
 			Destroy(gameObject);
 		}
 	}
+	
+/*	void OnCollisionEnter(Collision c) {
+		if (c.collider.tag == Ship.TAG) {
+			play.HealShip(amount);
+			Destroy(gameObject);
+		}
+	}*/
 }

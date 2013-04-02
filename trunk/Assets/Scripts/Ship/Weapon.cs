@@ -21,7 +21,7 @@ public class Weapon {
 	public const int TYPE_MISSILE = 1;
 	public const int TYPE_GUIDED_MISSILE = 2;
 	public const int TYPE_CHARGED_MISSILE = 3;
-	public const int TYPE_TRIPLET_GUIDED_MISSILE = 4;
+	public const int TYPE_DETONATOR_MISSILE = 4;
 	
 	public const int TYPE_MINE_SUICIDAL = 13;
 	public const int TYPE_MINE_TOUCH = 14;
@@ -29,9 +29,14 @@ public class Weapon {
 	public const int TYPE_MINE_TIMED = 16;
 	public const int TYPE_LASER_BEAM = 17;
 
+	public static int MISSILE_START = 10;
+	public static int MISSILE_GUIDED_START = 20;
+	public static int MISSILE_CHARGED_START = 40; // charged from shield
+	public static int MISSILE_DETONATOR_START = 80; // right click to exploded while flying
+	
 	public static string[] PRIMARY_TYPES = new string[] {"", "Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
 
-	public static string[] SECONDARY_TYPES = new string[] {"", "Missile", "Guided Missile", "Charged Missile", "Triplet Missile"};
+	public static string[] SECONDARY_TYPES = new string[] {"", "Missile", "Guided Missile", "Charged Missile", "Detonator Missile"};
 	
 	public float lastShotTime;
 	public Transform weaponTransform;
@@ -94,10 +99,12 @@ public class Weapon {
 			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
 			accuracy = 0f;
+			damage =  Mathf.RoundToInt(Zone.GetZone5StepID(play.zoneID) * 12.5f + 2.5f);
 			if (mount == Weapon.PRIMARY) {
 				frequency = 0.2f;
+			} else {
+				damage *= 2;
 			}
-			damage =  Mathf.RoundToInt(Zone.GetZone5StepID(play.zoneID) * 12.5f + 2.5f);
 		} else {
 			layerMask = Game.LAYER_MASK_SHIP_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
@@ -113,7 +120,7 @@ public class Weapon {
 		} else {
 			bulletPath = parent.forward;
 		}
-//		play.Shoot(type, weaponTransform.position, weaponTransform.rotation, bulletPath, accuracy, speed, damage, parent.collider, mountedTo);
+		
 		loadedShot.enabled = true;
 		loadedShot.gameObject.layer = Game.LAYER_BULLETS;
 		loadedShot.rigidbody.isKinematic = false;
@@ -121,25 +128,39 @@ public class Weapon {
 		
 		if (accuracy != 0) {
 			// improve accurcy the longer the ship stands still - 4seconds
-			accuracy = Mathf.Max(0f, accuracy - (accuracy/240.0f) * (Time.time-ship.lastMoveTime) * 60.0f);
+			accuracy = Mathf.Max(1.0f, accuracy - (accuracy/240.0f) * (Time.time-ship.lastMoveTime) * 60.0f);
 			
 			Vector3.OrthoNormalize(ref bulletPath, ref tangent, ref binormal);
 			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
 			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
 			bulletPath = deviation1 * deviation2 * bulletPath;
 		}
-		loadedShot.rigidbody.AddForce(bulletPath * speed);
 		Physics.IgnoreCollision(parent.collider, loadedShot.collider);
 		lastShotTime = Time.time;
 		isReloaded = false;
+		if (ammunition > 0) {
+			ammunition--;
+		}
+
+		loadedShot.rigidbody.AddForce(bulletPath * speed);
+		
+		if (type == TYPE_GUIDED_MISSILE && ship.missileLockMode == Ship.MissileLockMode.Locked) {
+			loadedShot.LockOn(ship.lockedEnemy.transform);
+		}
 	}
 		
 	public void Mount() {
 		weaponTransform.renderer.enabled = true;
+		if (mount == Weapon.SECONDARY && isReloaded) {
+			loadedShot.transform.renderer.enabled = true;
+		}
 	}
 	
 	public void Unmount() {
 		weaponTransform.renderer.enabled = false;
+		if (mount == Weapon.SECONDARY && isReloaded) {
+			loadedShot.transform.renderer.enabled = false;
+		}
 	}
 	
 	public bool IsReloaded() {
@@ -166,13 +187,12 @@ public class Weapon {
 		} else {
 			if (type == Weapon.TYPE_MISSILE) {
 				loadedShot = game.CreateFromPrefab().CreateMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_GUIDED_MISSILE) {
+				loadedShot = game.CreateFromPrefab().CreateGuidedMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else {
 				loadedShot = game.CreateFromPrefab().CreateMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			}
 			loadedShot.rigidbody.isKinematic = true;
-		}
-		if (ammunition > 0) {
-			ammunition--;
 		}
 		loadedShot.transform.parent = weaponTransform;
 		isReloaded = true;

@@ -156,21 +156,23 @@ public abstract class Enemy : MonoBehaviour {
 		}
 		
 		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
-		if (isShipVisible != Vector3.zero) {
+		if (isShipVisible != Vector3.zero || !canBeDeactivated) {
 			if (!isActive) {
 				isActive = true;
 				lastTimeShipVisible = Time.time;
 				spawn.ActivateEnemy(this);
 			}
 			DispatchFixedUpdate(isShipVisible);
-		} else if (canBeDeactivated) {
+		} else {
 			if (isActive && Time.time > lastTimeShipVisible + DEACTIVATION_TIME) {
 				isActive = false;
 				spawn.DeactivateEnemy(this);
 			}
 		}
 		if (aggressiveness > AGGRESSIVENESS_OFF) {
-			Shoot();
+			if (isShipVisible != Vector3.zero) {
+				Shoot();
+			}
 			aggressiveness -= AGGRESSIVENESS_DECREASE;
 		}
 	}

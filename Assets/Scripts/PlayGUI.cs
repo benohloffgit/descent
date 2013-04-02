@@ -36,23 +36,23 @@ public class PlayGUI {
 	private float lastHealthCountTime;
 	private float lastShieldCountTime;
 	
-	private RaycastHit hit;
 	private List<Enemy> enemyHUDInfo = new List<Enemy>();
 	private int topContainer;
 	private Transform shipTransform;
 	private Camera shipCamera;
+	private int[] enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
+	private int enemyLockMissileLabel;
 	
 	private static int MAX_ENEMY_HUD_INFOS = 5;
 	private static float ENEMY_HUD_INFO_MAX_TIME = 5.0f;
 	
 	private static Vector3 ENEMY_HUD_OFFSET_GLOBAL = new Vector3(0.5f, 0.5f, 0f);
-	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(1.0f, -1.0f, 0f);
+	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(-1.0f, -1.0f, 0f);
+	private static Vector3 ENEMY_LOCK_OFFSET_LOCAL = new Vector3(1.0f, 1.0f, 0f);
 	private static float TICK_DELTA = 0.05f;
 	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
 												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
-	
-	private int[] enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
-	
+		
 	public PlayGUI(Play p) {
 		play = p;
 		
@@ -90,10 +90,13 @@ public class PlayGUI {
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
 			enemyHUDInfoLabels[i] = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
 		}
+
+		enemyLockMissileLabel = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
 		
 		gui.SetActiveTextMaterial(4);
 		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, 0f, 0.3f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
 		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+		
 		
 //		ticks = 0;
 		healthCount = new int[3];
@@ -194,19 +197,6 @@ public class PlayGUI {
 	public void DispatchFixedUpdate() {
 		// Enemy target info
 //		Debug.Log (shipTransform.position + " " + shipTransform.forward);
-		if (Physics.Raycast(shipTransform.position, shipTransform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
-			if (hit.collider.tag == Enemy.TAG) {
-				Enemy e = hit.transform.GetComponent<Enemy>();
-				e.lastTimeHUDInfoRequested = Time.time;
-				if (!enemyHUDInfo.Contains(e)) {
-					enemyHUDInfo.Add(e);
-					if (enemyHUDInfo.Count > MAX_ENEMY_HUD_INFOS) {
-						enemyHUDInfo.RemoveAt(0);
-					}
-				}
-			}
-		}
-				
 		int removed = 0;
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
 			if (enemyHUDInfo.Count > i) {
@@ -221,12 +211,28 @@ public class PlayGUI {
 				gui.labelsCC[enemyHUDInfoLabels[i]].myRenderer.enabled = false;
 			}
 		}
+		
+		if (ship.missileLockMode != Ship.MissileLockMode.None) {
+			ShowEnemyMissileLockInfo();
+		} else {
+			gui.labelsCC[enemyLockMissileLabel].SetText("");
+		}
 	}
 	
+	public void EnemyInSight(Enemy e) {
+		e.lastTimeHUDInfoRequested = Time.time;
+		if (!enemyHUDInfo.Contains(e)) {
+			enemyHUDInfo.Add(e);
+			if (enemyHUDInfo.Count > MAX_ENEMY_HUD_INFOS) {
+				enemyHUDInfo.RemoveAt(0);
+			}
+		}
+	}
+		
 	private void ShowEnemyHUDInfo(int index, Enemy e) {
 //		Debug.Log (e.transform.TransformDirection(e.transform.localScale));
 		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
-			+ play.ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f);
+			+ ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f);
 		gui.labelsCC[enemyHUDInfoLabels[index]].SetText(
 			e.clazz.ToUpper() + " " + e.model.ToString("00") + " (" + Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
 		);
@@ -235,6 +241,18 @@ public class PlayGUI {
 			Mathf.Clamp(p.y - ENEMY_HUD_OFFSET_GLOBAL.y, -0.45f, 0.45f)
 		);
 		gui.labelsCC[enemyHUDInfoLabels[index]].myRenderer.enabled = true;
+	}
+	
+	private void ShowEnemyMissileLockInfo() {
+		Enemy e = ship.lockedEnemy;
+		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
+			+ ship.transform.TransformDirection(ENEMY_LOCK_OFFSET_LOCAL) * e.radius * 0.5f);
+		gui.labelsCC[enemyLockMissileLabel].SetText("L: " 
+			+ (Ship.MISSILE_LOCK_DURATION - Mathf.Clamp(Mathf.FloorToInt(Time.time-ship.missileLockTime),0,Ship.MISSILE_LOCK_DURATION)));
+		gui.labelsCC[enemyLockMissileLabel].transform.localPosition = new Vector2(
+			Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f),
+			Mathf.Clamp(p.y - ENEMY_HUD_OFFSET_GLOBAL.y, -0.45f, 0.45f)
+		);
 	}
 	
 	public void RemoveEnemy(Enemy e) {

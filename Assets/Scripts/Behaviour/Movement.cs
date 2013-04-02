@@ -28,15 +28,15 @@ public class Movement {
 		if (currentPosition == targetPosition) {
 			isOnPath = false;
 		} else {
-			Vector3 avoidance = Vector3.zero;	
+//			Vector3 avoidance = Vector3.zero;	
 			RaycastHit hit;
-			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
+/*			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
 				if (Physics.Raycast(position, RoomMesh.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_ALL)) {
 					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);
 				}
-			}
+			}*/
 			Vector3 target = (cave.GetPositionFromGrid(targetPosition) - position).normalized;
-			rigidbody.AddForce((avoidance.normalized + target) * force);			
+			rigidbody.AddForce(target * force);			 // avoidance.normalized + target
 		}
 	}
 	
@@ -57,7 +57,7 @@ public class Movement {
 		}
 		if (currentPosition != targetPosition) {
 			RaycastHit hit;
-			Vector3 avoidance = Vector3.zero;	
+//			Vector3 avoidance = Vector3.zero;	
 /*			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
 				if (Physics.Raycast(position, RoomMesh.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_ALL)) {
 					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);
@@ -68,7 +68,7 @@ public class Movement {
 			if (Physics.Raycast(position, target, out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_MOVEABLES)) {
 				targetPosition = play.cave.GetRandomEmptyGridPositionFrom(currentPosition, UnityEngine.Random.Range(minDistance,maxDistance+1));
 			} else {
-				rigidbody.AddForce((avoidance.normalized + target) * force);			
+				rigidbody.AddForce(target * force);			//(avoidance.normalized + target)
 			}
 //			Debug.Log (avoidance + " " + target);
 		}

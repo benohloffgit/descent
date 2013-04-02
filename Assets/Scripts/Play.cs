@@ -230,8 +230,8 @@ public class Play : MonoBehaviour {
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 		
-//		int seed = 7787612; //1922614; //123456789;
-		int seed = UnityEngine.Random.Range(1000000,9999999);
+		int seed = 7545775;//7014822;//7787612; //1922614; //123456789;
+//		int seed = UnityEngine.Random.Range(1000000,9999999);
 		Debug.Log ("Seed: " + seed);
 		UnityEngine.Random.seed = seed;
 		cave = new Cave(this, zoneID);
@@ -452,6 +452,7 @@ public class Play : MonoBehaviour {
 	public void RemoveEnemy(Enemy e) {
 		collecteablesDistributor.DistributeOnEnemyDeath(e);
 		playGUI.RemoveEnemy(e);
+		ship.RemoveEnemy(e);
 	}
 	
 	public void HealShip(int amount) {
@@ -462,7 +463,10 @@ public class Play : MonoBehaviour {
 		ship.Shield(amount);
 	}
 	
-	public void AddMissile(int type) {
+	public void AddMissile(int type, int amount) {
+		// order is highest first
+		ship.secondaryWeapons[type-1].ammunition += amount;
+		playGUI.DisplaySecondaryWeapon(ship.secondaryWeapons[ship.currentSecondaryWeapon]);
 	}
 	
 }

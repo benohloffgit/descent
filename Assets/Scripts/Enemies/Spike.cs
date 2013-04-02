@@ -51,7 +51,7 @@ public class Spike : Enemy {
 //			Debug.Log ("Chasing ..." + chasingRange + " " + shootingRange);
 			if (isOnPath) {
 				play.movement.Chase(myRigidbody, targetPosition, movementForce, ref isOnPath);
-//				Debug.Log ("chasing " + isOnPath);
+//				Debug.Log ("chasing " + isOnPath + " "  + Time.frameCount);
 			} else {
 				if (distanceToShip > chasingRange) {
 					if (aStarThreadState.roomPath.Count > 0) {

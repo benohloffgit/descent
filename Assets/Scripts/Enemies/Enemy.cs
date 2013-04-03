@@ -61,7 +61,7 @@ public abstract class Enemy : MonoBehaviour {
 	protected float movementForce;
 	protected float turningForce;
 	protected int lookAtRange;
-	protected float chaseRange;
+//	protected float chaseRange;
 	protected float shootingRange;
 	protected float chasingRange;
 	protected int roamMinRange;
@@ -94,7 +94,7 @@ public abstract class Enemy : MonoBehaviour {
 
 	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int enemyEquivalentClazzAModel_, int health_, int shield_,
 			float size_, float aggressiveness_, float movementForce_,
-			float turningForce_, int lookAtRange_, int chaseRange_,
+			float turningForce_, int lookAtRange_, //int chaseRange_,
 			int roamMinRange_, int roamMaxRange_) {		
 		play = play_;
 		spawn = spawn_;
@@ -111,7 +111,7 @@ public abstract class Enemy : MonoBehaviour {
 		movementForce = movementForce_;
 		turningForce = turningForce_;
 		lookAtRange = lookAtRange_;
-		chaseRange = chaseRange_;
+//		chaseRange = chaseRange_;
 		roamMinRange = roamMinRange_;
 		roamMaxRange = roamMaxRange_;
 		
@@ -141,12 +141,12 @@ public abstract class Enemy : MonoBehaviour {
 	
 	public void Initialize(Play play_, Spawn spawn_, string clazz_, int model_, int enemyEquivalentClazzAModel_, int health_, int shield_,
 			float size_, float aggressiveness_, float movementForce_,
-			float turningForce_, int lookAtRange_, int chaseRange_,
+			float turningForce_, int lookAtRange_, //int chaseRange_,
 			int roamMinRange_, int roamMaxRange_) {
 		
 		Initialize(play_, spawn_, CLAZZ_NUM(clazz_), model_, enemyEquivalentClazzAModel_, health_, shield_,
 			size_, aggressiveness_, movementForce_,
-			turningForce_, lookAtRange_, chaseRange_,
+			turningForce_, lookAtRange_, //chaseRange_,
 			roamMinRange_, roamMaxRange_);		
 	}
 	
@@ -156,17 +156,19 @@ public abstract class Enemy : MonoBehaviour {
 		}
 		
 		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
-		if (isShipVisible != Vector3.zero || !canBeDeactivated) {
+		if (isShipVisible != Vector3.zero) {
 			if (!isActive) {
 				isActive = true;
 				lastTimeShipVisible = Time.time;
 				spawn.ActivateEnemy(this);
 			}
 			DispatchFixedUpdate(isShipVisible);
-		} else {
-			if (isActive && Time.time > lastTimeShipVisible + DEACTIVATION_TIME) {
+		} else if (isActive) {
+			if (Time.time > lastTimeShipVisible + DEACTIVATION_TIME && canBeDeactivated) {
 				isActive = false;
 				spawn.DeactivateEnemy(this);
+			} else if (!canBeDeactivated) {
+				DispatchFixedUpdate(isShipVisible);
 			}
 		}
 		if (aggressiveness > AGGRESSIVENESS_OFF) {
@@ -194,8 +196,8 @@ public abstract class Enemy : MonoBehaviour {
 			if (spawn != null) {
 				spawn.Die(this);
 			}
-			Destroy(gameObject);
 			play.DisplayExplosion(transform.position, play.ship.transform.rotation);
+			Destroy(gameObject);
 		} else {
 			spawn.LoseHealth(this, damage);
 			health -= damage;

@@ -7,6 +7,11 @@ public class Game : MonoBehaviour {
 
 	public GameObject roomPrefab;
 	public GameObject roomMeshPrefab;
+	public GameObject roomEntryPrefab;
+	public GameObject roomConnectorPrefab;
+	public GameObject miniMapPrefab;
+	public GameObject doorPrefab;
+	
 	public GameObject testCubePrefab;
 	public GameObject shipPrefab;
 	public GameObject wallGunPrefab;
@@ -17,9 +22,6 @@ public class Game : MonoBehaviour {
 	public GameObject pyramidPrefab;
 	public GameObject spikePrefab;
 	public GameObject bullPrefab;
-	public GameObject roomEntryPrefab;
-	public GameObject roomConnectorPrefab;
-	public GameObject miniMapPrefab;
 	public GameObject gunPrefab;
 	public GameObject laserGunPrefab;
 	public GameObject missileLauncherPrefab;

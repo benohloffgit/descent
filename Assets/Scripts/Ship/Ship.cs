@@ -113,6 +113,8 @@ public class Ship : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
+		play.CachePositionalDataOfShip(transform.position);
+		
 		if (secondaryWeapons[currentSecondaryWeapon] != null) {
 			secondaryWeapons[currentSecondaryWeapon].IsReloaded();
 		}
@@ -212,6 +214,9 @@ public class Ship : MonoBehaviour {
 	
 	public Vector3 IsVisibleFrom(Vector3 fromPos) {
 		Vector3 result = Vector3.zero;
+		if (!play.isShipInPlayableArea) {
+			return result;
+		}
 		Vector3 direction = (play.GetShipPosition()-fromPos).normalized;
 		if (Physics.Raycast(fromPos, direction, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_SHIP_CAVE)) {
 			if (hit.collider.tag == TAG) {
@@ -301,13 +306,13 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void ShootPrimary() {
-		if (primaryWeapons[currentPrimaryWeapon].IsReloaded()) {
+		if (play.isShipInPlayableArea && primaryWeapons[currentPrimaryWeapon].IsReloaded()) {
 			primaryWeapons[currentPrimaryWeapon].Shoot();
 		}
 	}
 
 	public void ShootSecondary() {
-		if (secondaryWeapons[currentSecondaryWeapon] != null && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+		if (play.isShipInPlayableArea && secondaryWeapons[currentSecondaryWeapon] != null && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
 			secondaryWeapons[currentSecondaryWeapon].Shoot();
 			play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
 		}

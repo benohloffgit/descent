@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Cave {
-	public List<Zone> zones;
+	public Zone zone;
 	
 	private Game game;
 	private Play play;
@@ -12,6 +12,8 @@ public class Cave {
 	private int dimZone;
 	private List<RoomMiner> roomMiners;
 	private List<RoomMesh> roomMeshs;
+	private Door entryDoor;
+	private Door exitDoor;
 
 	public static int DENSITY_FILLED = 0;
 	public static int DENSITY_EMPTY = 1;
@@ -19,20 +21,18 @@ public class Cave {
 	public static IntTriple[] ZONE_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	public static IntTriple[] ROOM_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.BACKWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	
-	public Cave(Play p, int zoneID) {
+	public Cave(Play p) {
 		play = p;
 		game = play.game;
-		zones = new List<Zone>();
-		AddZone(zoneID);
-		DigRooms(GetCurrentZone());
 	}
 
 	public void AddZone(int id) {
-		zones.Add(new Zone(Game.DIMENSION_ZONE, this, id));
+		zone = new Zone(Game.DIMENSION_ZONE, this, id);
+		DigRooms(GetCurrentZone());
 	}
 	
 	public Zone GetCurrentZone() {
-		return zones[zones.Count-1];
+		return zone;
 	}
 	
 	public void DigRooms(Zone zone) {
@@ -71,11 +71,11 @@ public class Cave {
 				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);
 				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 //				Debug.Log ("Entry Room: " + startingCell);
-				AddZoneEntry(new GridPosition(startingCell, room.pos), 0f);
+				AddZoneEntryExit(new GridPosition(startingCell, room.pos), 0f, ref entryDoor, Door.TYPE_ENTRY);
 			} else if (i==1) { // exit room
 				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
 				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
-				AddZoneEntry(new GridPosition(startingCell, room.pos), 180.0f);
+				AddZoneEntryExit(new GridPosition(startingCell, room.pos), 180.0f, ref exitDoor, Door.TYPE_EXIT);
 //				Debug.Log ("Exit Room: " + startingCell);				
 			}
 			
@@ -178,7 +178,8 @@ public class Cave {
 	public Vector3 GetCaveEntryPosition() {
 		Room entryRoom = GetCurrentZone().roomList[0];
 //		Debug.Log ("entryRoom pos " +entryRoom.pos +" " + entryRoom.entryCell);
-		return (entryRoom.pos.GetVector3() * Game.DIMENSION_ROOM + entryRoom.exits[IntTriple.BACKWARD].pos.GetVector3()) * RoomMesh.MESH_SCALE;
+		IntTriple pos = entryRoom.exits[IntTriple.BACKWARD].pos + new IntTriple(0,0,-3);
+		return (entryRoom.pos.GetVector3() * Game.DIMENSION_ROOM + pos.GetVector3()) * RoomMesh.MESH_SCALE;
 //		return (entryRoom.pos.GetVector3() * Game.DIMENSION_ROOM + entryRoom.exits[IntTriple.BACKWARD].pos.GetVector3()+Game.CELL_CENTER) * RoomMesh.MESH_SCALE;
 	}
 	
@@ -310,11 +311,17 @@ public class Cave {
 		}
 	}
 
-	private void AddZoneEntry(GridPosition gP, float rotation) {
-		GameObject rC = GameObject.Instantiate(game.roomEntryPrefab) as GameObject;
-		rC.transform.localScale *= RoomMesh.MESH_SCALE;
-		rC.transform.position = GetPositionFromGrid(gP);
-		rC.transform.Rotate(new Vector3(rotation, 0f, 0f));
+	private void AddZoneEntryExit(GridPosition gP, float rotation, ref Door door, int doorType) {
+		GameObject o = GameObject.Instantiate(game.roomEntryPrefab) as GameObject;
+		o.transform.localScale *= RoomMesh.MESH_SCALE;
+		o.transform.position = GetPositionFromGrid(gP);
+		o.transform.Rotate(new Vector3(rotation, 0f, 0f));
+		// door
+		door = (GameObject.Instantiate(game.doorPrefab) as GameObject).GetComponent<Door>();
+		door.Initialize(play, doorType);
+		door.transform.localScale *= RoomMesh.MESH_SCALE;
+		door.transform.position = GetPositionFromGrid(gP);
+		door.transform.Rotate(new Vector3(rotation, 0f, 0f));
 	}
 	
 /*	public GridPosition GetGridFromPosition(Vector3 position) {

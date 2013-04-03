@@ -34,7 +34,7 @@ public class Spike : Enemy {
 	}
 					
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
-		if (isShipVisible.magnitude <= shootingRange) {
+		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
 			aggressiveness = Enemy.AGGRESSIVENESS_ON;
 		}
 		float distanceToShip = Vector3.Distance(transform.position, play.GetShipPosition());

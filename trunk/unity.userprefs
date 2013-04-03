@@ -1,19 +1,21 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayGUI.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
     <Files>
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="52" Column="13" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="251" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="155" Column="45" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="24" Column="20" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="197" Column="14" />
       <File FileName="Assets\Scripts\GUI\Container.cs" Line="160" Column="14" />
-      <File FileName="Assets\Scripts\Play.cs" Line="241" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="68" Column="41" />
-      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="106" Column="16" />
+      <File FileName="Assets\Scripts\Play.cs" Line="245" Column="24" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="315" Column="36" />
       <File FileName="Assets\Scripts\PrefabFactory.cs" Line="69" Column="24" />
-      <File FileName="Assets\Scripts\Game.cs" Line="44" Column="70" />
-      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="40" Column="24" />
-      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="98" Column="66" />
+      <File FileName="Assets\Scripts\Game.cs" Line="67" Column="34" />
+      <File FileName="Assets\Scripts\PG Cave\Door.cs" Line="42" Column="18" />
       <File FileName="Assets\Scripts\Ship\Shot.cs" Line="18" Column="55" />
+      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="37" Column="22" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="261" Column="3" />
+      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="91" Column="31" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="196" Column="19" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

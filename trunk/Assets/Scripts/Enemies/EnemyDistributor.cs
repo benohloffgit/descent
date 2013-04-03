@@ -25,8 +25,8 @@ public class EnemyDistributor {
 	/*unused*/private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
 	private static float[] ENEMY_MOVEMENT_FORCES = new float[] {5.0f, 10f, 7.5f, 2.5f, 12.5f, 6.0f, 8.0f, 4.0f, 15.0f, 3.0f, 7.0f, 9f};
 	private static float[] ENEMY_TURN_FORCES = new float[] {5.0f, 2.5f, 7.5f, 3.0f, 6.0f};
-	private static int[] ENEMY_LOOK_RANGES = new int[] {4,6,10,8,3,11,7,18,9,5,16,12,20};
-	private static int[] ENEMY_CHASE_RANGES = new int[] {4,6,12,8,2,10};
+	private static int[] ENEMY_LOOK_RANGES = new int[] {4,6,10,8,3,11,7,14,9,5,13,12,15};
+//	private static int[] ENEMY_CHASE_RANGES = new int[] {4,6,12,8,2,10};
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
 	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times 5) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
@@ -222,7 +222,7 @@ public class EnemyDistributor {
 				CalculateEnemyMovementForce(clazz, model),
 				CalculateEnemyTurnForce(clazz, model),
 				CalculateEnemyLookRange(clazz, model),
-				CalculateEnemyChaseRange(clazz, model),
+				//CalculateEnemyChaseRange(clazz, model),
 			    CalculateEnemyRoamMin(clazz, model),
 				CalculateEnemyRoamMax(clazz, model));
 		
@@ -348,9 +348,9 @@ public class EnemyDistributor {
 		return ENEMY_LOOK_RANGES[(clazz + (model-1)) % 13];
 	}
 	
-	private int CalculateEnemyChaseRange(int clazz, int model) {
+/*	private int CalculateEnemyChaseRange(int clazz, int model) {
 		return ENEMY_CHASE_RANGES[(clazz + (model-1)) % 6];
-	}
+	}*/
 
 	private int CalculateEnemyRoamMin(int clazz, int model) {
 		return ENEMY_ROAM_MINS[(clazz + (model-1)) % 9];

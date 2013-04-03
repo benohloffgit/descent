@@ -54,7 +54,7 @@ public class MiniMap : MonoBehaviour {
 	}
 	
 	void Start() {
-		ReadRoomData();
+		SwitchFollowOn();
 	}
 		
 	public void Initialize(Ship s, Play p, GameInput gI, Camera c) {
@@ -74,9 +74,13 @@ public class MiniMap : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
-		if (play.GetRoomOfShip().pos != currentRoomPos) {
-			ReadRoomData();
-			currentRoomPos = play.GetRoomOfShip().pos;
+		if (play.isShipInPlayableArea) {
+			if (play.GetRoomOfShip().pos != currentRoomPos) {
+				ReadRoomData();
+				currentRoomPos = play.GetRoomOfShip().pos;
+			}
+		} else if (mode == Mode.On) {
+			play.SwitchMiniMap();
 		}
 		
 		if (mode == Mode.On) {

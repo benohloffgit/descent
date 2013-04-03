@@ -12,6 +12,7 @@ public class Play : MonoBehaviour {
 	public Movement movement;
 	public Ship ship;
 	public bool isShipInvincible;
+	public bool isShipInPlayableArea;
 	public bool isMiniMapOn;
 	public bool isMiniMapFollowOn;
 	private MiniMap miniMap;
@@ -25,8 +26,8 @@ public class Play : MonoBehaviour {
 	private CollecteablesDistributor collecteablesDistributor;
 	private RaycastHit hit;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
-	private int currentGravitiyDirection;
-	private float lastGravitiyChange;
+//	private int currentGravitiyDirection;
+//	private float lastGravitiyChange;
 
 	private List<ShotStats> shipShotStats = new List<ShotStats>();
 	private List<ShotStats> enemyShotStats = new List<ShotStats>();
@@ -230,20 +231,23 @@ public class Play : MonoBehaviour {
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 		
-		int seed = 7545775;//7014822;//7787612; //1922614; //123456789;
+		int seed = 9486944;//7014822;//7787612; //1922614; //123456789;
 //		int seed = UnityEngine.Random.Range(1000000,9999999);
 		Debug.Log ("Seed: " + seed);
 		UnityEngine.Random.seed = seed;
-		cave = new Cave(this, zoneID);
-		PlaceShip();
-		movement = new Movement(this);
+		cave = new Cave(this);
+		collecteablesDistributor = new CollecteablesDistributor(this);
 		enemyDistributor = new EnemyDistributor(this);
+		movement = new Movement(this);
+		
+		cave.AddZone(zoneID);
+		PlaceShip();
 		PlaceEnemies(zoneID);
 		
-		collecteablesDistributor = new CollecteablesDistributor(this);
-			
-		currentGravitiyDirection = 0;
-		lastGravitiyChange = Time.time;
+		isShipInPlayableArea = false;
+		
+//		currentGravitiyDirection = 0;
+//		lastGravitiyChange = Time.time;
 		
 		shipHitRatio = 0;
 		enemyHitRatio = 0;
@@ -328,6 +332,12 @@ public class Play : MonoBehaviour {
 	
 	public void CachePositionalDataOfShip(Vector3 pos) {
 		shipGridPosition = cave.GetGridFromPosition(pos);
+		if (shipGridPosition.cellPosition.z < 0 || shipGridPosition.roomPosition.z > Game.DIMENSION_ZONE-1) {
+			isShipInPlayableArea = false;
+		} else {
+			isShipInPlayableArea = true;
+		}
+//		Debug.Log (shipGridPosition);
 //		shipGridPosition = cave.GetClosestEmptyGridFromPosition(pos);
 	}
 	
@@ -347,7 +357,7 @@ public class Play : MonoBehaviour {
 		if (isMiniMapOn) {
 			isMiniMapOn = false;
 			miniMap.SwitchOff();
-		} else {
+		} else if (isShipInPlayableArea) {
 			isMiniMapOn = true;
 			miniMap.SwitchOn();
 		}

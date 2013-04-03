@@ -230,6 +230,7 @@ public class PlayGUI {
 	}
 		
 	private void ShowEnemyHUDInfo(int index, Enemy e) {
+		if (e == null) Debug.Log ("enemy is null " + index);
 //		Debug.Log (e.transform.TransformDirection(e.transform.localScale));
 		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
 			+ ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f);
@@ -257,6 +258,7 @@ public class PlayGUI {
 	
 	public void RemoveEnemy(Enemy e) {
 		if (enemyHUDInfo.Contains(e)) {
+//			Debug.Log ("removed " + e);
 			enemyHUDInfo.Remove(e);
 		}
 	}

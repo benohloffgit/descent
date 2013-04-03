@@ -102,6 +102,7 @@
      <Compile Include="Assets\Scripts\Mesh3D.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Cave.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Cell.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\Door.cs" />
      <Compile Include="Assets\Scripts\PG Cave\GridPosition.cs" />
      <Compile Include="Assets\Scripts\PG Cave\IntDouble.cs" />
      <Compile Include="Assets\Scripts\PG Cave\IntTriple.cs" />

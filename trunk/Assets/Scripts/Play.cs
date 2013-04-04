@@ -19,6 +19,7 @@ public class Play : MonoBehaviour {
 	public PlayGUI playGUI;
 	private string keyCommand;
 	public bool isInKeyboardMode;
+	public GridPosition placeShipBeforeExitDoor;
 	
 //	private GameInput gI;
 	private State state;
@@ -115,6 +116,9 @@ public class Play : MonoBehaviour {
 					enemyDistributor.PlaceOnWall(wallGun.gameObject, hit);
 					Debug.Log ("Adding Wall Gun (Editor mode)");
 				}
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
+				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
 			}
 /*			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
@@ -231,8 +235,8 @@ public class Play : MonoBehaviour {
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 		
-		int seed = 9486944;//7014822;//7787612; //1922614; //123456789;
-//		int seed = UnityEngine.Random.Range(1000000,9999999);
+//		int seed = 9486944;//7014822;//7787612; //1922614; //123456789;
+		int seed = UnityEngine.Random.Range(1000000,9999999);
 		Debug.Log ("Seed: " + seed);
 		UnityEngine.Random.seed = seed;
 		cave = new Cave(this);
@@ -240,11 +244,9 @@ public class Play : MonoBehaviour {
 		enemyDistributor = new EnemyDistributor(this);
 		movement = new Movement(this);
 		
-		cave.AddZone(zoneID);
-		PlaceShip();
-		PlaceEnemies(zoneID);
+		StartZone ();
 		
-		isShipInPlayableArea = false;
+		ship.transform.position = cave.GetCaveEntryPosition();		
 		
 //		currentGravitiyDirection = 0;
 //		lastGravitiyChange = Time.time;
@@ -253,6 +255,19 @@ public class Play : MonoBehaviour {
 		enemyHitRatio = 0;
 		shipToEnemyHitRatio = 1.0f;
 		InvokeRepeating("UpdateStats", 0, 1.0f);
+	}
+	
+	private void StartZone() {
+		isShipInPlayableArea = false;
+		cave.AddZone(zoneID);
+		enemyDistributor.Distribute(zoneID);
+	}
+	
+	public void EndZone() {
+		enemyDistributor.RemoveAll();
+		cave.RemoveZone();
+		zoneID++;
+		StartZone();
 	}
 	
 	public void Initialize(Game g, GameInput input) {
@@ -272,14 +287,6 @@ public class Play : MonoBehaviour {
 	public void DispatchGameInput() {
 		ship.DispatchGameInput();
 		miniMap.DispatchGameInput();
-	}
-	
-	private void PlaceShip() {
-		ship.transform.position = cave.GetCaveEntryPosition();
-	}
-	
-	private void PlaceEnemies(int zoneID_) {
-		enemyDistributor.Distribute(zoneID_);
 	}
 	
 	private void PlaceTestCubes() {
@@ -350,7 +357,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	public Room GetRoomOfShip() {
-		return cave.GetCurrentZone().GetRoom(shipGridPosition);
+		return cave.zone.GetRoom(shipGridPosition);
 	}	
 	
 	public void SwitchMiniMap() {

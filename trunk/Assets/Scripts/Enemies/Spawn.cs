@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 public class Spawn : MonoBehaviour {
-		
+	public static string TAG = "Spawn";
+	
 	private Game game;
 	private Play play;
 	private EnemyDistributor enemyDistributor;
@@ -74,7 +75,7 @@ public class Spawn : MonoBehaviour {
 	}
 	
 	private void DistributeInitialSet() {
-		Room r = play.cave.GetCurrentZone().GetRoom(gridPos);
+		Room r = play.cave.zone.GetRoom(gridPos);
 		for (int i=0; i<maxLiving; i++) {
 			Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel, enemyEquivalentClazzAModel);
 			e.transform.position = r.GetRandomNonExitGridPosition().GetWorldVector3();

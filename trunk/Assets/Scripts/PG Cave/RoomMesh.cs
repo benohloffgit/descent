@@ -18,6 +18,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class RoomMesh : MonoBehaviour {
+	public static string TAG = "Room Mesh";
+	public static string TAG_ROOM_CONNECTOR = "Room Connector";
+	
 	public Vector3[,,] cubeCoords; // Vector3 coords for each cube of unscaled mesh!
 	
 	public Mesh mesh;
@@ -46,7 +49,7 @@ public class RoomMesh : MonoBehaviour {
 		room = room_;
 		MeshFilter meshFilter = gameObject.AddComponent<MeshFilter>();
 		mesh = new Mesh();
-		meshFilter.mesh = mesh;
+		meshFilter.sharedMesh = mesh;
 	
 		roomVertices = new Vector3[16384];
 		roomTriangles = new int[128000]; //new int[49152]

@@ -35,17 +35,8 @@ public class EnemyDistributor {
 	public EnemyDistributor(Play play_) {
 		play = play_;
 		game = play.game;
-				
-		enemiesLiving = 0;
-		enemiesActive = 0;
-		enemiesHealth = 0;
-		enemiesHealthActive = 0;
-		enemiesHealthActiveAvg = 0;
-		enemiesFirepowerPerSecond = 0;
-		enemiesFirepowerPerSecondActive = 0;
-		enemiesFirepowerPerSecondAvg = 0;
-		enemiesFirepowerPerSecondAvgActive = 0;
-		enemiesHitRatio = 0;
+		
+		ResetStats();
 	}
 	
 	public void Distribute(int zoneID) {
@@ -61,7 +52,7 @@ public class EnemyDistributor {
 		
 		float[] enemyClazzProbability = CalculateEnemyClazzProbability(enemyClazzVariety);
 				
-		foreach (Room r in play.cave.GetCurrentZone().roomList) {
+		foreach (Room r in play.cave.zone.roomList) {
 			if (r.id > -1) {  // ----  > 0 all rooms except entry
 				float rand = UnityEngine.Random.value;
 				for (int enemyClazz=0; enemyClazz < enemyClazzProbability.Length; enemyClazz++) {
@@ -93,7 +84,15 @@ public class EnemyDistributor {
 		}*/
 	}
 	
-
+	public void RemoveAll() {
+		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Enemy.TAG)) {
+			GameObject.Destroy(gO);
+		}
+		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Spawn.TAG)) {
+			GameObject.Destroy(gO);
+		}
+		ResetStats();
+	}
 
 	public LightBulb CreateLightBulb() {
 		GameObject lB = GameObject.Instantiate(game.lightBulbPrefab) as GameObject;
@@ -167,6 +166,7 @@ public class EnemyDistributor {
 		if (e.isActive) {
 			enemiesHealthActive -= loss;	
 			enemiesHealthActiveAvg = enemiesHealthActive / enemiesActive;
+			// TODO enemiesActive can somehow be zero here even if e.active is true DivideByZeroException
 		}
 	}
 	
@@ -359,5 +359,18 @@ public class EnemyDistributor {
 	private int CalculateEnemyRoamMax(int clazz, int model) {
 		return ENEMY_ROAM_MAXS[(clazz + (model-1)) % 9];
 	}
+	
+	private void ResetStats() {
+		enemiesLiving = 0;
+		enemiesActive = 0;
+		enemiesHealth = 0;
+		enemiesHealthActive = 0;
+		enemiesHealthActiveAvg = 0;
+		enemiesFirepowerPerSecond = 0;
+		enemiesFirepowerPerSecondActive = 0;
+		enemiesFirepowerPerSecondAvg = 0;
+		enemiesFirepowerPerSecondAvgActive = 0;
+		enemiesHitRatio = 0;
+	}	
 }
 

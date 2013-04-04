@@ -161,8 +161,8 @@ public class Movement {
 //						Debug.Log ("new next room " + nextRoom);
 					}
 				}
-				Room sR = cave.GetCurrentZone().GetRoom(s);
-				Room gR = cave.GetCurrentZone().GetRoom(nextRoom);
+				Room sR = cave.zone.GetRoom(s);
+				Room gR = cave.zone.GetRoom(nextRoom);
 				IntTriple startRoomTransitionCell = sR.exits[gR.pos-sR.pos].pos;
 				IntTriple goalRoomTransitionCell = gR.exits[sR.pos-gR.pos].pos;
 //				Debug.Log("startRoomTransitionCell " + startRoomTransitionCell + " goalRoomTransitionCell " + goalRoomTransitionCell);
@@ -332,7 +332,7 @@ public class Movement {
 
 			IntTriple cell = start.cellPosition;
 			int dimension = Game.DIMENSION_ROOM;
-			Room r = cave.GetCurrentZone().GetRoom(start);
+			Room r = cave.zone.GetRoom(start);
 	
 	/* ------------------------------------------------------------------------------------- 	*/
 	/* TODO combine with function of cave GetNearestEmptyGridPositionFrom (same code) !!! 		*/

@@ -69,8 +69,8 @@ public class Cave {
 				if (connectorsSet[neighbour.id] == 0) {
 					AddRoomConnector(new GridPosition(startingCell, room.pos), alignment);
 				}
-				if (i > 1) { // all rooms other than entry or exit room
-					if (neighbours.Count == 1) { // additional dead end room with just one exit, we have to add a second miner
+				if (room.id > 1) { // all rooms other than entry or exit room
+					if (neighbours.Count == 1) { // dead end room with just one exit, we have to add a second miner
 						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 						startingCell = SetEntryExit(alignment, 0, Game.DIMENSION_ROOM, 4);
 						roomMiners.Add(new RoomMiner(this, startingCell, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
@@ -81,7 +81,7 @@ public class Cave {
 					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 				}
 			}
-			if (i==0) { // entry room
+			if (room.id == 0) { // entry room
 				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);
 				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 //				Debug.Log ("Entry Room: " + startingCell);
@@ -95,7 +95,7 @@ public class Cave {
 				}
 				doors[Door.TYPE_LAST_EXIT].transform.position = GetPositionFromGrid(new GridPosition(startingCell-new IntTriple(0,0,6), room.pos));
 				doors[Door.TYPE_ENTRY].transform.position = GetPositionFromGrid(new GridPosition(startingCell, room.pos));
-			} else if (i==1) { // exit room
+			} else if (room.id == 1) { // exit room
 				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
 				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
 				zoneExit = AddZoneEntryExit(new GridPosition(startingCell, room.pos), 180.0f);
@@ -129,7 +129,7 @@ public class Cave {
 			}
 			
 //			if (j==10000) Debug.Log ("room miner count " + roomMiners.Count);
-			Debug.Log ("Room " + i + " " + room.pos + " has cells: " + (digCount+roomMiners.Count) + " j=" + j);
+			Debug.Log ("Room " + room.id + " " + room.pos + " has cells: " + (digCount+roomMiners.Count) + " j=" + j);
 //			if (i==2) room.TestRoomForSingleCells();
 			CreateRoomMesh(room);
 		}

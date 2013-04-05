@@ -36,11 +36,11 @@ public class PlayGUI {
 	private float lastHealthCountTime;
 	private float lastShieldCountTime;
 	
-	private List<Enemy> enemyHUDInfo = new List<Enemy>();
+	private List<Enemy> enemyHUDInfo;
 	private int topContainer;
 	private Transform shipTransform;
 	private Camera shipCamera;
-	private int[] enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
+	private int[] enemyHUDInfoLabels;
 	private int enemyLockMissileLabel;
 	
 	private static int MAX_ENEMY_HUD_INFOS = 5;
@@ -55,6 +55,7 @@ public class PlayGUI {
 		
 	public PlayGUI(Play p) {
 		play = p;
+		Reset();
 		
 		// GUI stuff
 		gui = (GameObject.Instantiate(play.game.guiPrefab) as GameObject).GetComponent<MyGUI>();
@@ -86,6 +87,7 @@ public class PlayGUI {
 		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 3.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit2 = gui.images[imageId];
 		
+		enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
 		gui.SetActiveTextMaterial(5);
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
 			enemyHUDInfoLabels[i] = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
@@ -113,6 +115,10 @@ public class PlayGUI {
 		DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, ship.shieldPercentage), MyGUI.GetDigitOfNumber(1, ship.shieldPercentage), MyGUI.GetDigitOfNumber(2, ship.shieldPercentage)});
 		shipTransform = ship.transform;
 		shipCamera = ship.shipCamera;
+	}
+	
+	public void Reset() {
+		enemyHUDInfo = new List<Enemy>();
 	}
 	
 /*	public void SetHealth(int newHealth) {
@@ -201,6 +207,10 @@ public class PlayGUI {
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
 			if (enemyHUDInfo.Count > i) {
 				if (enemyHUDInfo[i-removed].lastTimeHUDInfoRequested + ENEMY_HUD_INFO_MAX_TIME > Time.time ) {					
+					if (enemyHUDInfo[i-removed] == null) {
+						Debug.Log ("enemy is null " + enemyHUDInfo[i-removed] + " " + Time.time);
+						Debug.Log ("enemy is null " + enemyHUDInfo[i-removed].lastTimeHUDInfoRequested);
+					}
 					ShowEnemyHUDInfo(i, enemyHUDInfo[i-removed]);
 				} else {
 					enemyHUDInfo.RemoveAt(i-removed);
@@ -230,7 +240,7 @@ public class PlayGUI {
 	}
 		
 	private void ShowEnemyHUDInfo(int index, Enemy e) {
-		if (e == null) Debug.Log ("enemy is null " + index);
+//		if (e == null) Debug.Log ("enemy is null " + index);
 //		Debug.Log (e.transform.TransformDirection(e.transform.localScale));
 		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
 			+ ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f);

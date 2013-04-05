@@ -56,7 +56,7 @@ public class Spawn : MonoBehaviour {
 		if (isActive) {
 			Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
 			if (isShipVisible != Vector3.zero) {
-				transform.LookAt(play.GetShipPosition());
+				transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			}
 	
 			if ( (maxGenerated == INFINITY || numberGenerated < maxGenerated) && currentlyLiving < maxLiving) { 
@@ -92,7 +92,7 @@ public class Spawn : MonoBehaviour {
 		enemyDistributor.RemoveEnemy(e);
 		lastTimeGenerated = Time.time;
 		if (currentlyLiving == 0 && !isActive) {
-			Destroy();
+			Destroy(gameObject);
 		}
 	}
 	
@@ -113,8 +113,5 @@ public class Spawn : MonoBehaviour {
 		myRenderer.enabled = false;
 	}
 	
-	private void Destroy() {
-		Destroy(gameObject);
-	}
 }
 

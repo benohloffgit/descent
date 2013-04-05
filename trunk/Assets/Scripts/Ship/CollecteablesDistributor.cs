@@ -23,7 +23,7 @@ public class CollecteablesDistributor {
 		if (!hasDropped && ship.shieldPercentage < 100) {
 			random100 = UnityEngine.Random.Range(1, 101);
 			if (random100 > 66 && random100 > ship.shieldPercentage) {
-				game.CreateFromPrefab().CreateShieldDrop(e.transform.position, Quaternion.identity, AMOUNT_SHIELD);
+				DropShield(e.transform.position);
 				hasDropped = true;
 			}
 		}
@@ -31,7 +31,7 @@ public class CollecteablesDistributor {
 		if (!hasDropped && ship.healthPercentage < 100) {
 			random100 = UnityEngine.Random.Range(1, 101);
 			if (random100 > 80 && random100 > ship.healthPercentage) {
-				game.CreateFromPrefab().CreateHealthDrop(e.transform.position, Quaternion.identity, AMOUNT_HEAL);
+				DropHealth(e.transform.position);
 				hasDropped = true;
 			}
 		}
@@ -76,6 +76,14 @@ public class CollecteablesDistributor {
 			}
 		}
 	}
+	
+	public void DropHealth(Vector3 pos) {
+		game.CreateFromPrefab().CreateHealthDrop(pos, Quaternion.identity, AMOUNT_HEAL);
+	}
+	
+	public void DropShield(Vector3 pos) {
+		game.CreateFromPrefab().CreateShieldDrop(pos, Quaternion.identity, AMOUNT_SHIELD);
+	}		
 	
 	private void DropMissile(Enemy e, int type, int amount) {
 		game.CreateFromPrefab().CreateMissileDrop(e.transform.position, Quaternion.identity, type, amount);

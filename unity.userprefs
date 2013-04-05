@@ -1,19 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PG Cave\Cave.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\CollecteableShield.cs">
     <Files>
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="70" Column="5" />
+      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="70" Column="22" />
       <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="202" Column="20" />
       <File FileName="Assets\Scripts\GUI\Container.cs" Line="160" Column="14" />
-      <File FileName="Assets\Scripts\Play.cs" Line="472" Column="19" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="346" Column="14" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="69" Column="24" />
+      <File FileName="Assets\Scripts\Play.cs" Line="229" Column="1" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="273" Column="1" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="90" Column="13" />
       <File FileName="Assets\Scripts\Game.cs" Line="67" Column="34" />
-      <File FileName="Assets\Scripts\PG Cave\Door.cs" Line="35" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="18" Column="55" />
-      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="37" Column="22" />
-      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="212" Column="1" />
+      <File FileName="Assets\Scripts\Ship\CollecteableHealth.cs" Line="16" Column="3" />
+      <File FileName="Assets\Scripts\Ship\CollecteableShield.cs" Line="20" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

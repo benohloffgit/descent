@@ -32,6 +32,7 @@ public class Zone {
 		AddRoom(1, exitRoom);
 		// dig from entry to exit
 		IntTriple pos = entryRoom;
+		int count = 0;
 		while (pos != exitRoom) {
 			IntTriple delta = exitRoom - pos;
 			int random = UnityEngine.Random.Range(0,3);
@@ -39,7 +40,8 @@ public class Zone {
 				if (delta.GetFactor(random) != 0) {
 					pos.SetFactor(random, pos.GetFactor(random) + Math.Sign(delta.GetFactor(random)));
 					if (pos != exitRoom) {
-						AddRoom(2+i, pos);
+						AddRoom(2+count, pos);
+						count++;
 					}
 					i=3;
 				} else {

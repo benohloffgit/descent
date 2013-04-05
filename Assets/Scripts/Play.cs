@@ -19,6 +19,9 @@ public class Play : MonoBehaviour {
 	public PlayGUI playGUI;
 	private string keyCommand;
 	public bool isInKeyboardMode;
+	private int caveSeed;
+	private int botSeed;
+	
 	public GridPosition placeShipBeforeExitDoor;
 	
 //	private GameInput gI;
@@ -221,6 +224,10 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
+		botSeed = UnityEngine.Random.Range(0,9999999);
+//		caveSeed = 4801662;
+		caveSeed = UnityEngine.Random.Range(1000000,9999999);
+		
 		zoneID = 30;
 		isInKeyboardMode = false;
 		
@@ -235,10 +242,6 @@ public class Play : MonoBehaviour {
 		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
 		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
 		
-//		int seed = 9486944;//7014822;//7787612; //1922614; //123456789;
-		int seed = UnityEngine.Random.Range(1000000,9999999);
-		Debug.Log ("Seed: " + seed);
-		UnityEngine.Random.seed = seed;
 		cave = new Cave(this);
 		collecteablesDistributor = new CollecteablesDistributor(this);
 		enemyDistributor = new EnemyDistributor(this);
@@ -259,14 +262,21 @@ public class Play : MonoBehaviour {
 	
 	private void StartZone() {
 		isShipInPlayableArea = false;
+		Debug.Log ("Cave Seed: " + caveSeed);
+		UnityEngine.Random.seed = caveSeed;
 		cave.AddZone(zoneID);
+		UnityEngine.Random.seed = botSeed;
 		enemyDistributor.Distribute(zoneID);
 	}
 	
 	public void EndZone() {
 		enemyDistributor.RemoveAll();
 		cave.RemoveZone();
+		playGUI.Reset();
 		zoneID++;
+		botSeed = UnityEngine.Random.Range(0,9999999);
+		UnityEngine.Random.seed = caveSeed;
+		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		StartZone();
 	}
 	
@@ -320,6 +330,12 @@ public class Play : MonoBehaviour {
 				Mana m = enemyDistributor.CreateMana();
 				m.transform.position = GetShipPosition();
 				Debug.Log ("Adding Mana (Editor mode)");
+		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "health") {
+				collecteablesDistributor.DropHealth(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE);
+				Debug.Log ("Adding Health (Editor mode)");
+		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "shield") {
+				collecteablesDistributor.DropShield(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE);
+				Debug.Log ("Adding Shield (Editor mode)");
 		} else if (keyCommand.Substring(1, 1) == "s") {
 				int clazz = Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1));
 				int model = Convert.ToInt32(keyCommand.Substring(3, 2));
@@ -391,6 +407,20 @@ public class Play : MonoBehaviour {
 
 	private float GetShotStats(ref List<ShotStats> shotStats, float startValue) {
 		float result = startValue;
+		int hits = 0;
+		foreach (ShotStats s in shotStats) {
+			hits += s.val;
+		}
+		result = (float)hits / shotStats.Count;
+		if (shotStats.Count > 10) {
+			shotStats.RemoveRange(0, shotStats.Count-10);
+		}
+		return result;
+	}
+
+	/*
+	 	private float GetShotStats(ref List<ShotStats> shotStats, float startValue) {
+		float result = startValue;
 		if (shotStats.Count > 0) {
 			int last = 0;
 			foreach (ShotStats s in shotStats) {
@@ -410,15 +440,15 @@ public class Play : MonoBehaviour {
 			}
 		}
 		return result;
-	}
-	
+	} 
+	 */
+	 
 	public void DamageShip(int source) {
 		if (source == Game.ENEMY) {
 			enemyShotStats.Add(new ShotStats(ShotStats.HIT, Time.time));
 		} else {
 			shipShotStats.Add(new ShotStats(ShotStats.MISS, Time.time));
 		}
-		
 	}
 	
 	public void DamageEnemy(int source) {
@@ -436,27 +466,6 @@ public class Play : MonoBehaviour {
 			enemyShotStats.Add(new ShotStats(ShotStats.MISS, Time.time));
 		}
 	}
-	
-/*	public void Shoot(int weaponType, Vector3 pos, Quaternion rot, Vector3 dir, float accuracy, float speed, int damage, Collider col, int source) {
-		GameObject newBullet;
-		if (weaponType == Weapon.TYPE_GUN) {
-			newBullet = game.CreateFromPrefab().CreateGunBullet(pos, rot, damage, source);
-		} else {
-			newBullet = game.CreateFromPrefab().CreateLaserShot(pos, rot, damage, source);
-		}
-		if (accuracy != 0) {
-			// improve accurcy the longer the ship stands still - 4seconds
-			accuracy = Mathf.Max(0f, accuracy - (accuracy/240.0f) * (Time.time-ship.lastMoveTime) * 60.0f);
-			
-			Vector3.OrthoNormalize(ref dir, ref tangent, ref binormal);
-			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
-			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
-			dir = deviation1 * deviation2 * dir;
-		}
-		newBullet.rigidbody.AddForce(dir * speed);
-		Physics.IgnoreCollision(col, newBullet.collider);
-//		Debug.Log (dir + " " + (deviation1 * deviation2 * dir));
-	}*/
 	
 	public void DisplayExplosion(Vector3 pos, Quaternion rot) {
 		game.CreateFromPrefab().CreateExplosion(pos, rot);

@@ -270,9 +270,6 @@ public class Ship : MonoBehaviour {
 	private void AddWeapons() {
 		int zone5 = Zone.GetZone5StepID(play.zoneID);
 			
-		// secondary weapons
-//		int lastLowestTypePrimary = Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5] + 1;
-//		int lastLowestTypeSecondary = Weapon.SHIP_SECONDARY_WEAPON_TYPES[zone5] + 1;
 		for (int i=zone5; i >= 0; i--) {
 			if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[i] != 0 && primaryWeapons[Weapon.SHIP_PRIMARY_WEAPON_TYPES[i]-1] == null) {
 				Weapon w = new Weapon(Weapon.PRIMARY, transform, play, Weapon.SHIP_PRIMARY_WEAPON_TYPES[i], Weapon.SHIP_PRIMARY_WEAPON_MODELS[i], WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);

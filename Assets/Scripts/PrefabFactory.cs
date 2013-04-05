@@ -79,6 +79,7 @@ public class PrefabFactory {
 		GameObject newHealthDrop = GameObject.Instantiate(healthDropTemplate, pos, rot) as GameObject;
 		CollecteableHealth healthDrop = newHealthDrop.GetComponent<CollecteableHealth>();
 		healthDrop.Initialize(play, amount);
+		healthDrop.enabled = true;
 		return newHealthDrop;
 	}
 
@@ -86,6 +87,7 @@ public class PrefabFactory {
 		GameObject newShieldDrop = GameObject.Instantiate(shieldDropTemplate, pos, rot) as GameObject;
 		CollecteableShield shieldDrop = newShieldDrop.GetComponent<CollecteableShield>();
 		shieldDrop.Initialize(play, amount);
+		shieldDrop.enabled = true;
 		return newShieldDrop;
 	}
 

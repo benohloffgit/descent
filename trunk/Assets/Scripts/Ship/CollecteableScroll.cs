@@ -1,24 +1,23 @@
 using System;
 using UnityEngine;
 
-public class CollecteableHealth : MonoBehaviour {		
+public class CollecteableScroll : MonoBehaviour {		
 	private Play play;
 	
-	private int amount; // in percentage
-	private float angle;	
-	
-	public void Initialize(Play play_, int amount_) {
+	private float angle;
+
+	public void Initialize(Play play_) {
 		play = play_;
-		amount = amount_;
 		angle = 0f;
 	}
-	
+
 	void FixedUpdate() {
 		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
 		if (isShipVisible != Vector3.zero) {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			angle += 0.05f;
 			transform.RotateAround(transform.up, angle);
+			transform.RotateAround(transform.right, 70.0f);
 			if (angle >= 360f) {
 				angle -= 360f;
 			}
@@ -27,9 +26,10 @@ public class CollecteableHealth : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
-			play.HealShip(amount);
+			play.ScrollFound();
 			Destroy(gameObject);
 		}
 	}
 	
 }
+

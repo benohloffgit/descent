@@ -29,20 +29,24 @@ public class PrefabFactory {
 		missileShotTemplate = GameObject.Instantiate(game.missileShotPrefab) as GameObject;
 		missileShotTemplate.GetComponent<Shot>().enabled = false;
 		breadcrumbTemplate = GameObject.Instantiate(game.breadcrumbPrefab) as GameObject;
+		breadcrumbTemplate.GetComponent<Breadcrumb>().enabled = false;
 		explosionTemplate = GameObject.Instantiate(game.explosionPrefab) as GameObject;
 		explosionTemplate.GetComponent<Explosion>().enabled = false;
 		hitTemplate = GameObject.Instantiate(game.hitPrefab) as GameObject;
 		hitTemplate.GetComponent<Hit>().enabled = false;
 		healthDropTemplate = GameObject.Instantiate(game.healthDropPrefab) as GameObject;
+		healthDropTemplate.GetComponent<CollecteableHealth>().enabled = false;
 		shieldDropTemplate = GameObject.Instantiate(game.shieldDropPrefab) as GameObject;
+		shieldDropTemplate.GetComponent<CollecteableShield>().enabled = false;
 		missileDropTemplate = GameObject.Instantiate(game.missileDropPrefab) as GameObject;
+		
 	}
 	
 	public Shot CreateGunShot(Vector3 pos, Quaternion rot, int damage, int source) {
 		GameObject newBullet = GameObject.Instantiate(gunBulletTemplate, pos, rot) as GameObject;
 		Shot shot = newBullet.GetComponent<Shot>();
 		shot.Initialize(play, damage, source, Shot.BULLET);
-		shot.enabled = false;
+		shot.enabled = true;
 		return shot;
 	}
 	
@@ -50,7 +54,7 @@ public class PrefabFactory {
 		GameObject newLaser = GameObject.Instantiate(laserShotTemplate, pos, rot) as GameObject;
 		Shot shot = newLaser.GetComponent<Shot>();
 		shot.Initialize(play, damage, source, Shot.BULLET);
-		shot.enabled = false;
+		shot.enabled = true;
 		return shot;
 	}
 
@@ -72,6 +76,9 @@ public class PrefabFactory {
 	
 	public GameObject CreateBreadcrumb(Vector3 pos, Quaternion rot) {
 		GameObject newBreadcrumb = GameObject.Instantiate(breadcrumbTemplate, pos, rot) as GameObject;
+		Breadcrumb breadcrumb = newBreadcrumb.GetComponent<Breadcrumb>();
+		breadcrumb.Initialize(play);
+		breadcrumb.enabled = true;
 		return newBreadcrumb;
 	}
 
@@ -96,6 +103,14 @@ public class PrefabFactory {
 		CollecteableMissile missileDrop = newMissileDrop.GetComponent<CollecteableMissile>();
 		missileDrop.Initialize(play, type, amount);
 		return newMissileDrop;
+	}
+
+	public GameObject CreateScrollDrop(Vector3 pos, Quaternion rot) {
+		GameObject newScrollDrop = GameObject.Instantiate(game.scrollDropPrefab, pos, rot) as GameObject;
+		CollecteableScroll scrollDrop = newScrollDrop.GetComponent<CollecteableScroll>();
+		scrollDrop.Initialize(play);
+		scrollDrop.enabled = true;
+		return newScrollDrop;
 	}
 	
 	public GameObject CreateExplosion(Vector3 pos, Quaternion rot) {

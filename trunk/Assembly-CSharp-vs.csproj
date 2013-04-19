@@ -115,8 +115,10 @@
      <Compile Include="Assets\Scripts\PlayGUI.cs" />
      <Compile Include="Assets\Scripts\PrefabFactory.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />
+     <Compile Include="Assets\Scripts\Ship\Breadcrumb.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteableHealth.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteableMissile.cs" />
+     <Compile Include="Assets\Scripts\Ship\CollecteableScroll.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteableShield.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteablesDistributor.cs" />
      <Compile Include="Assets\Scripts\Ship\Explosion.cs" />

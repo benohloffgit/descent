@@ -11,13 +11,6 @@ public class ShipControl {
 	private Play play;
 //	private Shot shotTemplate;
 	
-//	private static Vector3 GUN_POSITION = new Vector3(0f, 1.5f, 0f);
-//	private static Vector3 LASER_POSITION = new Vector3(0f, -1.5f, 0f);
-	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);
-//	private static float MAX_RAYCAST_DISTANCE = 100.0f;
-//	private static float RATE_OF_FIRE_SHOT = 0.5f;
-//	private static float RATE_OF_FIRE_LASER = 0.3f;
-	
 	public ShipControl() {
 	}
 	
@@ -40,7 +33,7 @@ public class ShipControl {
 				ship.ShootSecondary();
 			}
 			if (Input.GetKeyDown(KeyCode.B)) {
-				game.CreateFromPrefab().CreateBreadcrumb(ship.transform.position + ship.transform.TransformDirection(BREADCRUMB_POSITION), Quaternion.identity);
+				play.CreateBreadcrumb();
 			}
 			if (Input.GetKeyDown(KeyCode.L)) {
 				ship.SwitchHeadlight();

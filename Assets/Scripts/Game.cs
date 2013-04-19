@@ -39,6 +39,7 @@ public class Game : MonoBehaviour {
 	public GameObject healthDropPrefab;
 	public GameObject shieldDropPrefab;
 	public GameObject missileDropPrefab;
+	public GameObject scrollDropPrefab;
 	
 	public State state;
 	public GameInput gameInput;
@@ -52,6 +53,8 @@ public class Game : MonoBehaviour {
 	
 	public static int SHIP = 0;
 	public static int ENEMY = 1;
+	
+	public static int MAX_BREADCRUMBS = 10;
 	
 	public static int LAYER_CAVE = 8;
 	public static int LAYER_SHIP = 9;

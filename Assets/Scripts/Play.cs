@@ -32,7 +32,9 @@ public class Play : MonoBehaviour {
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 //	private int currentGravitiyDirection;
 //	private float lastGravitiyChange;
-
+	
+	private List<GameObject> breadcrumbs = new List<GameObject>();
+	
 	private List<ShotStats> shipShotStats = new List<ShotStats>();
 	private List<ShotStats> enemyShotStats = new List<ShotStats>();
 	private float shipHitRatio;
@@ -53,7 +55,9 @@ public class Play : MonoBehaviour {
 	private static float GRAVITY_INTERVAL = 10.0f;
 	private static float STATS_INTERVAL = 10.0f;
 	private static float STATS_MIN = 0.01f;
-		
+
+	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);
+	
 	void OnGUI() {		
  		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
 			Application.Quit();
@@ -266,7 +270,7 @@ public class Play : MonoBehaviour {
 		UnityEngine.Random.seed = caveSeed;
 		cave.AddZone(zoneID);
 		UnityEngine.Random.seed = botSeed;
-		enemyDistributor.Distribute(zoneID);
+//		enemyDistributor.Distribute(zoneID);
 	}
 	
 	public void EndZone() {
@@ -336,6 +340,9 @@ public class Play : MonoBehaviour {
 		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "shield") {
 				collecteablesDistributor.DropShield(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE);
 				Debug.Log ("Adding Shield (Editor mode)");
+		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "scroll") {
+				collecteablesDistributor.DropScroll(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE);
+				Debug.Log ("Adding Scroll (Editor mode)");
 		} else if (keyCommand.Substring(1, 1) == "s") {
 				int clazz = Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1));
 				int model = Convert.ToInt32(keyCommand.Substring(3, 2));
@@ -495,5 +502,16 @@ public class Play : MonoBehaviour {
 		playGUI.DisplaySecondaryWeapon(ship.secondaryWeapons[ship.currentSecondaryWeapon]);
 	}
 	
+	public void CreateBreadcrumb() {
+		breadcrumbs.Add(game.CreateFromPrefab().CreateBreadcrumb(ship.transform.position + ship.transform.TransformDirection(BREADCRUMB_POSITION), Quaternion.identity));
+		if (breadcrumbs.Count > Game.MAX_BREADCRUMBS) {
+			Destroy(breadcrumbs[0]);
+			breadcrumbs.RemoveAt(0);
+		}
+	}
+
+	public void ScrollFound() {
+		Debug.Log ("scroll found");
+	}
 }
 

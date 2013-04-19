@@ -80,11 +80,15 @@ public class CollecteablesDistributor {
 	public void DropHealth(Vector3 pos) {
 		game.CreateFromPrefab().CreateHealthDrop(pos, Quaternion.identity, AMOUNT_HEAL);
 	}
-	
+
 	public void DropShield(Vector3 pos) {
 		game.CreateFromPrefab().CreateShieldDrop(pos, Quaternion.identity, AMOUNT_SHIELD);
 	}		
 	
+	public void DropScroll(Vector3 pos) {
+		game.CreateFromPrefab().CreateScrollDrop(pos, Quaternion.identity);
+	}
+
 	private void DropMissile(Enemy e, int type, int amount) {
 		game.CreateFromPrefab().CreateMissileDrop(e.transform.position, Quaternion.identity, type, amount);
 	}

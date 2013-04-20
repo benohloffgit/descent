@@ -39,6 +39,7 @@ public class PrefabFactory {
 		shieldDropTemplate = GameObject.Instantiate(game.shieldDropPrefab) as GameObject;
 		shieldDropTemplate.GetComponent<CollecteableShield>().enabled = false;
 		missileDropTemplate = GameObject.Instantiate(game.missileDropPrefab) as GameObject;
+		missileDropTemplate.GetComponent<CollecteableMissile>().enabled = false;
 		
 	}
 	
@@ -102,6 +103,7 @@ public class PrefabFactory {
 		GameObject newMissileDrop = GameObject.Instantiate(missileDropTemplate, pos, rot) as GameObject;
 		CollecteableMissile missileDrop = newMissileDrop.GetComponent<CollecteableMissile>();
 		missileDrop.Initialize(play, type, amount);
+		missileDrop.enabled = true;
 		return newMissileDrop;
 	}
 

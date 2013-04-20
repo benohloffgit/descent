@@ -232,7 +232,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 4801662;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 30;
+		zoneID = 5;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -270,7 +270,7 @@ public class Play : MonoBehaviour {
 		UnityEngine.Random.seed = caveSeed;
 		cave.AddZone(zoneID);
 		UnityEngine.Random.seed = botSeed;
-//		enemyDistributor.Distribute(zoneID);
+		enemyDistributor.Distribute(zoneID);
 	}
 	
 	public void EndZone() {

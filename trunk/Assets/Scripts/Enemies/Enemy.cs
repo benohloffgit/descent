@@ -17,26 +17,26 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_F = "f";
 	public static string CLAZZ_G = "g";
 	public static string CLAZZ_H = "h";
-	public static string CLAZZ_K = "k";
-	public static string CLAZZ_L = "l";
+//	public static string CLAZZ_K = "k";
+//	public static string CLAZZ_L = "l";
 	public static int CLAZZ_A0 = 0; // bull
-	public static int CLAZZ_B1 = 1; // spile
+	public static int CLAZZ_B1 = 1; // spike
 	public static int CLAZZ_C2 = 2;
 	public static int CLAZZ_D3 = 3;
 	public static int CLAZZ_E4 = 4;
 	public static int CLAZZ_F5 = 5;
 	public static int CLAZZ_G6 = 6;
 	public static int CLAZZ_H7 = 7;
-	public static int CLAZZ_K8 = 8;
-	public static int CLAZZ_L9 = 9;
+//	public static int CLAZZ_K8 = 8;
+//	public static int CLAZZ_L9 = 9;
 	
-	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_K, CLAZZ_L};
+	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H};
 	
 	public static int CLAZZ_STEP = 99;
 	public static int MODEL_MIN = 0;
 	public static int MODEL_MAX = 98;
 	public static int CLAZZ_MIN = 0;
-	public static int CLAZZ_MAX = 9;
+	public static int CLAZZ_MAX = 7;
 	public static int DISTRIBUTION_CLAZZ_MAX = 8; // 8 clazzes
 	public static float AGGRESSIVENESS_ON = 1.0f;
 	public static float AGGRESSIVENESS_OFF = 0f;
@@ -51,6 +51,7 @@ public abstract class Enemy : MonoBehaviour {
 	public string clazz; // (A-L)
 	public int clazzNum; // 0-9 
 	public int model; // 0-98 (1-99)
+	public int displayModel;
 	public int modelNum; // 0 - 998
 	public int modelClazzAEquivalent;
 	public int health;
@@ -102,6 +103,7 @@ public abstract class Enemy : MonoBehaviour {
 		clazzNum = clazzNum_;
 		clazz = CLAZZES[clazzNum];
 		model = model_;
+		displayModel = model +1;
 		modelNum = clazzNum * CLAZZ_STEP + model;
 		modelClazzAEquivalent = enemyEquivalentClazzAModel_;
 		health = health_;
@@ -158,14 +160,12 @@ public abstract class Enemy : MonoBehaviour {
 		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
 		if (isShipVisible != Vector3.zero) {
 			if (!isActive) {
-				isActive = true;
 				lastTimeShipVisible = Time.time;
 				spawn.ActivateEnemy(this);
 			}
 			DispatchFixedUpdate(isShipVisible);
 		} else if (isActive) {
 			if (Time.time > lastTimeShipVisible + DEACTIVATION_TIME && canBeDeactivated) {
-				isActive = false;
 				spawn.DeactivateEnemy(this);
 			} else if (!canBeDeactivated) {
 				DispatchFixedUpdate(isShipVisible);
@@ -235,10 +235,10 @@ public abstract class Enemy : MonoBehaviour {
 			return 6;
 		} else if (clazz_ == CLAZZ_H) {
 			return 7;
-		} else if (clazz_ == CLAZZ_K) {
-			return 8;
-		} else if (clazz_ == CLAZZ_L) {
-			return 9;
+//		} else if (clazz_ == CLAZZ_K) {
+//			return 8;
+//		} else if (clazz_ == CLAZZ_L) {
+//			return 9;
 		}
 		return -1;
 	}

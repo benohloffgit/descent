@@ -137,6 +137,7 @@ public class Zone {
 	}
 	
 	public static int GetZone5StepID(int zoneID) {
-		return Mathf.FloorToInt(zoneID / 5.0f);
+		return zoneID;
+//		return Mathf.FloorToInt(zoneID / 5.0f);
 	}
 }

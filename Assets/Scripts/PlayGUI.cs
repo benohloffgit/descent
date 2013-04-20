@@ -245,7 +245,7 @@ public class PlayGUI {
 		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
 			+ ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f);
 		gui.labelsCC[enemyHUDInfoLabels[index]].SetText(
-			e.clazz.ToUpper() + " " + e.model.ToString("00") + " (" + Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
+			e.clazz.ToUpper() + " " + e.displayModel.ToString("00") + " (" + Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
 		);
 		gui.labelsCC[enemyHUDInfoLabels[index]].transform.localPosition = new Vector2(
 			Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f),

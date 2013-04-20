@@ -38,6 +38,8 @@ public class Ship : MonoBehaviour {
 	public MissileLockMode missileLockMode;
 	public Enemy lockedEnemy;
 	public float missileLockTime;
+	
+	public static int HEALTH_FACTOR = 2;
 		
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 5.0f;
@@ -299,7 +301,7 @@ public class Ship : MonoBehaviour {
 	private int CalculateHealth() {
 		int zone5 = Zone.GetZone5StepID(play.zoneID);
 		
-		return zone5 * 180;
+		return zone5 * Game.HEALTH_MODIFIER * HEALTH_FACTOR;
 	}
 	
 	public void ShootPrimary() {

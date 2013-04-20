@@ -1,17 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\CollecteablesDistributor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\CollecteableMissile.cs">
     <Files>
       <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="70" Column="22" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="202" Column="20" />
-      <File FileName="Assets\Scripts\GUI\Container.cs" Line="160" Column="14" />
-      <File FileName="Assets\Scripts\Play.cs" Line="343" Column="88" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="273" Column="1" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="113" Column="23" />
-      <File FileName="Assets\Scripts\Game.cs" Line="53" Column="2" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="106" Column="27" />
+      <File FileName="Assets\Scripts\Play.cs" Line="453" Column="14" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="53" Column="107" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="42" Column="55" />
+      <File FileName="Assets\Scripts\Game.cs" Line="59" Column="35" />
       <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="14" Column="1" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="212" Column="1" />
-      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="74" Column="13" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="248" Column="40" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="93" Column="44" />
+      <File FileName="Assets\Scripts\Ship\Weapon.cs" Line="32" Column="37" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="335" Column="56" />
+      <File FileName="Assets\Scripts\Ship\Shot.cs" Line="57" Column="20" />
+      <File FileName="Assets\Scripts\Ship\CollecteableMissile.cs" Line="24" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

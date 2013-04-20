@@ -22,15 +22,18 @@ public class EnemyDistributor {
 	private static float MAX_RAYCAST_DISTANCE = 100.0f;
 	
 	private static float[] ENEMY_SIZES = new float[] {1.0f, 0.5f, 1.5f, 0.7f, 1.3f, 0.3f, 0.7f, 1.7f, 2.0f, 1.0f};
-	/*unused*/private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
+	private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
 	private static float[] ENEMY_MOVEMENT_FORCES = new float[] {5.0f, 10f, 7.5f, 2.5f, 12.5f, 6.0f, 8.0f, 4.0f, 15.0f, 3.0f, 7.0f, 9f};
 	private static float[] ENEMY_TURN_FORCES = new float[] {5.0f, 2.5f, 7.5f, 3.0f, 6.0f};
 	private static int[] ENEMY_LOOK_RANGES = new int[] {4,6,10,8,3,11,7,14,9,5,13,12,15};
 //	private static int[] ENEMY_CHASE_RANGES = new int[] {4,6,12,8,2,10};
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
-	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times 5) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,5,20,45,80,125,180,245};
+	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,1,4,9,16,25,36,49};
+
+//private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times 5) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
+//public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,5,20,45,80,125,180,245};
 	
 	public EnemyDistributor(Play play_) {
 		play = play_;
@@ -171,6 +174,7 @@ public class EnemyDistributor {
 	}
 	
 	public void ActivateEnemy(Enemy e) {
+		e.isActive = true;
 		enemiesActive++;
 		enemiesFirepowerPerSecondActive += e.firepowerPerSecond;
 		enemiesFirepowerPerSecondAvgActive = enemiesFirepowerPerSecondActive / enemiesActive;
@@ -179,6 +183,7 @@ public class EnemyDistributor {
 	}
 
 	public void DeactivateEnemy(Enemy e) {
+		e.isActive = false;
 		enemiesActive--;
 		enemiesFirepowerPerSecondActive -= e.firepowerPerSecond;
 		enemiesHealthActive -= e.health;
@@ -282,7 +287,8 @@ public class EnemyDistributor {
 	}*/
 
 	private int CalculateEnemyEquivalentClazzAModel(int zoneID, int clazz) {
-		int model = CLAZZ_A_EQUIVALENT_MODEL[clazz] + zoneID- CLAZZ_A_EQUIVALENT_MODEL[clazz];
+//		int model = CLAZZ_A_EQUIVALENT_MODEL[clazz] + zoneID - CLAZZ_A_EQUIVALENT_MODEL[clazz];
+		int model = zoneID;
 		
 		float[] probabilities = new float[] { 0.1f, 0.3f, 0.6f, 1.0f };
 		float rand = UnityEngine.Random.value;
@@ -321,11 +327,12 @@ public class EnemyDistributor {
 	}*/
 	
 	private int CalculateEnemyHealth(int clazz, int model) {
-		return model * 5 + clazz * 25;
+		return model * Game.HEALTH_MODIFIER;
+//		return model * 5 + clazz * 25;
 	}
 
 	private int CalculateEnemyShield(int clazz, int model) {
-		return Mathf.FloorToInt((model * 5 + clazz * 25) / 2f);
+		return Mathf.FloorToInt((model * Game.HEALTH_MODIFIER) / 2f);
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {

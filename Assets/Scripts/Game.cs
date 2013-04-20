@@ -56,6 +56,8 @@ public class Game : MonoBehaviour {
 	
 	public static int MAX_BREADCRUMBS = 10;
 	
+	public static int HEALTH_MODIFIER = 5;
+	
 	public static int LAYER_CAVE = 8;
 	public static int LAYER_SHIP = 9;
 	public static int LAYER_GUI = 10;

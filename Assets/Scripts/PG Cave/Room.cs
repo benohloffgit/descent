@@ -25,12 +25,12 @@ public class Room {
 	}
 	
 	public void AddCell(IntTriple pos, int minerId) {
-		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId, false, false);
+		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId, false);
 		emptyCells.Add(cells[pos.x, pos.y, pos.z]);
 	}
 
 	public void AddExitCell(IntTriple pos, IntTriple alignment, int minerId) {
-		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId, true, false);
+		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId, true);
 		exits.Add(alignment, cells[pos.x, pos.y, pos.z]);
 		emptyCells.Add(cells[pos.x, pos.y, pos.z]);
 		
@@ -117,6 +117,14 @@ public class Room {
 			}
 		}
 		return neighbours;
+	}
+	
+	public void SetCellToSpawn(IntTriple cellPos) {
+		cells[cellPos.x, cellPos.y, cellPos.z].isSpawn = true;
+	}
+
+	public void SetCellToPowerUp(IntTriple cellPos) {
+		cells[cellPos.x, cellPos.y, cellPos.z].isPowerUp = true;
 	}
 	
 	public GridPosition GetRandomNonSpawnNonExitGridPosition () {

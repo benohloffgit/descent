@@ -83,7 +83,11 @@ public class Zone {
 	public Room GetRoom(GridPosition gP) {
 		return rooms[gP.roomPosition.x, gP.roomPosition.y, gP.roomPosition.z];
 	}
-
+	
+	public Room GetRandomRoom() {
+		return roomList[UnityEngine.Random.Range(0, roomList.Count)];
+	}
+	
 	public int GetRoomDensity(GridPosition gP) {
 		if (rooms[gP.roomPosition.x, gP.roomPosition.y, gP.roomPosition.z] == null) {
 			return Cave.DENSITY_FILLED;

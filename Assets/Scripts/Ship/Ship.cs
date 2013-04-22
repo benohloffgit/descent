@@ -86,8 +86,10 @@ public class Ship : MonoBehaviour {
 	}
 	
 	void Start() {
-		play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
-		play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
+/*		if (currentPrimaryWeapon != -1) {
+			play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
+			play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
+		}*/
 	}
 	
 	public void Initialize(Play p, Game g) {
@@ -117,7 +119,7 @@ public class Ship : MonoBehaviour {
 	void FixedUpdate() {
 		play.CachePositionalDataOfShip(transform.position);
 		
-		if (secondaryWeapons[currentSecondaryWeapon] != null) {
+		if (currentSecondaryWeapon != -1) {
 			secondaryWeapons[currentSecondaryWeapon].IsReloaded();
 		}
 		// Enemy target info
@@ -125,7 +127,8 @@ public class Ship : MonoBehaviour {
 			if (hit.collider.tag == Enemy.TAG) {
 				Enemy e = hit.transform.GetComponent<Enemy>();
 				play.playGUI.EnemyInSight(e);
-				if (	(secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_GUIDED_MISSILE
+				if (	currentSecondaryWeapon != -1 &&
+						(secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_GUIDED_MISSILE
 						|| secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_DETONATOR_MISSILE)
 						&& secondaryWeapons[currentSecondaryWeapon].ammunition > 0
 					) {
@@ -269,31 +272,55 @@ public class Ship : MonoBehaviour {
 		crossHair.localScale /= (crossHair.renderer.material.mainTexture.width/(float)Screen.width) / (32.0f/(float)Screen.width);
 	}
 	
+	public void AddPrimaryWeapon(int wType, int wModel) {
+		Weapon w = new Weapon(Weapon.PRIMARY, transform, play, wType, wModel, WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);
+		primaryWeapons[wType-1] = w;
+		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT];
+		currentPrimaryWeapon = wType-1;
+		primaryWeapons[currentPrimaryWeapon].Mount();
+		firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
+		play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);		
+		Debug.Log ("adding primary weapon type/model " + wType+"/"+wModel);
+	}
+
+	public void AddSecondaryWeapon(int wType, int wModel) {
+		int ammunition = 1;
+		if (secondaryWeapons[wType-1] != null) {
+			ammunition += secondaryWeapons[wType-1].ammunition;
+		}
+		Weapon w = new Weapon(Weapon.SECONDARY, transform, play, wType, wModel, WEAPON_POSITIONS[WEAPON_POSITION_CENTER], Game.SHIP, ammunition);
+		secondaryWeapons[wType-1] = w;
+		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_CENTER];
+		currentSecondaryWeapon = wType-1;
+		secondaryWeapons[currentSecondaryWeapon].Mount();
+		play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
+		Debug.Log ("adding secondary weapon type/model " + wType+"/"+wModel);
+	}
+	
 	private void AddWeapons() {
-		int zone5 = Zone.GetZone5StepID(play.zoneID);
+		int zone5 = Zone.GetZone5StepID(play.zoneID) - 1; // TODO actual weapons must depend on power ups previously found
 			
 		for (int i=zone5; i >= 0; i--) {
 			if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[i] != 0 && primaryWeapons[Weapon.SHIP_PRIMARY_WEAPON_TYPES[i]-1] == null) {
-				Weapon w = new Weapon(Weapon.PRIMARY, transform, play, Weapon.SHIP_PRIMARY_WEAPON_TYPES[i], Weapon.SHIP_PRIMARY_WEAPON_MODELS[i], WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);
-				primaryWeapons[Weapon.SHIP_PRIMARY_WEAPON_TYPES[i]-1] = w;
-				w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT];
-//				lastLowestTypePrimary = Weapon.SHIP_PRIMARY_WEAPON_TYPES[i];
-				Debug.Log ("adding primary weapon type/model " + Weapon.SHIP_PRIMARY_WEAPON_TYPES[i]+"/"+Weapon.SHIP_PRIMARY_WEAPON_MODELS[i]);
+				AddPrimaryWeapon(Weapon.SHIP_PRIMARY_WEAPON_TYPES[i], Weapon.SHIP_PRIMARY_WEAPON_MODELS[i]);
 			}	
 			if (Weapon.SHIP_SECONDARY_WEAPON_TYPES[i] != 0 && secondaryWeapons[Weapon.SHIP_SECONDARY_WEAPON_TYPES[i]-1] == null) {
-				Weapon w = new Weapon(Weapon.SECONDARY, transform, play, Weapon.SHIP_SECONDARY_WEAPON_TYPES[i], Weapon.SHIP_SECONDARY_WEAPON_MODELS[i], WEAPON_POSITIONS[WEAPON_POSITION_CENTER], Game.SHIP, 5);
-				secondaryWeapons[Weapon.SHIP_SECONDARY_WEAPON_TYPES[i]-1] = w;
-				w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_CENTER];
-//				lastLowestTypeSecondary = Weapon.SHIP_SECONDARY_WEAPON_TYPES[i];
-				Debug.Log ("adding secondary weapon type/model " + Weapon.SHIP_SECONDARY_WEAPON_TYPES[i]+"/"+Weapon.SHIP_SECONDARY_WEAPON_MODELS[i]);
+				AddSecondaryWeapon(Weapon.SHIP_SECONDARY_WEAPON_TYPES[i], Weapon.SHIP_SECONDARY_WEAPON_MODELS[i]);
 			}
 		}
 		
-		currentPrimaryWeapon = Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5]-1;
-		currentSecondaryWeapon = Weapon.SHIP_SECONDARY_WEAPON_TYPES[zone5]-1;
-		primaryWeapons[currentPrimaryWeapon].Mount();
-		firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
-		if (secondaryWeapons[0] != null) {
+		if (zone5 > 0) {
+			currentPrimaryWeapon = Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5]-1;
+			currentSecondaryWeapon = Weapon.SHIP_SECONDARY_WEAPON_TYPES[zone5]-1;
+		} else {
+			currentPrimaryWeapon = -1;
+			currentSecondaryWeapon = -1;
+		}
+		if (currentPrimaryWeapon != -1) {
+			primaryWeapons[currentPrimaryWeapon].Mount();
+			firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
+		}
+		if (currentSecondaryWeapon != -1) {
 			secondaryWeapons[currentSecondaryWeapon].Mount();
 		}
 	}
@@ -305,31 +332,33 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void ShootPrimary() {
-		if (play.isShipInPlayableArea && primaryWeapons[currentPrimaryWeapon].IsReloaded()) {
+		if (play.isShipInPlayableArea && currentPrimaryWeapon != -1 && primaryWeapons[currentPrimaryWeapon].IsReloaded()) {
 			primaryWeapons[currentPrimaryWeapon].Shoot();
 		}
 	}
 
 	public void ShootSecondary() {
-		if (play.isShipInPlayableArea && secondaryWeapons[currentSecondaryWeapon] != null && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+		if (play.isShipInPlayableArea && currentSecondaryWeapon != -1 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
 			secondaryWeapons[currentSecondaryWeapon].Shoot();
 			play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
 		}
 	}
 	
 	public void CyclePrimary() {
-		primaryWeapons[currentPrimaryWeapon].Unmount();
-		currentPrimaryWeapon++;
-		if (currentSecondaryWeapon == 8 || primaryWeapons[currentPrimaryWeapon] == null) {
-			currentPrimaryWeapon = 0;
+		if (currentSecondaryWeapon != -1) {
+			primaryWeapons[currentPrimaryWeapon].Unmount();
+			currentPrimaryWeapon++;
+			if (currentSecondaryWeapon == 8 || primaryWeapons[currentPrimaryWeapon] == null) {
+				currentPrimaryWeapon = 0;
+			}
+			primaryWeapons[currentPrimaryWeapon].Mount();
+			firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
+			play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
 		}
-		primaryWeapons[currentPrimaryWeapon].Mount();
-		firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
-		play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
 	}
 
 	public void CycleSecondary() {
-		if (secondaryWeapons[currentSecondaryWeapon] != null) {
+		if (currentSecondaryWeapon != -1) {
 			secondaryWeapons[currentSecondaryWeapon].Unmount();
 			currentSecondaryWeapon++;
 			if (currentSecondaryWeapon == 4 || secondaryWeapons[currentSecondaryWeapon] == null) {

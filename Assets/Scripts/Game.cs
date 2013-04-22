@@ -22,8 +22,9 @@ public class Game : MonoBehaviour {
 	public GameObject pyramidPrefab;
 	public GameObject spikePrefab;
 	public GameObject bullPrefab;
-	public GameObject gunPrefab;
-	public GameObject laserGunPrefab;
+	public GameObject[] primaryWeaponPrefabs;
+	public GameObject[] secondaryWeaponPrefabs;
+//	public GameObject laserGunPrefab;
 	public GameObject missileLauncherPrefab;
 	public GameObject manaPrefab;
 	public GameObject spawnPrefab;
@@ -40,6 +41,7 @@ public class Game : MonoBehaviour {
 	public GameObject shieldDropPrefab;
 	public GameObject missileDropPrefab;
 	public GameObject scrollDropPrefab;
+	public GameObject powerUpDropPrefab;
 	
 	public State state;
 	public GameInput gameInput;

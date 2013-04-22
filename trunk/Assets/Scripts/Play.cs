@@ -232,7 +232,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 4801662;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 5;
+		zoneID = 2;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -270,7 +270,10 @@ public class Play : MonoBehaviour {
 		UnityEngine.Random.seed = caveSeed;
 		cave.AddZone(zoneID);
 		UnityEngine.Random.seed = botSeed;
-		enemyDistributor.Distribute(zoneID);
+		if (zoneID > 0) {
+			enemyDistributor.Distribute(zoneID);
+		}
+		collecteablesDistributor.DropPowerUps();
 	}
 	
 	public void EndZone() {
@@ -334,6 +337,9 @@ public class Play : MonoBehaviour {
 				Mana m = enemyDistributor.CreateMana();
 				m.transform.position = GetShipPosition();
 				Debug.Log ("Adding Mana (Editor mode)");
+		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 5) == "power") {
+				collecteablesDistributor.DropPowerUp(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE, Weapon.PRIMARY, 0);
+				Debug.Log ("Adding Power Up Primary 1 (Editor mode)");
 		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "health") {
 				collecteablesDistributor.DropHealth(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE);
 				Debug.Log ("Adding Health (Editor mode)");
@@ -512,6 +518,14 @@ public class Play : MonoBehaviour {
 
 	public void ScrollFound() {
 		Debug.Log ("scroll found");
+	}
+
+	public void CollectWeapon(int weaponType, int wType, int wModel) {
+		if (weaponType == Weapon.PRIMARY) {
+			ship.AddPrimaryWeapon(wType, wModel);
+		} else {
+			ship.AddSecondaryWeapon(wType, wModel);
+		}
 	}
 }
 

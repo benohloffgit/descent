@@ -205,42 +205,43 @@ public class Weapon {
 				case TYPE_GUN:
 					speed = 100f;
 					accuracy = 4.0f - model * 0.015f;
-					frequency = 3.0f - model * 0.02f;			
-					weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
+					frequency = 3.0f - model * 0.02f; break;		
 				case TYPE_LASER:
 					speed = 200f;
 					accuracy = 3.0f - model * 0.01f;
-					frequency = 3.0f - model * 0.02f;
-					weaponGameObject = GameObject.Instantiate(game.laserGunPrefab) as GameObject; break;
+					frequency = 3.0f - model * 0.02f; break;
+//					weaponGameObject = GameObject.Instantiate(game.laserGunPrefab) as GameObject; break;
 				default:
 					speed = 100f;
 					accuracy = 4.0f - model * 0.015f;
-					frequency = 3.0f - model * 0.02f;
-					weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
+					frequency = 3.0f - model * 0.02f; break;
+//					weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
 			}
+			weaponGameObject = GameObject.Instantiate(game.primaryWeaponPrefabs[type-1]) as GameObject; 
 		} else {
 			switch (type) {
 				case TYPE_MISSILE:
 					speed = 50f;
 					accuracy = 4.0f - model * 0.015f;
-					frequency = 4.0f - model * 0.02f;			
-					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
+					frequency = 4.0f - model * 0.02f; break;			
+//					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 				case TYPE_GUIDED_MISSILE:
 					speed = 50f;
 					accuracy = 3.0f - model * 0.01f;
-					frequency = 6.0f - model * 0.02f;
-					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
+					frequency = 6.0f - model * 0.02f; break;
+//					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 				default:
 					speed = 50f;
 					accuracy = 4.0f - model * 0.015f;
-					frequency = 6.0f - model * 0.02f;
-					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
+					frequency = 6.0f - model * 0.02f; break;
+//					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 			}
+			weaponGameObject = GameObject.Instantiate(game.secondaryWeaponPrefabs[type-1]) as GameObject;
 		}
 				
 		weaponTransform = weaponGameObject.transform;
 		weaponTransform.parent = parent.transform;
-		weaponTransform.localPosition = parent.InverseTransformPoint(position);
+		weaponTransform.localPosition = position;//parent.InverseTransformPoint(position);
 		Unmount();
 	}
 	

@@ -161,6 +161,7 @@ public class EnemyDistributor {
 		Spawn spawn = p.GetComponentInChildren<Spawn>();
 		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel, frequency, maxLiving, maxGenerated);
 		spawn.transform.position = gridPos.GetVector3() * RoomMesh.MESH_SCALE;
+		play.cave.zone.GetRoom(gridPos).SetCellToSpawn(gridPos.cellPosition);
 		return spawn;
 	}
 	
@@ -336,23 +337,23 @@ public class EnemyDistributor {
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {
-		return ENEMY_SIZES[(clazz + (model-1)) % 10];
+		return ENEMY_SIZES[(clazz + model) % 10];
 	}
 
 	private float CalculateEnemyAggressiveness(int clazz, int model) {
-		return ENEMY_AGGRESSIVENESSES[(clazz + (model-1)) % 11];
+		return ENEMY_AGGRESSIVENESSES[(clazz + model) % 11];
 	}
 	
 	private float CalculateEnemyMovementForce(int clazz, int model) {
-		return ENEMY_MOVEMENT_FORCES[(clazz + (model-1)) % 12];
+		return ENEMY_MOVEMENT_FORCES[(clazz + model) % 12];
 	}
 
 	private float CalculateEnemyTurnForce(int clazz, int model) {
-		return ENEMY_TURN_FORCES[(clazz + (model-1)) % 5];
+		return ENEMY_TURN_FORCES[(clazz + model) % 5];
 	}
 
 	private int CalculateEnemyLookRange(int clazz, int model) {
-		return ENEMY_LOOK_RANGES[(clazz + (model-1)) % 13];
+		return ENEMY_LOOK_RANGES[(clazz + model) % 13];
 	}
 	
 /*	private int CalculateEnemyChaseRange(int clazz, int model) {
@@ -360,11 +361,11 @@ public class EnemyDistributor {
 	}*/
 
 	private int CalculateEnemyRoamMin(int clazz, int model) {
-		return ENEMY_ROAM_MINS[(clazz + (model-1)) % 9];
+		return ENEMY_ROAM_MINS[(clazz + model) % 9];
 	}
 
 	private int CalculateEnemyRoamMax(int clazz, int model) {
-		return ENEMY_ROAM_MAXS[(clazz + (model-1)) % 9];
+		return ENEMY_ROAM_MAXS[(clazz + model) % 9];
 	}
 	
 	private void ResetStats() {

@@ -114,6 +114,26 @@ public class PrefabFactory {
 		scrollDrop.enabled = true;
 		return newScrollDrop;
 	}
+
+	public GameObject CreatePowerUpDrop(Vector3 pos, Quaternion rot, int weaponType, int index) {
+		GameObject newPowerUpDrop;
+		int wType, wModel;
+		if (weaponType == Weapon.PRIMARY) {
+			wType = Weapon.SHIP_PRIMARY_WEAPON_TYPES[index];
+			wModel = Weapon.SHIP_PRIMARY_WEAPON_MODELS[index];
+			newPowerUpDrop = GameObject.Instantiate(game.primaryWeaponPrefabs[wType-1], pos, rot) as GameObject;
+		} else {
+			wType = Weapon.SHIP_SECONDARY_WEAPON_TYPES[index];
+			wModel = Weapon.SHIP_SECONDARY_WEAPON_MODELS[index];
+			newPowerUpDrop = GameObject.Instantiate(game.secondaryWeaponPrefabs[wType-1], pos, rot) as GameObject;
+		}
+		CollecteablePowerUp powerUpDrop = newPowerUpDrop.AddComponent<CollecteablePowerUp>();
+		SphereCollider col = newPowerUpDrop.AddComponent<SphereCollider>();
+		col.isTrigger = true;
+		powerUpDrop.Initialize(play, weaponType, wType, wModel);
+		powerUpDrop.enabled = true;
+		return newPowerUpDrop;
+	}
 	
 	public GameObject CreateExplosion(Vector3 pos, Quaternion rot) {
 		GameObject newExplosion = GameObject.Instantiate(explosionTemplate, pos, rot) as GameObject;

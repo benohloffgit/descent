@@ -89,6 +89,23 @@ public class CollecteablesDistributor {
 		game.CreateFromPrefab().CreateScrollDrop(pos, Quaternion.identity);
 	}
 
+	public void DropPowerUp(Vector3 pos, int weaponType, int index) {
+		game.CreateFromPrefab().CreatePowerUpDrop(pos, Quaternion.identity, weaponType, index);
+	}
+	
+	public void DropPowerUps() {
+		int zone5 = Zone.GetZone5StepID(play.zoneID);
+		if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5] != 0) {
+			GridPosition gP = play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition();
+			DropPowerUp(gP.GetWorldVector3(), Weapon.PRIMARY, zone5);			
+		}
+		if (Weapon.SHIP_SECONDARY_WEAPON_TYPES[zone5] != 0) {
+			GridPosition gP = play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition();
+			DropPowerUp(gP.GetWorldVector3(), Weapon.SECONDARY, zone5);
+		}
+		
+	}
+	
 	private void DropMissile(Enemy e, int type, int amount) {
 		game.CreateFromPrefab().CreateMissileDrop(e.transform.position, Quaternion.identity, type, amount);
 	}

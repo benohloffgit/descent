@@ -229,10 +229,10 @@ public class Play : MonoBehaviour {
 	
 	public void Restart() {
 		botSeed = UnityEngine.Random.Range(0,9999999);
-//		caveSeed = 4801662;
+//		caveSeed = 1814761;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 2;
+		zoneID = 0;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -274,6 +274,7 @@ public class Play : MonoBehaviour {
 			enemyDistributor.Distribute(zoneID);
 		}
 		collecteablesDistributor.DropPowerUps();
+		ship.CalculateHealth();
 	}
 	
 	public void EndZone() {
@@ -346,9 +347,9 @@ public class Play : MonoBehaviour {
 		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "shield") {
 				collecteablesDistributor.DropShield(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE);
 				Debug.Log ("Adding Shield (Editor mode)");
-		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "scroll") {
+/*		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "scroll") {
 				collecteablesDistributor.DropScroll(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE);
-				Debug.Log ("Adding Scroll (Editor mode)");
+				Debug.Log ("Adding Scroll (Editor mode)");*/
 		} else if (keyCommand.Substring(1, 1) == "s") {
 				int clazz = Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1));
 				int model = Convert.ToInt32(keyCommand.Substring(3, 2));
@@ -502,10 +503,16 @@ public class Play : MonoBehaviour {
 		ship.Shield(amount);
 	}
 	
-	public void AddMissile(int type, int amount) {
+	public bool AddMissile(int type, int amount) {
 		// order is highest first
-		ship.secondaryWeapons[type-1].ammunition += amount;
-		playGUI.DisplaySecondaryWeapon(ship.secondaryWeapons[ship.currentSecondaryWeapon]);
+		if (ship.secondaryWeapons[type-1].ammunition < Game.MAX_MISSILE_AMMO) {
+			ship.secondaryWeapons[type-1].ammunition += amount;
+			playGUI.DisplaySecondaryWeapon(ship.secondaryWeapons[ship.currentSecondaryWeapon]);
+			return true;
+		} else {
+			// Todo diplay max ammo hint
+			return false;
+		}
 	}
 	
 	public void CreateBreadcrumb() {
@@ -516,9 +523,9 @@ public class Play : MonoBehaviour {
 		}
 	}
 
-	public void ScrollFound() {
+/*	public void ScrollFound() {
 		Debug.Log ("scroll found");
-	}
+	}*/
 
 	public void CollectWeapon(int weaponType, int wType, int wModel) {
 		if (weaponType == Weapon.PRIMARY) {

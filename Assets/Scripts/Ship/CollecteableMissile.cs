@@ -29,8 +29,9 @@ public class CollecteableMissile : MonoBehaviour {
 	}
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
-			play.AddMissile(type, amount);
-			Destroy(gameObject);
+			if (play.AddMissile(type, amount)) {
+				Destroy(gameObject);
+			}
 		}
 	}
 

@@ -30,9 +30,9 @@ public class Weapon {
 	public const int TYPE_LASER_BEAM = 17;
 
 	public static int MISSILE_START = 2;
-	public static int MISSILE_GUIDED_START = 20;
-	public static int MISSILE_CHARGED_START = 40; // charged from shield
-	public static int MISSILE_DETONATOR_START = 80; // right click to exploded while flying
+	public static int MISSILE_GUIDED_START = 4;
+	public static int MISSILE_CHARGED_START = 8; // charged from shield
+	public static int MISSILE_DETONATOR_START = 16; // right click to exploded while flying
 	
 	public static string[] PRIMARY_TYPES = new string[] {"", "Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
 
@@ -99,7 +99,7 @@ public class Weapon {
 			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
 			accuracy = 0f;
-			damage =  Mathf.RoundToInt(Zone.GetZone5StepID(play.zoneID) * 1.5f);
+			damage =  Mathf.RoundToInt(Zone.GetZone5StepID(play.zoneID+1) * 1.5f);
 			if (mount == Weapon.PRIMARY) {
 				frequency = 0.2f;
 			} else {
@@ -108,7 +108,7 @@ public class Weapon {
 		} else {
 			layerMask = Game.LAYER_MASK_SHIP_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
-			damage =  Mathf.RoundToInt( (Zone.GetZone5StepID(play.zoneID) + 1) * 1.5f); // 1 5step zone better
+			damage =  Mathf.RoundToInt( (Zone.GetZone5StepID(play.zoneID+1) + 1) * 1.5f); // 1 5step zone better
 		}
 		
 	}

@@ -172,6 +172,7 @@ public class PlayGUI {
 		if (toBeDisplayedShield != ship.shieldPercentage) {
 			SetShieldCount(displayedShield);
 			toBeDisplayedShield = ship.shieldPercentage;
+			Debug.Log ("toBeDisplayedShield " + toBeDisplayedShield);
 		} else if (displayedShield == ship.shieldPercentage && toBeDisplayedHealth != ship.healthPercentage) {
 			SetHealthCount(displayedHealth);
 			toBeDisplayedHealth = ship.healthPercentage;

@@ -71,7 +71,8 @@ Shader "Andruids/Room/Dark" {
 		half4 LightingMyLambert (SurfaceOutput o, fixed3 lightDir, fixed atten) {
           fixed NdotL = dot(o.Normal, lightDir);
           fixed4 c;
-          //c.rgb = o.Albedo;
+          //c.rgb = o.Albedo; no light
+          //c.rgb = o.Albedo * _LightColor0.rgb; no light direction
           c.rgb = o.Albedo * _LightColor0.rgb * (NdotL * atten * 2);
           
           //c.rgb = o.Albedo;

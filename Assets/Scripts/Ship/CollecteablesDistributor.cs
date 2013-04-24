@@ -35,19 +35,23 @@ public class CollecteablesDistributor {
 				hasDropped = true;
 			}
 		}
-		// MISSILES starting from zone 11 on
-		if (!hasDropped && e.modelClazzAEquivalent > Weapon.MISSILE_START) {
+		// MISSILES starting from zone 2 on
+		if (!hasDropped && ship.currentSecondaryWeapon != -1 && e.modelClazzAEquivalent > Weapon.MISSILE_START) {
 			float rand = UnityEngine.Random.value;
 			if (rand < 0.1f) { // 10% chance
 				hasDropped = true;
-				if (e.modelClazzAEquivalent <= Weapon.MISSILE_DETONATOR_START) {
-					if (e.modelClazzAEquivalent <= Weapon.MISSILE_CHARGED_START) {
-						// chose from 2 missile types
-						rand = UnityEngine.Random.value;
-						if (rand < 0.3f) {
-							DropMissile(e, Weapon.TYPE_MISSILE, 3);
+				if (e.modelClazzAEquivalent < Weapon.MISSILE_DETONATOR_START) {
+					if (e.modelClazzAEquivalent < Weapon.MISSILE_CHARGED_START) {
+						if (e.modelClazzAEquivalent < Weapon.MISSILE_GUIDED_START) {
+								DropMissile(e, Weapon.TYPE_MISSILE, 2);
 						} else {
-							DropMissile(e, Weapon.TYPE_GUIDED_MISSILE, 1);
+							// chose from 2 missile types
+							rand = UnityEngine.Random.value;
+							if (rand < 0.3f) {
+								DropMissile(e, Weapon.TYPE_MISSILE, 3);
+							} else {
+								DropMissile(e, Weapon.TYPE_GUIDED_MISSILE, 1);
+							}
 						}
 					} else {
 						// chose from 3 missile types
@@ -85,9 +89,9 @@ public class CollecteablesDistributor {
 		game.CreateFromPrefab().CreateShieldDrop(pos, Quaternion.identity, AMOUNT_SHIELD);
 	}		
 	
-	public void DropScroll(Vector3 pos) {
+/*	public void DropScroll(Vector3 pos) {
 		game.CreateFromPrefab().CreateScrollDrop(pos, Quaternion.identity);
-	}
+	}*/
 
 	public void DropPowerUp(Vector3 pos, int weaponType, int index) {
 		game.CreateFromPrefab().CreatePowerUpDrop(pos, Quaternion.identity, weaponType, index);

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class Cave {
 	public Zone zone;
 	
+	public IntTriple[] textureCombinations;
+	
 	private Game game;
 	private Play play;
 	
@@ -29,8 +31,24 @@ public class Cave {
 		AddDoor(Door.TYPE_ENTRY);
 		AddDoor(Door.TYPE_EXIT);
 		AddDoor(Door.TYPE_NEXT_ENTRY);
+		CalculateMaterialCombinations();
 	}
-
+	
+	private void CalculateMaterialCombinations() {
+		textureCombinations = new IntTriple[90]; // with 9 textures we have 83 combinations
+		int[] textureIDs = new int[] {0,1,2,3,4,5,6,7,8};
+		int count = 0;
+		for (int a=0; a<textureIDs.Length; a++) {
+			for (int b=a+1; b<textureIDs.Length; b++) {
+				for (int c=b+1; c<textureIDs.Length; c++) {
+					textureCombinations[count] = new IntTriple(a,b,c);
+					count++;
+				}
+			}
+		}
+		//Debug.Log ("Texture Combinations " + (count-1));	
+	}
+	
 	public void AddZone(int id) {
 		zone = new Zone(Game.DIMENSION_ZONE, this, id);
 		DigRooms();
@@ -137,6 +155,10 @@ public class Cave {
 		foreach (Door d in doors) {
 			d.Reset();
 		}
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureCombinations[Mathf.FloorToInt(play.zoneID/5)].x]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureCombinations[UnityEngine.Random.Range(0,12)].y]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureCombinations[UnityEngine.Random.Range(0,12)].z]);
+//		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[11]);
 	}
 	
 	private IntTriple GetOppositeCell(Cell cell, IntTriple alignment) {
@@ -329,15 +351,18 @@ public class Cave {
 		GameObject rC = GameObject.Instantiate(game.roomConnectorPrefab) as GameObject;
 		rC.transform.localScale *= RoomMesh.MESH_SCALE;
 		rC.transform.position = GetPositionFromGrid(gP);
+		Align(rC.transform, alignment);
+	}
+	
+	public void Align(Transform t, IntTriple alignment) {
 		if (alignment.x != 0) {
-			rC.transform.Rotate(new Vector3(180.0f, 90.0f * alignment.x, 0));
+			t.Rotate(new Vector3(180.0f, 90.0f * alignment.x, 0));
 		}
 		if (alignment.y != 0) {
-			rC.transform.Rotate(new Vector3(90.0f * alignment.y, 0, 0));
+			t.Rotate(new Vector3(90.0f * alignment.y, 0, 0));
 		}
 		if (alignment.z != 0) {
-			float turn = (alignment.z == 1) ? 180.0f : 0f;
-			rC.transform.Rotate(new Vector3(turn, 0, 0));
+			t.Rotate(new Vector3((alignment.z == 1) ? 180.0f : 0f, 0, 0));
 		}
 	}
 

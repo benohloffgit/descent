@@ -103,12 +103,6 @@ public class Ship : MonoBehaviour {
 		isHeadlightOn = true;
 		SwitchHeadlight();
 		cameraPosition = CAMERA_POSITION_COCKPIT;
-		maxHealth = CalculateHealth();
-		maxShield = maxHealth / 2;
-		health = maxHealth;
-		shield = maxShield;
-		healthPercentage = 100;
-		shieldPercentage = 100;
 		missileLockMode = MissileLockMode.None;
 		
 		AddWeapons();
@@ -325,12 +319,17 @@ public class Ship : MonoBehaviour {
 		}
 	}
 	
-	private int CalculateHealth() {
+	public void CalculateHealth() {
 		int zone5 = Zone.GetZone5StepID(play.zoneID);
 		
-		return zone5 * Game.HEALTH_MODIFIER * HEALTH_FACTOR;
+		maxHealth = zone5 * Game.HEALTH_MODIFIER * HEALTH_FACTOR;
+		maxShield = maxHealth / 2;
+		health = maxHealth;
+		shield = maxShield;
+		healthPercentage = 100;
+		shieldPercentage = 100;
 	}
-	
+		
 	public void ShootPrimary() {
 		if (play.isShipInPlayableArea && currentPrimaryWeapon != -1 && primaryWeapons[currentPrimaryWeapon].IsReloaded()) {
 			primaryWeapons[currentPrimaryWeapon].Shoot();
@@ -345,7 +344,7 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void CyclePrimary() {
-		if (currentSecondaryWeapon != -1) {
+		if (currentPrimaryWeapon != -1) {
 			primaryWeapons[currentPrimaryWeapon].Unmount();
 			currentPrimaryWeapon++;
 			if (currentSecondaryWeapon == 8 || primaryWeapons[currentPrimaryWeapon] == null) {
@@ -377,7 +376,5 @@ public class Ship : MonoBehaviour {
 			missileLockMode = MissileLockMode.None;
 		}
 	}
-		
+	
 }
-
-

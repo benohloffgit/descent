@@ -6,7 +6,7 @@ public class CollecteableScroll : MonoBehaviour {
 	
 	private float angle;
 
-	public void Initialize(Play play_) {
+/*	public void Initialize(Play play_) {
 		play = play_;
 		angle = 0f;
 	}
@@ -29,7 +29,7 @@ public class CollecteableScroll : MonoBehaviour {
 			play.ScrollFound();
 			Destroy(gameObject);
 		}
-	}
+	}*/
 	
 }
 

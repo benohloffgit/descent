@@ -107,13 +107,13 @@ public class PrefabFactory {
 		return newMissileDrop;
 	}
 
-	public GameObject CreateScrollDrop(Vector3 pos, Quaternion rot) {
+/*	public GameObject CreateScrollDrop(Vector3 pos, Quaternion rot) {
 		GameObject newScrollDrop = GameObject.Instantiate(game.scrollDropPrefab, pos, rot) as GameObject;
 		CollecteableScroll scrollDrop = newScrollDrop.GetComponent<CollecteableScroll>();
 		scrollDrop.Initialize(play);
 		scrollDrop.enabled = true;
 		return newScrollDrop;
-	}
+	}*/
 
 	public GameObject CreatePowerUpDrop(Vector3 pos, Quaternion rot, int weaponType, int index) {
 		GameObject newPowerUpDrop;

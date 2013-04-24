@@ -12,6 +12,8 @@ public class Zone {
 	public IntTriple exitRoom;
 	public IntTriple deltaToLastZone;
 	
+	public bool hasBugBeenDisplayed = false;
+	
 	private Cave cave;
 	
 	private static IntDouble[] ENTRYEXIT_POSITIONS = new IntDouble[] { new IntDouble(0,1), new IntDouble(1,1), new IntDouble(2,1), new IntDouble(1,0), new IntDouble(1,2) };
@@ -100,7 +102,11 @@ public class Zone {
 		try {
 			return GetRoom(gP).GetCellDensity(gP.cellPosition);
 		} catch (NullReferenceException e) {
-			Debug.Log ("NULL " + gP);
+			if (!hasBugBeenDisplayed) {
+				Debug.Log ("NULL " + gP);
+				hasBugBeenDisplayed = true;
+				throw new NullReferenceException();
+			}
 			return Cave.DENSITY_EMPTY;
 		}
 	}

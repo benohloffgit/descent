@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MiniMap : MonoBehaviour {
 	
@@ -13,6 +14,8 @@ public class MiniMap : MonoBehaviour {
 	private bool isCameraRotatingToFollow;
 	private float cameraFollowDistance;
 	private IntTriple currentRoomPos;
+	
+	private Transform[] roomConnectors = new Transform[4];
 		
 	private Mode mode;
 	private Follow follow;
@@ -70,6 +73,13 @@ public class MiniMap : MonoBehaviour {
 		isCameraRotatingToFollow = false;
 		follow = Follow.Off;
 		mouseSensitivity = play.game.state.GetPreferenceMiniMapMouseSensitivity();
+
+		for (int i=0; i<4; i++) {
+			roomConnectors[i] = (GameObject.Instantiate(play.game.miniMapRoomConnectorPrefab, Vector3.zero, Quaternion.identity) as GameObject).transform;
+//			roomConnectors[i].localScale *= MINI_MAP_SCALE;
+			roomConnectors[i].parent = transform;
+		}
+		
 		SwitchOff();
 	}
 	
@@ -156,6 +166,20 @@ public class MiniMap : MonoBehaviour {
 		m.triangles = r.roomMesh.mesh.triangles;
 		m.uv = r.roomMesh.mesh.uv;
 		GetComponent<MeshFilter>().mesh = m;
+		
+		System.Collections.Generic.Dictionary<IntTriple, Cell>.Enumerator en = r.exits.GetEnumerator();
+		en.MoveNext();
+		for (int i=0; i<4; i++) {
+			if (r.exits.Count > i) {
+				roomConnectors[i].position = (r.pos.GetVector3() * Game.DIMENSION_ROOM + en.Current.Value.pos.GetVector3()) * MINI_MAP_SCALE;
+				roomConnectors[i].rotation = Quaternion.identity;
+				play.cave.Align(roomConnectors[i], en.Current.Key);
+				roomConnectors[i].renderer.enabled = true;
+				en.MoveNext();
+			} else {
+				roomConnectors[i].renderer.enabled = false;
+			}
+		}
 	}
 	
 	public void DispatchGameInput() {

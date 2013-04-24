@@ -43,6 +43,12 @@ public class Movement {
 	public void Roam(Rigidbody rigidbody, ref GridPosition targetPosition, int minDistance, int maxDistance, float force) {
 		Vector3 position = rigidbody.transform.position;
 		GridPosition currentPosition = cave.GetGridFromPosition(position);
+		int dens;
+		try {
+			dens = cave.GetCellDensity(currentPosition);
+		} catch (NullReferenceException e) {
+			Debug.Log ("position " + position);
+		}
 				
 		if (cave.GetCellDensity(currentPosition) == Cave.DENSITY_FILLED) {
 //			Debug.Log ("start not empty " + currentPosition + " "  + targetPosition);

@@ -5,11 +5,12 @@ public class Game : MonoBehaviour {
 	public GameObject statePrefab;
 	public GameObject guiPrefab;
 
-	public GameObject roomPrefab;
+//	public GameObject roomPrefab;
 	public GameObject roomMeshPrefab;
 	public GameObject roomEntryPrefab;
 	public GameObject roomConnectorPrefab;
 	public GameObject miniMapPrefab;
+	public GameObject miniMapRoomConnectorPrefab;
 	public GameObject doorPrefab;
 	
 	public GameObject testCubePrefab;
@@ -40,8 +41,10 @@ public class Game : MonoBehaviour {
 	public GameObject healthDropPrefab;
 	public GameObject shieldDropPrefab;
 	public GameObject missileDropPrefab;
-	public GameObject scrollDropPrefab;
+//	public GameObject scrollDropPrefab;
 	public GameObject powerUpDropPrefab;
+
+	public Texture2D[] caveTextures;
 	
 	public State state;
 	public GameInput gameInput;
@@ -57,6 +60,7 @@ public class Game : MonoBehaviour {
 	public static int ENEMY = 1;
 	
 	public static int MAX_BREADCRUMBS = 10;
+	public static int MAX_MISSILE_AMMO = 10;
 	
 	public static int HEALTH_MODIFIER = 5;
 	

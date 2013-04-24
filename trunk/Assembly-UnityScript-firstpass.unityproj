@@ -65,14 +65,6 @@
      <Compile Include="Assets\Standard Assets\Image Effects (Pro Only)\Tonemapping.js" />
      <Compile Include="Assets\Standard Assets\Image Effects (Pro Only)\Triangles.js" />
      <Compile Include="Assets\Standard Assets\Image Effects (Pro Only)\Vignetting.js" />
-     <Compile Include="Assets\Standard Assets\Image Effects\AntialiasingAsPostEffectEditor.js" />
-     <Compile Include="Assets\Standard Assets\Image Effects\BloomAndLensFlaresEditor.js" />
-     <Compile Include="Assets\Standard Assets\Image Effects\ColorCorrectionCurvesEditor.js" />
-     <Compile Include="Assets\Standard Assets\Image Effects\DepthOfField34Editor.js" />
-     <Compile Include="Assets\Standard Assets\Image Effects\EdgeDetectEffectNormalsEditor.js" />
-     <Compile Include="Assets\Standard Assets\Image Effects\SunShaftsEditor.js" />
-     <Compile Include="Assets\Standard Assets\Image Effects\TiltShiftEditor.js" />
-     <Compile Include="Assets\Standard Assets\Image Effects\TonemappingEditor.js" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpSingleAxis_Unlit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseEffectShaderRGB.shader" />
@@ -99,7 +91,6 @@
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\HD\TpWorldBump.shader" />
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpWorld_Unlit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Contrast Stretch\Apply.shader" />
-     <None Include="Assets\TriplanarProjection\Readme.txt" />
      <None Include="Assets\AndruidsShaders\TriplanarNewLit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\frag_ao.cginc" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\DepthOfField34.shader" />

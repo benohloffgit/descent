@@ -160,15 +160,6 @@ public class RoomMesh : MonoBehaviour {
 		if (gridCellDensity[gridCell,5] > ISOVALUE) cubeindex |= 32;
 		if (gridCellDensity[gridCell,6] > ISOVALUE) cubeindex |= 64;
 		if (gridCellDensity[gridCell,7] > ISOVALUE) cubeindex |= 128;
-
-/*		if (gridCellDensity[gridCell,0] == 1) cubeindex |= 1;
-		if (gridCellDensity[gridCell,1] == 1) cubeindex |= 2;
-		if (gridCellDensity[gridCell,2] == 1) cubeindex |= 4;
-		if (gridCellDensity[gridCell,3] == 1) cubeindex |= 8;
-		if (gridCellDensity[gridCell,4] == 1) cubeindex |= 16;
-		if (gridCellDensity[gridCell,5] == 1) cubeindex |= 32;
-		if (gridCellDensity[gridCell,6] == 1) cubeindex |= 64;
-		if (gridCellDensity[gridCell,7] == 1) cubeindex |= 128;*/
 		
 //		Debug.Log("cube index " + cubeindex + " for gridCell " + gridCell);
 	

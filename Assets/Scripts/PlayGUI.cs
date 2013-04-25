@@ -170,10 +170,11 @@ public class PlayGUI {
 		
 	public void DispatchUpdate() {
 		if (toBeDisplayedShield != ship.shieldPercentage) {
+			Debug.Log ("toBeDisplayedShield " + ship.shieldPercentage + " " + displayedShield);
 			SetShieldCount(displayedShield);
 			toBeDisplayedShield = ship.shieldPercentage;
-			Debug.Log ("toBeDisplayedShield " + toBeDisplayedShield);
 		} else if (displayedShield == ship.shieldPercentage && toBeDisplayedHealth != ship.healthPercentage) {
+			Debug.Log ("toBeDisplayedHealth " + ship.healthPercentage + " "  + displayedHealth);
 			SetHealthCount(displayedHealth);
 			toBeDisplayedHealth = ship.healthPercentage;
 		}
@@ -207,11 +208,11 @@ public class PlayGUI {
 		int removed = 0;
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
 			if (enemyHUDInfo.Count > i) {
-				if (enemyHUDInfo[i-removed].lastTimeHUDInfoRequested + ENEMY_HUD_INFO_MAX_TIME > Time.time ) {					
-					if (enemyHUDInfo[i-removed] == null) {
+				if (enemyHUDInfo[i-removed] != null && enemyHUDInfo[i-removed].lastTimeHUDInfoRequested + ENEMY_HUD_INFO_MAX_TIME > Time.time ) {					
+/*					if (enemyHUDInfo[i-removed] == null) {
 						Debug.Log ("enemy is null " + enemyHUDInfo[i-removed] + " " + Time.time);
 						Debug.Log ("enemy is null " + enemyHUDInfo[i-removed].lastTimeHUDInfoRequested);
-					}
+					}*/
 					ShowEnemyHUDInfo(i, enemyHUDInfo[i-removed]);
 				} else {
 					enemyHUDInfo.RemoveAt(i-removed);

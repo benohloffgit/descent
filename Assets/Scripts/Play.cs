@@ -21,6 +21,7 @@ public class Play : MonoBehaviour {
 	public bool isInKeyboardMode;
 	private int caveSeed;
 	private int botSeed;
+	private Transform lightsHolder;
 	
 	public GridPosition placeShipBeforeExitDoor;
 	
@@ -58,12 +59,16 @@ public class Play : MonoBehaviour {
 
 	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);
 	
+	void Awake() {
+		lightsHolder = GameObject.Find("Lights").transform;
+	}
+	
 	void OnGUI() {		
  		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
 			Application.Quit();
 		}
 		GUI.Label(new Rect (20,Screen.height-90,500,80),
-				"Active-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +
+				"Active-Living-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +"--"+ enemyDistributor.enemiesAll +
 				"\nHealth E: " + enemyDistributor.enemiesHealthActive +"--"+ enemyDistributor.enemiesHealthActiveAvg.ToString("F2") +
 				"\nFPS S-E-S/E: " + ship.firepowerPerSecond.ToString("F2") +"--"+ enemyDistributor.enemiesFirepowerPerSecondActive.ToString("F2") +"--"+enemiesToShipFPSRatio.ToString("F2")+
 				"\nHealth/FPS S-E: " + activeEnemiesHealthToShipFPSRatio.ToString("F2") +"--"+ shipHealthToActiveEnemiesFPSRatio.ToString("F2") +
@@ -232,7 +237,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 1814761;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 0;
+		zoneID = 1;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -252,9 +257,7 @@ public class Play : MonoBehaviour {
 		movement = new Movement(this);
 		
 		StartZone ();
-		
-		ship.transform.position = cave.GetCaveEntryPosition();		
-		
+				
 //		currentGravitiyDirection = 0;
 //		lastGravitiyChange = Time.time;
 		
@@ -266,26 +269,39 @@ public class Play : MonoBehaviour {
 	
 	private void StartZone() {
 		isShipInPlayableArea = false;
-		Debug.Log ("Cave Seed: " + caveSeed);
+		Debug.Log (" ------------------------------- Cave Seed: " + caveSeed);
 		UnityEngine.Random.seed = caveSeed;
 		cave.AddZone(zoneID);
 		UnityEngine.Random.seed = botSeed;
 		if (zoneID > 0) {
-			enemyDistributor.Distribute(zoneID);
+			enemyDistributor.Distribute();
 		}
 		collecteablesDistributor.DropPowerUps();
 		ship.CalculateHealth();
+		lightsHolder.rotation = Quaternion.identity;
+		lightsHolder.Rotate(UnityEngine.Random.value*360f,UnityEngine.Random.value*360f,UnityEngine.Random.value*360f);
+		ship.transform.position = cave.GetCaveEntryPosition();		
 	}
 	
-	public void EndZone() {
+	public void NextZone() {
+		EndZone();
+		zoneID++;
+		StartZone();
+	}
+	
+	public void RepeatZone() {
+		EndZone();
+		ship.CalculateHealth();
+		StartZone();
+	}
+	
+	private void EndZone() {
 		enemyDistributor.RemoveAll();
 		cave.RemoveZone();
 		playGUI.Reset();
-		zoneID++;
 		botSeed = UnityEngine.Random.Range(0,9999999);
 		UnityEngine.Random.seed = caveSeed;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
-		StartZone();
 	}
 	
 	public void Initialize(Game g, GameInput input) {
@@ -353,7 +369,7 @@ public class Play : MonoBehaviour {
 		} else if (keyCommand.Substring(1, 1) == "s") {
 				int clazz = Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1));
 				int model = Convert.ToInt32(keyCommand.Substring(3, 2));
-				Spawn s = enemyDistributor.CreateSpawn(clazz, model, model + EnemyDistributor.CLAZZ_A_EQUIVALENT_MODEL[clazz], GetShipGridPosition());
+				enemyDistributor.CreateSpawn(clazz, model, model + EnemyDistributor.CLAZZ_A_EQUIVALENT_MODEL[clazz], GetShipGridPosition());
 				Debug.Log ("Adding Spawn  " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
 		}
 				

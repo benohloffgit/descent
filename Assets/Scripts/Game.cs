@@ -63,6 +63,7 @@ public class Game : MonoBehaviour {
 	public static int MAX_MISSILE_AMMO = 10;
 	
 	public static int HEALTH_MODIFIER = 5;
+	public static int BEGINNER_ZONES = 4;
 	
 	public static int LAYER_CAVE = 8;
 	public static int LAYER_SHIP = 9;

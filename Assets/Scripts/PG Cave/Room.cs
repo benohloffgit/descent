@@ -54,10 +54,10 @@ public class Room {
 		} else {
 			return Cave.DENSITY_EMPTY;
 		}
-/*		} catch (IndexOutOfRangeException e) {
-			Debug.Log ("Exception 01 " +pos);
-			return Cave.DENSITY_FILLED;
-		}*/
+//		} catch (IndexOutOfRangeException e) {
+//			Debug.Log ("Exception 01 " +pos);
+//			return 2;
+//		}
 	}
 
 	public int GetCellDensity(int x, int y, int z) {

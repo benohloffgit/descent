@@ -50,7 +50,7 @@ public class Door : MonoBehaviour {
 				isShut = true;
 			} else if (type == TYPE_EXIT && !play.isShipInPlayableArea) {
 				isShut = true;
-				play.EndZone();
+				play.NextZone();
 			}
 		}
 	}

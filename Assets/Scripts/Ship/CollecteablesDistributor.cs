@@ -98,14 +98,13 @@ public class CollecteablesDistributor {
 	}
 	
 	public void DropPowerUps() {
-		int zone5 = Zone.GetZone5StepID(play.zoneID);
-		if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5] != 0) {
+		if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[play.zoneID] != 0) {
 			GridPosition gP = play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition();
-			DropPowerUp(gP.GetWorldVector3(), Weapon.PRIMARY, zone5);			
+			DropPowerUp(gP.GetWorldVector3(), Weapon.PRIMARY, play.zoneID);			
 		}
-		if (Weapon.SHIP_SECONDARY_WEAPON_TYPES[zone5] != 0) {
+		if (Weapon.SHIP_SECONDARY_WEAPON_TYPES[play.zoneID] != 0) {
 			GridPosition gP = play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition();
-			DropPowerUp(gP.GetWorldVector3(), Weapon.SECONDARY, zone5);
+			DropPowerUp(gP.GetWorldVector3(), Weapon.SECONDARY, play.zoneID);
 		}
 		
 	}

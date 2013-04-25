@@ -10,7 +10,7 @@ public abstract class Enemy : MonoBehaviour {
 		Mine dropper
 	*/
 	public static string CLAZZ_A = "a"; // bull
-	public static string CLAZZ_B = "b"; // spile
+	public static string CLAZZ_B = "b"; // spike
 	public static string CLAZZ_C = "c";
 	public static string CLAZZ_D = "d";
 	public static string CLAZZ_E = "e";
@@ -32,9 +32,9 @@ public abstract class Enemy : MonoBehaviour {
 	
 	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H};
 	
-	public static int CLAZZ_STEP = 99;
+//	public static int CLAZZ_STEP = 99;
 	public static int MODEL_MIN = 0;
-	public static int MODEL_MAX = 98;
+	public static int MODEL_MAX = 63;
 	public static int CLAZZ_MIN = 0;
 	public static int CLAZZ_MAX = 7;
 	public static int DISTRIBUTION_CLAZZ_MAX = 8; // 8 clazzes
@@ -42,17 +42,21 @@ public abstract class Enemy : MonoBehaviour {
 	public static float AGGRESSIVENESS_OFF = 0f;
 	public static float AGGRESSIVENESS_DECREASE = 0.0016f;
 	
+	public static float BOSS_DAMAGE_MODIFIER = 2.0f;
+	public static float BOSS_ACCURACY_MODIFIER = 1.0f;
+	public static float BOSS_FREQUENCY_MODIFIER = 1.0f;
+	
 	private static float DEACTIVATION_TIME = 5.0f;
 	
 	public Game game;
 	public Play play;
-	private Spawn spawn;
+	protected Spawn spawn;
 	
 	public string clazz; // (A-L)
 	public int clazzNum; // 0-9 
 	public int model; // 0-98 (1-99)
 	public int displayModel;
-	public int modelNum; // 0 - 998
+//	public int modelNum; // 0 - 998
 	public int modelClazzAEquivalent;
 	public int health;
 	public int shield;
@@ -95,7 +99,7 @@ public abstract class Enemy : MonoBehaviour {
 
 	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int enemyEquivalentClazzAModel_, int health_, int shield_,
 			float size_, float aggressiveness_, float movementForce_,
-			float turningForce_, int lookAtRange_, //int chaseRange_,
+			float turningForce_, int lookAtRange_,
 			int roamMinRange_, int roamMaxRange_) {		
 		play = play_;
 		spawn = spawn_;
@@ -104,11 +108,11 @@ public abstract class Enemy : MonoBehaviour {
 		clazz = CLAZZES[clazzNum];
 		model = model_;
 		displayModel = model +1;
-		modelNum = clazzNum * CLAZZ_STEP + model;
+//		modelNum = clazzNum * CLAZZ_STEP + model;
 		modelClazzAEquivalent = enemyEquivalentClazzAModel_;
-		health = health_;
-		shield = shield_;
-		size = size_;
+		health = spawn.isBoss ? health_ * 2 : health_;
+		shield = spawn.isBoss ? shield_ * 2 : shield_;
+		size = spawn.isBoss ? 2.5f : size_;
 		aggressiveness = 0;//aggressiveness_;
 		movementForce = movementForce_;
 		turningForce = turningForce_;
@@ -119,8 +123,8 @@ public abstract class Enemy : MonoBehaviour {
 		
 		canBeDeactivated = true;
 		firepowerPerSecond = 0;
-		int zone5 = Zone.GetZone5StepID(modelClazzAEquivalent);
-		InitializeWeapon(Weapon.PRIMARY, Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5], Weapon.SHIP_PRIMARY_WEAPON_MODELS[zone5]);
+//		int zone5 = Zone.GetZone5StepID(modelClazzAEquivalent);
+		InitializeWeapon(Weapon.PRIMARY, Weapon.SHIP_PRIMARY_WEAPON_TYPES[modelClazzAEquivalent], Weapon.SHIP_PRIMARY_WEAPON_MODELS[modelClazzAEquivalent]);
 	
 		firepowerPerSecond += primaryWeapons[0].damage / primaryWeapons[0].frequency;
 		
@@ -143,12 +147,12 @@ public abstract class Enemy : MonoBehaviour {
 	
 	public void Initialize(Play play_, Spawn spawn_, string clazz_, int model_, int enemyEquivalentClazzAModel_, int health_, int shield_,
 			float size_, float aggressiveness_, float movementForce_,
-			float turningForce_, int lookAtRange_, //int chaseRange_,
+			float turningForce_, int lookAtRange_,
 			int roamMinRange_, int roamMaxRange_) {
 		
 		Initialize(play_, spawn_, CLAZZ_NUM(clazz_), model_, enemyEquivalentClazzAModel_, health_, shield_,
 			size_, aggressiveness_, movementForce_,
-			turningForce_, lookAtRange_, //chaseRange_,
+			turningForce_, lookAtRange_,
 			roamMinRange_, roamMaxRange_);		
 	}
 	

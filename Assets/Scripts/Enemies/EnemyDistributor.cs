@@ -10,6 +10,7 @@ public class EnemyDistributor {
 	
 	public int enemiesLiving;
 	public int enemiesActive;
+	public int enemiesAll;
 	public int enemiesHealth;
 	public int enemiesHealthActive;
 	public int enemiesHealthActiveAvg;
@@ -19,7 +20,7 @@ public class EnemyDistributor {
 	public float enemiesFirepowerPerSecondAvgActive;
 	public float enemiesHitRatio;
 	
-	private static float MAX_RAYCAST_DISTANCE = 100.0f;
+//	private static float MAX_RAYCAST_DISTANCE = 100.0f;
 	
 	private static float[] ENEMY_SIZES = new float[] {1.0f, 0.5f, 1.5f, 0.7f, 1.3f, 0.3f, 0.7f, 1.7f, 2.0f, 1.0f};
 	private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
@@ -29,8 +30,14 @@ public class EnemyDistributor {
 //	private static int[] ENEMY_CHASE_RANGES = new int[] {4,6,12,8,2,10};
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
-	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
+//	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
 	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,1,4,9,16,25,36,49};
+	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 3.0f};
+	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 12.0f};
+	private static int[] SPAWN_MIN_LIVING = new int[] {1, 1}; // first value is for BEGINNER Zones
+	private static int[] SPAWN_MAX_LIVING = new int[] {2, 3};
+	private static int[] SPAWN_MIN_GENERATED = new int[] {1, 3};
+	private static int[] SPAWN_MAX_GENERATED = new int[] {2, 4};
 
 //private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times 5) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
 //public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,5,20,45,80,125,180,245};
@@ -42,39 +49,63 @@ public class EnemyDistributor {
 		ResetStats();
 	}
 	
-	public void Distribute(int zoneID) {
-		int zone5 = Zone.GetZone5StepID(zoneID);
-//		int enemyCoreModelNum = zoneID;
-//		int enemyCoreClazz = Mathf.FloorToInt(enemyCoreModelNum / Enemy.CLAZZ_STEP);
-//		int enemyCoreModel = enemyCoreModelNum % Enemy.CLAZZ_STEP;
+	public void Distribute() {
+		enemiesAll = 0;
 		
 //		Debug.Log ("Distributing enemies based on zoneID: " + zoneID + ", enemyCoreModelNum: "+ enemyCoreModelNum +", enemyCoreClazz: " + enemyCoreClazz +", enemyCoreModel: " +enemyCoreModel);
 		
-		int enemyClazzVariety = CalculateEnemyClazzVariety(zone5);
+		int enemyClazzVariety = CalculateEnemyClazzVariety(play.zoneID);
 		Debug.Log ("enemyClazzVariety : " + enemyClazzVariety );
 		
 		float[] enemyClazzProbability = CalculateEnemyClazzProbability(enemyClazzVariety);
-				
-		foreach (Room r in play.cave.zone.roomList) {
-			if (r.id > -1) {  // ----  > 0 all rooms except entry
-				float rand = UnityEngine.Random.value;
-				for (int enemyClazz=0; enemyClazz < enemyClazzProbability.Length; enemyClazz++) {
+		
+		float spawnMinFrequency, spawnMaxFrequency;
+		int spawnMinLiving, spawnMaxLiving, spawnMinGenerated, spawnMaxGenerated;
+		int enemyClazz, enemyModel, enemyEquivalentClazzAModel;
+		
+//		foreach (Room r in play.cave.zone.roomList) {
+//			if (r.id > -1) {
+				for (enemyClazz=0; enemyClazz < enemyClazzProbability.Length; enemyClazz++) {
+					float rand = UnityEngine.Random.value;
 					if (rand <= enemyClazzProbability[enemyClazz]) {
-					//	int enemyClazzDelta = CalculateEnemyClazzDelta(enemyClazzVariety, enemyCoreClazz, i);
-						//Debug.Log ("enemyClazzDelta: " + enemyClazzDelta);
-					//	int enemyModel = CalculateEnemyModel(enemyCoreClazz, enemyCoreModel, enemyClazzDelta);
-						int enemyEquivalentClazzAModel = CalculateEnemyEquivalentClazzAModel(zoneID, enemyClazz);
-						//Debug.Log ("enemyModel: " + enemyModel);
-					//	int enemyClazz = Mathf.Clamp(enemyCoreClazz + enemyClazzDelta, Enemy.CLAZZ_MIN, Enemy.CLAZZ_MAX);
-						int enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
-						Debug.Log ("enemyClazz/enemyModel (equivalent A): " + enemyClazz+"/" + " " +enemyModel);
+						enemyEquivalentClazzAModel = CalculateEnemyEquivalentClazzAModel(play.zoneID, enemyClazz);
+						enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
+						Debug.Log ("Enemy of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
 						
-						CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel, r.GetRandomNonSpawnNonExitGridPosition(),
-							UnityEngine.Random.Range(5.0f, 15.0f), UnityEngine.Random.Range(1, 5), UnityEngine.Random.Range(3, 7)); // Spawn.INFINITY
+						if (play.zoneID > Game.BEGINNER_ZONES) {
+							spawnMinFrequency = SPAWN_MIN_FREQUENCY[1];
+							spawnMaxFrequency = SPAWN_MAX_FREQUENCY[1];
+							spawnMinLiving = SPAWN_MIN_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+							spawnMaxLiving = SPAWN_MAX_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+							spawnMinGenerated = SPAWN_MIN_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+							spawnMaxGenerated = SPAWN_MAX_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+						} else {
+							spawnMinFrequency = SPAWN_MIN_FREQUENCY[0];
+							spawnMaxFrequency = SPAWN_MAX_FREQUENCY[0];
+							spawnMinLiving = SPAWN_MIN_LIVING[0];
+							spawnMaxLiving = SPAWN_MAX_LIVING[0];
+							spawnMinGenerated = SPAWN_MIN_GENERATED[0];
+							spawnMaxGenerated = SPAWN_MAX_GENERATED[0];
+						}
+						CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
+							play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition(),
+							UnityEngine.Random.Range(spawnMinFrequency, spawnMaxFrequency),
+							UnityEngine.Random.Range(spawnMinLiving, spawnMaxLiving),
+							UnityEngine.Random.Range(spawnMinGenerated, spawnMaxGenerated)); // Spawn.INFINITY
+				
+						enemiesAll += spawnMaxGenerated;
 					}
 				}
-			}
-		}
+				// BOSS spawn
+				enemyClazz = enemyClazzProbability.Length-1;
+				enemyEquivalentClazzAModel = play.zoneID;
+				enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
+				CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
+							play.cave.zone.roomList[1].GetRandomNonSpawnNonExitGridPosition(),
+							1.0f, 1, 1, true);		
+				Debug.Log ("Boss of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
+//			}
+//		}
 		
 /*		IntTriple result = (IntTriple)emptyCells[UnityEngine.Random.Range(0,emptyCells.Count)];
 //		Debug.Log (result.x +" " + result.y +" " + result.z);
@@ -156,10 +187,10 @@ public class EnemyDistributor {
 	}
 
 	public Spawn CreateSpawn(int enemyClazz, int enemyModel, int enemyEquivalentClazzAModel, GridPosition gridPos,
-				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY) {
+				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY, bool isBoss = false) {
 		GameObject p = GameObject.Instantiate(game.spawnPrefab) as GameObject;
 		Spawn spawn = p.GetComponentInChildren<Spawn>();
-		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel, frequency, maxLiving, maxGenerated);
+		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel, frequency, maxLiving, maxGenerated, isBoss);
 		spawn.transform.position = gridPos.GetVector3() * RoomMesh.MESH_SCALE;
 		play.cave.zone.GetRoom(gridPos).SetCellToSpawn(gridPos.cellPosition);
 		return spawn;
@@ -305,7 +336,7 @@ public class EnemyDistributor {
 		}
 		//modelDelta += enemyClazzDelta * -3;
 		
-		return Mathf.Clamp(model + modelDelta, CLAZZ_A_EQUIVALENT_MODEL[clazz], CLAZZ_A_EQUIVALENT_MODEL[clazz] + Enemy.MODEL_MAX);
+		return Mathf.Clamp(model + modelDelta, CLAZZ_A_EQUIVALENT_MODEL[clazz], Enemy.MODEL_MAX);
 	}
 
 /*	private int CalculateEnemyModel(int coreClazz, int coreModel, int enemyClazzDelta) {

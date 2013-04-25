@@ -19,7 +19,6 @@ public class Movement {
 	public void Chase(Rigidbody rigidbody, GridPosition targetPosition, float force, ref bool isOnPath) {	
 		Vector3 position = rigidbody.transform.position;
 		GridPosition currentPosition = cave.GetGridFromPosition(position);
-		
 /*		// make sure targetPosition refers to actual empty grid cell in cave (this might not be the case with the first entry in pathfinding)
 		if (cave.GetCellDensity(targetPosition) == Cave.DENSITY_FILLED) {
 			Debug.Log ("Chase pos filled " + targetPosition);
@@ -43,12 +42,14 @@ public class Movement {
 	public void Roam(Rigidbody rigidbody, ref GridPosition targetPosition, int minDistance, int maxDistance, float force) {
 		Vector3 position = rigidbody.transform.position;
 		GridPosition currentPosition = cave.GetGridFromPosition(position);
-		int dens;
-		try {
-			dens = cave.GetCellDensity(currentPosition);
-		} catch (NullReferenceException e) {
+//		try {
+		if (cave.GetCellDensity(currentPosition) == 2) {
 			Debug.Log ("position " + position);
 		}
+//		} catch (NullReferenceException e) {
+//			Game.DefNull(e);
+			
+//		}
 				
 		if (cave.GetCellDensity(currentPosition) == Cave.DENSITY_FILLED) {
 //			Debug.Log ("start not empty " + currentPosition + " "  + targetPosition);

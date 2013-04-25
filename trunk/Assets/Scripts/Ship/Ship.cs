@@ -58,9 +58,9 @@ public class Ship : MonoBehaviour {
 	
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;
-	private static int CAMERA_POSITION_LEFT = 2;
-	private static int CAMERA_POSITION_RIGHT = 3;
-	private static int CAMERA_POSITION_FRONT = 4;
+//	private static int CAMERA_POSITION_LEFT = 2;
+//	private static int CAMERA_POSITION_RIGHT = 3;
+//	private static int CAMERA_POSITION_FRONT = 4;
 		
 	public Weapon[] primaryWeapons = new Weapon[8];
 	public Weapon[] secondaryWeapons = new Weapon[8];
@@ -190,12 +190,12 @@ public class Ship : MonoBehaviour {
 				damage = 0;
 			}
 		}
-		health -= damage;
+		health = Mathf.Max (0, health-damage);
 		healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
 		shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
 		if (health == 0) {
 			// stop game
-			Time.timeScale = 0f;
+			play.RepeatZone();
 		}
 		//Debug.Log (damage +" " + shield + " " +  maxShield+ " "+ health + " " + healthPercentage + " " +  shieldPercentage);
 	}
@@ -267,7 +267,7 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void AddPrimaryWeapon(int wType, int wModel) {
-		Weapon w = new Weapon(Weapon.PRIMARY, transform, play, wType, wModel, WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP);
+		Weapon w = new Weapon(Weapon.PRIMARY, transform, play, wType, wModel, WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP, (float)(play.zoneID+1), false);
 		primaryWeapons[wType-1] = w;
 		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT];
 		currentPrimaryWeapon = wType-1;
@@ -282,7 +282,7 @@ public class Ship : MonoBehaviour {
 		if (secondaryWeapons[wType-1] != null) {
 			ammunition += secondaryWeapons[wType-1].ammunition;
 		}
-		Weapon w = new Weapon(Weapon.SECONDARY, transform, play, wType, wModel, WEAPON_POSITIONS[WEAPON_POSITION_CENTER], Game.SHIP, ammunition);
+		Weapon w = new Weapon(Weapon.SECONDARY, transform, play, wType, wModel, WEAPON_POSITIONS[WEAPON_POSITION_CENTER], Game.SHIP, (float)(play.zoneID+1), false, ammunition);
 		secondaryWeapons[wType-1] = w;
 		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_CENTER];
 		currentSecondaryWeapon = wType-1;
@@ -291,10 +291,8 @@ public class Ship : MonoBehaviour {
 		Debug.Log ("adding secondary weapon type/model " + wType+"/"+wModel);
 	}
 	
-	private void AddWeapons() {
-		int zone5 = Zone.GetZone5StepID(play.zoneID) - 1; // TODO actual weapons must depend on power ups previously found
-			
-		for (int i=zone5; i >= 0; i--) {
+	private void AddWeapons() {			
+		for (int i=play.zoneID-1; i >= 0; i--) {
 			if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[i] != 0 && primaryWeapons[Weapon.SHIP_PRIMARY_WEAPON_TYPES[i]-1] == null) {
 				AddPrimaryWeapon(Weapon.SHIP_PRIMARY_WEAPON_TYPES[i], Weapon.SHIP_PRIMARY_WEAPON_MODELS[i]);
 			}	
@@ -303,9 +301,9 @@ public class Ship : MonoBehaviour {
 			}
 		}
 		
-		if (zone5 > 0) {
-			currentPrimaryWeapon = Weapon.SHIP_PRIMARY_WEAPON_TYPES[zone5]-1;
-			currentSecondaryWeapon = Weapon.SHIP_SECONDARY_WEAPON_TYPES[zone5]-1;
+		if (play.zoneID > 0) {
+			currentPrimaryWeapon = Weapon.SHIP_PRIMARY_WEAPON_TYPES[play.zoneID-1]-1;
+			currentSecondaryWeapon = Weapon.SHIP_SECONDARY_WEAPON_TYPES[play.zoneID-1]-1;
 		} else {
 			currentPrimaryWeapon = -1;
 			currentSecondaryWeapon = -1;
@@ -320,9 +318,7 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void CalculateHealth() {
-		int zone5 = Zone.GetZone5StepID(play.zoneID);
-		
-		maxHealth = zone5 * Game.HEALTH_MODIFIER * HEALTH_FACTOR;
+		maxHealth = play.zoneID * Game.HEALTH_MODIFIER * HEALTH_FACTOR;
 		maxShield = maxHealth / 2;
 		health = maxHealth;
 		shield = maxShield;

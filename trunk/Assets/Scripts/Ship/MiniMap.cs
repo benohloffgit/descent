@@ -19,7 +19,7 @@ public class MiniMap : MonoBehaviour {
 		
 	private Mode mode;
 	private Follow follow;
-	private int moveBitwise; // either roll in 1finger mode, or shift in 2finger mode
+//	private int moveBitwise; // either roll in 1finger mode, or shift in 2finger mode
 /*	private int moveZoomIn = 1;
 	private int moveZoomOut = 2;
 	private int moveYawLeft = 4;
@@ -29,15 +29,15 @@ public class MiniMap : MonoBehaviour {
 	private int moveTurnLeft = 64;
 	private int moveTurnRight = 128;*/
 	
-	private int primaryTouchFinger;
-	private int secondaryTouchFinger;
+//	private int primaryTouchFinger;
+//	private int secondaryTouchFinger;
 /*	private Vector2 touchPosition1;
 	private Vector2 touchPosition2;
 	private float touchTime1;
 	private float touchTime2;
 	private Vector3 touchDelta1;
 	private Vector3 touchDelta2;*/
-	private bool usesMouse;
+//	private bool usesMouse;
 	
 	private static float MINI_MAP_SCALE = 0.2f;
 	private static float ZOOM_MODIFIER = 1.0f;
@@ -66,10 +66,10 @@ public class MiniMap : MonoBehaviour {
 		play = p;
 		miniMapCamera = c;
 		
-		moveBitwise = 0;
-		primaryTouchFinger = 0;
-		secondaryTouchFinger = 1;
-		usesMouse = true;
+//		moveBitwise = 0;
+//		primaryTouchFinger = 0;
+//		secondaryTouchFinger = 1;
+//		usesMouse = true;
 		isCameraRotatingToFollow = false;
 		follow = Follow.Off;
 		mouseSensitivity = play.game.state.GetPreferenceMiniMapMouseSensitivity();

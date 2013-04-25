@@ -79,7 +79,7 @@ public class Weapon {
 
 	private static float MAX_RAYCAST_DISTANCE = Game.MAX_VISIBILITY_DISTANCE * 1.5f;
 	
-	public Weapon(int mount_, Transform parent_, Play play_, int type_, int model_, Vector3 position_, int mountedTo_, int ammunition_ = -1) {
+	public Weapon(int mount_, Transform parent_, Play play_, int type_, int model_, Vector3 position_, int mountedTo_, float damageBase, bool isBoss = false, int ammunition_ = -1) {
 		mount = mount_;
 		parent = parent_;
 		play = play_;
@@ -99,7 +99,7 @@ public class Weapon {
 			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
 			accuracy = 0f;
-			damage =  Mathf.RoundToInt(Zone.GetZone5StepID(play.zoneID+1) * 1.5f);
+			damage =  Mathf.RoundToInt(damageBase * 1.5f);
 			if (mount == Weapon.PRIMARY) {
 				frequency = 0.2f;
 			} else {
@@ -108,7 +108,12 @@ public class Weapon {
 		} else {
 			layerMask = Game.LAYER_MASK_SHIP_CAVE;
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
-			damage =  Mathf.RoundToInt( (Zone.GetZone5StepID(play.zoneID+1) + 1) * 1.5f); // 1 5step zone better
+			if (isBoss) {
+				damageBase *= Enemy.BOSS_DAMAGE_MODIFIER;
+				accuracy -= Enemy.BOSS_ACCURACY_MODIFIER;
+				frequency -= Enemy.BOSS_FREQUENCY_MODIFIER;
+			}
+			damage =  Mathf.RoundToInt(damageBase * 1.5f);
 		}
 		
 	}
@@ -204,17 +209,17 @@ public class Weapon {
 			switch (type) {
 				case TYPE_GUN:
 					speed = 100f;
-					accuracy = 4.0f - model * 0.015f;
-					frequency = 3.0f - model * 0.02f; break;		
+					accuracy = 4.0f - model * 0.25f;
+					frequency = 3.0f - model * 0.125f; break;		
 				case TYPE_LASER:
 					speed = 200f;
-					accuracy = 3.0f - model * 0.01f;
-					frequency = 3.0f - model * 0.02f; break;
+					accuracy = 3.0f - model * 0.1875f;
+					frequency = 3.0f - model * 0.125f; break;
 //					weaponGameObject = GameObject.Instantiate(game.laserGunPrefab) as GameObject; break;
 				default:
 					speed = 100f;
-					accuracy = 4.0f - model * 0.015f;
-					frequency = 3.0f - model * 0.02f; break;
+					accuracy = 4.0f - model * 0.1875f;
+					frequency = 3.0f - model * 0.125f; break;
 //					weaponGameObject = GameObject.Instantiate(game.gunPrefab) as GameObject; break;
 			}
 			weaponGameObject = GameObject.Instantiate(game.primaryWeaponPrefabs[type-1]) as GameObject; 
@@ -222,18 +227,18 @@ public class Weapon {
 			switch (type) {
 				case TYPE_MISSILE:
 					speed = 50f;
-					accuracy = 4.0f - model * 0.015f;
-					frequency = 4.0f - model * 0.02f; break;			
+					accuracy = 0;//4.0f - model * 0.015f;
+					frequency = 4.0f - model * 0.0625f; break;			
 //					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 				case TYPE_GUIDED_MISSILE:
 					speed = 50f;
-					accuracy = 3.0f - model * 0.01f;
-					frequency = 6.0f - model * 0.02f; break;
+					accuracy = 0;//3.0f - model * 0.01f;
+					frequency = 6.0f - model * 0.0625f; break;
 //					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 				default:
 					speed = 50f;
-					accuracy = 4.0f - model * 0.015f;
-					frequency = 6.0f - model * 0.02f; break;
+					accuracy = 0;//4.0f - model * 0.015f;
+					frequency = 6.0f - model * 0.0625f; break;
 //					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 			}
 			weaponGameObject = GameObject.Instantiate(game.secondaryWeaponPrefabs[type-1]) as GameObject;

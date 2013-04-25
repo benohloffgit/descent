@@ -9,7 +9,7 @@ public class Cave {
 	public IntTriple[] textureCombinations;
 	
 	private Game game;
-	private Play play;
+	public Play play;
 	
 	private int dimZone;
 	private List<RoomMiner> roomMiners;
@@ -155,10 +155,10 @@ public class Cave {
 		foreach (Door d in doors) {
 			d.Reset();
 		}
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureCombinations[Mathf.FloorToInt(play.zoneID/5)].x]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureCombinations[UnityEngine.Random.Range(0,12)].y]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureCombinations[UnityEngine.Random.Range(0,12)].z]);
-//		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[11]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureCombinations[Mathf.FloorToInt(play.zoneID/5)].x]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureCombinations[UnityEngine.Random.Range(0,13)].y]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureCombinations[UnityEngine.Random.Range(0,13)].z]);
+//		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[3]);
 	}
 	
 	private IntTriple GetOppositeCell(Cell cell, IntTriple alignment) {

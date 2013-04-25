@@ -28,9 +28,10 @@ public class Zone {
 	}
 	
 	private void CreateRooms() {
-		entryRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,5)],0);
+		int entryExitPossibilities = cave.play.zoneID > Game.BEGINNER_ZONES ? 5 : 2;
+		entryRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,entryExitPossibilities)],0);
 		AddRoom(0, entryRoom);
-		exitRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,5)],2);
+		exitRoom = new IntTriple(ENTRYEXIT_POSITIONS[UnityEngine.Random.Range(0,entryExitPossibilities)],2);
 		AddRoom(1, exitRoom);
 		// dig from entry to exit
 		IntTriple pos = entryRoom;
@@ -52,7 +53,9 @@ public class Zone {
 				}
 			}
 		}
-		AddAdditionalRooms();
+		if (cave.play.zoneID > Game.BEGINNER_ZONES) {
+			AddAdditionalRooms();
+		}			
 		Debug.Log ("Rooms generated " + roomList.Count);
 	}
 	
@@ -102,6 +105,7 @@ public class Zone {
 		try {
 			return GetRoom(gP).GetCellDensity(gP.cellPosition);
 		} catch (NullReferenceException e) {
+			Game.DefNull(e);
 			if (!hasBugBeenDisplayed) {
 				Debug.Log ("NULL " + gP);
 				hasBugBeenDisplayed = true;
@@ -146,8 +150,8 @@ public class Zone {
 		return neighbours;
 	}
 	
-	public static int GetZone5StepID(int zoneID) {
+/*	public static int GetZone5StepID(int zoneID) {
 		return zoneID;
 //		return Mathf.FloorToInt(zoneID / 5.0f);
-	}
+	}*/
 }

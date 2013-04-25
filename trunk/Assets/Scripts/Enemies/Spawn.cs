@@ -4,7 +4,8 @@ using System.Collections;
 public class Spawn : MonoBehaviour {
 	public static string TAG = "Spawn";
 	
-	private Game game;
+	public bool isBoss;
+//	private Game game;
 	private Play play;
 	private EnemyDistributor enemyDistributor;
 	
@@ -30,10 +31,12 @@ public class Spawn : MonoBehaviour {
 	}
 	
 	public void Initialize(EnemyDistributor enemyDistributor_, Play play_, GridPosition gridPos_,
-				int enemyClazz_, int enemyModel_, int enemyEquivalentClazzAModel_ ,float frequency_, int maxLiving_, int maxGenerated_) {
+				int enemyClazz_, int enemyModel_, int enemyEquivalentClazzAModel_ ,float frequency_, int maxLiving_, int maxGenerated_,
+				bool isBoss_) {
 		enemyDistributor = enemyDistributor_;
 		play = play_;
-		game = play.game;
+		isBoss = isBoss_;
+//		game = play.game;
 		gridPos = gridPos_;
 		worldPos = gridPos.GetWorldVector3();
 		enemyClazz = enemyClazz_;

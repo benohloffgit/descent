@@ -12,9 +12,9 @@ public class Pyramid : Enemy {
 	
 	public override void InitializeWeapon(int mount, int w, int m) {
 		if (mount == Weapon.PRIMARY) {
-			primaryWeapons.Add(new Weapon(mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY));
+			primaryWeapons.Add(new Weapon(mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 		} else {
-			secondaryWeapons.Add(new Weapon(mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY));
+			secondaryWeapons.Add(new Weapon(mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 		}
 	}
 	

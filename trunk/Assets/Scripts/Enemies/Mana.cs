@@ -3,13 +3,7 @@ using System.Collections;
 
 public class Mana : MonoBehaviour {	
 	
-	private Rigidbody rigidbody;
-	
 	private static float FORCE = 50.0f;
-	
-	void Awake() {
-		rigidbody = transform.rigidbody;
-	}
 	
 	void Start() {
 		rigidbody.AddForce(new Vector3(FORCE, 0, 0));

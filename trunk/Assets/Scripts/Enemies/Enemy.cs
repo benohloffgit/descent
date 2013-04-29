@@ -17,6 +17,10 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_F = "f";
 	public static string CLAZZ_G = "g";
 	public static string CLAZZ_H = "h";
+	
+	public static string CLAZZ_BUG = "z";
+	public static string CLAZZ_SNAKE = "x";
+	
 //	public static string CLAZZ_K = "k";
 //	public static string CLAZZ_L = "l";
 	public static int CLAZZ_A0 = 0; // bull
@@ -27,10 +31,12 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_F5 = 5;
 	public static int CLAZZ_G6 = 6;
 	public static int CLAZZ_H7 = 7;
+	
+	public static int CLAZZ_BUG8 = 8;
 //	public static int CLAZZ_K8 = 8;
 //	public static int CLAZZ_L9 = 9;
 	
-	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H};
+	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_BUG, CLAZZ_SNAKE};
 	
 //	public static int CLAZZ_STEP = 99;
 	public static int MODEL_MIN = 0;
@@ -53,7 +59,7 @@ public abstract class Enemy : MonoBehaviour {
 	protected Spawn spawn;
 	
 	public string clazz; // (A-L)
-	public int clazzNum; // 0-9 
+	public int clazzNum; // 0-7 
 	public int model; // 0-98 (1-99)
 	public int displayModel;
 //	public int modelNum; // 0 - 998
@@ -123,15 +129,19 @@ public abstract class Enemy : MonoBehaviour {
 		
 		canBeDeactivated = true;
 		firepowerPerSecond = 0;
-//		int zone5 = Zone.GetZone5StepID(modelClazzAEquivalent);
-		InitializeWeapon(Weapon.PRIMARY, Weapon.SHIP_PRIMARY_WEAPON_TYPES[modelClazzAEquivalent], Weapon.SHIP_PRIMARY_WEAPON_MODELS[modelClazzAEquivalent]);
-	
-		firepowerPerSecond += primaryWeapons[0].damage / primaryWeapons[0].frequency;
+		
+		if (clazzNum != CLAZZ_BUG8) {
+			InitializeWeapon(Weapon.PRIMARY, Weapon.SHIP_PRIMARY_WEAPON_TYPES[modelClazzAEquivalent], Weapon.SHIP_PRIMARY_WEAPON_MODELS[modelClazzAEquivalent]);
+		
+			firepowerPerSecond += primaryWeapons[0].damage / primaryWeapons[0].frequency;
+		}
 		
 		currentPrimaryWeapon = 0;
 		currentSecondaryWeapon = 0;
 		
-		primaryWeapons[currentPrimaryWeapon].Mount();
+		if (primaryWeapons.Count > 0) {
+			primaryWeapons[currentPrimaryWeapon].Mount();
+		}
 		if (secondaryWeapons.Count > 0) {
 			secondaryWeapons[currentSecondaryWeapon].Mount();
 		}
@@ -195,11 +205,11 @@ public abstract class Enemy : MonoBehaviour {
 		}
 		
 		if (health-damage <= 0) {
-			spawn.LoseHealth(this, health);
-			health = 0;
 			if (spawn != null) {
+				spawn.LoseHealth(this, health);
 				spawn.Die(this);
 			}
+			health = 0;
 			play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 			Destroy(gameObject);
 		} else {

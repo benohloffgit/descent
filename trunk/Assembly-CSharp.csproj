@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\CCText\CCTextTorusWrapper.cs" />
      <Compile Include="Assets\Scripts\CCText\CCTextVerticalColorer.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Bug.cs" />
      <Compile Include="Assets\Scripts\Enemies\Bull.cs" />
      <Compile Include="Assets\Scripts\Enemies\Enemy.cs" />
      <Compile Include="Assets\Scripts\Enemies\EnemyDistributor.cs" />
@@ -68,6 +69,7 @@
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineTouch.cs" />
      <Compile Include="Assets\Scripts\Enemies\Pyramid.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Snake.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spawn.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spike.cs" />
      <Compile Include="Assets\Scripts\Enemies\WallGun.cs" />

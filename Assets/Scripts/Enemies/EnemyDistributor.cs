@@ -31,7 +31,9 @@ public class EnemyDistributor {
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
 //	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,1,4,9,16,25,36,49};
+//	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,2,4,9,16,25,36,49};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54};
+	private static int[] START_ZONE_PER_CLAZZ = new int[] {2,4,8,12,20,30,42,54};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 3.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 12.0f};
 	private static int[] SPAWN_MIN_LIVING = new int[] {1, 1}; // first value is for BEGINNER Zones
@@ -57,53 +59,56 @@ public class EnemyDistributor {
 		int enemyClazzVariety = CalculateEnemyClazzVariety(play.zoneID);
 		Debug.Log ("enemyClazzVariety : " + enemyClazzVariety );
 		
-		float[] enemyClazzProbability = CalculateEnemyClazzProbability(enemyClazzVariety);
-		
-		float spawnMinFrequency, spawnMaxFrequency;
-		int spawnMinLiving, spawnMaxLiving, spawnMinGenerated, spawnMaxGenerated;
-		int enemyClazz, enemyModel, enemyEquivalentClazzAModel;
-		
-//		foreach (Room r in play.cave.zone.roomList) {
-//			if (r.id > -1) {
-				for (enemyClazz=0; enemyClazz < enemyClazzProbability.Length; enemyClazz++) {
-					float rand = UnityEngine.Random.value;
-					if (rand <= enemyClazzProbability[enemyClazz]) {
-						enemyEquivalentClazzAModel = CalculateEnemyEquivalentClazzAModel(play.zoneID, enemyClazz);
-						enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
-						Debug.Log ("Enemy of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
-						
-						if (play.zoneID > Game.BEGINNER_ZONES) {
-							spawnMinFrequency = SPAWN_MIN_FREQUENCY[1];
-							spawnMaxFrequency = SPAWN_MAX_FREQUENCY[1];
-							spawnMinLiving = SPAWN_MIN_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
-							spawnMaxLiving = SPAWN_MAX_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
-							spawnMinGenerated = SPAWN_MIN_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
-							spawnMaxGenerated = SPAWN_MAX_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
-						} else {
-							spawnMinFrequency = SPAWN_MIN_FREQUENCY[0];
-							spawnMaxFrequency = SPAWN_MAX_FREQUENCY[0];
-							spawnMinLiving = SPAWN_MIN_LIVING[0];
-							spawnMaxLiving = SPAWN_MAX_LIVING[0];
-							spawnMinGenerated = SPAWN_MIN_GENERATED[0];
-							spawnMaxGenerated = SPAWN_MAX_GENERATED[0];
-						}
-						CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
-							play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition(),
-							UnityEngine.Random.Range(spawnMinFrequency, spawnMaxFrequency),
-							UnityEngine.Random.Range(spawnMinLiving, spawnMaxLiving),
-							UnityEngine.Random.Range(spawnMinGenerated, spawnMaxGenerated)); // Spawn.INFINITY
-				
-						enemiesAll += spawnMaxGenerated;
+		if (enemyClazzVariety > 0) {
+			float[] enemyClazzProbability = CalculateEnemyClazzProbability(enemyClazzVariety);
+			
+			float spawnMinFrequency, spawnMaxFrequency;
+			int spawnMinLiving, spawnMaxLiving, spawnMinGenerated, spawnMaxGenerated;
+			int enemyClazz, enemyModel, enemyEquivalentClazzAModel;
+			
+			for (enemyClazz=0; enemyClazz < enemyClazzProbability.Length; enemyClazz++) {
+				float rand = UnityEngine.Random.value;
+				if (rand <= enemyClazzProbability[enemyClazz]) {
+					enemyEquivalentClazzAModel = CalculateEnemyEquivalentClazzAModel(play.zoneID, enemyClazz);
+					enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
+					Debug.Log ("Enemy of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
+					
+					if (play.zoneID > Game.BEGINNER_ZONES) {
+						spawnMinFrequency = SPAWN_MIN_FREQUENCY[1];
+						spawnMaxFrequency = SPAWN_MAX_FREQUENCY[1];
+						spawnMinLiving = SPAWN_MIN_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+						spawnMaxLiving = SPAWN_MAX_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+						spawnMinGenerated = SPAWN_MIN_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+						spawnMaxGenerated = SPAWN_MAX_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+					} else {
+						spawnMinFrequency = SPAWN_MIN_FREQUENCY[0];
+						spawnMaxFrequency = SPAWN_MAX_FREQUENCY[0];
+						spawnMinLiving = SPAWN_MIN_LIVING[0];
+						spawnMaxLiving = SPAWN_MAX_LIVING[0];
+						spawnMinGenerated = SPAWN_MIN_GENERATED[0];
+						spawnMaxGenerated = SPAWN_MAX_GENERATED[0];
 					}
+					CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
+						play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition(),
+						UnityEngine.Random.Range(spawnMinFrequency, spawnMaxFrequency),
+						UnityEngine.Random.Range(spawnMinLiving, spawnMaxLiving),
+						UnityEngine.Random.Range(spawnMinGenerated, spawnMaxGenerated)); // Spawn.INFINITY
+			
+					enemiesAll += spawnMaxGenerated;
 				}
-				// BOSS spawn
-				enemyClazz = enemyClazzProbability.Length-1;
-				enemyEquivalentClazzAModel = play.zoneID;
-				enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
-				CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
-							play.cave.zone.roomList[1].GetRandomNonSpawnNonExitGridPosition(),
-							1.0f, 1, 1, true);		
-				Debug.Log ("Boss of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
+			}
+			// BOSS spawn
+			enemyClazz = enemyClazzProbability.Length-1;
+			enemyEquivalentClazzAModel = play.zoneID;
+			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
+			CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
+						play.cave.zone.roomList[1].GetRandomNonSpawnNonExitGridPosition(),
+						1.0f, 1, 1, true);
+			enemiesAll++;
+			Debug.Log ("Boss of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
+		}
+		
+		DistributeOthers();
 //			}
 //		}
 		
@@ -116,6 +121,17 @@ public class EnemyDistributor {
 			WallGun wallGun = CreateWallGun();
 			PlaceOnWall(wallGun.gameObject, hit);
 		}*/
+	}
+	
+	private void DistributeOthers() {
+		int enemyEquivalentClazzAModel = play.zoneID;
+		int enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
+		// Bug 2-8 per zone
+		int number = Mathf.FloorToInt(play.zoneID / 10f) + 2;
+		CreateSpawn(Enemy.CLAZZ_BUG8, enemyModel, enemyEquivalentClazzAModel,
+					play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
+					1.0f, number, number, false, true);
+		enemiesAll += number;
 	}
 	
 	public void RemoveAll() {
@@ -180,6 +196,12 @@ public class EnemyDistributor {
 		return bull;
 	}
 
+	public Bug CreateBug() {
+		GameObject p = GameObject.Instantiate(game.bugPrefab) as GameObject;
+		Bug bug = p.GetComponentInChildren<Bug>();
+		return bug;
+	}
+	
 	public Mana CreateMana() {
 		GameObject p = GameObject.Instantiate(game.manaPrefab) as GameObject;
 		Mana mana = p.GetComponentInChildren<Mana>();
@@ -187,10 +209,10 @@ public class EnemyDistributor {
 	}
 
 	public Spawn CreateSpawn(int enemyClazz, int enemyModel, int enemyEquivalentClazzAModel, GridPosition gridPos,
-				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY, bool isBoss = false) {
+				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY, bool isBoss = false, bool isDistributedAcrossCave = false) {
 		GameObject p = GameObject.Instantiate(game.spawnPrefab) as GameObject;
 		Spawn spawn = p.GetComponentInChildren<Spawn>();
-		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel, frequency, maxLiving, maxGenerated, isBoss);
+		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel, frequency, maxLiving, maxGenerated, isBoss, isDistributedAcrossCave);
 		spawn.transform.position = gridPos.GetVector3() * RoomMesh.MESH_SCALE;
 		play.cave.zone.GetRoom(gridPos).SetCellToSpawn(gridPos.cellPosition);
 		return spawn;
@@ -230,6 +252,7 @@ public class EnemyDistributor {
 	
 	public void RemoveEnemy(Enemy e) {
 		enemiesLiving--;
+		enemiesAll--;
 		play.RemoveEnemy(e);
 		if (e.isActive) {
 			DeactivateEnemy(e);
@@ -248,6 +271,8 @@ public class EnemyDistributor {
 			enemy = (Enemy)CreateBull();
 		} else if (clazz == Enemy.CLAZZ_B1) {
 			enemy = (Enemy)CreateSpike();
+		} else if (clazz == Enemy.CLAZZ_BUG8) {
+			enemy = (Enemy)CreateBug();
 		} else {
 			enemy = (Enemy)CreateBull();
 		}
@@ -287,8 +312,14 @@ public class EnemyDistributor {
 		
 	// Super Formula stuff
 	
-	private int CalculateEnemyClazzVariety(int zone5ID) {
-		return (int) Mathf.Min(Mathf.Ceil( Mathf.Sqrt(zone5ID+1) ), Enemy.DISTRIBUTION_CLAZZ_MAX); // 1-8
+	private int CalculateEnemyClazzVariety(int zoneID) {
+		for (int i=0; i< CLAZZ_A_EQUIVALENT_MODEL.Length; i++) {
+			if (CLAZZ_A_EQUIVALENT_MODEL[i] > zoneID) {
+				return i;
+			}
+		}
+		return -1;
+		//return Mathf.Min(Mathf.CeilToInt( Mathf.Sqrt(zone5ID) ), Enemy.DISTRIBUTION_CLAZZ_MAX); // 1-8
 	}
 	
 	private float[] CalculateEnemyClazzProbability(int enemyClazzVariety) {
@@ -364,11 +395,20 @@ public class EnemyDistributor {
 	}
 
 	private int CalculateEnemyShield(int clazz, int model) {
-		return Mathf.FloorToInt((model * Game.HEALTH_MODIFIER) / 2f);
+		
+		if (clazz == Enemy.CLAZZ_BUG8) {
+			return 0;
+		} else {
+			return Mathf.FloorToInt((model * Game.HEALTH_MODIFIER) / 2f);
+		}
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {
-		return ENEMY_SIZES[(clazz + model) % 10];
+		if (clazz == Enemy.CLAZZ_BUG8) {
+			return ENEMY_SIZES[0];
+		} else {
+			return ENEMY_SIZES[(clazz + model) % 10];
+		}
 	}
 
 	private float CalculateEnemyAggressiveness(int clazz, int model) {

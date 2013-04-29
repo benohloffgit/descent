@@ -6,9 +6,9 @@ public class ShipSteering : MonoBehaviour {
 	
 	private GameInput gameInput;
 	private Ship ship;
-	private Play play;
+//	private Play play;
 	
-	private Rigidbody myRigidbody;
+//	private Rigidbody myRigidbody;
 	private FlyingMode flyingMode;
 	private int flyingBitwise; // either roll in 1finger mode, or shift in 2finger mode
 	private int flyingLeft = 1;
@@ -47,13 +47,13 @@ public class ShipSteering : MonoBehaviour {
 	public enum FlyingMode { None=0, ShiftLeft=5, ShiftRight=6, ShiftUp=7, ShiftDown=8, BankLeft=9, BankRight=10 }
 	
 	void Awake() {
-		myRigidbody = GetComponent<Rigidbody>();
+//		myRigidbody = GetComponent<Rigidbody>();
 	}
 	
 	public void Initialize(Ship s, Play p, GameInput gI) {
 		ship = s;
 		gameInput = gI;
-		play = p;
+//		play = p;
 		
 		flyingBitwise = 0;
 		directionBitwise = 0;

@@ -23,6 +23,9 @@ public class Cave {
 	public static IntTriple[] ZONE_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	public static IntTriple[] ROOM_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.BACKWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	
+	public static float[] MINER_QUIT_ON_PERCENT_TYPES = new float[] { 0.025f, 0.05f, 0.075f, 0.1f, 0.125f, 0.15f, 0.175f, 0.2f };
+	public static int[] MINER_QUIT_ON_CONNECTION_TYPES = new int[] { 50, 75, 100, 125, 150, 175, 200 };
+		
 	public Cave(Play p) {
 		play = p;
 		game = play.game;
@@ -69,6 +72,7 @@ public class Cave {
 	
 	public void DigRooms() {
 		int[] connectorsSet = new int[] {0,0,0,0,0,0,0,0,0,0};
+		int quitOnPercentThreshold = UnityEngine.Random.Range(0, MINER_QUIT_ON_PERCENT_TYPES.Length);
 		for (int i=0; i<zone.roomList.Count; i++) { // first in array is entry room
 			roomMiners = new List<RoomMiner>();
 			Room room = zone.roomList[i];
@@ -89,19 +93,23 @@ public class Cave {
 				}
 				if (room.id > 1) { // all rooms other than entry or exit room
 					if (neighbours.Count == 1) { // dead end room with just one exit, we have to add a second miner
-						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+						int quitOnConnRandom = UnityEngine.Random.Range(0,7);
+						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[quitOnConnRandom]));
 						startingCell = SetEntryExit(alignment, 0, Game.DIMENSION_ROOM, 4);
-						roomMiners.Add(new RoomMiner(this, startingCell, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+						roomMiners.Add(
+							new RoomMiner(this, startingCell, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[quitOnConnRandom]));
 					} else {
-						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOn40Percent));
+						// non dead-end middle rooms
+						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnPercent));
 					}
 				} else {
-					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+					roomMiners.Add(
+						new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[UnityEngine.Random.Range(0,3)]));
 				}
 			}
 			if (room.id == 0) { // entry room
 				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[UnityEngine.Random.Range(0,3)]));
 //				Debug.Log ("Entry Room: " + startingCell);
 				if (zoneExit == null) {
 					zoneEntry = AddZoneEntryExit(new GridPosition(startingCell, room.pos), 0f);
@@ -115,7 +123,7 @@ public class Cave {
 				doors[Door.TYPE_ENTRY].transform.position = GetPositionFromGrid(new GridPosition(startingCell, room.pos));
 			} else if (room.id == 1) { // exit room
 				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection));
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[UnityEngine.Random.Range(0,3)]));
 				zoneExit = AddZoneEntryExit(new GridPosition(startingCell, room.pos), 180.0f);
 				doors[Door.TYPE_EXIT].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,2), room.pos));
 				doors[Door.TYPE_NEXT_ENTRY].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,8), room.pos));
@@ -139,7 +147,8 @@ public class Cave {
 						digCount += miner.Mine();
 						if (miner.type == RoomMiner.Type.QuitOnConnection && miner.isConnectedToOtherMiner) {
 							miner.isActive = false;
-						} else if (miner.type == RoomMiner.Type.QuitOn40Percent && miner.isConnectedToOtherMiner && digCount >= maxDig * 0.2f) {
+						} else if (miner.type == RoomMiner.Type.QuitOnPercent
+								&& miner.isConnectedToOtherMiner && digCount >= maxDig * MINER_QUIT_ON_PERCENT_TYPES[quitOnPercentThreshold]) {
 							miner.isActive = false;
 						}
 					}
@@ -147,7 +156,7 @@ public class Cave {
 			}
 			
 //			if (j==10000) Debug.Log ("room miner count " + roomMiners.Count);
-			Debug.Log ("Room " + room.id + " " + room.pos + " has cells: " + (digCount+roomMiners.Count) + " j=" + j);
+			Debug.Log ("Room " + room.id + " " + room.pos + " has cells: " + (digCount+roomMiners.Count) + " j=" + j + " " + MINER_QUIT_ON_PERCENT_TYPES[quitOnPercentThreshold]);
 //			if (i==2) room.TestRoomForSingleCells();
 			CreateRoomMesh(room);
 		}
@@ -191,7 +200,7 @@ public class Cave {
 		}
 	}
 
-	public IntTriple GetPosOfActiveMinerOtherThan(int minerId) {
+	public IntTriple GetPosOfMinerOtherThan(int minerId) {
 		IntTriple result = IntTriple.ZERO;
 		foreach (RoomMiner miner in roomMiners) {
 			if (miner.id != minerId) {

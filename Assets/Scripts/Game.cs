@@ -23,6 +23,7 @@ public class Game : MonoBehaviour {
 	public GameObject pyramidPrefab;
 	public GameObject spikePrefab;
 	public GameObject bullPrefab;
+	public GameObject bugPrefab;
 	public GameObject[] primaryWeaponPrefabs;
 	public GameObject[] secondaryWeaponPrefabs;
 //	public GameObject laserGunPrefab;

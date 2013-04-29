@@ -71,6 +71,22 @@ public struct IntTriple {
 			}
 		}
 	}
+
+	public int GetBiggestAbsFactor() {
+		if (Mathf.Abs(x) > Mathf.Abs(y)) {
+			if (Mathf.Abs(x) > Mathf.Abs(z)) {
+				return 0;
+			} else {
+				return 2;
+			}
+		} else {
+			if (Mathf.Abs(y) > Mathf.Abs(z)) {
+				return 1;
+			} else {
+				return 2;
+			}
+		}
+	}
 	
 	public override string ToString() {
     	return base.ToString() + ": (" + x + ", " + y + ", " + z + ")";

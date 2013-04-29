@@ -234,7 +234,7 @@ public class Play : MonoBehaviour {
 	
 	public void Restart() {
 		botSeed = UnityEngine.Random.Range(0,9999999);
-//		caveSeed = 1814761;
+//		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
 		zoneID = 1;
@@ -296,6 +296,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	private void EndZone() {
+		DestroyAllBreadcrumbs();
 		enemyDistributor.RemoveAll();
 		cave.RemoveZone();
 		playGUI.Reset();
@@ -538,7 +539,14 @@ public class Play : MonoBehaviour {
 			breadcrumbs.RemoveAt(0);
 		}
 	}
-
+	
+	private void DestroyAllBreadcrumbs() {
+		foreach (GameObject gO in breadcrumbs) {
+			Destroy(gO);
+		}
+		breadcrumbs.Clear();
+	}
+	
 /*	public void ScrollFound() {
 		Debug.Log ("scroll found");
 	}*/

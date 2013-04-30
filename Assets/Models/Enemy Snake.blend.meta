@@ -3,7 +3,10 @@ guid: 70ed50d6f1838ac4db4d2eac44fcb8a1
 ModelImporter:
   fileIDToRecycleName:
     4300000: Sphere.001
+    4300002: Snake
     7400000: Action //// Enemy Snake
+    7400002: Move //// Enemy Snake
+    7400004: Forward //// Enemy Snake
   serializedVersion: 10
   materials:
     importMaterials: 1
@@ -18,7 +21,12 @@ ModelImporter:
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
-    clipAnimations: []
+    clipAnimations:
+    - name: Forward
+      firstFrame: 5
+      lastFrame: 125
+      wrapMode: 2
+      loop: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
@@ -62,6 +70,16 @@ ModelImporter:
       data:
         first: 4
         second: 841a0600
+    Head:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+      data:
+        first: 137
+        second: a00bd100
     Lamp:
       data:
         first: 1
@@ -76,16 +94,13 @@ ModelImporter:
       data:
         first: 4
         second: 821a0600
-    Sphere.001:
+    Snake:
       data:
         first: 1
         second: aa860100
       data:
         first: 4
         second: 8a1a0600
-      data:
-        first: 137
-        second: a00bd100
     Tail:
       data:
         first: 1

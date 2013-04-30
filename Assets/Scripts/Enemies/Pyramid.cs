@@ -25,7 +25,7 @@ public class Pyramid : Enemy {
 		
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
 		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
-			Shoot();
+			ShootPrimary();
 		}
 		
 		if (isShipVisible.magnitude <= shootingRange) {

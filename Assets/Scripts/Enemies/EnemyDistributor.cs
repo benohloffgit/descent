@@ -32,7 +32,7 @@ public class EnemyDistributor {
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
 //	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
 //	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,2,4,9,16,25,36,49};
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54,1,6,14};
 	private static int[] START_ZONE_PER_CLAZZ = new int[] {2,4,8,12,20,30,42,54};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 3.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 12.0f};
@@ -124,14 +124,37 @@ public class EnemyDistributor {
 	}
 	
 	private void DistributeOthers() {
-		int enemyEquivalentClazzAModel = play.zoneID;
-		int enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
-		// Bug 2-8 per zone
-		int number = Mathf.FloorToInt(play.zoneID / 10f) + 2;
-		CreateSpawn(Enemy.CLAZZ_BUG8, enemyModel, enemyEquivalentClazzAModel,
-					play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
-					1.0f, number, number, false, true);
-		enemiesAll += number;
+		int enemyEquivalentClazzAModel, enemyModel, number;
+		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_BUG8] <= play.zoneID) {
+			enemyEquivalentClazzAModel = play.zoneID;
+			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_BUG8];
+			// Bug 2-8 per zone
+			number = Mathf.FloorToInt(play.zoneID / 10f) + 2;
+			CreateSpawn(Enemy.CLAZZ_BUG8, enemyModel, enemyEquivalentClazzAModel,
+						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
+						1.0f, number, number, false, true);
+			enemiesAll += number;
+		}
+		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_SNAKE9] <= play.zoneID) {
+			enemyEquivalentClazzAModel = play.zoneID;
+			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_SNAKE9];
+			// Bug 1-4 per zone
+			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
+			CreateSpawn(Enemy.CLAZZ_SNAKE9, enemyModel, enemyEquivalentClazzAModel,
+						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
+						1.0f, number, number, false, true);
+			enemiesAll += number;
+		}
+		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_MINEBUILDER10] <= play.zoneID) {
+			enemyEquivalentClazzAModel = play.zoneID;
+			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_MINEBUILDER10];
+			// Bug 1-4 per zone
+			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
+			CreateSpawn(Enemy.CLAZZ_MINEBUILDER10, enemyModel, enemyEquivalentClazzAModel,
+						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
+						1.0f, number, number, false, true);
+			enemiesAll += number;
+		}
 	}
 	
 	public void RemoveAll() {
@@ -157,13 +180,6 @@ public class EnemyDistributor {
 		return mineBuilder;
 	}
 	
-	public MineTouch CreateMineTouch() {
-		GameObject mT = GameObject.Instantiate(game.mineTouchPrefab) as GameObject;
-		MineTouch mineTouch = mT.GetComponent<MineTouch>();
-		mineTouch.Initialize(game, play);
-		return mineTouch;
-	}
-
 	public WallGun CreateWallGun() {
 		GameObject wG = GameObject.Instantiate(game.wallGunPrefab) as GameObject;
 		WallGun wallGun = wG.GetComponent<WallGun>();
@@ -192,14 +208,20 @@ public class EnemyDistributor {
 
 	public Bull CreateBull() {
 		GameObject p = GameObject.Instantiate(game.bullPrefab) as GameObject;
-		Bull bull = p.GetComponentInChildren<Bull>();
+		Bull bull = p.GetComponent<Bull>();
 		return bull;
 	}
 
 	public Bug CreateBug() {
 		GameObject p = GameObject.Instantiate(game.bugPrefab) as GameObject;
-		Bug bug = p.GetComponentInChildren<Bug>();
+		Bug bug = p.GetComponent<Bug>();
 		return bug;
+	}
+
+	public Snake CreateSnake() {
+		GameObject p = GameObject.Instantiate(game.snakePrefab) as GameObject;
+		Snake snake = p.GetComponent<Snake>();
+		return snake;
 	}
 	
 	public Mana CreateMana() {
@@ -273,6 +295,10 @@ public class EnemyDistributor {
 			enemy = (Enemy)CreateSpike();
 		} else if (clazz == Enemy.CLAZZ_BUG8) {
 			enemy = (Enemy)CreateBug();
+		} else if (clazz == Enemy.CLAZZ_SNAKE9) {
+			enemy = (Enemy)CreateSnake();
+		} else if (clazz == Enemy.CLAZZ_MINEBUILDER10) {
+			enemy = (Enemy)CreateMineBuilder();
 		} else {
 			enemy = (Enemy)CreateBull();
 		}
@@ -284,7 +310,6 @@ public class EnemyDistributor {
 				CalculateEnemyMovementForce(clazz, model),
 				CalculateEnemyTurnForce(clazz, model),
 				CalculateEnemyLookRange(clazz, model),
-				//CalculateEnemyChaseRange(clazz, model),
 			    CalculateEnemyRoamMin(clazz, model),
 				CalculateEnemyRoamMax(clazz, model));
 		
@@ -396,7 +421,7 @@ public class EnemyDistributor {
 
 	private int CalculateEnemyShield(int clazz, int model) {
 		
-		if (clazz == Enemy.CLAZZ_BUG8) {
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9) {
 			return 0;
 		} else {
 			return Mathf.FloorToInt((model * Game.HEALTH_MODIFIER) / 2f);
@@ -404,7 +429,7 @@ public class EnemyDistributor {
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {
-		if (clazz == Enemy.CLAZZ_BUG8) {
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10) {
 			return ENEMY_SIZES[0];
 		} else {
 			return ENEMY_SIZES[(clazz + model) % 10];
@@ -412,7 +437,11 @@ public class EnemyDistributor {
 	}
 
 	private float CalculateEnemyAggressiveness(int clazz, int model) {
-		return ENEMY_AGGRESSIVENESSES[(clazz + model) % 11];
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10) {
+			return Enemy.AGGRESSIVENESS_OFF;
+		} else {
+			return ENEMY_AGGRESSIVENESSES[(clazz + model) % 11];
+		}
 	}
 	
 	private float CalculateEnemyMovementForce(int clazz, int model) {

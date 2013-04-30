@@ -1,9 +1,14 @@
 using UnityEngine;
 using System.Collections;
+/*
+public class Mine : MonoBehaviour {
+	public static int TOUCH = 0;
 
-public class MineTouch : MonoBehaviour {
+	public int type;	
 	private Play play;
-	private Game game;
+	
+	private int damage;
+	private int source;
 	
 	private Vector3 basePosition;
 	private Vector3 targetPosition;
@@ -13,9 +18,11 @@ public class MineTouch : MonoBehaviour {
 	private static float EXPLOSION_POWER = 500.0f;
 	private static float EXPLOSION_RADIUS = 2.0f * RoomMesh.MESH_SCALE;
 	
-	public void Initialize(Game g, Play p) {
-		game = g;
+	public void Initialize(Play p, int damage_, int source_, int type_) {
 		play = p;
+		damage = damage_;
+		source = source_;
+		type = type_;
 	}
 	
 	void Start() {
@@ -44,3 +51,4 @@ public class MineTouch : MonoBehaviour {
 	
 }
 
+*/

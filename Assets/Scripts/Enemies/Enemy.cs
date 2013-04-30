@@ -19,7 +19,8 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_H = "h";
 	
 	public static string CLAZZ_BUG = "z";
-	public static string CLAZZ_SNAKE = "x";
+	public static string CLAZZ_SNAKE = "y";
+	public static string CLAZZ_MINEBUILDER = "x";
 	
 //	public static string CLAZZ_K = "k";
 //	public static string CLAZZ_L = "l";
@@ -31,12 +32,13 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_F5 = 5;
 	public static int CLAZZ_G6 = 6;
 	public static int CLAZZ_H7 = 7;
-	
 	public static int CLAZZ_BUG8 = 8;
+	public static int CLAZZ_SNAKE9 = 9;
+	public static int CLAZZ_MINEBUILDER10 = 10;
 //	public static int CLAZZ_K8 = 8;
 //	public static int CLAZZ_L9 = 9;
 	
-	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_BUG, CLAZZ_SNAKE};
+	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_BUG, CLAZZ_SNAKE, CLAZZ_MINEBUILDER};
 	
 //	public static int CLAZZ_STEP = 99;
 	public static int MODEL_MIN = 0;
@@ -130,10 +132,12 @@ public abstract class Enemy : MonoBehaviour {
 		canBeDeactivated = true;
 		firepowerPerSecond = 0;
 		
-		if (clazzNum != CLAZZ_BUG8) {
+		if (clazzNum != CLAZZ_BUG8 && clazzNum != CLAZZ_SNAKE9 && clazzNum != CLAZZ_MINEBUILDER10) {
 			InitializeWeapon(Weapon.PRIMARY, Weapon.SHIP_PRIMARY_WEAPON_TYPES[modelClazzAEquivalent], Weapon.SHIP_PRIMARY_WEAPON_MODELS[modelClazzAEquivalent]);
 		
 			firepowerPerSecond += primaryWeapons[0].damage / primaryWeapons[0].frequency;
+		} else if (clazzNum == CLAZZ_MINEBUILDER10) {
+			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_MINE_TOUCH, modelClazzAEquivalent);
 		}
 		
 		currentPrimaryWeapon = 0;
@@ -167,9 +171,7 @@ public abstract class Enemy : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
-		if (currentSecondaryWeapon > 0) {
-			secondaryWeapons[currentSecondaryWeapon].IsReloaded();
-		}
+		ShootSecondary();
 		
 		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
 		if (isShipVisible != Vector3.zero) {
@@ -187,7 +189,7 @@ public abstract class Enemy : MonoBehaviour {
 		}
 		if (aggressiveness > AGGRESSIVENESS_OFF) {
 			if (isShipVisible != Vector3.zero) {
-				Shoot();
+				ShootPrimary();
 			}
 			aggressiveness -= AGGRESSIVENESS_DECREASE;
 		}
@@ -219,16 +221,19 @@ public abstract class Enemy : MonoBehaviour {
 		}
 	}
 	
-	protected void Shoot() {
+	protected void ShootPrimary() {
 		if (aggressiveness > AGGRESSIVENESS_OFF) {
 			if (primaryWeapons[currentPrimaryWeapon].IsReloaded()) {
 				primaryWeapons[currentPrimaryWeapon].Shoot();
 			}				
-			if (secondaryWeapons.Count > 0 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
-				secondaryWeapons[currentSecondaryWeapon].Shoot();
-			}
 		} else {
 			aggressiveness = AGGRESSIVENESS_OFF;
+		}
+	}
+	
+	protected void ShootSecondary() {
+		if (secondaryWeapons.Count > 0 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+			secondaryWeapons[currentSecondaryWeapon].Shoot();
 		}
 	}
 	
@@ -249,10 +254,12 @@ public abstract class Enemy : MonoBehaviour {
 			return 6;
 		} else if (clazz_ == CLAZZ_H) {
 			return 7;
-//		} else if (clazz_ == CLAZZ_K) {
-//			return 8;
-//		} else if (clazz_ == CLAZZ_L) {
-//			return 9;
+		} else if (clazz_ == CLAZZ_BUG) {
+			return 8;
+		} else if (clazz_ == CLAZZ_SNAKE) {
+			return 9;
+		} else if (clazz_ == CLAZZ_MINEBUILDER) {
+			return 10;
 		}
 		return -1;
 	}

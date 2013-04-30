@@ -21,13 +21,12 @@ public class Weapon {
 	public const int TYPE_MISSILE = 1;
 	public const int TYPE_GUIDED_MISSILE = 2;
 	public const int TYPE_CHARGED_MISSILE = 3;
-	public const int TYPE_DETONATOR_MISSILE = 4;
-	
-	public const int TYPE_MINE_SUICIDAL = 13;
-	public const int TYPE_MINE_TOUCH = 14;
-	public const int TYPE_MINE_INFRARED = 15;
-	public const int TYPE_MINE_TIMED = 16;
-	public const int TYPE_LASER_BEAM = 17;
+	public const int TYPE_DETONATOR_MISSILE = 4;	
+	public const int TYPE_MINE_TOUCH = 5;
+	public const int TYPE_MINE_SUICIDAL = 6;
+	public const int TYPE_MINE_INFRARED = 7;
+	public const int TYPE_MINE_TIMED = 8;
+	public const int TYPE_LASER_BEAM = 9;
 
 	public static int MISSILE_START = 2;
 	public static int MISSILE_GUIDED_START = 4;
@@ -36,7 +35,7 @@ public class Weapon {
 	
 	public static string[] PRIMARY_TYPES = new string[] {"", "Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
 
-	public static string[] SECONDARY_TYPES = new string[] {"", "Missile", "Guided Missile", "Charged Missile", "Detonator Missile"};
+	public static string[] SECONDARY_TYPES = new string[] {"", "Missile", "Guided Missile", "Charged Missile", "Detonator Missile", "Mine"};
 	
 	public float lastShotTime;
 	public Transform weaponTransform;
@@ -127,8 +126,10 @@ public class Weapon {
 		}
 		
 		loadedShot.enabled = true;
-		loadedShot.gameObject.layer = Game.LAYER_BULLETS;
+//		if (loadedShot.rigidbody != null) {
 		loadedShot.rigidbody.isKinematic = false;
+		loadedShot.rigidbody.AddForce(bulletPath * speed);
+//		}		
 		loadedShot.transform.parent = null;
 		
 		if (accuracy != 0) {
@@ -140,29 +141,35 @@ public class Weapon {
 			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
 			bulletPath = deviation1 * deviation2 * bulletPath;
 		}
-		Physics.IgnoreCollision(parent.collider, loadedShot.collider);
+		if (type != TYPE_MINE_TOUCH) {
+			Physics.IgnoreCollision(parent.collider, loadedShot.collider);
+			loadedShot.gameObject.layer = Game.LAYER_BULLETS;
+		}
+		
 		lastShotTime = Time.time;
 		isReloaded = false;
 		if (ammunition > 0) {
 			ammunition--;
 		}
 
-		loadedShot.rigidbody.AddForce(bulletPath * speed);
-		
 		if (type == TYPE_GUIDED_MISSILE && ship.missileLockMode == Ship.MissileLockMode.Locked) {
 			loadedShot.LockOn(ship.lockedEnemy.transform);
 		}
 	}
 		
 	public void Mount() {
-		weaponTransform.renderer.enabled = true;
+		if (mount == Weapon.PRIMARY) {
+			weaponTransform.renderer.enabled = true;
+		}
 		if (mount == Weapon.SECONDARY && isReloaded) {
 			loadedShot.transform.renderer.enabled = true;
 		}
 	}
 	
 	public void Unmount() {
-		weaponTransform.renderer.enabled = false;
+		if (mount == Weapon.PRIMARY) {
+			weaponTransform.renderer.enabled = false;
+		}
 		if (mount == Weapon.SECONDARY && isReloaded) {
 			loadedShot.transform.renderer.enabled = false;
 		}
@@ -194,10 +201,14 @@ public class Weapon {
 				loadedShot = game.CreateFromPrefab().CreateMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_GUIDED_MISSILE) {
 				loadedShot = game.CreateFromPrefab().CreateGuidedMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_MINE_TOUCH) {
+				loadedShot = game.CreateFromPrefab().CreateMineTouchShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else {
 				loadedShot = game.CreateFromPrefab().CreateMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			}
+//			if (loadedShot.rigidbody != null) {
 			loadedShot.rigidbody.isKinematic = true;
+//			}
 		}
 		loadedShot.transform.parent = weaponTransform;
 		isReloaded = true;
@@ -235,13 +246,18 @@ public class Weapon {
 					accuracy = 0;//3.0f - model * 0.01f;
 					frequency = 6.0f - model * 0.0625f; break;
 //					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
+				case TYPE_MINE_TOUCH:
+					speed = 0f;
+					accuracy = 0;//3.0f - model * 0.01f;
+					frequency = 10.0f - model * 0.0625f; break;
+//					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 				default:
 					speed = 50f;
 					accuracy = 0;//4.0f - model * 0.015f;
 					frequency = 6.0f - model * 0.0625f; break;
 //					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 			}
-			weaponGameObject = GameObject.Instantiate(game.secondaryWeaponPrefabs[type-1]) as GameObject;
+			weaponGameObject = GameObject.Instantiate(game.emptyPrefab) as GameObject;
 		}
 				
 		weaponTransform = weaponGameObject.transform;

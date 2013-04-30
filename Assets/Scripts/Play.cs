@@ -347,11 +347,11 @@ public class Play : MonoBehaviour {
 	
 	private void ExecuteKeyCommand() {
 		Debug.Log ("Key command is: " + keyCommand);
-		if (keyCommand.Substring(1, 1) == "e") {
+/*		if (keyCommand.Substring(1, 1) == "e") {
 				Enemy e = enemyDistributor.CreateEnemy(null, Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1)), Convert.ToInt32(keyCommand.Substring(3, 2)));
 				e.transform.position = GetShipPosition();
 				Debug.Log ("Adding Enemy " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
-		} else if (keyCommand.Substring(1, 1) == "m") {
+		} else */ if (keyCommand.Substring(1, 1) == "m") {
 				Mana m = enemyDistributor.CreateMana();
 				m.transform.position = GetShipPosition();
 				Debug.Log ("Adding Mana (Editor mode)");

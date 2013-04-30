@@ -24,7 +24,7 @@ public class CoverFindThreadState {
 	
 	public void Complete() {
 		isProcessing = false;
-		Debug.Log("CoverFind completed in " + (Time.realtimeSinceStartup-startTime));
+//		Debug.Log("CoverFind completed in " + (Time.realtimeSinceStartup-startTime));
 	}
 	
 	public bool IsFinishedNow() {

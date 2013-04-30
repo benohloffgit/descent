@@ -15,6 +15,7 @@ public class PrefabFactory {
 	private GameObject healthDropTemplate;
 	private GameObject shieldDropTemplate;
 	private GameObject missileDropTemplate;
+	private GameObject mineTouchTemplate;
 	
 	public PrefabFactory(Game g) {
 		game = g;
@@ -40,7 +41,8 @@ public class PrefabFactory {
 		shieldDropTemplate.GetComponent<CollecteableShield>().enabled = false;
 		missileDropTemplate = GameObject.Instantiate(game.missileDropPrefab) as GameObject;
 		missileDropTemplate.GetComponent<CollecteableMissile>().enabled = false;
-		
+		mineTouchTemplate = GameObject.Instantiate(game.mineTouchShotPrefab) as GameObject;
+		mineTouchTemplate.GetComponent<Shot>().enabled = false;
 	}
 	
 	public Shot CreateGunShot(Vector3 pos, Quaternion rot, int damage, int source) {
@@ -67,6 +69,14 @@ public class PrefabFactory {
 		return shot;
 	}
 
+	public Shot CreateMineTouchShot(Vector3 pos, Quaternion rot, int damage, int source) {
+		GameObject newMineTouch = GameObject.Instantiate(mineTouchTemplate, pos, rot) as GameObject;
+		Shot shot = newMineTouch.GetComponent<Shot>();
+		shot.Initialize(play, damage, source, Shot.MINE_TOUCH);
+		shot.enabled = false;
+		return shot;
+	}
+	
 	public Shot CreateGuidedMissileShot(Vector3 pos, Quaternion rot, int damage, int source) {
 		GameObject newMissile = GameObject.Instantiate(missileShotTemplate, pos, rot) as GameObject;
 		Shot shot = newMissile.GetComponent<Shot>();
@@ -125,7 +135,7 @@ public class PrefabFactory {
 		} else {
 			wType = Weapon.SHIP_SECONDARY_WEAPON_TYPES[index];
 			wModel = Weapon.SHIP_SECONDARY_WEAPON_MODELS[index];
-			newPowerUpDrop = GameObject.Instantiate(game.secondaryWeaponPrefabs[wType-1], pos, rot) as GameObject;
+			newPowerUpDrop = GameObject.Instantiate(game.powerUpPrefabs[wType-1], pos, rot) as GameObject;
 		}
 		CollecteablePowerUp powerUpDrop = newPowerUpDrop.AddComponent<CollecteablePowerUp>();
 		SphereCollider col = newPowerUpDrop.AddComponent<SphereCollider>();

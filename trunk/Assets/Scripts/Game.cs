@@ -5,7 +5,7 @@ public class Game : MonoBehaviour {
 	public GameObject statePrefab;
 	public GameObject guiPrefab;
 
-//	public GameObject roomPrefab;
+	public GameObject emptyPrefab;
 	public GameObject roomMeshPrefab;
 	public GameObject roomEntryPrefab;
 	public GameObject roomConnectorPrefab;
@@ -17,15 +17,16 @@ public class Game : MonoBehaviour {
 	public GameObject shipPrefab;
 	public GameObject wallGunPrefab;
 	public GameObject wallLaserPrefab;
-	public GameObject mineTouchPrefab;
 	public GameObject mineBuilderPrefab;
 	public GameObject lightBulbPrefab;
 	public GameObject pyramidPrefab;
 	public GameObject spikePrefab;
 	public GameObject bullPrefab;
 	public GameObject bugPrefab;
+	public GameObject snakePrefab;
 	public GameObject[] primaryWeaponPrefabs;
-	public GameObject[] secondaryWeaponPrefabs;
+//	public GameObject[] secondaryWeaponPrefabs;
+	public GameObject[] powerUpPrefabs;
 //	public GameObject laserGunPrefab;
 	public GameObject missileLauncherPrefab;
 	public GameObject manaPrefab;
@@ -35,6 +36,7 @@ public class Game : MonoBehaviour {
 	public GameObject gunBulletPrefab;
 	public GameObject laserShotPrefab;
 	public GameObject missileShotPrefab;
+	public GameObject mineTouchShotPrefab;
 	public GameObject breadcrumbPrefab;
 	public GameObject explosionPrefab;
 	public GameObject hitPrefab;

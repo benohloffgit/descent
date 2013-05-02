@@ -32,7 +32,7 @@ public class EnemyDistributor {
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
 //	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
 //	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,2,4,9,16,25,36,49};
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54,1,6,14};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54,1,14,6,10};
 	private static int[] START_ZONE_PER_CLAZZ = new int[] {2,4,8,12,20,30,42,54};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 3.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 12.0f};
@@ -59,7 +59,7 @@ public class EnemyDistributor {
 		int enemyClazzVariety = CalculateEnemyClazzVariety(play.zoneID);
 		Debug.Log ("enemyClazzVariety : " + enemyClazzVariety );
 		
-		if (enemyClazzVariety > 0) {
+		if (false) { //enemyClazzVariety > 0) {
 			float[] enemyClazzProbability = CalculateEnemyClazzProbability(enemyClazzVariety);
 			
 			float spawnMinFrequency, spawnMaxFrequency;
@@ -112,15 +112,7 @@ public class EnemyDistributor {
 //			}
 //		}
 		
-/*		IntTriple result = (IntTriple)emptyCells[UnityEngine.Random.Range(0,emptyCells.Count)];
-//		Debug.Log (result.x +" " + result.y +" " + result.z);
-		Vector3 pos = new Vector3(result.x * RoomMesh.MESH_SCALE, result.y * RoomMesh.MESH_SCALE, result.z * RoomMesh.MESH_SCALE);	
-		Vector3 rayPath = RandomVector();
-		
-		if (Physics.Raycast(pos, rayPath, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {			
-			WallGun wallGun = CreateWallGun();
-			PlaceOnWall(wallGun.gameObject, hit);
-		}*/
+
 	}
 	
 	private void DistributeOthers() {
@@ -153,6 +145,16 @@ public class EnemyDistributor {
 			CreateSpawn(Enemy.CLAZZ_MINEBUILDER10, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
 						1.0f, number, number, false, true);
+			enemiesAll += number;
+		}
+		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11] <= play.zoneID) {
+			enemyEquivalentClazzAModel = play.zoneID;
+			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11];
+			// Bug 1-4 per zone
+			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
+			CreateSpawn(Enemy.CLAZZ_WALLLASER11, enemyModel, enemyEquivalentClazzAModel,
+						play.cave.zone.roomList[0].GetRandomNonExitGridPosition(),
+						1.0f, number, number, false, false);
 			enemiesAll += number;
 		}
 	}
@@ -190,7 +192,6 @@ public class EnemyDistributor {
 	public WallLaser CreateWallLaser() {
 		GameObject wL = GameObject.Instantiate(game.wallLaserPrefab) as GameObject;
 		WallLaser wallLaser = wL.GetComponent<WallLaser>();
-		wallLaser.Initialize(game, play);
 		return wallLaser;
 	}
 
@@ -299,6 +300,8 @@ public class EnemyDistributor {
 			enemy = (Enemy)CreateSnake();
 		} else if (clazz == Enemy.CLAZZ_MINEBUILDER10) {
 			enemy = (Enemy)CreateMineBuilder();
+		} else if (clazz == Enemy.CLAZZ_WALLLASER11) {
+			enemy = (Enemy)CreateWallLaser();
 		} else {
 			enemy = (Enemy)CreateBull();
 		}
@@ -420,8 +423,7 @@ public class EnemyDistributor {
 	}
 
 	private int CalculateEnemyShield(int clazz, int model) {
-		
-		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9) {
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_WALLLASER11) {
 			return 0;
 		} else {
 			return Mathf.FloorToInt((model * Game.HEALTH_MODIFIER) / 2f);
@@ -429,7 +431,7 @@ public class EnemyDistributor {
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {
-		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10) {
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10 || clazz == Enemy.CLAZZ_WALLLASER11) {
 			return ENEMY_SIZES[0];
 		} else {
 			return ENEMY_SIZES[(clazz + model) % 10];
@@ -437,7 +439,7 @@ public class EnemyDistributor {
 	}
 
 	private float CalculateEnemyAggressiveness(int clazz, int model) {
-		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10) {
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10 || clazz == Enemy.CLAZZ_WALLLASER11) {
 			return Enemy.AGGRESSIVENESS_OFF;
 		} else {
 			return ENEMY_AGGRESSIVENESSES[(clazz + model) % 11];

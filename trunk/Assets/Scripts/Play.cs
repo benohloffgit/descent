@@ -237,7 +237,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 1;
+		zoneID = 10;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -298,6 +298,7 @@ public class Play : MonoBehaviour {
 	private void EndZone() {
 		DestroyAllBreadcrumbs();
 		enemyDistributor.RemoveAll();
+		collecteablesDistributor.RemoveAll();
 		cave.RemoveZone();
 		playGUI.Reset();
 		botSeed = UnityEngine.Random.Range(0,9999999);

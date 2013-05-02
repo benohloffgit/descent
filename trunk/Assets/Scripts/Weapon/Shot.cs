@@ -6,6 +6,7 @@ public class Shot : MonoBehaviour {
 	
 	public int type;	
 	private Play play;
+	private Enemy enemy;
 	
 	private int damage;
 	private int source;
@@ -13,9 +14,11 @@ public class Shot : MonoBehaviour {
 	private Transform target;
 	
 	public static int BULLET = 0;
-	public static int MISSILE = 1;
-	public static int GUIDED = 2;
-	public static int MINE_TOUCH = 3;
+	public static int LASER = 1;
+	public static int MISSILE = 2;
+	public static int GUIDED = 3;
+	public static int MINE_TOUCH = 4;
+	public static int LASER_BEAM = 5;
 	
 	private static float MISSILE_RADIUS = RoomMesh.MESH_SCALE * 2.5f;
 	private static float GUIDED_MISSILE_TORQUE_MAX = 0.02f;
@@ -52,11 +55,20 @@ public class Shot : MonoBehaviour {
 			if (c.collider.tag == Ship.TAG || c.collider.tag == Shot.TAG) {
 				play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 				c.rigidbody.AddExplosionForce(MINE_EXPLOSION_POWER, transform.position, MINE_EXPLOSION_RADIUS);
-				play.ship.Damage(damage);
-				play.DamageShip(source);
+				if (c.collider.tag == Ship.TAG) {
+					play.ship.Damage(damage);
+					play.DamageShip(source);
+				}
+				((MineBuilder)enemy).MineDestroyed();
 				Destroy(gameObject);
 			}
-		} else {
+		} else if (type != LASER_BEAM) {
+/*			if (c.collider.tag == Ship.TAG) {
+				play.DisplayHit(c.contacts[0].point, play.ship.transform.rotation);
+				play.ship.Damage(damage);
+				play.DamageShip(source);
+			}
+		} else {*/
 			CancelInvoke("DestroySelf");
 			if (type == MISSILE || type == GUIDED) {
 				play.DisplayExplosion(c.contacts[0].point, play.ship.transform.rotation);
@@ -82,7 +94,13 @@ public class Shot : MonoBehaviour {
 			}
 			Destroy(gameObject);
 		}
-	}	
+	}
+	
+	public void ExecuteLaserBeamDamage(Vector3 point) {
+		play.DisplayHit(point, play.ship.transform.rotation);
+		play.ship.Damage(damage);
+		play.DamageShip(source);
+	}
 	
 	// mine is not a rigidbody
 /*	private void OnTriggerEnter(Collider c) {
@@ -97,6 +115,10 @@ public class Shot : MonoBehaviour {
 	
 	public void LockOn(Transform target_) {
 		target = target_;
+	}
+	
+	public void SetParentEnemy(Enemy e) {
+		enemy = e;
 	}
 	
 	private void DestroySelf() {

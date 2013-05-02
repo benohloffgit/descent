@@ -35,14 +35,14 @@ public class Weapon {
 	
 	public static string[] PRIMARY_TYPES = new string[] {"", "Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
 
-	public static string[] SECONDARY_TYPES = new string[] {"", "Missile", "Guided Missile", "Charged Missile", "Detonator Missile", "Mine"};
+	public static string[] SECONDARY_TYPES = new string[] {"", "Missile", "Guided Missile", "Charged Missile", "Detonator Missile", "Mine", "", "", "", "Laser Beam"};
 	
 	public float lastShotTime;
 	public Transform weaponTransform;
 	
 	public int type;
 	public int model;
-	public int mount;
+	public int mountAs;
 	protected float accuracy;
 	public float frequency;
 	public int damage;
@@ -57,11 +57,12 @@ public class Weapon {
 	private Play play;
 	private Game game;
 	private Ship ship;
+	private Enemy enemy;
 	private Transform parent;
 	private int mountedTo;
 	private int layerMask;
 	private RaycastHit hit;
-	private Shot loadedShot;
+	public Shot loadedShot;
 
 	public static int[] SHIP_PRIMARY_WEAPON_TYPES = new int[] { // per 5 zones, 64 = 320 zones
 		1,1,2,1,1,2,3, 1,1,2,1,1,2,3,4, 2,2,3,2,2,3,4,5, 3,3,4,3,3,4,5,6, 4,4,5,4,4,5,6,7, 5,5,6,5,5,6,7,8, 6,6,7,6,6,7,8, 7,7,8,7,7,8, 8,8,8,8
@@ -78,8 +79,10 @@ public class Weapon {
 
 	private static float MAX_RAYCAST_DISTANCE = Game.MAX_VISIBILITY_DISTANCE * 1.5f;
 	
-	public Weapon(int mount_, Transform parent_, Play play_, int type_, int model_, Vector3 position_, int mountedTo_, float damageBase, bool isBoss = false, int ammunition_ = -1) {
-		mount = mount_;
+	public Weapon(Enemy parentEnemy_, int mountAs_, Transform parent_,
+			Play play_, int type_, int model_, Vector3 position_, int mountedTo_,
+			float damageBase, bool isBoss = false, int ammunition_ = -1) {
+		mountAs = mountAs_;
 		parent = parent_;
 		play = play_;
 		ship = play.ship;
@@ -90,6 +93,9 @@ public class Weapon {
 		position = position_;
 		lastShotTime = Time.time;
 		mountedTo = mountedTo_;
+		if (mountedTo == Game.ENEMY) {
+			enemy = parentEnemy_;
+		}
 		isReloaded = false;
 				
 		Initialize();
@@ -99,7 +105,7 @@ public class Weapon {
 			weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
 			accuracy = 0f;
 			damage =  Mathf.RoundToInt(damageBase * 1.5f);
-			if (mount == Weapon.PRIMARY) {
+			if (mountAs == Weapon.PRIMARY) {
 				frequency = 0.2f;
 			} else {
 				damage *= 3;
@@ -112,7 +118,13 @@ public class Weapon {
 				accuracy -= Enemy.BOSS_ACCURACY_MODIFIER;
 				frequency -= Enemy.BOSS_FREQUENCY_MODIFIER;
 			}
-			damage =  Mathf.RoundToInt(damageBase * 1.5f);
+			if (type == TYPE_MINE_TOUCH) {
+				damage =  Mathf.RoundToInt(damageBase * 3.0f);
+			} else if (type == TYPE_MISSILE || type == TYPE_GUIDED_MISSILE) {
+				damage =  Mathf.RoundToInt(damageBase * 2.0f);
+			} else {
+				damage =  Mathf.RoundToInt(damageBase * 2.0f);
+			}
 		}
 		
 	}
@@ -126,10 +138,8 @@ public class Weapon {
 		}
 		
 		loadedShot.enabled = true;
-//		if (loadedShot.rigidbody != null) {
 		loadedShot.rigidbody.isKinematic = false;
 		loadedShot.rigidbody.AddForce(bulletPath * speed);
-//		}		
 		loadedShot.transform.parent = null;
 		
 		if (accuracy != 0) {
@@ -141,7 +151,9 @@ public class Weapon {
 			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
 			bulletPath = deviation1 * deviation2 * bulletPath;
 		}
-		if (type != TYPE_MINE_TOUCH) {
+		if (type == TYPE_MINE_TOUCH) {
+			loadedShot.SetParentEnemy(enemy);
+		} else {
 			Physics.IgnoreCollision(parent.collider, loadedShot.collider);
 			loadedShot.gameObject.layer = Game.LAYER_BULLETS;
 		}
@@ -158,19 +170,19 @@ public class Weapon {
 	}
 		
 	public void Mount() {
-		if (mount == Weapon.PRIMARY) {
+		if (mountAs == Weapon.PRIMARY) {
 			weaponTransform.renderer.enabled = true;
 		}
-		if (mount == Weapon.SECONDARY && isReloaded) {
+		if (mountAs == Weapon.SECONDARY && isReloaded) {
 			loadedShot.transform.renderer.enabled = true;
 		}
 	}
 	
 	public void Unmount() {
-		if (mount == Weapon.PRIMARY) {
+		if (mountAs == Weapon.PRIMARY) {
 			weaponTransform.renderer.enabled = false;
 		}
-		if (mount == Weapon.SECONDARY && isReloaded) {
+		if (mountAs == Weapon.SECONDARY && isReloaded) {
 			loadedShot.transform.renderer.enabled = false;
 		}
 	}
@@ -187,8 +199,8 @@ public class Weapon {
 		return false;
 	}
 		
-	private void Reload() {
-		if (mount == Weapon.PRIMARY) {
+	public void Reload() {
+		if (mountAs == Weapon.PRIMARY) {
 			if (type == Weapon.TYPE_GUN) {
 				loadedShot = game.CreateFromPrefab().CreateGunShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_LASER) {
@@ -203,12 +215,14 @@ public class Weapon {
 				loadedShot = game.CreateFromPrefab().CreateGuidedMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_MINE_TOUCH) {
 				loadedShot = game.CreateFromPrefab().CreateMineTouchShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_LASER_BEAM) {
+				loadedShot = game.CreateFromPrefab().CreateLaserBeamShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else {
 				loadedShot = game.CreateFromPrefab().CreateMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			}
-//			if (loadedShot.rigidbody != null) {
-			loadedShot.rigidbody.isKinematic = true;
-//			}
+			if (loadedShot.rigidbody != null) {
+				loadedShot.rigidbody.isKinematic = true;
+			}
 		}
 		loadedShot.transform.parent = weaponTransform;
 		isReloaded = true;
@@ -216,7 +230,7 @@ public class Weapon {
 	
 	private void Initialize() {
 		GameObject weaponGameObject;
-		if (mount == PRIMARY) {
+		if (mountAs == PRIMARY) {
 			switch (type) {
 				case TYPE_GUN:
 					speed = 100f;
@@ -250,6 +264,11 @@ public class Weapon {
 					speed = 0f;
 					accuracy = 0;//3.0f - model * 0.01f;
 					frequency = 10.0f - model * 0.0625f; break;
+//					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
+				case TYPE_LASER_BEAM:
+					speed = 0f;
+					accuracy = 0;//3.0f - model * 0.01f;
+					frequency = 0; break;
 //					weaponGameObject = GameObject.Instantiate(game.missileLauncherPrefab) as GameObject; break;
 				default:
 					speed = 50f;

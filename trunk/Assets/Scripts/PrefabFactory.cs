@@ -23,11 +23,11 @@ public class PrefabFactory {
 	
 	public void Initialize(Play p) {
 		play = p;
-		gunBulletTemplate = GameObject.Instantiate(game.gunBulletPrefab) as GameObject;
+		gunBulletTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.BULLET]) as GameObject;
 		gunBulletTemplate.GetComponent<Shot>().enabled = false;
-		laserShotTemplate = GameObject.Instantiate(game.laserShotPrefab) as GameObject;
+		laserShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.LASER]) as GameObject;
 		laserShotTemplate.GetComponent<Shot>().enabled = false;
-		missileShotTemplate = GameObject.Instantiate(game.missileShotPrefab) as GameObject;
+		missileShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.MISSILE]) as GameObject;
 		missileShotTemplate.GetComponent<Shot>().enabled = false;
 		breadcrumbTemplate = GameObject.Instantiate(game.breadcrumbPrefab) as GameObject;
 		breadcrumbTemplate.GetComponent<Breadcrumb>().enabled = false;
@@ -37,11 +37,14 @@ public class PrefabFactory {
 		hitTemplate.GetComponent<Hit>().enabled = false;
 		healthDropTemplate = GameObject.Instantiate(game.healthDropPrefab) as GameObject;
 		healthDropTemplate.GetComponent<CollecteableHealth>().enabled = false;
+		healthDropTemplate.tag = ""; // so it is not removed at the end of zone
 		shieldDropTemplate = GameObject.Instantiate(game.shieldDropPrefab) as GameObject;
 		shieldDropTemplate.GetComponent<CollecteableShield>().enabled = false;
+		shieldDropTemplate.tag = "";
 		missileDropTemplate = GameObject.Instantiate(game.missileDropPrefab) as GameObject;
 		missileDropTemplate.GetComponent<CollecteableMissile>().enabled = false;
-		mineTouchTemplate = GameObject.Instantiate(game.mineTouchShotPrefab) as GameObject;
+		missileDropTemplate.tag = "";
+		mineTouchTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.MINE_TOUCH]) as GameObject;
 		mineTouchTemplate.GetComponent<Shot>().enabled = false;
 	}
 	
@@ -77,6 +80,14 @@ public class PrefabFactory {
 		return shot;
 	}
 	
+	public Shot CreateLaserBeamShot(Vector3 pos, Quaternion rot, int damage, int source) {
+		GameObject laserBeam = GameObject.Instantiate(game.shotPrefabs[Shot.LASER_BEAM], pos, rot) as GameObject;
+		Shot shot = laserBeam.GetComponent<Shot>();
+		shot.Initialize(play, damage, source, Shot.LASER_BEAM);
+		shot.enabled = false;
+		return shot;
+	}
+	
 	public Shot CreateGuidedMissileShot(Vector3 pos, Quaternion rot, int damage, int source) {
 		GameObject newMissile = GameObject.Instantiate(missileShotTemplate, pos, rot) as GameObject;
 		Shot shot = newMissile.GetComponent<Shot>();
@@ -95,6 +106,7 @@ public class PrefabFactory {
 
 	public GameObject CreateHealthDrop(Vector3 pos, Quaternion rot, int amount) {
 		GameObject newHealthDrop = GameObject.Instantiate(healthDropTemplate, pos, rot) as GameObject;
+		newHealthDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableHealth healthDrop = newHealthDrop.GetComponent<CollecteableHealth>();
 		healthDrop.Initialize(play, amount);
 		healthDrop.enabled = true;
@@ -103,6 +115,7 @@ public class PrefabFactory {
 
 	public GameObject CreateShieldDrop(Vector3 pos, Quaternion rot, int amount) {
 		GameObject newShieldDrop = GameObject.Instantiate(shieldDropTemplate, pos, rot) as GameObject;
+		newShieldDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableShield shieldDrop = newShieldDrop.GetComponent<CollecteableShield>();
 		shieldDrop.Initialize(play, amount);
 		shieldDrop.enabled = true;
@@ -111,6 +124,7 @@ public class PrefabFactory {
 
 	public GameObject CreateMissileDrop(Vector3 pos, Quaternion rot, int type, int amount) {
 		GameObject newMissileDrop = GameObject.Instantiate(missileDropTemplate, pos, rot) as GameObject;
+		newMissileDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableMissile missileDrop = newMissileDrop.GetComponent<CollecteableMissile>();
 		missileDrop.Initialize(play, type, amount);
 		missileDrop.enabled = true;

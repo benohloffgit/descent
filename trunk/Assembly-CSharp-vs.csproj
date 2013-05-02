@@ -71,6 +71,7 @@
      <Compile Include="Assets\Scripts\Enemies\Snake.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spawn.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spike.cs" />
+     <Compile Include="Assets\Scripts\Enemies\WallLaser.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />
      <Compile Include="Assets\Scripts\GUI\Button.cs" />
      <Compile Include="Assets\Scripts\GUI\Center.cs" />
@@ -121,8 +122,6 @@
      <Compile Include="Assets\Scripts\Ship\CollecteableScroll.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteableShield.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteablesDistributor.cs" />
-     <Compile Include="Assets\Scripts\Ship\Explosion.cs" />
-     <Compile Include="Assets\Scripts\Ship\Hit.cs" />
      <Compile Include="Assets\Scripts\Ship\MiniMap.cs" />
      <Compile Include="Assets\Scripts\Ship\Ship.cs" />
      <Compile Include="Assets\Scripts\Ship\ShipControl.cs" />
@@ -134,10 +133,11 @@
      <Compile Include="Assets\Scripts\UnityThreading\TaskDistributer.cs" />
      <Compile Include="Assets\Scripts\UnityThreading\Thread.cs" />
      <Compile Include="Assets\Scripts\UnityThreading\UnityThreadHelper.cs" />
+     <Compile Include="Assets\Scripts\Weapon\Explosion.cs" />
+     <Compile Include="Assets\Scripts\Weapon\Hit.cs" />
      <Compile Include="Assets\Scripts\Weapon\Mine.cs" />
      <Compile Include="Assets\Scripts\Weapon\Shot.cs" />
      <Compile Include="Assets\Scripts\Weapon\WallGun.cs" />
-     <Compile Include="Assets\Scripts\Weapon\WallLaser.cs" />
      <Compile Include="Assets\Scripts\Weapon\Weapon.cs" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpSingleAxis_Unlit.shader" />

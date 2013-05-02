@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
 
-public class CollecteablePowerUp : MonoBehaviour {		
+public class CollecteablePowerUp : MonoBehaviour {
+	public static string TAG = "PowerUp";
+	
 	private Play play;
 	
 	private float angle;

@@ -1,19 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Weapon\Weapon.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\WallLaser.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="240" Column="13" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="183" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="198" Column="22" />
-      <File FileName="Assets\Scripts\Game.cs" Line="8" Column="25" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="174" Column="20" />
-      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="85" Column="42" />
-      <File FileName="Assets\Scripts\Enemies\MineBuilder.cs" Line="21" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="10" Column="1" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="77" Column="15" />
-      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="69" Column="1" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="148" Column="3" />
-      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="97" Column="44" />
+      <File FileName="Assets\Scripts\Play.cs" Line="240" Column="14" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="115" Column="1" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="282" Column="41" />
+      <File FileName="Assets\Scripts\Game.cs" Line="83" Column="67" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="237" Column="90" />
+      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="69" Column="44" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="85" Column="35" />
+      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="101" Column="24" />
+      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="65" Column="8" />
+      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="11" Column="42" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="104" Column="44" />
+      <File FileName="Assets\Scripts\Enemies\WallLaser.cs" Line="46" Column="3" />
+      <File FileName="Assets\Scripts\Enemies\MineBuilder.cs" Line="25" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

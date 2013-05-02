@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CollecteablesDistributor {
 	private Play play;
 	private Game game;
 	private Ship ship;
+//	private List<GameObject> drops;
 	
 	private static int AMOUNT_HEAL = 15; // percentage
 	private static int AMOUNT_SHIELD = 25; // percentage
@@ -14,6 +16,7 @@ public class CollecteablesDistributor {
 		play = play_;
 		game = play.game;
 		ship = play.ship;
+//		drops = new List<GameObject>();
 	}
 	
 	public void DistributeOnEnemyDeath(Enemy e) {
@@ -89,6 +92,10 @@ public class CollecteablesDistributor {
 		game.CreateFromPrefab().CreateShieldDrop(pos, Quaternion.identity, AMOUNT_SHIELD);
 	}		
 	
+	private void DropMissile(Enemy e, int type, int amount) {
+		game.CreateFromPrefab().CreateMissileDrop(e.transform.position, Quaternion.identity, type, amount);
+	}
+	
 /*	public void DropScroll(Vector3 pos) {
 		game.CreateFromPrefab().CreateScrollDrop(pos, Quaternion.identity);
 	}*/
@@ -106,10 +113,11 @@ public class CollecteablesDistributor {
 			GridPosition gP = play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition();
 			DropPowerUp(gP.GetWorldVector3(), Weapon.SECONDARY, play.zoneID);
 		}
-		
 	}
 	
-	private void DropMissile(Enemy e, int type, int amount) {
-		game.CreateFromPrefab().CreateMissileDrop(e.transform.position, Quaternion.identity, type, amount);
+	public void RemoveAll() {
+		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(CollecteablePowerUp.TAG)) {
+			GameObject.Destroy(gO);
+		}
 	}
 }

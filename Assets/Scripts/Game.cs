@@ -28,15 +28,11 @@ public class Game : MonoBehaviour {
 //	public GameObject[] secondaryWeaponPrefabs;
 	public GameObject[] powerUpPrefabs;
 //	public GameObject laserGunPrefab;
-	public GameObject missileLauncherPrefab;
 	public GameObject manaPrefab;
 	public GameObject spawnPrefab;
 
 	// those are objects create while game is running (after cave generation)
-	public GameObject gunBulletPrefab;
-	public GameObject laserShotPrefab;
-	public GameObject missileShotPrefab;
-	public GameObject mineTouchShotPrefab;
+	public GameObject[] shotPrefabs;
 	public GameObject breadcrumbPrefab;
 	public GameObject explosionPrefab;
 	public GameObject hitPrefab;
@@ -44,8 +40,6 @@ public class Game : MonoBehaviour {
 	public GameObject healthDropPrefab;
 	public GameObject shieldDropPrefab;
 	public GameObject missileDropPrefab;
-//	public GameObject scrollDropPrefab;
-	public GameObject powerUpDropPrefab;
 
 	public Texture2D[] caveTextures;
 	

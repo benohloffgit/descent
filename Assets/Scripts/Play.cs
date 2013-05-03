@@ -122,13 +122,13 @@ public class Play : MonoBehaviour {
 				lightBulb.transform.position = GetShipPosition();
 				Debug.Log ("Adding Light Bulb (Editor mode)");
 			}
-			if (Input.GetKeyDown(KeyCode.Alpha4)) {				
+/*			if (Input.GetKeyDown(KeyCode.Alpha4)) {				
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {
 					WallGun wallGun = enemyDistributor.CreateWallGun();
 					enemyDistributor.PlaceOnWall(wallGun.gameObject, hit);
 					Debug.Log ("Adding Wall Gun (Editor mode)");
 				}
-			}
+			}*/
 			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
 				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
 			}
@@ -139,11 +139,6 @@ public class Play : MonoBehaviour {
 					Debug.Log ("Adding Wall Laser (Editor mode)");
 				}
 			}*/
-			if (Input.GetKeyDown(KeyCode.Alpha6)) {				
-				Pyramid pyramid = enemyDistributor.CreatePyramid();
-				pyramid.transform.position = GetShipPosition();
-				Debug.Log ("Adding Pyramid (Editor mode)");
-			}
 			if (Input.GetKeyDown(KeyCode.Alpha7)) {				
 				Spike spike = enemyDistributor.CreateSpike();
 				spike.transform.position = GetShipPosition(); //new Vector3(130f, 205f, 67f)
@@ -237,7 +232,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 10;
+		zoneID = 5;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);

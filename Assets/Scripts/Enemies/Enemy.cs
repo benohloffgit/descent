@@ -10,8 +10,8 @@ public abstract class Enemy : MonoBehaviour {
 		Mine dropper
 	*/
 	public static string CLAZZ_A = "a"; // bull
-	public static string CLAZZ_B = "b"; // spike
-	public static string CLAZZ_C = "c";
+	public static string CLAZZ_B = "b"; // manta
+	public static string CLAZZ_C = "c"; // spike
 	public static string CLAZZ_D = "d";
 	public static string CLAZZ_E = "e";
 	public static string CLAZZ_F = "f";
@@ -26,8 +26,8 @@ public abstract class Enemy : MonoBehaviour {
 //	public static string CLAZZ_K = "k";
 //	public static string CLAZZ_L = "l";
 	public static int CLAZZ_A0 = 0; // bull
-	public static int CLAZZ_B1 = 1; // spike
-	public static int CLAZZ_C2 = 2;
+	public static int CLAZZ_B1 = 1; // manta
+	public static int CLAZZ_C2 = 2; // spike
 	public static int CLAZZ_D3 = 3;
 	public static int CLAZZ_E4 = 4;
 	public static int CLAZZ_F5 = 5;

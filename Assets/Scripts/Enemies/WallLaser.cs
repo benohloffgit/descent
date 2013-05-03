@@ -11,6 +11,7 @@ public class WallLaser : Enemy {
 	private RaycastHit hit;
 	private float lastDamageTime;
 	private Shot loadedShot;
+	private Weapon weapon;
 	
 	private static float LASER_LENGTH_MODIFIER = 0.95f;
 	private static float RAYCAST_DISTANCE = RoomMesh.MESH_SCALE * 8;
@@ -23,21 +24,6 @@ public class WallLaser : Enemy {
 //		laserBeam = laserAnchor.FindChild("Laser Beam");
 
 	void Start() {
-/*		IntTriple result = (IntTriple)emptyCells[UnityEngine.Random.Range(0,emptyCells.Count)];
-//		Debug.Log (result.x +" " + result.y +" " + result.z);
-		Vector3 pos = new Vector3(result.x * RoomMesh.MESH_SCALE, result.y * RoomMesh.MESH_SCALE, result.z * RoomMesh.MESH_SCALE);	
-		Vector3 rayPath = RandomVector();
-		
-		if (Physics.Raycast(pos, rayPath, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {			
-			WallGun wallGun = CreateWallGun();
-			PlaceOnWall(wallGun.gameObject, hit);
-		}*/
-	}
-	
-	public override void InitializeWeapon(int mount, int w, int m) {
-		Weapon weapon = new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY,
-				modelClazzAEquivalent + 1, spawn.isBoss, -1);
-		secondaryWeapons.Add(weapon);
 		laserAnchor = weapon.weaponTransform;
 		weapon.Mount();
 		weapon.Reload();
@@ -48,6 +34,12 @@ public class WallLaser : Enemy {
 		baseRight = laserAnchor.right;
 		GetNewAimForward();
 		lastDamageTime = Time.time;
+	}
+	
+	public override void InitializeWeapon(int mount, int w, int m) {
+		weapon = new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY,
+				modelClazzAEquivalent + 1, spawn.isBoss, -1);
+		secondaryWeapons.Add(weapon);
 	}
 		
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {

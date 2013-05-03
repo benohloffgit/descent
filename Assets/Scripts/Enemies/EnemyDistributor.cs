@@ -59,7 +59,7 @@ public class EnemyDistributor {
 		int enemyClazzVariety = CalculateEnemyClazzVariety(play.zoneID);
 		Debug.Log ("enemyClazzVariety : " + enemyClazzVariety );
 		
-		if (false) { //enemyClazzVariety > 0) {
+		if (enemyClazzVariety > 0) {
 			float[] enemyClazzProbability = CalculateEnemyClazzProbability(enemyClazzVariety);
 			
 			float spawnMinFrequency, spawnMaxFrequency;
@@ -124,7 +124,7 @@ public class EnemyDistributor {
 			number = Mathf.FloorToInt(play.zoneID / 10f) + 2;
 			CreateSpawn(Enemy.CLAZZ_BUG8, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
-						1.0f, number, number, false, true);
+						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_SNAKE9] <= play.zoneID) {
@@ -134,7 +134,7 @@ public class EnemyDistributor {
 			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
 			CreateSpawn(Enemy.CLAZZ_SNAKE9, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
-						1.0f, number, number, false, true);
+						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_MINEBUILDER10] <= play.zoneID) {
@@ -144,17 +144,17 @@ public class EnemyDistributor {
 			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
 			CreateSpawn(Enemy.CLAZZ_MINEBUILDER10, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
-						1.0f, number, number, false, true);
+						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11] <= play.zoneID) {
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11];
-			// Bug 1-4 per zone
-			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
+			// Bug 2-10 per zone
+			number = Mathf.FloorToInt(play.zoneID / 8f) + 2;
 			CreateSpawn(Enemy.CLAZZ_WALLLASER11, enemyModel, enemyEquivalentClazzAModel,
-						play.cave.zone.roomList[0].GetRandomNonExitGridPosition(),
-						1.0f, number, number, false, false);
+						play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition(),
+						1.0f, number, number, false, Spawn.DistributionMode.PlaceOnWall);
 			enemiesAll += number;
 		}
 	}
@@ -195,10 +195,10 @@ public class EnemyDistributor {
 		return wallLaser;
 	}
 
-	public Pyramid CreatePyramid() {
-		GameObject p = GameObject.Instantiate(game.pyramidPrefab) as GameObject;
-		Pyramid pyramid = p.GetComponent<Pyramid>();
-		return pyramid;
+	public Manta CreateManta() {
+		GameObject p = GameObject.Instantiate(game.mantaPrefab) as GameObject;
+		Manta manta = p.GetComponent<Manta>();
+		return manta;
 	}
 
 	public Spike CreateSpike() {
@@ -232,10 +232,12 @@ public class EnemyDistributor {
 	}
 
 	public Spawn CreateSpawn(int enemyClazz, int enemyModel, int enemyEquivalentClazzAModel, GridPosition gridPos,
-				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY, bool isBoss = false, bool isDistributedAcrossCave = false) {
+				float frequency = 15.0f, int maxLiving = 3, int maxGenerated = Spawn.INFINITY, bool isBoss = false,
+				Spawn.DistributionMode distributionMode = Spawn.DistributionMode.RandomInRoom) {
 		GameObject p = GameObject.Instantiate(game.spawnPrefab) as GameObject;
 		Spawn spawn = p.GetComponentInChildren<Spawn>();
-		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel, frequency, maxLiving, maxGenerated, isBoss, isDistributedAcrossCave);
+		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel,
+			frequency, maxLiving, maxGenerated, isBoss, distributionMode);
 		spawn.transform.position = gridPos.GetVector3() * RoomMesh.MESH_SCALE;
 		play.cave.zone.GetRoom(gridPos).SetCellToSpawn(gridPos.cellPosition);
 		return spawn;
@@ -293,6 +295,8 @@ public class EnemyDistributor {
 		if (clazz == Enemy.CLAZZ_A0) {
 			enemy = (Enemy)CreateBull();
 		} else if (clazz == Enemy.CLAZZ_B1) {
+			enemy = (Enemy)CreateManta();
+		} else if (clazz == Enemy.CLAZZ_C2) {
 			enemy = (Enemy)CreateSpike();
 		} else if (clazz == Enemy.CLAZZ_BUG8) {
 			enemy = (Enemy)CreateBug();
@@ -323,15 +327,17 @@ public class EnemyDistributor {
 		return enemy;
 	}
 	
-	public void PlaceOnWall(GameObject gO, RaycastHit h) {
-//		Vector3 centeredPos = h.collider.transform.TransformPoint(h.barycentricCoordinate);
-//		gO.transform.position = cubePosition + centeredPos;	
-		Mesh mesh = play.GetRoomOfShip().roomMesh.mesh;
-		Vector3 v1 = mesh.vertices[mesh.triangles[h.triangleIndex * 3 + 0]];
-		Vector3 v2 = mesh.vertices[mesh.triangles[h.triangleIndex * 3 + 1]];
-		Vector3 v3 = mesh.vertices[mesh.triangles[h.triangleIndex * 3 + 2]];
-		gO.transform.position = ((v1 + v2 + v3)/3) * RoomMesh.MESH_SCALE;
-		gO.transform.forward = h.normal;
+	public void PlaceOnWall(Vector3 worldPos, Room r, Transform t) {
+		Vector3 rayPath = RandomVector();
+		
+		if (Physics.Raycast(worldPos, rayPath, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {			
+			Mesh mesh = r.roomMesh.mesh;
+			Vector3 v1 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 0]];
+			Vector3 v2 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 1]];
+			Vector3 v3 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 2]];
+			t.position = ((v1 + v2 + v3)/3) * RoomMesh.MESH_SCALE;
+			t.forward = hit.normal;
+		}
 	}
 	
 	public static Vector3 RandomVector() {

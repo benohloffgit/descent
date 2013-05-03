@@ -66,8 +66,8 @@
      <Compile Include="Assets\Scripts\Enemies\EnemyDistributor.cs" />
      <Compile Include="Assets\Scripts\Enemies\LightBulb.cs" />
      <Compile Include="Assets\Scripts\Enemies\Mana.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Manta.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
-     <Compile Include="Assets\Scripts\Enemies\Pyramid.cs" />
      <Compile Include="Assets\Scripts\Enemies\Snake.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spawn.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spike.cs" />

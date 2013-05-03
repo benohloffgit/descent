@@ -18,8 +18,10 @@ public class Spawn : MonoBehaviour {
 	private int maxLiving;
 	private int maxGenerated;
 	private bool isActive;
-	private bool isDistributedAcrossCave;
-	
+	private DistributionMode distributionMode;
+
+	public enum DistributionMode { RandomInRoom=0, AllOverCave=1, PlaceOnWall=2 }
+
 	private float lastTimeGenerated;
 	private int numberGenerated;
 	private int currentlyLiving;
@@ -33,7 +35,7 @@ public class Spawn : MonoBehaviour {
 	
 	public void Initialize(EnemyDistributor enemyDistributor_, Play play_, GridPosition gridPos_,
 				int enemyClazz_, int enemyModel_, int enemyEquivalentClazzAModel_ ,float frequency_, int maxLiving_, int maxGenerated_,
-				bool isBoss_, bool isDistributedAcrossCave_) {
+				bool isBoss_, DistributionMode distributionMode_) {
 		enemyDistributor = enemyDistributor_;
 		play = play_;
 		isBoss = isBoss_;
@@ -46,7 +48,7 @@ public class Spawn : MonoBehaviour {
 		frequency = frequency_;
 		maxLiving = maxLiving_;
 		maxGenerated = maxGenerated_;
-		isDistributedAcrossCave = isDistributedAcrossCave_;
+		distributionMode = distributionMode_;
 	}
 	
 	void Start() {
@@ -83,8 +85,10 @@ public class Spawn : MonoBehaviour {
 		Room r = play.cave.zone.GetRoom(gridPos);
 		for (int i=0; i<maxLiving; i++) {
 			Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel, enemyEquivalentClazzAModel);
-			if (isDistributedAcrossCave) {
+			if (distributionMode == DistributionMode.AllOverCave) {
 				e.transform.position = play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition().GetWorldVector3();
+			} else if (distributionMode == DistributionMode.PlaceOnWall) {
+				enemyDistributor.PlaceOnWall(worldPos, play.cave.zone.GetRoom(gridPos), e.transform);
 			} else {
 				e.transform.position = r.GetRandomNonExitGridPosition().GetWorldVector3();
 			}

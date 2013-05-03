@@ -20,6 +20,9 @@ public class CollecteablesDistributor {
 	}
 	
 	public void DistributeOnEnemyDeath(Enemy e) {
+		if (e.clazzNum == Enemy.CLAZZ_WALLLASER11) {
+			return;
+		}
 		int random100;
 		bool hasDropped = false;
 		// SHIELD

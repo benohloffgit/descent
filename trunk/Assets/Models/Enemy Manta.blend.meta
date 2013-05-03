@@ -3,9 +3,12 @@ guid: 01225c4e539aca74f846a59d40fd518f
 ModelImporter:
   fileIDToRecycleName:
     4300000: Pyramid
+    4300002: Manta
+    7400000: Action //// Enemy Manta
+    7400002: Forward //// Enemy Manta
   serializedVersion: 10
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -17,7 +20,12 @@ ModelImporter:
     animationPositionError: .5
     animationScaleError: .5
     animationWrapMode: 0
-    clipAnimations: []
+    clipAnimations:
+    - name: Forward
+      firstFrame: 5
+      lastFrame: 35
+      wrapMode: 2
+      loop: 1
   meshes:
     lODScreenPercentages: []
     globalScale: 1
@@ -47,6 +55,20 @@ ModelImporter:
       data:
         first: 111
         second: 605fa900
+    Armature:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+    Body:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
     Lamp:
       data:
         first: 1
@@ -54,7 +76,7 @@ ModelImporter:
       data:
         first: 4
         second: 801a0600
-    Pyramid:
+    Manta:
       data:
         first: 1
         second: a2860100
@@ -62,8 +84,19 @@ ModelImporter:
         first: 4
         second: 821a0600
       data:
-        first: 23
-        second: 60182300
+        first: 137
+        second: a00bd100
+    Wing.L:
       data:
-        first: 33
-        second: a05a3200
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    Wing.R:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600

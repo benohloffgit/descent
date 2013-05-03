@@ -19,7 +19,7 @@ public class Game : MonoBehaviour {
 	public GameObject wallLaserPrefab;
 	public GameObject mineBuilderPrefab;
 	public GameObject lightBulbPrefab;
-	public GameObject pyramidPrefab;
+	public GameObject mantaPrefab;
 	public GameObject spikePrefab;
 	public GameObject bullPrefab;
 	public GameObject bugPrefab;

@@ -64,6 +64,7 @@
      <Compile Include="Assets\Scripts\Enemies\Bull.cs" />
      <Compile Include="Assets\Scripts\Enemies\Enemy.cs" />
      <Compile Include="Assets\Scripts\Enemies\EnemyDistributor.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Hornet.cs" />
      <Compile Include="Assets\Scripts\Enemies\LightBulb.cs" />
      <Compile Include="Assets\Scripts\Enemies\Mana.cs" />
      <Compile Include="Assets\Scripts\Enemies\Manta.cs" />
@@ -72,6 +73,7 @@
      <Compile Include="Assets\Scripts\Enemies\Spawn.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spike.cs" />
      <Compile Include="Assets\Scripts\Enemies\WallLaser.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Wombat.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />
      <Compile Include="Assets\Scripts\GUI\Button.cs" />
      <Compile Include="Assets\Scripts\GUI\Center.cs" />

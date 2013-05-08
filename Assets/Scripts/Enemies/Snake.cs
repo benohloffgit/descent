@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Snake : Enemy {
-	private Cave cave;
-	
 	private GridPosition targetPosition;
 	private GridPosition coverPosition;
 	private Mode mode;
@@ -24,7 +22,6 @@ public class Snake : Enemy {
 		mode = Mode.ROAMING;
 		isOnPath = false;
 		roamingStart = Time.time;
-		cave = play.cave;
 	}
 	
 	public override void InitializeWeapon(int mount, int w, int m) {
@@ -41,10 +38,10 @@ public class Snake : Enemy {
 //					Debug.Log ("No cover found, Mode.ROAMING" );					
 				} else {
 					coverPosition = coverFindThreadState.coverPosition;
-					if (coverPosition != cave.GetGridFromPosition(transform.position)) {
+					if (coverPosition != currentGridPosition) {
 //						Debug.Log ("Mode.PATHFINDING" );					
 						mode = Mode.PATHFINDING;
-						play.movement.AStarPath(aStarThreadState, cave.GetGridFromPosition(transform.position), coverFindThreadState.coverPosition);
+						play.movement.AStarPath(aStarThreadState, currentGridPosition, coverFindThreadState.coverPosition);
 					} else {
 						mode = Mode.ROAMING;
 						roamingStart = Time.time;
@@ -64,7 +61,7 @@ public class Snake : Enemy {
 		}
 		if (mode == Mode.HIDING) {
 			if (isOnPath) {
-				play.movement.Chase(myRigidbody, targetPosition, movementForce, ref isOnPath);
+				play.movement.Chase(myRigidbody, currentGridPosition, targetPosition, movementForce, ref isOnPath);
 //				Debug.Log ("chasing " + isOnPath);
 			} else {
 				if (aStarThreadState.roomPath.Count > 0) {
@@ -85,11 +82,11 @@ public class Snake : Enemy {
 				mode = Mode.COVERFINDING;
 //				Debug.Log ("Mode.COVERFINDING" );
 				if (coverPosition == GridPosition.ZERO) {
-					coverPosition = cave.GetGridFromPosition(transform.position);
+					coverPosition = currentGridPosition;
 				}
 				play.movement.CoverFind(coverFindThreadState, coverPosition, play.GetShipGridPosition());
 			} else {
-				play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
+				play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			}
 		}
 		

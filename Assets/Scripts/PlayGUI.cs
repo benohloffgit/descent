@@ -258,14 +258,16 @@ public class PlayGUI {
 	
 	private void ShowEnemyMissileLockInfo() {
 		Enemy e = ship.lockedEnemy;
-		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
-			+ ship.transform.TransformDirection(ENEMY_LOCK_OFFSET_LOCAL) * e.radius * 0.5f);
-		gui.labelsCC[enemyLockMissileLabel].SetText("L: " 
-			+ (Ship.MISSILE_LOCK_DURATION - Mathf.Clamp(Mathf.FloorToInt(Time.time-ship.missileLockTime),0,Ship.MISSILE_LOCK_DURATION)));
-		gui.labelsCC[enemyLockMissileLabel].transform.localPosition = new Vector2(
-			Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f),
-			Mathf.Clamp(p.y - ENEMY_HUD_OFFSET_GLOBAL.y, -0.45f, 0.45f)
-		);
+		if (e != null) {
+			Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
+				+ ship.transform.TransformDirection(ENEMY_LOCK_OFFSET_LOCAL) * e.radius * 0.5f);
+			gui.labelsCC[enemyLockMissileLabel].SetText("L: " 
+				+ (Ship.MISSILE_LOCK_DURATION - Mathf.Clamp(Mathf.FloorToInt(Time.time-ship.missileLockTime),0,Ship.MISSILE_LOCK_DURATION)));
+			gui.labelsCC[enemyLockMissileLabel].transform.localPosition = new Vector2(
+				Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f),
+				Mathf.Clamp(p.y - ENEMY_HUD_OFFSET_GLOBAL.y, -0.45f, 0.45f)
+			);
+		}
 	}
 	
 	public void RemoveEnemy(Enemy e) {

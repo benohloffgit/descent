@@ -56,7 +56,7 @@ public class MineBuilder : Enemy {
 		if (mode == Mode.CHASING) {
 //			Debug.Log ("Chasing ..." + chasingRange + " " + shootingRange);
 			if (isOnPath) {
-				play.movement.Chase(myRigidbody, targetPosition, movementForce, ref isOnPath);
+				play.movement.Chase(myRigidbody, currentGridPosition, targetPosition, movementForce, ref isOnPath);
 //				Debug.Log ("chasing " + isOnPath + " "  + Time.frameCount);
 			} else {
 				if (aStarThreadState.roomPath.Count > 0) {
@@ -76,13 +76,13 @@ public class MineBuilder : Enemy {
 //				Debug.Log ("PATHFINDING");
 				mode = Mode.PATHFINDING;
 				GridPosition exitPos = new GridPosition(exitPositions[exitIndex], room.pos);
-				play.movement.AStarPath(aStarThreadState, play.cave.GetGridFromPosition(transform.position), exitPos);
+				play.movement.AStarPath(aStarThreadState, currentGridPosition, exitPos);
 				exitIndex++;
 				if (exitIndex >= exitPositions.Length) {
 					exitIndex = 0;
 				}
 			} else {
-				play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
+				play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 				ShootSecondary();
 			}
 		}

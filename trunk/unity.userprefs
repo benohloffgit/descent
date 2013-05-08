@@ -1,19 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\Manta.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Weapon\Weapon.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="241" Column="83" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="36" Column="59" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="123" Column="18" />
-      <File FileName="Assets\Scripts\Game.cs" Line="22" Column="25" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="120" Column="15" />
-      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="91" Column="77" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="85" Column="35" />
-      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="101" Column="24" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="65" Column="8" />
+      <File FileName="Assets\Scripts\Play.cs" Line="446" Column="27" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="341" Column="19" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="214" Column="17" />
+      <File FileName="Assets\Scripts\Game.cs" Line="91" Column="40" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="141" Column="95" />
+      <File FileName="Assets\Scripts\Enemies\Spawn.cs" Line="87" Column="42" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="75" Column="1" />
+      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="80" Column="1" />
+      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="121" Column="22" />
       <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="11" Column="42" />
-      <File FileName="Assets\Scripts\Enemies\Manta.cs" Line="119" Column="3" />
-      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="45" Column="4" />
+      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="87" Column="24" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="255" Column="5" />
+      <File FileName="Assets\Scripts\Enemies\Wombat.cs" Line="31" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

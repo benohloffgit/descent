@@ -16,7 +16,7 @@ public class Bug : Enemy {
 	}
 		
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {		
-		play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
+		play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 		play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 	}
 

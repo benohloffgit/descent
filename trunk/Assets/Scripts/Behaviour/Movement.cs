@@ -15,10 +15,13 @@ public class Movement {
 		play = p;
 		cave = play.cave;
 	}
-
-	public void Chase(Rigidbody rigidbody, GridPosition targetPosition, float force, ref bool isOnPath) {	
+	
+	public void MoveTo(Rigidbody rigidbody, Vector3 direction, float force) {
+		rigidbody.AddForce(direction * force);
+	}
+	
+	public void Chase(Rigidbody rigidbody, GridPosition currentPosition, GridPosition targetPosition, float force, ref bool isOnPath) {	
 		Vector3 position = rigidbody.transform.position;
-		GridPosition currentPosition = cave.GetGridFromPosition(position);
 /*		// make sure targetPosition refers to actual empty grid cell in cave (this might not be the case with the first entry in pathfinding)
 		if (cave.GetCellDensity(targetPosition) == Cave.DENSITY_FILLED) {
 			Debug.Log ("Chase pos filled " + targetPosition);
@@ -39,9 +42,8 @@ public class Movement {
 		}
 	}
 	
-	public void Roam(Rigidbody rigidbody, ref GridPosition targetPosition, int minDistance, int maxDistance, float force) {
+	public void Roam(Rigidbody rigidbody, GridPosition currentPosition, ref GridPosition targetPosition, int minDistance, int maxDistance, float force) {
 		Vector3 position = rigidbody.transform.position;
-		GridPosition currentPosition = cave.GetGridFromPosition(position);
 //		try {
 		if (cave.GetCellDensity(currentPosition) == 2) {
 			Debug.Log ("position " + position);
@@ -81,7 +83,8 @@ public class Movement {
 		}
 	}
 
-	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance, ref float currentAngleUp, LookAtMode mode) {
+	public float LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance, ref float currentAngleUp, LookAtMode mode) {
+		float angleForward = 0f;
 		Vector3 position = rigidbody.transform.position;
 		if ( Vector3.Distance(cave.GetGridFromPosition(position).GetVector3(), cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
 			Vector3 toTarget = target.position - position;
@@ -95,16 +98,17 @@ public class Movement {
 			} else {
 				currentAngleUp = 0f;
 			}
-			float angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
+			angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
 			if (angleForward > angleTolerance) {
 				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 5.0f);
 			}
 		} else if (mode == LookAtMode.IntoMovingDirection) { // look to moving direction
-			float angleForward = Vector3.Angle(rigidbody.transform.forward, rigidbody.velocity.normalized);
+			angleForward = Vector3.Angle(rigidbody.transform.forward, rigidbody.velocity.normalized);
 			if (angleForward > angleTolerance) {
 				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, rigidbody.velocity) * 5.0f);
 			}
 		}
+		return angleForward;
 	}
 	
 /*	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance) {

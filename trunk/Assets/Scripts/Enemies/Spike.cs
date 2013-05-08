@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Spike : Enemy {
-	private Cave cave;
-	
 	private RaycastHit hit;
 	private GridPosition targetPosition;
 	private Mode mode;
@@ -19,13 +17,12 @@ public class Spike : Enemy {
 	public override void InitializeWeapon(int mount, int w, int m) {
 		if (mount == Weapon.PRIMARY) {
 			primaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
-		} else {
-			secondaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
+//		} else {
+//			secondaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 		}
 	}
 	
 	void Start() {
-		cave = play.cave;
 		targetPosition = cave.GetGridFromPosition(transform.position);
 		mode = Mode.ROAMING;
 		currentAngleUp = 0f;
@@ -50,7 +47,7 @@ public class Spike : Enemy {
 		if (mode == Mode.CHASING) {
 //			Debug.Log ("Chasing ..." + chasingRange + " " + shootingRange);
 			if (isOnPath) {
-				play.movement.Chase(myRigidbody, targetPosition, movementForce, ref isOnPath);
+				play.movement.Chase(myRigidbody, currentGridPosition, targetPosition, movementForce, ref isOnPath);
 //				Debug.Log ("chasing " + isOnPath + " "  + Time.frameCount);
 			} else {
 				if (distanceToShip > chasingRange) {
@@ -75,9 +72,9 @@ public class Spike : Enemy {
 			if (distanceToShip > shootingRange) {
 //				Debug.Log ("PATHFINDING");
 				mode = Mode.PATHFINDING;
-				play.movement.AStarPath(aStarThreadState, cave.GetGridFromPosition(transform.position), play.GetShipGridPosition());
+				play.movement.AStarPath(aStarThreadState, currentGridPosition, play.GetShipGridPosition());
 			} else {
-				play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
+				play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			}
 		}
 		if (aggressiveness > Enemy.AGGRESSIVENESS_OFF) {

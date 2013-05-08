@@ -48,51 +48,57 @@ public class PrefabFactory {
 		mineTouchTemplate.GetComponent<Shot>().enabled = false;
 	}
 	
-	public Shot CreateGunShot(Vector3 pos, Quaternion rot, int damage, int source) {
+	public Shot CreateGunShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject newBullet = GameObject.Instantiate(gunBulletTemplate, pos, rot) as GameObject;
 		Shot shot = newBullet.GetComponent<Shot>();
-		shot.Initialize(play, damage, source, Shot.BULLET);
+		shot.Initialize(play, damage, mountedTo, Shot.BULLET);
 		shot.enabled = true;
 		return shot;
 	}
 	
-	public Shot CreateLaserShot(Vector3 pos, Quaternion rot, int damage, int source) {
+	public Shot CreateLaserShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject newLaser = GameObject.Instantiate(laserShotTemplate, pos, rot) as GameObject;
 		Shot shot = newLaser.GetComponent<Shot>();
-		shot.Initialize(play, damage, source, Shot.BULLET);
+		shot.Initialize(play, damage, mountedTo, Shot.BULLET);
 		shot.enabled = true;
 		return shot;
 	}
 
-	public Shot CreateMissileShot(Vector3 pos, Quaternion rot, int damage, int source) {
+	public Shot CreateMissileShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject newMissile = GameObject.Instantiate(missileShotTemplate, pos, rot) as GameObject;
 		Shot shot = newMissile.GetComponent<Shot>();
-		shot.Initialize(play, damage, source, Shot.MISSILE);
+		shot.Initialize(play, damage, mountedTo, Shot.MISSILE);
 		shot.enabled = false;
+		if (mountedTo == Game.ENEMY) {
+			shot.gameObject.layer = Game.LAYER_GUN_ENEMY;
+		}
 		return shot;
 	}
 
-	public Shot CreateMineTouchShot(Vector3 pos, Quaternion rot, int damage, int source) {
+	public Shot CreateMineTouchShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject newMineTouch = GameObject.Instantiate(mineTouchTemplate, pos, rot) as GameObject;
 		Shot shot = newMineTouch.GetComponent<Shot>();
-		shot.Initialize(play, damage, source, Shot.MINE_TOUCH);
+		shot.Initialize(play, damage, mountedTo, Shot.MINE_TOUCH);
 		shot.enabled = false;
 		return shot;
 	}
 	
-	public Shot CreateLaserBeamShot(Vector3 pos, Quaternion rot, int damage, int source) {
+	public Shot CreateLaserBeamShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject laserBeam = GameObject.Instantiate(game.shotPrefabs[Shot.LASER_BEAM], pos, rot) as GameObject;
 		Shot shot = laserBeam.GetComponent<Shot>();
-		shot.Initialize(play, damage, source, Shot.LASER_BEAM);
+		shot.Initialize(play, damage, mountedTo, Shot.LASER_BEAM);
 		shot.enabled = false;
 		return shot;
 	}
 	
-	public Shot CreateGuidedMissileShot(Vector3 pos, Quaternion rot, int damage, int source) {
+	public Shot CreateGuidedMissileShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject newMissile = GameObject.Instantiate(missileShotTemplate, pos, rot) as GameObject;
 		Shot shot = newMissile.GetComponent<Shot>();
-		shot.Initialize(play, damage, source, Shot.GUIDED);
+		shot.Initialize(play, damage, mountedTo, Shot.GUIDED);
 		shot.enabled = false;
+		if (mountedTo == Game.ENEMY) {
+			shot.gameObject.layer = Game.LAYER_GUN_ENEMY;
+		}
 		return shot;
 	}
 	

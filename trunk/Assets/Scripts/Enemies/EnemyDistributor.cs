@@ -32,7 +32,7 @@ public class EnemyDistributor {
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
 //	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
 //	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,2,4,9,16,25,36,49};
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54,1,14,6,10};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54,1,14,6,10,15};
 	private static int[] START_ZONE_PER_CLAZZ = new int[] {2,4,8,12,20,30,42,54};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 3.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 12.0f};
@@ -118,6 +118,7 @@ public class EnemyDistributor {
 	private void DistributeOthers() {
 		int enemyEquivalentClazzAModel, enemyModel, number;
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_BUG8] <= play.zoneID) {
+		Debug.Log ("Distriuting Bug");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_BUG8];
 			// Bug 2-8 per zone
@@ -128,6 +129,7 @@ public class EnemyDistributor {
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_SNAKE9] <= play.zoneID) {
+		Debug.Log ("Distriuting Snake");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_SNAKE9];
 			// Bug 1-4 per zone
@@ -138,6 +140,7 @@ public class EnemyDistributor {
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_MINEBUILDER10] <= play.zoneID) {
+		Debug.Log ("Distriuting Minebuilder");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_MINEBUILDER10];
 			// Bug 1-4 per zone
@@ -148,6 +151,7 @@ public class EnemyDistributor {
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11] <= play.zoneID) {
+		Debug.Log ("Distriuting Walllaser");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11];
 			// Bug 2-10 per zone
@@ -155,6 +159,16 @@ public class EnemyDistributor {
 			CreateSpawn(Enemy.CLAZZ_WALLLASER11, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition(),
 						1.0f, number, number, false, Spawn.DistributionMode.PlaceOnWall);
+			enemiesAll += number;
+		}
+		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_HORNET12] <= play.zoneID) {
+		Debug.Log ("Distriuting Hornet");
+			enemyEquivalentClazzAModel = play.zoneID;
+			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_HORNET12];
+			number = Mathf.FloorToInt(play.zoneID / 4f) + 1;
+			CreateSpawn(Enemy.CLAZZ_HORNET12, enemyModel, enemyEquivalentClazzAModel,
+						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
+						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
 			enemiesAll += number;
 		}
 	}
@@ -168,14 +182,40 @@ public class EnemyDistributor {
 		}
 		ResetStats();
 	}
-
+	
+	public Enemy CreateEnemy(int clazz) {
+		Enemy e;
+		if (clazz == Enemy.CLAZZ_A0) {
+			e = (Enemy)(GameObject.Instantiate(game.bullPrefab) as GameObject).GetComponent<Bull>();
+		} else if (clazz == Enemy.CLAZZ_B1) {
+			e = (Enemy)(GameObject.Instantiate(game.mantaPrefab) as GameObject).GetComponent<Manta>();
+		} else if (clazz == Enemy.CLAZZ_C2) {
+			e = (Enemy)(GameObject.Instantiate(game.spikePrefab) as GameObject).GetComponent<Spike>();
+		} else if (clazz == Enemy.CLAZZ_D3) {
+			e = (Enemy)(GameObject.Instantiate(game.wombatPrefab) as GameObject).GetComponent<Wombat>();
+		} else if (clazz == Enemy.CLAZZ_BUG8) {
+			e = (Enemy)(GameObject.Instantiate(game.bugPrefab) as GameObject).GetComponent<Bug>();
+		} else if (clazz == Enemy.CLAZZ_SNAKE9) {
+			e = (Enemy)(GameObject.Instantiate(game.snakePrefab) as GameObject).GetComponent<Snake>();
+		} else if (clazz == Enemy.CLAZZ_MINEBUILDER10) {
+			e = (Enemy)(GameObject.Instantiate(game.mineBuilderPrefab) as GameObject).GetComponent<MineBuilder>();
+		} else if (clazz == Enemy.CLAZZ_WALLLASER11) {
+			e = (Enemy)(GameObject.Instantiate(game.wallLaserPrefab) as GameObject).GetComponent<WallLaser>();
+		} else if (clazz == Enemy.CLAZZ_HORNET12) {
+			e = (Enemy)(GameObject.Instantiate(game.hornetPrefab) as GameObject).GetComponent<Hornet>();
+		} else {
+			e = (Enemy)(GameObject.Instantiate(game.bullPrefab) as GameObject).GetComponent<Bull>();
+		}
+		return e;
+	}
+	
+	
 	public LightBulb CreateLightBulb() {
 		GameObject lB = GameObject.Instantiate(game.lightBulbPrefab) as GameObject;
 		LightBulb lightBulb = lB.GetComponent<LightBulb>();
-		lightBulb.Initialize(game, play);
 		return lightBulb;
 	}
-	
+/*	
 	public MineBuilder CreateMineBuilder() {
 		GameObject mB = GameObject.Instantiate(game.mineBuilderPrefab) as GameObject;
 		MineBuilder mineBuilder = mB.GetComponent<MineBuilder>();
@@ -219,11 +259,17 @@ public class EnemyDistributor {
 		return bug;
 	}
 
+	public Hornet CreateHornet() {
+		GameObject p = GameObject.Instantiate(game.hornetPrefab) as GameObject;
+		Hornet hornet = p.GetComponent<Hornet>();
+		return hornet;
+	}
+	
 	public Snake CreateSnake() {
 		GameObject p = GameObject.Instantiate(game.snakePrefab) as GameObject;
 		Snake snake = p.GetComponent<Snake>();
 		return snake;
-	}
+	}*/
 	
 	public Mana CreateMana() {
 		GameObject p = GameObject.Instantiate(game.manaPrefab) as GameObject;
@@ -291,24 +337,7 @@ public class EnemyDistributor {
 	}
 
 	public Enemy CreateEnemy(Spawn spawn, int clazz, int model, int enemyEquivalentClazzAModel) {
-		Enemy enemy;
-		if (clazz == Enemy.CLAZZ_A0) {
-			enemy = (Enemy)CreateBull();
-		} else if (clazz == Enemy.CLAZZ_B1) {
-			enemy = (Enemy)CreateManta();
-		} else if (clazz == Enemy.CLAZZ_C2) {
-			enemy = (Enemy)CreateSpike();
-		} else if (clazz == Enemy.CLAZZ_BUG8) {
-			enemy = (Enemy)CreateBug();
-		} else if (clazz == Enemy.CLAZZ_SNAKE9) {
-			enemy = (Enemy)CreateSnake();
-		} else if (clazz == Enemy.CLAZZ_MINEBUILDER10) {
-			enemy = (Enemy)CreateMineBuilder();
-		} else if (clazz == Enemy.CLAZZ_WALLLASER11) {
-			enemy = (Enemy)CreateWallLaser();
-		} else {
-			enemy = (Enemy)CreateBull();
-		}
+		Enemy enemy = CreateEnemy (clazz);
 		enemy.Initialize(play, spawn, clazz, model, enemyEquivalentClazzAModel,
 				CalculateEnemyHealth(clazz, enemyEquivalentClazzAModel),
 				CalculateEnemyShield(clazz, enemyEquivalentClazzAModel),
@@ -429,7 +458,7 @@ public class EnemyDistributor {
 	}
 
 	private int CalculateEnemyShield(int clazz, int model) {
-		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_WALLLASER11) {
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_WALLLASER11 || clazz == Enemy.CLAZZ_HORNET12) {
 			return 0;
 		} else {
 			return Mathf.FloorToInt((model * Game.HEALTH_MODIFIER) / 2f);
@@ -437,7 +466,8 @@ public class EnemyDistributor {
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {
-		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10 || clazz == Enemy.CLAZZ_WALLLASER11) {
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10
+				|| clazz == Enemy.CLAZZ_WALLLASER11 || clazz == Enemy.CLAZZ_HORNET12 || clazz == Enemy.CLAZZ_D3) {
 			return ENEMY_SIZES[0];
 		} else {
 			return ENEMY_SIZES[(clazz + model) % 10];
@@ -445,7 +475,7 @@ public class EnemyDistributor {
 	}
 
 	private float CalculateEnemyAggressiveness(int clazz, int model) {
-		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10 || clazz == Enemy.CLAZZ_WALLLASER11) {
+		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10 || clazz == Enemy.CLAZZ_WALLLASER11 || clazz == Enemy.CLAZZ_HORNET12) {
 			return Enemy.AGGRESSIVENESS_OFF;
 		} else {
 			return ENEMY_AGGRESSIVENESSES[(clazz + model) % 11];

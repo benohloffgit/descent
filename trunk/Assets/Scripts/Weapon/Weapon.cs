@@ -117,6 +117,9 @@ public class Weapon {
 				damageBase *= Enemy.BOSS_DAMAGE_MODIFIER;
 				accuracy -= Enemy.BOSS_ACCURACY_MODIFIER;
 				frequency -= Enemy.BOSS_FREQUENCY_MODIFIER;
+				if (type == TYPE_MISSILE || type == TYPE_GUIDED_MISSILE) {
+					ammunition *= 2;
+				}
 			}
 			if (type == TYPE_MINE_TOUCH) {
 				damage =  Mathf.RoundToInt(damageBase * 3.0f);
@@ -154,8 +157,8 @@ public class Weapon {
 		if (type == TYPE_MINE_TOUCH) {
 			loadedShot.SetParentEnemy(enemy);
 		} else {
-			Physics.IgnoreCollision(parent.collider, loadedShot.collider);
 			loadedShot.gameObject.layer = Game.LAYER_BULLETS;
+			Physics.IgnoreCollision(parent.collider, loadedShot.collider);
 		}
 		
 		lastShotTime = Time.time;

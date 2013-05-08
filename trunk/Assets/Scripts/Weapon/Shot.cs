@@ -72,9 +72,13 @@ public class Shot : MonoBehaviour {
 			CancelInvoke("DestroySelf");
 			if (type == MISSILE || type == GUIDED) {
 				play.DisplayExplosion(c.contacts[0].point, play.ship.transform.rotation);
-				Collider[] missileHits = Physics.OverlapSphere(c.contacts[0].point, MISSILE_RADIUS, 1 << Game.LAYER_ENEMIES);
+				Collider[] missileHits = Physics.OverlapSphere(c.contacts[0].point, MISSILE_RADIUS, Game.LAYER_MASK_MOVEABLES);
 				foreach (Collider col in missileHits) {
-					col.GetComponent<Enemy>().Damage(Mathf.RoundToInt(damage/2.0f));
+					if (col.gameObject.layer == Game.LAYER_ENEMIES) {
+						col.GetComponent<Enemy>().Damage(Mathf.RoundToInt(damage/2.0f));
+					} else {
+						play.ship.Damage(Mathf.RoundToInt(damage/4.0f));
+					}
 					play.DisplayHit(col.transform.position, play.ship.transform.rotation);
 				}
 			} else {

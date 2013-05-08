@@ -19,9 +19,9 @@ public class Bull : Enemy {
 		if (mount == Weapon.PRIMARY) {
 			primaryWeapons.Add(
 				new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY, modelClazzAEquivalent + 1.0f, spawn.isBoss, -1));
-		} else {
-			secondaryWeapons.Add
-				(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1.0f, spawn.isBoss, -1));
+//		} else {
+//			secondaryWeapons.Add
+//				(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1.0f, spawn.isBoss, -1));
 		}
 	}
 		
@@ -37,10 +37,10 @@ public class Bull : Enemy {
 		}
 		
 		if (mode == Mode.ROAMING) {
-			play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
+			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);		
 		} else if (mode == Mode.AIMING) {
-			play.movement.Roam(myRigidbody, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
+			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
 		}
 	}

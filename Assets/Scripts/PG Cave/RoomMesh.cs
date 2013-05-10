@@ -41,7 +41,7 @@ public class RoomMesh : MonoBehaviour {
 	private	int[,,,] gridTriangles;
 	
 	private int duplicateVertices = 0;
-	private bool omitTriangle = false;
+//	private bool omitTriangle = false;
 					
 	private	static float ISOVALUE = 0.325f; // between 0.31 and 0.35 ... (old: 0.1)
 	

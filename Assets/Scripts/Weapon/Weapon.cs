@@ -208,6 +208,8 @@ public class Weapon {
 				loadedShot = game.CreateFromPrefab().CreateGunShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_LASER) {
 				loadedShot = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_PHASER) {
+				loadedShot = game.CreateFromPrefab().CreatePhaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else {
 				loadedShot = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			}			

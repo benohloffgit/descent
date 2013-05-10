@@ -30,7 +30,7 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_B1 = 1; // manta
 	public static int CLAZZ_C2 = 2; // pike
 	public static int CLAZZ_D3 = 3; // wombat
-	public static int CLAZZ_E4 = 4;
+	public static int CLAZZ_E4 = 4; // bat
 	public static int CLAZZ_F5 = 5;
 	public static int CLAZZ_G6 = 6;
 	public static int CLAZZ_H7 = 7;

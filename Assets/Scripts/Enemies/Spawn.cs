@@ -88,7 +88,7 @@ public class Spawn : MonoBehaviour {
 			if (distributionMode == DistributionMode.AllOverCave) {
 				e.transform.position = play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition().GetWorldVector3();
 			} else if (distributionMode == DistributionMode.PlaceOnWall) {
-				enemyDistributor.PlaceOnWall(worldPos, play.cave.zone.GetRoom(gridPos), e.transform);
+				play.PlaceOnWall(worldPos, play.cave.zone.GetRoom(gridPos), e.transform);
 			} else {
 				e.transform.position = r.GetRandomNonExitGridPosition().GetWorldVector3();
 			}

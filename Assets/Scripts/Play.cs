@@ -36,6 +36,8 @@ public class Play : MonoBehaviour {
 	
 	private List<GameObject> breadcrumbs = new List<GameObject>();
 	
+	private Light[] caveLights;
+	
 	private List<ShotStats> shipShotStats = new List<ShotStats>();
 	private List<ShotStats> enemyShotStats = new List<ShotStats>();
 	private float shipHitRatio;
@@ -53,14 +55,15 @@ public class Play : MonoBehaviour {
 	private GridPosition shipGridPosition;
 
 	//private static float MAX_RAYCAST_DISTANCE = 100.0f;
-	private static float GRAVITY_INTERVAL = 10.0f;
-	private static float STATS_INTERVAL = 10.0f;
+//	private static float GRAVITY_INTERVAL = 10.0f;
+//	private static float STATS_INTERVAL = 10.0f;
 	private static float STATS_MIN = 0.01f;
 
 	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);
 	
 	void Awake() {
 		lightsHolder = GameObject.Find("Lights").transform;
+		caveLights = lightsHolder.GetComponentsInChildren<Light>();
 	}
 	
 	void OnGUI() {		
@@ -204,7 +207,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 13;
+		zoneID = 20;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -245,8 +248,7 @@ public class Play : MonoBehaviour {
 		}
 		collecteablesDistributor.DropPowerUps();
 		ship.CalculateHealth();
-		lightsHolder.rotation = Quaternion.identity;
-		lightsHolder.Rotate(UnityEngine.Random.value*360f,UnityEngine.Random.value*360f,UnityEngine.Random.value*360f);
+		ConfigureLighting();
 		ship.transform.position = cave.GetCaveEntryPosition();		
 	}
 	
@@ -526,5 +528,35 @@ public class Play : MonoBehaviour {
 			ship.AddSecondaryWeapon(wType, wModel);
 		}
 	}
+	
+	public void PlaceOnWall(Vector3 worldPos, Room r, Transform t) {
+		Vector3 rayPath = Play.RandomVector();
+		
+		if (Physics.Raycast(worldPos, rayPath, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {			
+			Mesh mesh = r.roomMesh.mesh;
+			Vector3 v1 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 0]];
+			Vector3 v2 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 1]];
+			Vector3 v3 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 2]];
+			t.position = ((v1 + v2 + v3)/3) * RoomMesh.MESH_SCALE;
+			t.forward = hit.normal;
+		}
+	}
+	
+	public static Vector3 RandomVector() {
+		return new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * ((UnityEngine.Random.Range(0,2) == 0) ? 1 : -1);
+	}
+	
+	private void ConfigureLighting() {
+		lightsHolder.rotation = Quaternion.identity;
+		lightsHolder.Rotate(UnityEngine.Random.value*360f,UnityEngine.Random.value*360f,UnityEngine.Random.value*360f);
+		int lightZone = zoneID % 10;
+		if (lightZone >= 8 && lightZone <= 9) {
+			lightZone = 2-(9-lightZone); // 1-2
+			for (int i=0; i<caveLights.Length; i++) {
+				caveLights[i].intensity = 1.0f - (0.45f*lightZone);
+			}
+		}
+	}
+	
 }
 

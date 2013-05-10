@@ -55,6 +55,7 @@ public class Cave {
 	public void AddZone(int id) {
 		zone = new Zone(Game.DIMENSION_ZONE, this, id);
 		DigRooms();
+		DistributeDecoration();
 	}
 
 	public void RemoveZone() {
@@ -68,6 +69,7 @@ public class Cave {
 //		GameObject.Destroy(doors[Door.TYPE_LAST_EXIT].gameObject);
 //		GameObject.Destroy(doors[Door.TYPE_ENTRY].gameObject);
 		zone = null;
+		RemoveDecoration();
 	}
 	
 	public void DigRooms() {
@@ -436,6 +438,27 @@ public class Cave {
 		int result = pool[random];
 		pool.RemoveAt(random);
 		return result;
+	}
+	
+	private void DistributeDecoration() {
+		foreach (Room r in zone.roomList) {
+			for (int i=0; i<UnityEngine.Random.Range(3,7); i++) {
+				PutDecorationOnWall(r, UnityEngine.GameObject.Instantiate(game.crystalPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject);
+			}
+			for (int i=0; i<UnityEngine.Random.Range(2,5); i++) {
+				PutDecorationOnWall(r, UnityEngine.GameObject.Instantiate(game.flowerPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject);
+			}
+		}
+	}
+	
+	private void PutDecorationOnWall(Room r, UnityEngine.GameObject c) {
+		Vector3 pos = r.GetRandomNonExitGridPosition().GetWorldVector3();
+		c.transform.localScale *= (2.0f * UnityEngine.Random.Range(0.5f,2.0f));
+		c.transform.RotateAroundLocal(Vector3.forward, UnityEngine.Random.Range(0f, 360f));
+		play.PlaceOnWall(pos, r, c.transform);
+	}
+	
+	private void RemoveDecoration() {
 	}
 
 }

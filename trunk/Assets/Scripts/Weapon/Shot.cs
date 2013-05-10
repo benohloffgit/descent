@@ -19,6 +19,7 @@ public class Shot : MonoBehaviour {
 	public static int GUIDED = 3;
 	public static int MINE_TOUCH = 4;
 	public static int LASER_BEAM = 5;
+	public static int PHASER = 6;
 	
 	private static float MISSILE_RADIUS = RoomMesh.MESH_SCALE * 2.5f;
 	private static float GUIDED_MISSILE_TORQUE_MAX = 0.02f;

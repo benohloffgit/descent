@@ -33,9 +33,9 @@ public class EnemyDistributor {
 //	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
 //	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,2,4,9,16,25,36,49};
 	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54,1,14,6,10,15};
-	private static int[] START_ZONE_PER_CLAZZ = new int[] {2,4,8,12,20,30,42,54};
-	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 3.0f};
-	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 12.0f};
+//	private static int[] START_ZONE_PER_CLAZZ = new int[] {2,4,8,12,20,30,42,54};
+	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 2.0f};
+	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 6.0f};
 	private static int[] SPAWN_MIN_LIVING = new int[] {1, 1}; // first value is for BEGINNER Zones
 	private static int[] SPAWN_MAX_LIVING = new int[] {2, 3};
 	private static int[] SPAWN_MIN_GENERATED = new int[] {1, 3};
@@ -193,6 +193,8 @@ public class EnemyDistributor {
 			e = (Enemy)(GameObject.Instantiate(game.spikePrefab) as GameObject).GetComponent<Spike>();
 		} else if (clazz == Enemy.CLAZZ_D3) {
 			e = (Enemy)(GameObject.Instantiate(game.wombatPrefab) as GameObject).GetComponent<Wombat>();
+		} else if (clazz == Enemy.CLAZZ_E4) {
+			e = (Enemy)(GameObject.Instantiate(game.batPrefab) as GameObject).GetComponent<Bat>();
 		} else if (clazz == Enemy.CLAZZ_BUG8) {
 			e = (Enemy)(GameObject.Instantiate(game.bugPrefab) as GameObject).GetComponent<Bug>();
 		} else if (clazz == Enemy.CLAZZ_SNAKE9) {
@@ -356,23 +358,6 @@ public class EnemyDistributor {
 		return enemy;
 	}
 	
-	public void PlaceOnWall(Vector3 worldPos, Room r, Transform t) {
-		Vector3 rayPath = RandomVector();
-		
-		if (Physics.Raycast(worldPos, rayPath, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {			
-			Mesh mesh = r.roomMesh.mesh;
-			Vector3 v1 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 0]];
-			Vector3 v2 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 1]];
-			Vector3 v3 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 2]];
-			t.position = ((v1 + v2 + v3)/3) * RoomMesh.MESH_SCALE;
-			t.forward = hit.normal;
-		}
-	}
-	
-	public static Vector3 RandomVector() {
-		return new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * ((UnityEngine.Random.Range(0,2) == 0) ? 1 : -1);
-	}
-		
 	// Super Formula stuff
 	
 	private int CalculateEnemyClazzVariety(int zoneID) {

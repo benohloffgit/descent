@@ -12,6 +12,8 @@ public class Game : MonoBehaviour {
 	public GameObject miniMapPrefab;
 	public GameObject miniMapRoomConnectorPrefab;
 	public GameObject doorPrefab;
+	public GameObject crystalPrefab;
+	public GameObject flowerPrefab;
 	
 	public GameObject testCubePrefab;
 	public GameObject shipPrefab;
@@ -26,6 +28,7 @@ public class Game : MonoBehaviour {
 	public GameObject snakePrefab;
 	public GameObject hornetPrefab;
 	public GameObject wombatPrefab;
+	public GameObject batPrefab;
 	public GameObject[] primaryWeaponPrefabs;
 //	public GameObject[] secondaryWeaponPrefabs;
 	public GameObject[] powerUpPrefabs;

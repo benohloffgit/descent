@@ -8,6 +8,7 @@ public class PrefabFactory {
 
 	private GameObject gunBulletTemplate;
 	private GameObject laserShotTemplate;
+	private GameObject phaserShotTemplate;
 	private GameObject missileShotTemplate;
 	private GameObject breadcrumbTemplate;
 	private GameObject explosionTemplate;
@@ -27,6 +28,8 @@ public class PrefabFactory {
 		gunBulletTemplate.GetComponent<Shot>().enabled = false;
 		laserShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.LASER]) as GameObject;
 		laserShotTemplate.GetComponent<Shot>().enabled = false;
+		phaserShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.PHASER]) as GameObject;
+		phaserShotTemplate.GetComponent<Shot>().enabled = false;
 		missileShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.MISSILE]) as GameObject;
 		missileShotTemplate.GetComponent<Shot>().enabled = false;
 		breadcrumbTemplate = GameObject.Instantiate(game.breadcrumbPrefab) as GameObject;
@@ -64,6 +67,14 @@ public class PrefabFactory {
 		return shot;
 	}
 
+	public Shot CreatePhaserShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
+		GameObject newPhaser = GameObject.Instantiate(phaserShotTemplate, pos, rot) as GameObject;
+		Shot shot = newPhaser.GetComponent<Shot>();
+		shot.Initialize(play, damage, mountedTo, Shot.PHASER);
+		shot.enabled = true;
+		return shot;
+	}
+	
 	public Shot CreateMissileShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject newMissile = GameObject.Instantiate(missileShotTemplate, pos, rot) as GameObject;
 		Shot shot = newMissile.GetComponent<Shot>();

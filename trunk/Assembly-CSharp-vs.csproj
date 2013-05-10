@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\CCText\CCTextTorusWrapper.cs" />
      <Compile Include="Assets\Scripts\CCText\CCTextVerticalColorer.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Bat.cs" />
      <Compile Include="Assets\Scripts\Enemies\Bug.cs" />
      <Compile Include="Assets\Scripts\Enemies\Bull.cs" />
      <Compile Include="Assets\Scripts\Enemies\Enemy.cs" />

@@ -3,13 +3,13 @@ using System.Collections;
 
 public class Bug : Enemy {	
 	private GridPosition targetPosition;
-	private Mode mode;
+//	private Mode mode;
 	private float currentAngleUp;
 
-	public enum Mode { ROAMING=0 }
+//	public enum Mode { ROAMING=0 }
 	
 	void Start() {
-		mode = Mode.ROAMING;
+//		mode = Mode.ROAMING;
 	}
 	
 	public override void InitializeWeapon(int mount, int w, int m) {

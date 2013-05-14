@@ -19,6 +19,7 @@ public class WallLaser : Enemy {
 	private static float UPDATE_FREQUENCY = 1.0f; // seconds
 
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0, 0)};
+	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 	
 //		laserAnchor = transform.FindChild("Laser Anchor");
 //		laserBeam = laserAnchor.FindChild("Laser Beam");
@@ -27,7 +28,7 @@ public class WallLaser : Enemy {
 		laserAnchor = weapon.weaponTransform;
 		weapon.Mount();
 		weapon.Reload();
-		loadedShot = weapon.loadedShot;
+		loadedShot = weapon.loadedShots[0];
 		laserBeam = loadedShot.transform;
 		loadedShot.enabled = false;
 		baseForward = laserAnchor.forward;
@@ -37,7 +38,7 @@ public class WallLaser : Enemy {
 	}
 	
 	public override void InitializeWeapon(int mount, int w, int m) {
-		weapon = new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY,
+		weapon = new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.ENEMY,
 				modelClazzAEquivalent + 1, spawn.isBoss, -1);
 		secondaryWeapons.Add(weapon);
 	}

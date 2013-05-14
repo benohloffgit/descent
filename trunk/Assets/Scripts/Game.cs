@@ -95,6 +95,10 @@ public class Game : MonoBehaviour {
 	public static int LAYER_MASK_ENEMIES_CAVE = ( (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_ENEMIES) );
 	public static int LAYER_MASK_CAMERA_WITHOUT_SHIP = ( (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_BULLETS) | (1 << Game.LAYER_GUN_ENEMY) | (1 << Game.LAYER_EFFECT) | (1 << Game.LAYER_COLLECTEABLES) | (1 << Game.LAYER_ENEMIES) );
 	public static int LAYER_MASK_CAMERA_WITH_SHIP = ( (1 << Game.LAYER_SHIP) | (1 << Game.LAYER_GUN_SHIP) | (1 << Game.LAYER_CAVE) | (1 << Game.LAYER_BULLETS) | (1 << Game.LAYER_EFFECT) | (1 << Game.LAYER_COLLECTEABLES) | (1 << Game.LAYER_GUN_ENEMY) | (1 << Game.LAYER_ENEMIES) );
+
+	public static int WEAPON_POSITION_WING_LEFT = 0;
+	public static int WEAPON_POSITION_WING_RIGHT = 1;
+	public static int WEAPON_POSITION_CENTER = 2;
 	
 	public static Vector4 GUI_UV_NULL = new Vector4(0.0f,0.0f,0.0f,0.0f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);

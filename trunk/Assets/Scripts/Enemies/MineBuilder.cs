@@ -16,7 +16,8 @@ public class MineBuilder : Enemy {
 	private Room room;
 	private IntTriple[] exitPositions;
 	
-	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 1.0f, 0)};
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 1.0f, 0),new Vector3(0, 1.0f, 0),new Vector3(0, 1.0f, 0)};
+	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 
 	public enum Mode { ROAMING=0, PATHFINDING=3, CHASING=4 }
 	
@@ -40,7 +41,7 @@ public class MineBuilder : Enemy {
 		minesAlive = Mathf.FloorToInt(modelClazzAEquivalent/10.0f)+4;
 		maxMines = minesAlive;
 		secondaryWeapons.Add
-			(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY,
+			(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.ENEMY,
 				modelClazzAEquivalent + 1, spawn.isBoss, minesAlive));
 //		Debug.Log (modelClazzAEquivalent + " " + secondaryWeapons[0].damage);
 	}

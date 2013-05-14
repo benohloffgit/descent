@@ -52,10 +52,6 @@ public class Ship : MonoBehaviour {
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(-1.014f, 0f, 1.664f), new Vector3(1.014f, 0f, 1.664f), new Vector3(0, -0.37f, 1.65f)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] { new Vector3(0,0,90f),  new Vector3(0,0,-90f),  new Vector3(0,0,180f)};
 	
-	public static int WEAPON_POSITION_WING_LEFT = 0;
-	public static int WEAPON_POSITION_WING_RIGHT = 1;
-	public static int WEAPON_POSITION_CENTER = 2;
-	
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;
 //	private static int CAMERA_POSITION_LEFT = 2;
@@ -267,9 +263,9 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void AddPrimaryWeapon(int wType, int wModel) {
-		Weapon w = new Weapon(null, Weapon.PRIMARY, transform, play, wType, wModel, WEAPON_POSITIONS[WEAPON_POSITION_WING_LEFT], Game.SHIP, (float)(play.zoneID+1), false);
+		Weapon w = new Weapon(null, Weapon.PRIMARY, transform, play, wType, wModel,
+			WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.SHIP, (float)(play.zoneID+1), false);
 		primaryWeapons[wType-1] = w;
-		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_WING_LEFT];
 		currentPrimaryWeapon = wType-1;
 		primaryWeapons[currentPrimaryWeapon].Mount();
 		firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
@@ -282,9 +278,9 @@ public class Ship : MonoBehaviour {
 		if (secondaryWeapons[wType-1] != null) {
 			ammunition += secondaryWeapons[wType-1].ammunition;
 		}
-		Weapon w = new Weapon(null, Weapon.SECONDARY, transform, play, wType, wModel, WEAPON_POSITIONS[WEAPON_POSITION_CENTER], Game.SHIP, (float)(play.zoneID+1), false, ammunition);
+		Weapon w = new Weapon(null, Weapon.SECONDARY, transform, play, wType, wModel, WEAPON_POSITIONS,
+			WEAPON_ROTATIONS, Game.SHIP, (float)(play.zoneID+1), false, ammunition);
 		secondaryWeapons[wType-1] = w;
-		w.weaponTransform.localEulerAngles = WEAPON_ROTATIONS[WEAPON_POSITION_CENTER];
 		currentSecondaryWeapon = wType-1;
 		secondaryWeapons[currentSecondaryWeapon].Mount();
 		play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);

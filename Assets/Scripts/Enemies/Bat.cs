@@ -11,12 +11,14 @@ public class Bat : Enemy {
 	private bool isOnPath;
 
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(-0.453f, 0, 0), new Vector3(0.453f, 0, 0)};
+	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 		
 	public enum Mode { ROAMING=0, PATHFINDING=1, CHASING=2 }
 	
 	public override void InitializeWeapon(int mount, int w, int m) {
 		if (mount == Weapon.PRIMARY) {
-			primaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
+			primaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS,
+					WEAPON_ROTATIONS, Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 //		} else {
 //			secondaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 		}

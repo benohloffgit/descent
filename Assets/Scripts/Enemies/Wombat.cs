@@ -12,6 +12,7 @@ public class Wombat : Enemy {
 	private static float AIMING_TIME = 1.0f;
 	
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0, 0)};
+	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 		
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2 }
 	
@@ -26,7 +27,8 @@ public class Wombat : Enemy {
 		if (mount == Weapon.SECONDARY) {
 			int ammo = Mathf.FloorToInt(modelClazzAEquivalent/6.0f)+1;
 			secondaryWeapons.Add
-				(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY, modelClazzAEquivalent + 1f, spawn.isBoss, ammo));
+				(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS,
+					WEAPON_ROTATIONS, Game.ENEMY, modelClazzAEquivalent + 1f, spawn.isBoss, ammo));
 		}
 	}
 		

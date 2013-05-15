@@ -32,6 +32,7 @@ public class Game : MonoBehaviour {
 	public GameObject[] primaryWeaponPrefabs;
 //	public GameObject[] secondaryWeaponPrefabs;
 	public GameObject[] powerUpPrefabs;
+	public GameObject keyPrefab;
 //	public GameObject laserGunPrefab;
 	public GameObject manaPrefab;
 	public GameObject spawnPrefab;
@@ -47,6 +48,7 @@ public class Game : MonoBehaviour {
 	public GameObject missileDropPrefab;
 
 	public Texture2D[] caveTextures;
+	public Texture2D[] keyTextures;
 	
 	public State state;
 	public GameInput gameInput;

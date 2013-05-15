@@ -99,22 +99,51 @@ public class CollecteablesDistributor {
 		game.CreateFromPrefab().CreateMissileDrop(e.transform.position, Quaternion.identity, type, amount);
 	}
 	
-/*	public void DropScroll(Vector3 pos) {
-		game.CreateFromPrefab().CreateScrollDrop(pos, Quaternion.identity);
-	}*/
+	public void DropKey(Vector3 pos, int keyType) {
+		game.CreateFromPrefab().CreateKeyDrop(pos, Quaternion.identity, keyType);
+	}
 
 	public void DropPowerUp(Vector3 pos, int weaponType, int index) {
 		game.CreateFromPrefab().CreatePowerUpDrop(pos, Quaternion.identity, weaponType, index);
 	}
 	
+	public void DropKeys() {
+		GridPosition[] keyPositions = new GridPosition[2];
+		int positionCount=0;
+		foreach (Room r in play.cave.zone.roomList) {
+			if (r.exits.Count == 1) { // dead end room
+				keyPositions[positionCount] = new GridPosition(r.deadEndCell, r.pos);
+				r.SetCellToKey(r.deadEndCell);
+				positionCount++;
+			}
+			if (positionCount == 2) {
+				continue;
+			}
+		}
+		while (positionCount < 2) {
+			Room r = play.cave.zone.GetRandomRoom();
+			keyPositions[positionCount] = r.GetRandomVoidGridPosition();
+			r.SetCellToKey(keyPositions[positionCount].cellPosition);
+			positionCount++;
+		}
+		int rand1 = UnityEngine.Random.Range (0,2);
+		int rand2 = (rand1 == 0) ? 1 : 0;
+		DropKey(keyPositions[rand1].GetWorldVector3(), CollecteableKey.TYPE_SILVER);
+		DropKey(keyPositions[rand2].GetWorldVector3(), CollecteableKey.TYPE_GOLD);
+	}
+	
 	public void DropPowerUps() {
 		if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[play.zoneID] != 0) {
-			GridPosition gP = play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition();
-			DropPowerUp(gP.GetWorldVector3(), Weapon.PRIMARY, play.zoneID);			
+			Room r = play.cave.zone.GetRandomRoom();
+			GridPosition gP = r.GetRandomVoidGridPosition();
+			DropPowerUp(gP.GetWorldVector3(), Weapon.PRIMARY, play.zoneID);
+			r.SetCellToPowerUp(gP.cellPosition);
 		}
 		if (Weapon.SHIP_SECONDARY_WEAPON_TYPES[play.zoneID] != 0) {
-			GridPosition gP = play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition();
+			Room r = play.cave.zone.GetRandomRoom();
+			GridPosition gP = r.GetRandomVoidGridPosition();
 			DropPowerUp(gP.GetWorldVector3(), Weapon.SECONDARY, play.zoneID);
+			r.SetCellToPowerUp(gP.cellPosition);
 		}
 	}
 	

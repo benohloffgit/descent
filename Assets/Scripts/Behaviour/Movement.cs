@@ -424,7 +424,7 @@ public class Movement {
 			}
 			
 			coverFindThreadState.Finish();
-			Debug.Log ("No cover found");
+//			Debug.Log ("No cover found");
 			return;
 		});
 	}

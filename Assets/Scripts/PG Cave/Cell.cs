@@ -6,6 +6,7 @@ public class Cell {
 	public bool isExit;
 	public bool isSpawn = false;
 	public bool isPowerUp = false;
+	public bool isKey = false;
 
 	public Cell(IntTriple p, int mId, bool iE) {
 		pos = p;

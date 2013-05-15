@@ -10,7 +10,7 @@ public class Spike : Enemy {
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private bool isOnPath;
 
-	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {Vector3.zero};
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 0, 0), new Vector3(0, 0, 0)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 		
 	public enum Mode { ROAMING=0, PATHFINDING=1, CHASING=2 }

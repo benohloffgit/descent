@@ -27,7 +27,7 @@ public class Door : MonoBehaviour {
 	}
 	
 	public void Reset() {
-		if (type == TYPE_LAST_EXIT || type == TYPE_NEXT_ENTRY) {
+		if (type == TYPE_LAST_EXIT || type == TYPE_NEXT_ENTRY || type == TYPE_EXIT) {
 			isShut = true;
 		} else {
 			isShut = false;
@@ -36,7 +36,7 @@ public class Door : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (!isShut && other.tag == Ship.TAG) {
+		if (other.tag == Ship.TAG && !isShut) {
 			animation.Play(ANIM_OPEN_DOOR);
 			doorCollider.enabled = false;
 		}
@@ -53,5 +53,9 @@ public class Door : MonoBehaviour {
 				play.NextZone();
 			}
 		}
+	}
+	
+	public void Open() {
+		isShut = false;
 	}
 }

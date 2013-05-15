@@ -11,6 +11,7 @@ public class Zone {
 	public IntTriple entryRoom;
 	public IntTriple exitRoom;
 	public IntTriple deltaToLastZone;
+	public List<GridPosition> keyCells;
 	
 	public bool hasBugBeenDisplayed = false;
 	
@@ -24,6 +25,7 @@ public class Zone {
 		id = id_;
 		rooms = new Room[dimension,dimension,dimension];
 		roomList = new List<Room>();
+		keyCells = new List<GridPosition>();
 		CreateRooms();
 	}
 	
@@ -67,7 +69,7 @@ public class Zone {
 				List<IntTriple> neighbours = GetFilledNeighboursOfRoom(r.pos);
 				if (neighbours.Count > 0) {
 					IntTriple newPos = neighbours[UnityEngine.Random.Range(0, neighbours.Count)];
-					rooms[newPos.x, newPos.y, newPos.z] = new Room(newRoomList.Count+roomList.Count, Game.DIMENSION_ROOM, newPos, cave);
+					rooms[newPos.x, newPos.y, newPos.z] = new Room(newRoomList.Count+roomList.Count, Game.DIMENSION_ROOM, newPos, this);
 					newRoomList.Add(rooms[newPos.x, newPos.y, newPos.z]);
 				}
 /*				foreach (IntTriple direction in Cave.ZONE_DIRECTIONS) {
@@ -116,7 +118,7 @@ public class Zone {
 	}
 	
 	public void AddRoom(int id, IntTriple pos) {
-		rooms[pos.x, pos.y, pos.z] = new Room(id, Game.DIMENSION_ROOM, pos, cave);
+		rooms[pos.x, pos.y, pos.z] = new Room(id, Game.DIMENSION_ROOM, pos, this);
 		roomList.Add(rooms[pos.x, pos.y, pos.z]);
 	}
 	

@@ -89,7 +89,7 @@ public class EnemyDistributor {
 						spawnMaxGenerated = SPAWN_MAX_GENERATED[0];
 					}
 					CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
-						play.cave.zone.GetRandomRoom().GetRandomNonSpawnNonExitGridPosition(),
+						play.cave.zone.GetRandomRoom().GetRandomVoidGridPosition(),
 						UnityEngine.Random.Range(spawnMinFrequency, spawnMaxFrequency),
 						UnityEngine.Random.Range(spawnMinLiving, spawnMaxLiving),
 						UnityEngine.Random.Range(spawnMinGenerated, spawnMaxGenerated)); // Spawn.INFINITY
@@ -102,7 +102,7 @@ public class EnemyDistributor {
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
 			CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
-						play.cave.zone.roomList[1].GetRandomNonSpawnNonExitGridPosition(),
+						play.cave.zone.roomList[1].GetRandomExitPosition(),
 						1.0f, 1, 1, true);
 			enemiesAll++;
 			Debug.Log ("Boss of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
@@ -118,7 +118,7 @@ public class EnemyDistributor {
 	private void DistributeOthers() {
 		int enemyEquivalentClazzAModel, enemyModel, number;
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_BUG8] <= play.zoneID) {
-		Debug.Log ("Distriuting Bug");
+//		Debug.Log ("Distributing Bug");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_BUG8];
 			// Bug 2-8 per zone
@@ -129,7 +129,7 @@ public class EnemyDistributor {
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_SNAKE9] <= play.zoneID) {
-		Debug.Log ("Distriuting Snake");
+//		Debug.Log ("Distriuting Snake");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_SNAKE9];
 			// Bug 1-4 per zone
@@ -140,10 +140,10 @@ public class EnemyDistributor {
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_MINEBUILDER10] <= play.zoneID) {
-		Debug.Log ("Distriuting Minebuilder");
+//		Debug.Log ("Distriuting Minebuilder");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_MINEBUILDER10];
-			// Bug 1-4 per zone
+			// 1-4 per zone
 			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
 			CreateSpawn(Enemy.CLAZZ_MINEBUILDER10, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
@@ -151,18 +151,27 @@ public class EnemyDistributor {
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11] <= play.zoneID) {
-		Debug.Log ("Distriuting Walllaser");
+//		Debug.Log ("Distriuting Walllaser");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11];
-			// Bug 2-10 per zone
+			// 2-10 per zone
 			number = Mathf.FloorToInt(play.zoneID / 8f) + 2;
-			CreateSpawn(Enemy.CLAZZ_WALLLASER11, enemyModel, enemyEquivalentClazzAModel,
-						play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition(),
-						1.0f, number, number, false, Spawn.DistributionMode.PlaceOnWall);
+			int keyCellCounter = 0;
+			for (int i=0; i<number; i+=3) {
+				GridPosition keyPos;
+				if (keyCellCounter < 2) {
+					keyPos = play.cave.zone.keyCells[keyCellCounter];
+				} else {
+					keyPos = play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition();
+				}
+				CreateSpawn(Enemy.CLAZZ_WALLLASER11, enemyModel, enemyEquivalentClazzAModel,
+							keyPos, 1.0f, number, number, false, Spawn.DistributionMode.PlaceOnWall);
+				keyCellCounter++;
+			}
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_HORNET12] <= play.zoneID) {
-		Debug.Log ("Distriuting Hornet");
+//		Debug.Log ("Distriuting Hornet");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_HORNET12];
 			number = Mathf.FloorToInt(play.zoneID / 4f) + 1;

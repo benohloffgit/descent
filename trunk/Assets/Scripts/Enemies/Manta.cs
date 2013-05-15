@@ -14,7 +14,7 @@ public class Manta : Enemy {
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private CoverFindThreadState coverFindThreadState = new CoverFindThreadState();
 	
-	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0.53f, 0.63f, 0.750f), new Vector3(-0.53f, 0.63f, 0.750f)};
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0.53f, 0.63f, 0.750f), new Vector3(-0.53f, 0.63f, 0.750f), new Vector3(0, 0, 0)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 		
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2, HIDING=3, PATHFINDING=4, COVERFINDING=5 }

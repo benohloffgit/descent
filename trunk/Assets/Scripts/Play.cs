@@ -22,6 +22,7 @@ public class Play : MonoBehaviour {
 	private int caveSeed;
 	private int botSeed;
 	private Transform lightsHolder;
+	private bool[] isKeyCollected;
 	
 	public GridPosition placeShipBeforeExitDoor;
 	
@@ -111,6 +112,8 @@ public class Play : MonoBehaviour {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
 			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
+				KeyFound(CollecteableKey.TYPE_SILVER);
+				KeyFound(CollecteableKey.TYPE_GOLD);
 				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
 			}
 /*			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
@@ -207,7 +210,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 7;
+		zoneID = 16;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -243,10 +246,12 @@ public class Play : MonoBehaviour {
 		UnityEngine.Random.seed = caveSeed;
 		cave.AddZone(zoneID);
 		UnityEngine.Random.seed = botSeed;
+		isKeyCollected = new bool[] {false, false};
+		collecteablesDistributor.DropKeys();
+		collecteablesDistributor.DropPowerUps();
 		if (zoneID > 0) {
 			enemyDistributor.Distribute();
 		}
-		collecteablesDistributor.DropPowerUps();
 		ship.CalculateHealth();
 		ConfigureLighting();
 		ship.transform.position = cave.GetCaveEntryPosition();		
@@ -517,9 +522,20 @@ public class Play : MonoBehaviour {
 		breadcrumbs.Clear();
 	}
 	
-/*	public void ScrollFound() {
-		Debug.Log ("scroll found");
-	}*/
+	public void KeyFound(int keyType) {
+		isKeyCollected[keyType] = true;
+		if (AllKeysCollected()) {
+			cave.OpenExitDoor();
+		}
+	}
+	
+	private bool AllKeysCollected() {
+		if (isKeyCollected[CollecteableKey.TYPE_SILVER] && isKeyCollected[CollecteableKey.TYPE_GOLD]) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public void CollectWeapon(int weaponType, int wType, int wModel) {
 		if (weaponType == Weapon.PRIMARY) {

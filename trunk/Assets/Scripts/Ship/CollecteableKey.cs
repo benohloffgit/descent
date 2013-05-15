@@ -1,13 +1,19 @@
 using System;
 using UnityEngine;
 
-public class CollecteableScroll : MonoBehaviour {		
+public class CollecteableKey : MonoBehaviour {		
 	private Play play;
 	
 	private float angle;
+	
+	public static int TYPE_SILVER = 0;
+	public static int TYPE_GOLD = 1;
+	
+	private int type;
 
-/*	public void Initialize(Play play_) {
+	public void Initialize(Play play_, int type_) {
 		play = play_;
+		type = type_;
 		angle = 0f;
 	}
 
@@ -17,7 +23,7 @@ public class CollecteableScroll : MonoBehaviour {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			angle += 0.05f;
 			transform.RotateAround(transform.up, angle);
-			transform.RotateAround(transform.right, 70.0f);
+			transform.Rotate(Vector3.right, 30.0f);
 			if (angle >= 360f) {
 				angle -= 360f;
 			}
@@ -26,10 +32,10 @@ public class CollecteableScroll : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
-			play.ScrollFound();
+			play.KeyFound(type);
 			Destroy(gameObject);
 		}
-	}*/
+	}
 	
 }
 

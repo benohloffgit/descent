@@ -11,7 +11,7 @@ public class Wombat : Enemy {
 	
 	private static float AIMING_TIME = 1.0f;
 	
-	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0, 0)};
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0, 0),new Vector3(0, 0, 0),new Vector3(0, 0, 0)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 		
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2 }

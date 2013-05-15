@@ -109,7 +109,7 @@ public class Weapon {
 		
 		if (mountedTo == Game.SHIP) {
 			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
-			if (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS) {
+			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
 				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_SHIP;
 				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_SHIP;
 			} else {

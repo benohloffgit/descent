@@ -21,7 +21,8 @@ public class CollecteableMissile : MonoBehaviour {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			angle += 0.05f;
 			transform.RotateAround(transform.up, angle);
-			transform.RotateAround(-transform.right, 70.0f);
+			transform.Rotate(-Vector3.right, 70.0f);
+//			transform.RotateAround(-transform.right, 70.0f);
 			if (angle >= 360f) {
 				angle -= 360f;
 			}

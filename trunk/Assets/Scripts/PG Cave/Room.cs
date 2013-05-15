@@ -8,18 +8,23 @@ public class Room {
 	public Cell[,,] cells;
 	public List<Cell> emptyCells;
 	public IntTriple pos;
+	public IntTriple deadEndCell;
 	public Dictionary<IntTriple, Cell> exits; // alignment, cell : alignment is other-me
+	public List<Cell> exitCells;
 	public RoomMesh roomMesh;
+	private Zone zone;
 	
 	public static float ENTRY_EXIT_CELL_MARKER = 2.0f;
 	
 	private static float ISOVALUE_PER_NEIGHBOUR = 0.0148f; // 0.037 1/27 neighbours 
 		
-	public Room(int i, int dim, IntTriple p, Cave c) {
+	public Room(int i, int dim, IntTriple p, Zone zone_) {
 		id = i;
+		zone = zone_;
 		dimension = dim;
 		cells = new Cell[dim,dim,dim];
 		emptyCells = new List<Cell>();
+		exitCells = new List<Cell>();
 		pos = p;
 		exits = new Dictionary<IntTriple, Cell>();
 	}
@@ -32,11 +37,17 @@ public class Room {
 	public void AddExitCell(IntTriple pos, IntTriple alignment, int minerId) {
 		cells[pos.x, pos.y, pos.z] = new Cell(pos, minerId, true);
 		exits.Add(alignment, cells[pos.x, pos.y, pos.z]);
+		exitCells.Add(cells[pos.x, pos.y, pos.z]);
 		emptyCells.Add(cells[pos.x, pos.y, pos.z]);
 		
 /*		emptyCells.Add(cells[pos.x+1, pos.y, pos.z]);
 		emptyCells.Add(cells[pos.x+1, pos.y+1, pos.z]);
 		emptyCells.Add(cells[pos.x, pos.y+1, pos.z]);*/
+	}
+	
+	public void AddDeadEndCell(IntTriple pos, int minerId) {
+		AddCell(pos, minerId);
+		deadEndCell = pos;
 	}
 
 	public bool IsCellNotEmptiedByMiner(IntTriple pos, int minerId) {
@@ -126,13 +137,18 @@ public class Room {
 	public void SetCellToPowerUp(IntTriple cellPos) {
 		cells[cellPos.x, cellPos.y, cellPos.z].isPowerUp = true;
 	}
+
+	public void SetCellToKey(IntTriple cellPos) {
+		cells[cellPos.x, cellPos.y, cellPos.z].isKey = true;
+		zone.keyCells.Add(new GridPosition(cells[cellPos.x, cellPos.y, cellPos.z].pos, pos));
+	}
 	
-	public GridPosition GetRandomNonSpawnNonExitGridPosition () {
+	public GridPosition GetRandomVoidGridPosition() {
 		GridPosition result = GridPosition.ZERO;
 		bool cont = true;
 		while (cont) {
 			Cell c = emptyCells[UnityEngine.Random.Range(0, emptyCells.Count)];
-			if (!c.isSpawn && !c.isExit) {
+			if (!c.isSpawn && !c.isExit && !c.isKey) {
 				result = new GridPosition(c.pos, pos);
 				cont = false;
 			}
@@ -151,6 +167,10 @@ public class Room {
 			}
 		}
 		return result;
-	}	
+	}
+	
+	public GridPosition GetRandomExitPosition() {
+		return new GridPosition(exitCells[UnityEngine.Random.Range(0,exitCells.Count)].pos, pos);
+	}
 	
 }

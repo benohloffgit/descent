@@ -1,20 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Weapon\Weapon.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PG Cave\Cave.cs">
     <Files>
-      <File FileName="Assets\Scripts\Game.cs" Line="102" Column="2" />
-      <File FileName="Assets\Scripts\Play.cs" Line="210" Column="13" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="52" Column="1" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="264" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\Bat.cs" Line="15" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\Bull.cs" Line="23" Column="23" />
-      <File FileName="Assets\Scripts\Enemies\Manta.cs" Line="28" Column="23" />
-      <File FileName="Assets\Scripts\Enemies\MineBuilder.cs" Line="19" Column="132" />
-      <File FileName="Assets\Scripts\Enemies\Spike.cs" Line="21" Column="23" />
-      <File FileName="Assets\Scripts\Enemies\WallLaser.cs" Line="31" Column="34" />
-      <File FileName="Assets\Scripts\Enemies\Wombat.cs" Line="31" Column="24" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="101" Column="23" />
+      <File FileName="Assets\Scripts\CameraFollow.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Play.cs" Line="528" Column="21" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="155" Column="35" />
+      <File FileName="Assets\Scripts\Game.cs" Line="35" Column="23" />
+      <File FileName="Assets\Scripts\Ship\CollecteableKey.cs" Line="27" Column="1" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="103" Column="40" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="121" Column="3" />
+      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="33" Column="15" />
+      <File FileName="Assets\Scripts\Ship\CollecteableMissile.cs" Line="24" Column="22" />
+      <File FileName="Assets\Scripts\PG Cave\Door.cs" Line="59" Column="18" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="37" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

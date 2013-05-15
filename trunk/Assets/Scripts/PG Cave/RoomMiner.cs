@@ -20,7 +20,8 @@ public class RoomMiner {
 	public enum Type { QuitOnConnection=0, QuitOnPercent=1, WeightBased=2 }
 
 //	private static int MINE_COUNT_MAX_WHEN_QUIT_ON_CONNECTION = 50;
-
+	
+	// dead end miners
 	public RoomMiner(Cave c, IntTriple p, Room r, int i, RoomMiner.Type t, int quitOnConnectionMaxMined_ = -1) {
 		cave = c;
 		pos = p;
@@ -29,6 +30,8 @@ public class RoomMiner {
 		type = t;
 		mineCount = 1;
 		quitOnConnectionMaxMined = quitOnConnectionMaxMined_;
+		room.AddDeadEndCell(pos, id);
+		DigStarChamber();
 		
 /*		if (type == Type.WeightBased) {
 			weightedCells = new List<IntTriple>();
@@ -41,6 +44,7 @@ public class RoomMiner {
 //		Debug.Log ("miner created with id " + id);
 	}
 	
+	// exit miners
 	public RoomMiner(Cave c, IntTriple p, IntTriple alignment, Room r, int i, RoomMiner.Type t, int quitOnConnectionMaxMined_ = -1) {
 		cave = c;
 		pos = p;
@@ -195,6 +199,22 @@ public class RoomMiner {
 		}
 //		Debug.Log (delta + " " + otherMinerPos + " " + pos + " " + newPos);
 		return newPos;
+	}
+	
+	private void DigStarChamber() {
+		IntTriple newPos = pos + IntTriple.FORWARD;
+		Dig(newPos);
+		newPos = pos + IntTriple.BACKWARD;
+		Dig(newPos);
+		newPos = pos + IntTriple.UP;
+		Dig(newPos);
+		newPos = pos + IntTriple.DOWN;
+		Dig(newPos);
+	}
+	
+	private void Dig(IntTriple newPos) {
+		room.AddCell(newPos, id);
+		mineCount++;
 	}
 		
 }

@@ -14,6 +14,7 @@ public class Cave {
 	private int dimZone;
 	private List<RoomMiner> roomMiners;
 	private Door[] doors;
+	private int exitDoorIndex;
 	private GameObject zoneEntry;
 	private GameObject zoneExit;
 
@@ -33,6 +34,7 @@ public class Cave {
 		AddDoor(Door.TYPE_LAST_EXIT);
 		AddDoor(Door.TYPE_ENTRY);
 		AddDoor(Door.TYPE_EXIT);
+		exitDoorIndex = 2;
 		AddDoor(Door.TYPE_NEXT_ENTRY);
 		CalculateMaterialCombinations();
 	}
@@ -97,7 +99,8 @@ public class Cave {
 					if (neighbours.Count == 1) { // dead end room with just one exit, we have to add a second miner
 						int quitOnConnRandom = UnityEngine.Random.Range(0,7);
 						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[quitOnConnRandom]));
-						startingCell = SetEntryExit(alignment, 0, Game.DIMENSION_ROOM, 4);
+						startingCell = SetEntryExit(alignment, 2, Game.DIMENSION_ROOM-2, 2);
+						// dead end miner
 						roomMiners.Add(
 							new RoomMiner(this, startingCell, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[quitOnConnRandom]));
 					} else {
@@ -459,6 +462,10 @@ public class Cave {
 	}
 	
 	private void RemoveDecoration() {
+	}
+	
+	public void OpenExitDoor() {
+		doors[exitDoorIndex].Open();
 	}
 
 }

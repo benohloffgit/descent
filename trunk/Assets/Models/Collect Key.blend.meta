@@ -3,6 +3,7 @@ guid: e650fb6ba07d7d5429d151c109733a28
 ModelImporter:
   fileIDToRecycleName:
     4300000: Scroll
+    4300002: Key
   serializedVersion: 10
   materials:
     importMaterials: 1
@@ -51,14 +52,7 @@ ModelImporter:
       data:
         first: 4
         second: 821a0600
-    Lamp:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-    Scroll:
+    Key:
       data:
         first: 1
         second: a6860100
@@ -71,3 +65,10 @@ ModelImporter:
       data:
         first: 33
         second: a05a3200
+    Lamp:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600

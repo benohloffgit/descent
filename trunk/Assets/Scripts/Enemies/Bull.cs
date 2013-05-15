@@ -6,7 +6,7 @@ public class Bull : Enemy {
 	private Mode mode;
 	private float currentAngleUp;
 	
-	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0.81f, 0.16f), new Vector3(0, -0.81f, 0.16f)};
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0.81f, 0.16f), new Vector3(0, -0.81f, 0.16f), new Vector3(0, 0, 0)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 		
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2 }

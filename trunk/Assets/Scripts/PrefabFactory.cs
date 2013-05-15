@@ -148,13 +148,14 @@ public class PrefabFactory {
 		return newMissileDrop;
 	}
 
-/*	public GameObject CreateScrollDrop(Vector3 pos, Quaternion rot) {
-		GameObject newScrollDrop = GameObject.Instantiate(game.scrollDropPrefab, pos, rot) as GameObject;
-		CollecteableScroll scrollDrop = newScrollDrop.GetComponent<CollecteableScroll>();
-		scrollDrop.Initialize(play);
-		scrollDrop.enabled = true;
-		return newScrollDrop;
-	}*/
+	public GameObject CreateKeyDrop(Vector3 pos, Quaternion rot, int keyType) {
+		GameObject newKeyDrop = GameObject.Instantiate(game.keyPrefab, pos, rot) as GameObject;
+		CollecteableKey keyDrop = newKeyDrop.GetComponent<CollecteableKey>();
+		keyDrop.Initialize(play, keyType);
+		keyDrop.renderer.material.mainTexture = play.game.keyTextures[keyType];
+		keyDrop.enabled = true;
+		return newKeyDrop;
+	}
 
 	public GameObject CreatePowerUpDrop(Vector3 pos, Quaternion rot, int weaponType, int index) {
 		GameObject newPowerUpDrop;

@@ -9,6 +9,7 @@ public class Ship : MonoBehaviour {
 	public GameObject shipHUDPrefab;
 	public Game game;
 	
+	public int hullCLazz;
 	public int health;
 	public int shield;
 	public int healthPercentage;
@@ -39,7 +40,7 @@ public class Ship : MonoBehaviour {
 	public Enemy lockedEnemy;
 	public float missileLockTime;
 	
-	public static int HEALTH_FACTOR = 2;
+//	public static int HEALTH_FACTOR = 2;
 		
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 5.0f;
@@ -52,6 +53,10 @@ public class Ship : MonoBehaviour {
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(-1.014f, 0f, 1.664f), new Vector3(1.014f, 0f, 1.664f), new Vector3(0, -0.37f, 1.65f)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] { new Vector3(0,0,90f),  new Vector3(0,0,-90f),  new Vector3(0,0,180f)};
 	
+	public static int[] HEALTH = new int[] { 100, 112, 126, 135, 148, 162, 180, 200 };
+	public static int[] SHIELD = new int[] { 45, 50, 56, 60, 66, 72, 80, 85 };
+	public static int[] HULL_POWER_UP = new int[] {0,8,13,20,30,42,58,64};
+	
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;
 //	private static int CAMERA_POSITION_LEFT = 2;
@@ -59,7 +64,7 @@ public class Ship : MonoBehaviour {
 //	private static int CAMERA_POSITION_FRONT = 4;
 		
 	public Weapon[] primaryWeapons = new Weapon[8];
-	public Weapon[] secondaryWeapons = new Weapon[8];
+	public Weapon[] secondaryWeapons = new Weapon[4];
 	
 	public enum MissileLockMode { None=0, Aiming=1, Locked=2 }
 	
@@ -196,14 +201,14 @@ public class Ship : MonoBehaviour {
 		//Debug.Log (damage +" " + shield + " " +  maxShield+ " "+ health + " " + healthPercentage + " " +  shieldPercentage);
 	}
 	
-	public void Heal(int amount) { // percentage of maxHealth
+	public void Heal(int amount) {
 //		Debug.Log (amount + " " + Mathf.RoundToInt(maxHealth * ((float)amount/100f)) + " " + health);
-		health = Mathf.Min(maxHealth, health + Mathf.RoundToInt(maxHealth * ((float)amount/100f)));
+		health = Mathf.Min(maxHealth, health + amount); //Mathf.Min(maxHealth, health + Mathf.RoundToInt(maxHealth * ((float)amount/100f)));
 		healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
 	}
 
 	public void Shield(int amount) { // percentage of maxHealth
-		shield = Mathf.Min(maxShield, shield + Mathf.RoundToInt(maxShield * ((float)amount/100f)));
+		shield = Mathf.Min(maxShield, shield + amount); //Mathf.Min(maxShield, shield + Mathf.RoundToInt(maxShield * ((float)amount/100f)));
 		shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
 	}
 	
@@ -262,48 +267,45 @@ public class Ship : MonoBehaviour {
 		crossHair.localScale /= (crossHair.renderer.material.mainTexture.width/(float)Screen.width) / (32.0f/(float)Screen.width);
 	}
 	
-	public void AddPrimaryWeapon(int wType, int wModel) {
-		Weapon w = new Weapon(null, Weapon.PRIMARY, transform, play, wType, wModel,
-			WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.SHIP, (float)(play.zoneID+1), false);
-		primaryWeapons[wType-1] = w;
-		currentPrimaryWeapon = wType-1;
+	public void AddPrimaryWeapon(int wType) {
+		Weapon w = new Weapon(null, Weapon.PRIMARY, transform, play, wType,
+			WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.SHIP, false);
+		primaryWeapons[wType] = w;
+		currentPrimaryWeapon = wType;
 		primaryWeapons[currentPrimaryWeapon].Mount();
 		firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
 		play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);		
-		Debug.Log ("adding primary weapon type/model " + wType+"/"+wModel);
+		Debug.Log ("adding primary weapon type: " + wType);
 	}
 
-	public void AddSecondaryWeapon(int wType, int wModel) {
+	public void AddSecondaryWeapon(int wType) {
 		int ammunition = 1;
-		if (secondaryWeapons[wType-1] != null) {
-			ammunition += secondaryWeapons[wType-1].ammunition;
+		if (secondaryWeapons[wType] != null) {
+			ammunition += secondaryWeapons[wType].ammunition;
 		}
-		Weapon w = new Weapon(null, Weapon.SECONDARY, transform, play, wType, wModel, WEAPON_POSITIONS,
-			WEAPON_ROTATIONS, Game.SHIP, (float)(play.zoneID+1), false, ammunition);
-		secondaryWeapons[wType-1] = w;
-		currentSecondaryWeapon = wType-1;
+		Weapon w = new Weapon(null, Weapon.SECONDARY, transform, play, wType, WEAPON_POSITIONS,
+			WEAPON_ROTATIONS, Game.SHIP, false, ammunition);
+		secondaryWeapons[wType] = w;
+		currentSecondaryWeapon = wType;
 		secondaryWeapons[currentSecondaryWeapon].Mount();
 		play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
-		Debug.Log ("adding secondary weapon type/model " + wType+"/"+wModel);
+		Debug.Log ("adding secondary weapon type: " + wType);
 	}
 	
 	private void AddWeapons() {			
-		for (int i=play.zoneID-1; i >= 0; i--) {
-			if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[i] != 0 && primaryWeapons[Weapon.SHIP_PRIMARY_WEAPON_TYPES[i]-1] == null) {
-				AddPrimaryWeapon(Weapon.SHIP_PRIMARY_WEAPON_TYPES[i], Weapon.SHIP_PRIMARY_WEAPON_MODELS[i]);
+		currentPrimaryWeapon = -1;
+		currentSecondaryWeapon = -1;
+		for (int i=0; i < 8; i++) {
+			if (play.zoneID > Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX[i]) {
+				AddPrimaryWeapon(i);
 			}	
-			if (Weapon.SHIP_SECONDARY_WEAPON_TYPES[i] != 0 && secondaryWeapons[Weapon.SHIP_SECONDARY_WEAPON_TYPES[i]-1] == null) {
-				AddSecondaryWeapon(Weapon.SHIP_SECONDARY_WEAPON_TYPES[i], Weapon.SHIP_SECONDARY_WEAPON_MODELS[i]);
+		}
+		for (int i=0; i < 4; i++) {
+			if (play.zoneID > Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX[i]) {
+				AddSecondaryWeapon(i);
 			}
 		}
 		
-		if (play.zoneID > 0) {
-			currentPrimaryWeapon = Weapon.SHIP_PRIMARY_WEAPON_TYPES[play.zoneID-1]-1;
-			currentSecondaryWeapon = Weapon.SHIP_SECONDARY_WEAPON_TYPES[play.zoneID-1]-1;
-		} else {
-			currentPrimaryWeapon = -1;
-			currentSecondaryWeapon = -1;
-		}
 		if (currentPrimaryWeapon != -1) {
 			primaryWeapons[currentPrimaryWeapon].Mount();
 			firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
@@ -314,8 +316,13 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void CalculateHealth() {
-		maxHealth = play.zoneID * Game.HEALTH_MODIFIER * HEALTH_FACTOR;
-		maxShield = maxHealth / 2;
+		for (int i=0; i<8; i++) {
+			if (play.zoneID >= HULL_POWER_UP[i]) {
+				hullCLazz = i;
+			}
+		}
+		maxHealth = HEALTH[hullCLazz];
+		maxShield = SHIELD[hullCLazz];
 		health = maxHealth;
 		shield = maxShield;
 		healthPercentage = 100;

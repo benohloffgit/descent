@@ -9,8 +9,8 @@ public class CollecteablesDistributor {
 	private Ship ship;
 //	private List<GameObject> drops;
 	
-	private static int AMOUNT_HEAL = 15; // percentage
-	private static int AMOUNT_SHIELD = 25; // percentage
+	private static int AMOUNT_HEAL = 35;
+	private static int AMOUNT_SHIELD = 20;
 	
 	public CollecteablesDistributor(Play play_) {
 		play = play_;
@@ -42,13 +42,13 @@ public class CollecteablesDistributor {
 			}
 		}
 		// MISSILES starting from zone 2 on
-		if (!hasDropped && ship.currentSecondaryWeapon != -1 && e.modelClazzAEquivalent > Weapon.MISSILE_START) {
+		if (!hasDropped && ship.secondaryWeapons[Weapon.TYPE_MISSILE] != null) {
 			float rand = UnityEngine.Random.value;
 			if (rand < 0.1f) { // 10% chance
 				hasDropped = true;
-				if (e.modelClazzAEquivalent < Weapon.MISSILE_DETONATOR_START) {
-					if (e.modelClazzAEquivalent < Weapon.MISSILE_CHARGED_START) {
-						if (e.modelClazzAEquivalent < Weapon.MISSILE_GUIDED_START) {
+				if (ship.secondaryWeapons[Weapon.TYPE_DETONATOR_MISSILE] == null) {
+					if (ship.secondaryWeapons[Weapon.TYPE_CHARGED_MISSILE] == null) {
+						if (ship.secondaryWeapons[Weapon.TYPE_GUIDED_MISSILE] == null) {
 								DropMissile(e, Weapon.TYPE_MISSILE, 2);
 						} else {
 							// chose from 2 missile types
@@ -133,7 +133,7 @@ public class CollecteablesDistributor {
 	}
 	
 	public void DropPowerUps() {
-		if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[play.zoneID] != 0) {
+/*		if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[play.zoneID] != 0) {
 			Room r = play.cave.zone.GetRandomRoom();
 			GridPosition gP = r.GetRandomVoidGridPosition();
 			DropPowerUp(gP.GetWorldVector3(), Weapon.PRIMARY, play.zoneID);
@@ -144,7 +144,7 @@ public class CollecteablesDistributor {
 			GridPosition gP = r.GetRandomVoidGridPosition();
 			DropPowerUp(gP.GetWorldVector3(), Weapon.SECONDARY, play.zoneID);
 			r.SetCellToPowerUp(gP.cellPosition);
-		}
+		}*/
 	}
 	
 	public void RemoveAll() {

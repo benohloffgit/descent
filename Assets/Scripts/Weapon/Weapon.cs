@@ -7,45 +7,58 @@ public class Weapon {
 	public static int PRIMARY = 0;
 	public static int SECONDARY = 1;
 	
-	public const int TYPE_EMPTY = 0;
+//	public const int TYPE_EMPTY = 0;
 	
-	public const int TYPE_GUN = 1;
-	public const int TYPE_LASER = 2;
-	public const int TYPE_TWIN_GUN = 3;
-	public const int TYPE_PHASER = 4;
-	public const int TYPE_TWIN_LASER = 5;
-	public const int TYPE_GAUSS = 6;
-	public const int TYPE_TWIN_PHASER = 7;
-	public const int TYPE_TWIN_GAUSS = 8;
+	public const int TYPE_GUN = 0;
+	public const int TYPE_LASER = 1;
+	public const int TYPE_TWIN_GUN = 2;
+	public const int TYPE_PHASER = 3;
+	public const int TYPE_TWIN_LASER = 4;
+	public const int TYPE_GAUSS = 5;
+	public const int TYPE_TWIN_PHASER = 6;
+	public const int TYPE_TWIN_GAUSS = 7;
 	
-	public const int TYPE_MISSILE = 1;
-	public const int TYPE_GUIDED_MISSILE = 2;
-	public const int TYPE_CHARGED_MISSILE = 3;
-	public const int TYPE_DETONATOR_MISSILE = 4;	
-	public const int TYPE_MINE_TOUCH = 5;
-	public const int TYPE_MINE_SUICIDAL = 6;
-	public const int TYPE_MINE_INFRARED = 7;
-	public const int TYPE_MINE_TIMED = 8;
-	public const int TYPE_LASER_BEAM = 9;
+	public const int TYPE_MISSILE = 0;
+	public const int TYPE_GUIDED_MISSILE = 1;
+	public const int TYPE_CHARGED_MISSILE = 2;
+	public const int TYPE_DETONATOR_MISSILE = 3;
+	
+	public const int TYPE_MINE_TOUCH = 4;
+	public const int TYPE_MINE_SUICIDAL = 5;
+	public const int TYPE_MINE_INFRARED = 6;
+	public const int TYPE_MINE_TIMED = 7;
+	public const int TYPE_LASER_BEAM = 8;
 
-	public static int MISSILE_START = 2;
+/*	public static int MISSILE_START = 2;
 	public static int MISSILE_GUIDED_START = 4;
 	public static int MISSILE_CHARGED_START = 8; // charged from shield
-	public static int MISSILE_DETONATOR_START = 16; // right click to exploded while flying
+	public static int MISSILE_DETONATOR_START = 16; // right click to exploded while flying*/
 	
 	private static float TWIN_WEAPON_DAMAGE_MODIFIER = 0.6f;
 	
-	public static string[] PRIMARY_TYPES = new string[] {"", "Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
-
-	public static string[] SECONDARY_TYPES = new string[] {"", "Missile", "Guided Missile", "Charged Missile", "Detonator Missile", "Mine", "", "", "", "Laser Beam"};
+	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN = new int[] {1,4,8,13,20,30,42,58};
+	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX = new int[] {1,7,12,19,29,41,57,63};
+	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN = new int[] { 4, 13, 30, 42 };
+	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX = new int[] { 12, 29, 41, 63 };
+	public static int[] PRIMARY_DAMAGE = new int[] { 22, 25, 28, 30, 33, 36, 40, 43, 0, 0, 0, 0, 0, 0, 0, 0 };
+	public static int[] SECONDARY_DAMAGE = new int[] { 65, 85, 100, 120, 150, 50, 0, 0, 30 };	
+	public static float[] PRIMARY_SPEED = new float[] { 100f, 150f, 100f, 200f, 150f, 175f, 200f, 175f};
+	public static float[] PRIMARY_ACCURACY = new float[] { 4.0f, 3.0f, 4.0f, 3.0f, 3.0f, 2.5f, 3.0f, 2.5f };
+	public static float[] PRIMARY_FREQUENCY = new float[] { 3.0f, 2.9f, 2.8f, 2.7f, 2.6f, 2.5f, 2.3f, 2.1f };
+	public static float[] SECONDARY_SPEED = new float[] { 50f, 50f, 50f, 50f, 0f, 0f, 0f, 0f, 0f };
+	public static float[] SECONDARY_ACCURACY = new float[] { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
+	public static float[] SECONDARY_FREQUENCY = new float[] { 6.0f, 5.5f, 5.0f, 5.0f, 0f, 0f, 0f, 0f, 0f};
+	public static string[] PRIMARY_TYPES = new string[] {"Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
+	public static string[] SECONDARY_TYPES = new string[] {"Missile", "Guided Missile", "Charged Missile", "Detonator Missile", "Mine", "", "", "", "Laser Beam"};
 	
 	public float lastShotTime;
 	public Transform weaponTransform;
 	public Transform[] subWeaponTransforms;
 	
 	public int type;
-	public int model;
+//	public int model;
 	public int mountAs;
+	private int mountedTo;
 	protected float accuracy;
 	public float frequency;
 	public int damage;
@@ -57,22 +70,22 @@ public class Weapon {
 	private Vector3 tangent = Vector3.zero;
 	private Vector3 binormal = Vector3.zero;
 	private bool isReloaded;
+	private bool isBoss;
 		
 	private Play play;
 	private Game game;
 	private Ship ship;
 	private Enemy enemy;
 	private Transform parent;
-	private int mountedTo;
 	private int layerMask;
 	private RaycastHit hit;
 	public Shot[] loadedShots;
 	private Renderer[] myRenderers;
 
-	public static int[] SHIP_PRIMARY_WEAPON_TYPES = new int[] { // per 5 zones, 64 = 320 zones
+/*	public static int[] SHIP_PRIMARY_WEAPON_TYPES = new int[] { 
 		1,1,2,1,1,2,3, 1,1,2,1,1,2,3,4, 2,2,3,2,2,3,4,5, 3,3,4,3,3,4,5,6, 4,4,5,4,4,5,6,7, 5,5,6,5,5,6,7,8, 6,6,7,6,6,7,8, 7,7,8,7,7,8, 8,8,8,8
 	};
-	public static int[] SHIP_PRIMARY_WEAPON_MODELS = new int[] { // per 5 zones, 64 = 320 zones
+	public static int[] SHIP_PRIMARY_WEAPON_MODELS = new int[] { 
 		1,2,1,3,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2, 5,6,3,7,8,4, 5,6,7,8,
 	};
 	public static int[] SHIP_SECONDARY_WEAPON_TYPES = new int[] {
@@ -80,13 +93,13 @@ public class Weapon {
 	};
 	public static int[] SHIP_SECONDARY_WEAPON_MODELS = new int[] {
 		0,0,1,2,1,3,4, 2,1,5,6,3,7,8,4, 2,1,5,6,3,7,8,4, 2,9,5,6,3,7,8,4, 10,9,5,6,11,7,8,12, 10,9,13,14,11,15,16,12, 10,9,13,14,11,15,16, 12,10,13,14,11,15, 12,13,14,15
-	};
+	};*/
 
 	private static float MAX_RAYCAST_DISTANCE = Game.MAX_VISIBILITY_DISTANCE * 1.5f;
 	
 	public Weapon(Enemy parentEnemy_, int mountAs_, Transform parent_,
-			Play play_, int type_, int model_, Vector3[] positions_, Vector3[] rotations_, int mountedTo_,
-			float damageBase, bool isBoss = false, int ammunition_ = -1) {
+			Play play_, int type_, Vector3[] positions_, Vector3[] rotations_, int mountedTo_,
+			bool isBoss_ = false, int ammunition_ = -1) {
 		loadedShots = new Shot[2];
 		mountAs = mountAs_;
 		parent = parent_;
@@ -94,7 +107,8 @@ public class Weapon {
 		ship = play.ship;
 		game = play.game;
 		type = type_;
-		model = model_;
+		isBoss = isBoss_;
+//		model = model_;
 		ammunition = ammunition_;
 		positions = positions_;
 		rotations = rotations_;
@@ -105,48 +119,7 @@ public class Weapon {
 		}
 		isReloaded = false;
 				
-		Initialize();
-		
-		if (mountedTo == Game.SHIP) {
-			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
-			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
-				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_SHIP;
-				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_SHIP;
-			} else {
-				weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
-			}
-			accuracy = 0f;
-			damage =  Mathf.RoundToInt(damageBase * 1.5f);
-			if (mountAs == Weapon.PRIMARY) {
-				frequency = 0.2f;
-			} else {
-				damage *= 3;
-			}
-		} else {
-			layerMask = Game.LAYER_MASK_SHIP_CAVE;
-			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
-				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_ENEMY;
-				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_ENEMY;
-			} else {
-				weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
-			}
-			if (isBoss) {
-				damageBase *= Enemy.BOSS_DAMAGE_MODIFIER;
-				accuracy -= Enemy.BOSS_ACCURACY_MODIFIER;
-				frequency -= Enemy.BOSS_FREQUENCY_MODIFIER;
-				if (mountAs == Weapon.SECONDARY && (type == TYPE_MISSILE || type == TYPE_GUIDED_MISSILE)) {
-					ammunition *= 2;
-				}
-			}
-			if (mountAs == Weapon.SECONDARY && type == TYPE_MINE_TOUCH) {
-				damage =  Mathf.RoundToInt(damageBase * 3.0f);
-			} else if (mountAs == Weapon.SECONDARY && (type == TYPE_MISSILE || type == TYPE_GUIDED_MISSILE)) {
-				damage =  Mathf.RoundToInt(damageBase * 2.0f);
-			} else if (mountAs == Weapon.SECONDARY) {
-				damage =  Mathf.RoundToInt(damageBase * 2.0f);
-			}
-		}
-		
+		Initialize();	
 	}
 	
 	public void Shoot() {
@@ -293,9 +266,11 @@ public class Weapon {
 	private void Initialize() {
 		GameObject weaponGameObject;
 		if (mountAs == PRIMARY) {
-			weaponGameObject = GameObject.Instantiate(game.primaryWeaponPrefabs[type-1]) as GameObject; 
+			weaponGameObject = GameObject.Instantiate(game.primaryWeaponPrefabs[type]) as GameObject; 
+			damage =  PRIMARY_DAMAGE[type];
 		} else {
 			weaponGameObject = GameObject.Instantiate(game.emptyPrefab) as GameObject;
+			damage =  SECONDARY_DAMAGE[type];
 		}
 		weaponTransform = weaponGameObject.transform;
 		weaponTransform.parent = parent.transform;
@@ -313,57 +288,47 @@ public class Weapon {
 				weaponTransform.localPosition = positions[Game.WEAPON_POSITION_WING_LEFT];
 				weaponTransform.localEulerAngles = rotations[Game.WEAPON_POSITION_WING_LEFT];
 			}
-			switch (type) {
-				case TYPE_GUN:
-					speed = 100f;
-					accuracy = 4.0f - model * 0.25f;
-					frequency = 3.0f - model * 0.125f; break;		
-				case TYPE_LASER:
-					speed = 200f;
-					accuracy = 3.0f - model * 0.1875f;
-					frequency = 3.0f - model * 0.125f; break;
-				case TYPE_TWIN_GUN:
-					speed = 100f;
-					accuracy = 3.7f - model * 0.25f;
-					frequency = 3.0f - model * 0.125f; break;		
-				case TYPE_PHASER:
-					speed = 250f;
-					accuracy = 3.0f - model * 0.1875f;
-					frequency = 2.7f - model * 0.125f; break;
-				default:
-					speed = 100f;
-					accuracy = 4.0f - model * 0.1875f;
-					frequency = 3.0f - model * 0.125f; break;
-			}
+			speed = PRIMARY_SPEED[type];
+			accuracy = PRIMARY_ACCURACY[type];
+			frequency = PRIMARY_FREQUENCY[type];
 			myRenderers = weaponTransform.GetComponentsInChildren<Renderer>();
 		} else {
 			weaponTransform.localPosition = positions[Game.WEAPON_POSITION_CENTER];
 			weaponTransform.localEulerAngles = rotations[Game.WEAPON_POSITION_CENTER];
-			switch (type) {
-				case TYPE_MISSILE:
-					speed = 50f;
-					accuracy = 0;//4.0f - model * 0.015f;
-					frequency = 4.0f - model * 0.0625f; break;			
-				case TYPE_GUIDED_MISSILE:
-					speed = 50f;
-					accuracy = 0;//3.0f - model * 0.01f;
-					frequency = 6.0f - model * 0.0625f; break;
-				case TYPE_MINE_TOUCH:
-					speed = 0f;
-					accuracy = 0;//3.0f - model * 0.01f;
-					frequency = 10.0f - model * 0.0625f; break;
-				case TYPE_LASER_BEAM:
-					speed = 0f;
-					accuracy = 0;//3.0f - model * 0.01f;
-					frequency = 0; break;
-				default:
-					speed = 50f;
-					accuracy = 0;//4.0f - model * 0.015f;
-					frequency = 6.0f - model * 0.0625f; break;
-				
-			}
+			speed = SECONDARY_SPEED[type];
+			accuracy = SECONDARY_ACCURACY[type];
+			frequency = SECONDARY_FREQUENCY[type];
 		}
 		Unmount();
+
+		if (mountedTo == Game.SHIP) {
+			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
+			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_SHIP;
+				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_SHIP;
+			} else {
+				weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
+			}
+			accuracy = 0f;
+			if (mountAs == Weapon.PRIMARY) {
+				frequency = 0.2f;
+			}
+		} else {
+			layerMask = Game.LAYER_MASK_SHIP_CAVE;
+			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_ENEMY;
+				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_ENEMY;
+			} else {
+				weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
+			}
+			if (isBoss) {
+				accuracy -= Enemy.BOSS_ACCURACY_MODIFIER;
+				frequency -= Enemy.BOSS_FREQUENCY_MODIFIER;
+				if (mountAs == Weapon.SECONDARY && (type == TYPE_MISSILE || type == TYPE_GUIDED_MISSILE)) {
+					ammunition *= 2;
+				}
+			}
+		}
 	}
 	
 }

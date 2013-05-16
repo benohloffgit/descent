@@ -12,7 +12,7 @@ public class LightBulb : Enemy {
 
 //	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0.53f, 0.63f, 0.750f), new Vector3(-0.53f, 0.63f, 0.750f)};
 		
-	public override void InitializeWeapon(int mount, int w, int m) {
+	public override void InitializeWeapon(int mount, int type) {
 /*		if (mount == Weapon.PRIMARY) {
 			primaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[0], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 		} else {

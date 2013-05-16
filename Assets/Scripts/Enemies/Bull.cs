@@ -16,11 +16,11 @@ public class Bull : Enemy {
 		mode = Mode.ROAMING;
 	}
 	
-	public override void InitializeWeapon(int mount, int w, int m) {
+	public override void InitializeWeapon(int mount, int type) {
 		if (mount == Weapon.PRIMARY) {
 			primaryWeapons.Add(
-				new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS,
-				WEAPON_ROTATIONS, Game.ENEMY, modelClazzAEquivalent + 1.0f, spawn.isBoss, -1));
+				new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS,
+				WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss, -1));
 //		} else {
 //			secondaryWeapons.Add
 //				(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1.0f, spawn.isBoss, -1));

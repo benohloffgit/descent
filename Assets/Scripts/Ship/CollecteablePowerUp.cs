@@ -9,18 +9,16 @@ public class CollecteablePowerUp : MonoBehaviour {
 	private float angle;
 	private int weaponType;
 	private int wType;
-	private int wModel;
 	
 //	private Mesh mesh;
 	void Awake() {
 		gameObject.layer = Game.LAYER_COLLECTEABLES;
 	}
 	
-	public void Initialize(Play play_, int weaponType_, int wType_, int wModel_) {
+	public void Initialize(Play play_, int weaponType_, int wType_) {
 		play = play_;
 		weaponType = weaponType_;
 		wType = wType_;
-		wModel = wModel_;
 //		mesh = Resources.Load("Gun", typeof(Mesh)) as Mesh;
 		angle = 0f;
 	}
@@ -41,7 +39,7 @@ public class CollecteablePowerUp : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
-			play.CollectWeapon(weaponType, wType, wModel);
+			play.CollectWeapon(weaponType, wType);
 			Destroy(gameObject);
 		}
 	}

@@ -13,8 +13,8 @@ public class Hornet : Enemy {
 		mode = Mode.ROAMING;
 	}
 	
-	public override void InitializeWeapon(int mount, int w, int m) {
-		damage = modelClazzAEquivalent + 1;
+	public override void InitializeWeapon(int mount, int type) {
+		damage = Weapon.SECONDARY_DAMAGE[type];
 	}
 		
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {

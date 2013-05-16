@@ -23,12 +23,12 @@ public class Wombat : Enemy {
 		isReloaded = false;
 	}
 	
-	public override void InitializeWeapon(int mount, int w, int m) {
+	public override void InitializeWeapon(int mount, int type) {
 		if (mount == Weapon.SECONDARY) {
 			int ammo = Mathf.FloorToInt(modelClazzAEquivalent/6.0f)+1;
 			secondaryWeapons.Add
-				(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS,
-					WEAPON_ROTATIONS, Game.ENEMY, modelClazzAEquivalent + 1f, spawn.isBoss, ammo));
+				(new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS,
+					WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss, ammo));
 		}
 	}
 		

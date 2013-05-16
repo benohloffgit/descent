@@ -107,12 +107,12 @@ public class PlayGUI {
 	
 	public void Initialize() {
 		ship = play.ship;
-		displayedHealth = ship.healthPercentage;
-		displayedShield = ship.shieldPercentage;
+		displayedHealth = ship.health;
+		displayedShield = ship.shield;
 		toBeDisplayedHealth = displayedHealth;
 		toBeDisplayedShield = displayedShield;
-		DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.healthPercentage), MyGUI.GetDigitOfNumber(1, ship.healthPercentage), MyGUI.GetDigitOfNumber(2, ship.healthPercentage)});
-		DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, ship.shieldPercentage), MyGUI.GetDigitOfNumber(1, ship.shieldPercentage), MyGUI.GetDigitOfNumber(2, ship.shieldPercentage)});
+		DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.health), MyGUI.GetDigitOfNumber(1, ship.health), MyGUI.GetDigitOfNumber(2, ship.health)});
+		DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, ship.shield), MyGUI.GetDigitOfNumber(1, ship.shield), MyGUI.GetDigitOfNumber(2, ship.shield)});
 		shipTransform = ship.transform;
 		shipCamera = ship.shipCamera;
 	}
@@ -169,14 +169,14 @@ public class PlayGUI {
 	}*/
 		
 	public void DispatchUpdate() {
-		if (toBeDisplayedShield != ship.shieldPercentage) {
-			Debug.Log ("toBeDisplayedShield " + ship.shieldPercentage + " " + displayedShield);
+		if (toBeDisplayedShield != ship.shield) {
+			Debug.Log ("toBeDisplayedShield " + ship.shield + " " + displayedShield);
 			SetShieldCount(displayedShield);
-			toBeDisplayedShield = ship.shieldPercentage;
-		} else if (displayedShield == ship.shieldPercentage && toBeDisplayedHealth != ship.healthPercentage) {
-			Debug.Log ("toBeDisplayedHealth " + ship.healthPercentage + " "  + displayedHealth);
+			toBeDisplayedShield = ship.shield;
+		} else if (displayedShield == ship.shield && toBeDisplayedHealth != ship.health) {
+			Debug.Log ("toBeDisplayedHealth " + ship.health + " "  + displayedHealth);
 			SetHealthCount(displayedHealth);
-			toBeDisplayedHealth = ship.healthPercentage;
+			toBeDisplayedHealth = ship.health;
 		}
 			
 		if (displayedShield > toBeDisplayedShield && Time.time > lastShieldCountTime + TICK_DELTA) {
@@ -247,7 +247,9 @@ public class PlayGUI {
 		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
 			+ ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f);
 		gui.labelsCC[enemyHUDInfoLabels[index]].SetText(
-			e.clazz.ToUpper() + " " + e.displayModel.ToString("00") + " (" + Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
+			e.clazz.ToUpper() + " " + e.displayModel.ToString("00")
+				+ " [H:" + e.health + "]"
+				+ " (F:"+ Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
 		);
 		gui.labelsCC[enemyHUDInfoLabels[index]].transform.localPosition = new Vector2(
 			Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f),
@@ -322,10 +324,10 @@ public class PlayGUI {
 	}
 	
 	public void DisplayPrimaryWeapon(Weapon w) {
-		gui.labelsCC[primaryWeaponLabel].SetText("T: " + Weapon.PRIMARY_TYPES[w.type] + " M: " + w.model);
+		gui.labelsCC[primaryWeaponLabel].SetText("T: " + Weapon.PRIMARY_TYPES[w.type] + " FP: " + w.damage);
 	}
 	
 	public void DisplaySecondaryWeapon(Weapon w) {
-		gui.labelsCC[secondaryWeaponLabel].SetText("T: " + Weapon.SECONDARY_TYPES[w.type] + " M: " + w.model + " ("+ w.ammunition +")");
+		gui.labelsCC[secondaryWeaponLabel].SetText("T: " + Weapon.SECONDARY_TYPES[w.type] + " ("+ w.ammunition +")");
 	}
 }

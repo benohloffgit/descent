@@ -22,10 +22,10 @@ public class Manta : Enemy {
 	private static float MAX_ROAMING_TIME = 10.0f;
 	private static float MAX_AIMING_TIME = 12.0f;
 	
-	public override void InitializeWeapon(int mount, int w, int m) {
+	public override void InitializeWeapon(int mount, int type) {
 		if (mount == Weapon.PRIMARY) {
-			primaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS,
-				WEAPON_ROTATIONS, Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
+			primaryWeapons.Add(new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS,
+				WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss));
 //		} else {
 //			secondaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 		}

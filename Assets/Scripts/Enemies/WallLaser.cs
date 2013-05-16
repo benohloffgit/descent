@@ -37,9 +37,9 @@ public class WallLaser : Enemy {
 		lastDamageTime = Time.time;
 	}
 	
-	public override void InitializeWeapon(int mount, int w, int m) {
-		weapon = new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.ENEMY,
-				modelClazzAEquivalent + 1, spawn.isBoss, -1);
+	public override void InitializeWeapon(int mount, int type) {
+		weapon = new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.ENEMY,
+				spawn.isBoss, -1);
 		secondaryWeapons.Add(weapon);
 	}
 		

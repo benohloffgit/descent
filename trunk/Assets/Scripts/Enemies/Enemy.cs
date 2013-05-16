@@ -69,7 +69,7 @@ public abstract class Enemy : MonoBehaviour {
 //	public int modelNum; // 0 - 998
 	public int modelClazzAEquivalent;
 	public int health;
-	public int shield;
+//	public int shield;
 	public float firepowerPerSecond;
 	protected float size;
 	protected float aggressiveness; // between 0 (no at all) and 1.0 (attacks 100% of time)
@@ -98,7 +98,7 @@ public abstract class Enemy : MonoBehaviour {
 
 	protected Rigidbody myRigidbody;
 	
-	public abstract void InitializeWeapon(int ix, int w, int m);
+	public abstract void InitializeWeapon(int weaponMount, int weaponType);
 	public abstract void DispatchFixedUpdate(Vector3 isShipVisible);
 	
 	void Awake() {
@@ -108,7 +108,7 @@ public abstract class Enemy : MonoBehaviour {
 //		Debug.Log (radius);
 	}
 
-	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int enemyEquivalentClazzAModel_, int health_, int shield_,
+	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int enemyEquivalentClazzAModel_, int health_,
 			float size_, float aggressiveness_, float movementForce_,
 			float turningForce_, int lookAtRange_,
 			int roamMinRange_, int roamMaxRange_) {
@@ -123,7 +123,7 @@ public abstract class Enemy : MonoBehaviour {
 //		modelNum = clazzNum * CLAZZ_STEP + model;
 		modelClazzAEquivalent = enemyEquivalentClazzAModel_;
 		health = spawn.isBoss ? health_ * 2 : health_;
-		shield = spawn.isBoss ? shield_ * 2 : shield_;
+//		shield = spawn.isBoss ? shield_ * 2 : shield_;
 		size = spawn.isBoss ? 2.5f : size_;
 		aggressiveness = 0;//aggressiveness_;
 		movementForce = movementForce_;
@@ -137,12 +137,14 @@ public abstract class Enemy : MonoBehaviour {
 		firepowerPerSecond = 0;
 		
 		if (clazzNum < DISTRIBUTION_CLAZZ_MAX) {
-			InitializeWeapon(Weapon.PRIMARY, Weapon.SHIP_PRIMARY_WEAPON_TYPES[modelClazzAEquivalent], Weapon.SHIP_PRIMARY_WEAPON_MODELS[modelClazzAEquivalent]);
-			InitializeWeapon(Weapon.SECONDARY, Weapon.SHIP_SECONDARY_WEAPON_TYPES[modelClazzAEquivalent], Weapon.SHIP_SECONDARY_WEAPON_TYPES[modelClazzAEquivalent]);
+			InitializeWeapon(Weapon.PRIMARY, clazzNum);
+			InitializeWeapon(Weapon.SECONDARY, clazzNum);
 		} else if (clazzNum == CLAZZ_MINEBUILDER10) {
-			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_MINE_TOUCH, modelClazzAEquivalent);
+			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_MINE_TOUCH);
 		} else if (clazzNum == CLAZZ_WALLLASER11) {
-			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_LASER_BEAM, modelClazzAEquivalent);
+			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_LASER_BEAM);
+		} else if (clazzNum == CLAZZ_HORNET12) {
+			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_MINE_SUICIDAL);
 		}
 		
 		currentPrimaryWeapon = 0;
@@ -165,12 +167,12 @@ public abstract class Enemy : MonoBehaviour {
 		transform.localScale *= size;
 	}
 	
-	public void Initialize(Play play_, Spawn spawn_, string clazz_, int model_, int enemyEquivalentClazzAModel_, int health_, int shield_,
+	public void Initialize(Play play_, Spawn spawn_, string clazz_, int model_, int enemyEquivalentClazzAModel_, int health_,
 			float size_, float aggressiveness_, float movementForce_,
 			float turningForce_, int lookAtRange_,
 			int roamMinRange_, int roamMaxRange_) {
 		
-		Initialize(play_, spawn_, CLAZZ_NUM(clazz_), model_, enemyEquivalentClazzAModel_, health_, shield_,
+		Initialize(play_, spawn_, CLAZZ_NUM(clazz_), model_, enemyEquivalentClazzAModel_, health_,
 			size_, aggressiveness_, movementForce_,
 			turningForce_, lookAtRange_,
 			roamMinRange_, roamMaxRange_);		
@@ -204,7 +206,7 @@ public abstract class Enemy : MonoBehaviour {
 	}
 	
 	public void Damage(int damage) {
-		if (shield > 0) {
+/*		if (shield > 0) {
 			shield -= damage * 2;
 			if (shield < 0) {
 				damage = Mathf.Abs(shield);
@@ -212,7 +214,7 @@ public abstract class Enemy : MonoBehaviour {
 			} else {
 				damage = 0;
 			}
-		}
+		}*/
 		
 		if (health-damage <= 0) {
 			if (spawn != null) {

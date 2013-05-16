@@ -22,18 +22,16 @@ public class EnemyDistributor {
 	
 //	private static float MAX_RAYCAST_DISTANCE = 100.0f;
 	
+	private static float[] ENEMY_HEALTH_MULTIPLICATOR = new float[] {3.0f, 3.125f, 3.25f, 3.375f, 3.5f, 3.675f, 3.75f, 3.875f, 4.0f };
+	private static float[] ENEMY_HEALTH_MODIFIER = new float[] {-0.1f, -0.075f, -0.05f, -0.025f, 0f, 0.025f, 0.05f, 0.075f, 0.1f };
 	private static float[] ENEMY_SIZES = new float[] {1.0f, 0.5f, 1.5f, 0.7f, 1.3f, 0.3f, 0.7f, 1.7f, 2.0f, 1.0f};
 	private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
 	private static float[] ENEMY_MOVEMENT_FORCES = new float[] {5.0f, 10f, 7.5f, 2.5f, 12.5f, 6.0f, 8.0f, 4.0f, 15.0f, 3.0f, 7.0f, 9f};
 	private static float[] ENEMY_TURN_FORCES = new float[] {5.0f, 2.5f, 7.5f, 3.0f, 6.0f};
 	private static int[] ENEMY_LOOK_RANGES = new int[] {4,6,10,8,3,11,7,14,9,5,13,12,15};
-//	private static int[] ENEMY_CHASE_RANGES = new int[] {4,6,12,8,2,10};
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
-//	private static int[] START_5ZONE_PER_CLAZZ = new int[] {1,2,5,10,17,26,37,50}; // these values -(1 times zone5[in this case 1]) give the CLAZZ_A equivalent for each CLAZZ when starting on model 1
-//	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {0,2,4,9,16,25,36,49};
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,12,20,30,42,54,1,14,6,10,15};
-//	private static int[] START_ZONE_PER_CLAZZ = new int[] {2,4,8,12,20,30,42,54};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,13,20,30,42,58,   1,14,6,10,15};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 2.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 6.0f};
 	private static int[] SPAWN_MIN_LIVING = new int[] {1, 1}; // first value is for BEGINNER Zones
@@ -348,10 +346,10 @@ public class EnemyDistributor {
 	}
 
 	public Enemy CreateEnemy(Spawn spawn, int clazz, int model, int enemyEquivalentClazzAModel) {
-		Enemy enemy = CreateEnemy (clazz);
+		Enemy enemy = CreateEnemy(clazz);
 		enemy.Initialize(play, spawn, clazz, model, enemyEquivalentClazzAModel,
 				CalculateEnemyHealth(clazz, enemyEquivalentClazzAModel),
-				CalculateEnemyShield(clazz, enemyEquivalentClazzAModel),
+//				CalculateEnemyShield(clazz, enemyEquivalentClazzAModel),
 				CalculateEnemySize(clazz, model),
 				CalculateEnemyAggressiveness(clazz, model),
 				CalculateEnemyMovementForce(clazz, model),
@@ -422,41 +420,26 @@ public class EnemyDistributor {
 				i = probabilities.Length;
 			}
 		}
-		//modelDelta += enemyClazzDelta * -3;
 		
 		return Mathf.Clamp(model + modelDelta, CLAZZ_A_EQUIVALENT_MODEL[clazz], Enemy.MODEL_MAX);
 	}
-
-/*	private int CalculateEnemyModel(int coreClazz, int coreModel, int enemyClazzDelta) {
-		float[] probabilities = new float[] { 0.1f, 0.3f, 0.6f, 1.0f };
-		float rand = UnityEngine.Random.value;
-		int modelDelta = 0;
-		for (int i=0; i<probabilities.Length; i++) {
-			if (rand <= probabilities[i]) {
-				modelDelta = (probabilities.Length-1) - i;
-				if (UnityEngine.Random.Range(0,2) == 0) { // 50:50
-					modelDelta *= -1;
-				}
-				i = probabilities.Length;
-			}
-		}
-		modelDelta += enemyClazzDelta * -3;
-		
-		return Mathf.Clamp(coreModel + modelDelta, Enemy.MODEL_MIN, Enemy.MODEL_MAX);
-		
-	}*/
 	
 	private int CalculateEnemyHealth(int clazz, int model) {
-		return model * Game.HEALTH_MODIFIER;
-//		return model * 5 + clazz * 25;
+		int lookUp = (clazz + model) % 9;
+		float baseHealth = Weapon.PRIMARY_DAMAGE[clazz] * ENEMY_HEALTH_MULTIPLICATOR[lookUp];
+//		Debug.Log (clazz + " " +model + " " + baseHealth + " " + lookUp +" " + ENEMY_HEALTH_MODIFIER[lookUp]);
+		return (int)(baseHealth + baseHealth * ENEMY_HEALTH_MODIFIER[lookUp]);
+		
+	//	return model * Game.HEALTH_MODIFIER;
 	}
 
 	private int CalculateEnemyShield(int clazz, int model) {
-		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_WALLLASER11 || clazz == Enemy.CLAZZ_HORNET12) {
+		return 0;
+/*		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_WALLLASER11 || clazz == Enemy.CLAZZ_HORNET12) {
 			return 0;
 		} else {
 			return Mathf.FloorToInt((model * Game.HEALTH_MODIFIER) / 2f);
-		}
+		}*/
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {

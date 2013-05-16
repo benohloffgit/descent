@@ -24,7 +24,7 @@ public class Snake : Enemy {
 		roamingStart = Time.time;
 	}
 	
-	public override void InitializeWeapon(int mount, int w, int m) {
+	public override void InitializeWeapon(int mount, int type) {
 	}
 		
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {		

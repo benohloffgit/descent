@@ -210,7 +210,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 16;
+		zoneID = 8;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -537,11 +537,11 @@ public class Play : MonoBehaviour {
 		}
 	}
 
-	public void CollectWeapon(int weaponType, int wType, int wModel) {
+	public void CollectWeapon(int weaponType, int wType) {
 		if (weaponType == Weapon.PRIMARY) {
-			ship.AddPrimaryWeapon(wType, wModel);
+			ship.AddPrimaryWeapon(wType);
 		} else {
-			ship.AddSecondaryWeapon(wType, wModel);
+			ship.AddSecondaryWeapon(wType);
 		}
 	}
 	

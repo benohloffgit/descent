@@ -12,7 +12,7 @@ public class Bug : Enemy {
 //		mode = Mode.ROAMING;
 	}
 	
-	public override void InitializeWeapon(int mount, int w, int m) {
+	public override void InitializeWeapon(int mount, int type) {
 	}
 		
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {		

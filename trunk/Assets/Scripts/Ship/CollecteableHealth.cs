@@ -4,7 +4,7 @@ using UnityEngine;
 public class CollecteableHealth : MonoBehaviour {		
 	private Play play;
 	
-	private int amount; // in percentage
+	private int amount;
 	private float angle;	
 	
 	public void Initialize(Play play_, int amount_) {

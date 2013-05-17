@@ -152,8 +152,4 @@ public class Zone {
 		return neighbours;
 	}
 	
-/*	public static int GetZone5StepID(int zoneID) {
-		return zoneID;
-//		return Mathf.FloorToInt(zoneID / 5.0f);
-	}*/
 }

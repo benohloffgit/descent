@@ -112,6 +112,7 @@
      <Compile Include="Assets\Scripts\PG Cave\Room.cs" />
      <Compile Include="Assets\Scripts\PG Cave\RoomMesh.cs" />
      <Compile Include="Assets\Scripts\PG Cave\RoomMiner.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\SecretChamberDoor.cs" />
      <Compile Include="Assets\Scripts\PG Cave\WeightedProbability.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Zone.cs" />
      <Compile Include="Assets\Scripts\Play.cs" />

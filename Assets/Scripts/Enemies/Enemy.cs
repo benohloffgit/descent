@@ -9,11 +9,11 @@ public abstract class Enemy : MonoBehaviour {
 		Light bulb	
 		Mine dropper
 	*/
-	public static string CLAZZ_A = "Bull";
-	public static string CLAZZ_B = "Manta";
-	public static string CLAZZ_C = "Pike";
-	public static string CLAZZ_D = "Wombat";
-	public static string CLAZZ_E = "e";
+	public static string CLAZZ_A = "Bull"; // p twin 
+	public static string CLAZZ_B = "Manta"; // p twin 
+	public static string CLAZZ_C = "Pike"; // p single
+	public static string CLAZZ_D = "Wombat"; // s single
+	public static string CLAZZ_E = "Bat"; 
 	public static string CLAZZ_F = "f";
 	public static string CLAZZ_G = "g";
 	public static string CLAZZ_H = "h";

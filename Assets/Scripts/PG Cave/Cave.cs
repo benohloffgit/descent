@@ -14,9 +14,11 @@ public class Cave {
 	private int dimZone;
 	private List<RoomMiner> roomMiners;
 	private Door[] doors;
+	private SecretChamberDoor secretChamberDoor;
 	private int exitDoorIndex;
 	private GameObject zoneEntry;
 	private GameObject zoneExit;
+	private GameObject secretCave;
 
 	public static int DENSITY_FILLED = 0;
 	public static int DENSITY_EMPTY = 1;
@@ -36,6 +38,7 @@ public class Cave {
 		AddDoor(Door.TYPE_EXIT);
 		exitDoorIndex = 2;
 		AddDoor(Door.TYPE_NEXT_ENTRY);
+		AddSecretChamberDoor();
 		CalculateMaterialCombinations();
 	}
 	
@@ -75,6 +78,15 @@ public class Cave {
 	}
 	
 	public void DigRooms() {
+		List<int> roomsAvailableForSecretCave = new List<int>();
+		for (int i=2; i<zone.roomList.Count; i++) {  // only middle rooms considered
+			if (zone.GetFilledNeighboursOfRoom(zone.roomList[i].pos).Count > 0) {
+				roomsAvailableForSecretCave.Add(i);
+			}
+		}
+		int secretCaveRoomID = roomsAvailableForSecretCave[UnityEngine.Random.Range(0, roomsAvailableForSecretCave.Count)];
+//		Debug.Log ("secretCaveRoomID "+ secretCaveRoomID);
+		
 		int[] connectorsSet = new int[] {0,0,0,0,0,0,0,0,0,0};
 		int quitOnPercentThreshold = UnityEngine.Random.Range(0, MINER_QUIT_ON_PERCENT_TYPES.Length);
 		for (int i=0; i<zone.roomList.Count; i++) { // first in array is entry room
@@ -134,6 +146,21 @@ public class Cave {
 				doors[Door.TYPE_NEXT_ENTRY].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,8), room.pos));
 				play.placeShipBeforeExitDoor = new GridPosition(startingCell, room.pos);
 //				Debug.Log ("Exit Room: " + startingCell);				
+			} else if (room.id == secretCaveRoomID) {
+				List<IntTriple> filledNeighbourPositions = zone.GetFilledNeighboursOfRoom(room.pos);
+				IntTriple secretCaveRoomPos = filledNeighbourPositions[UnityEngine.Random.Range(0, filledNeighbourPositions.Count)];
+				startingCell = SetEntryExit(secretCaveRoomPos - room.pos, 0, Game.DIMENSION_ROOM, 2);
+				roomMiners.Add(new RoomMiner(this, startingCell, secretCaveRoomPos - room.pos, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[UnityEngine.Random.Range(0,3)]));
+				if (secretCave == null) {
+					secretCave = AddSecretCave(new GridPosition(startingCell, room.pos), (room.pos-secretCaveRoomPos).GetVector3());
+				} else {
+					secretCave.transform.position = GetPositionFromGrid(new GridPosition(startingCell, room.pos));
+					secretCave.transform.forward = (room.pos-secretCaveRoomPos).GetVector3();
+				}
+				secretChamberDoor.transform.position = secretCave.transform.position;
+				secretChamberDoor.transform.forward = secretCave.transform.forward;
+				secretChamberDoor.transform.Rotate(Vector3.forward, 45f);
+//				Debug.Log ("startingCell "+ startingCell);
 			}
 			
 			connectorsSet[room.id] = 1;
@@ -388,10 +415,24 @@ public class Cave {
 		return o;
 	}
 
+	private GameObject AddSecretCave(GridPosition gP, Vector3 forward) {
+		GameObject o = GameObject.Instantiate(game.secretCavePrefab) as GameObject;
+		o.transform.localScale *= RoomMesh.MESH_SCALE;
+		o.transform.position = GetPositionFromGrid(gP);
+		o.transform.forward = forward;
+		return o;
+	}
+	
 	private void AddDoor(int doorType) {
 		doors[doorType] = (GameObject.Instantiate(game.doorPrefab) as GameObject).GetComponent<Door>();
 		doors[doorType].transform.localScale *= RoomMesh.MESH_SCALE;
 		doors[doorType].Initialize(play, doorType);
+	}
+	
+	private void AddSecretChamberDoor() {
+		secretChamberDoor = (GameObject.Instantiate(game.secretChamberDoorPrefab) as GameObject).GetComponent<SecretChamberDoor>();
+		secretChamberDoor.transform.localScale *= RoomMesh.MESH_SCALE;
+		secretChamberDoor.Initialize(play);
 	}
 	
 /*	public GridPosition GetGridFromPosition(Vector3 position) {

@@ -9,9 +9,11 @@ public class Game : MonoBehaviour {
 	public GameObject roomMeshPrefab;
 	public GameObject roomEntryPrefab;
 	public GameObject roomConnectorPrefab;
+	public GameObject secretCavePrefab;
 	public GameObject miniMapPrefab;
 	public GameObject miniMapRoomConnectorPrefab;
 	public GameObject doorPrefab;
+	public GameObject secretChamberDoorPrefab;
 	public GameObject crystalPrefab;
 	public GameObject flowerPrefab;
 	

@@ -1,18 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\MineBuilder.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
     <Files>
-      <File FileName="Assets\Scripts\CameraFollow.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Play.cs" Line="495" Column="14" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="137" Column="24" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="428" Column="36" />
-      <File FileName="Assets\Scripts\Game.cs" Line="69" Column="3" />
-      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="33" Column="15" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="42" Column="60" />
+      <File FileName="Assets\Scripts\Play.cs" Line="556" Column="2" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="154" Column="21" />
+      <File FileName="Assets\Scripts\Game.cs" Line="16" Column="37" />
+      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="77" Column="11" />
+      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="41" Column="1" />
       <File FileName="Assets\Scripts\Ship\Ship.cs" Line="283" Column="30" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="244" Column="17" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="252" Column="10" />
-      <File FileName="Assets\Scripts\Enemies\MineBuilder.cs" Line="87" Column="19" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="16" Column="40" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="103" Column="40" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

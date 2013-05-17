@@ -15,6 +15,7 @@ public class Play : MonoBehaviour {
 	public bool isShipInPlayableArea;
 	public bool isMiniMapOn;
 	public bool isMiniMapFollowOn;
+	public bool isPaused;
 	private MiniMap miniMap;
 	public PlayGUI playGUI;
 	private string keyCommand;
@@ -65,6 +66,7 @@ public class Play : MonoBehaviour {
 	void Awake() {
 		lightsHolder = GameObject.Find("Lights").transform;
 		caveLights = lightsHolder.GetComponentsInChildren<Light>();
+		isPaused = false;
 	}
 	
 	void OnGUI() {		
@@ -116,13 +118,9 @@ public class Play : MonoBehaviour {
 				KeyFound(CollecteableKey.TYPE_GOLD);
 				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
 			}
-/*			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
-				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
-					WallLaser wallLaser = enemyDistributor.CreateWallLaser();
-					enemyDistributor.PlaceOnWall(wallLaser.gameObject, hit);
-					Debug.Log ("Adding Wall Laser (Editor mode)");
-				}
-			}*/
+			if (Input.GetKeyDown(KeyCode.F5)) {
+				SetPaused();
+			}
 /*			if (Input.GetKeyDown(KeyCode.Alpha0)) {
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
 					int triangleIndex = hit.triangleIndex * 3;
@@ -140,10 +138,6 @@ public class Play : MonoBehaviour {
 					Debug.Log ("Vertex is " + m.vertices[vertexIndices[0]] +","+m.vertices[vertexIndices[1]]+","+m.vertices[vertexIndices[2]]);
 					Debug.Log ("Triangle (Editor mode): " + hit.normal + " (" + normals[0]+","+normals[1]+","+normals[2]+ ")");
 				}
-			}*/
-/*			if (Input.GetKeyDown(KeyCode.H)) {				
-				ship.health -= 10;
-				playGUI.SetHealth(ship.health);
 			}*/
 	/*		if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.LeftArrow)) {
 				Debug.Log ("Changing Vertex");
@@ -198,11 +192,13 @@ public class Play : MonoBehaviour {
 				}
 			}
 		}
-		playGUI.DispatchUpdate();
+//		playGUI.DispatchUpdate();
 	}
 	
 	void FixedUpdate() {
-		playGUI.DispatchFixedUpdate();
+		if (!isPaused) {
+			playGUI.DispatchFixedUpdate();
+		}
 	}
 	
 	public void Restart() {
@@ -571,6 +567,16 @@ public class Play : MonoBehaviour {
 			for (int i=0; i<caveLights.Length; i++) {
 				caveLights[i].intensity = 1.0f - (0.45f*lightZone);
 			}
+		}
+	}
+	
+	private void SetPaused() {
+		if (isPaused) {
+			isPaused = false;
+			Time.timeScale = 1f;
+		} else {
+			isPaused = true;
+			Time.timeScale = 0;
 		}
 	}
 	

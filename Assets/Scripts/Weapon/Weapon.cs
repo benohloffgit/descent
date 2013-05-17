@@ -38,6 +38,7 @@ public class Weapon {
 	
 	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN = new int[] {1,4,8,13,20,30,42,58};
 	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX = new int[] {1,7,12,19,29,41,57,63};
+	//missile cap: 3, light 6, twin primary 7, speed 19, cloak 41
 	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN = new int[] { 4, 13, 30, 42 };
 	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX = new int[] { 12, 29, 41, 63 };
 	public static int[] PRIMARY_DAMAGE = new int[] { 22, 25, 28, 30, 33, 36, 40, 43, 0, 0, 0, 0, 0, 0, 0, 0 };

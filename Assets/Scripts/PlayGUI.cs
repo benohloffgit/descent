@@ -163,12 +163,11 @@ public class PlayGUI {
 		shieldDigit1.SetUVMapping(DIGITS[shieldCount[1]]);
 		shieldDigit2.SetUVMapping(DIGITS[shieldCount[2]]);
 	}
-
-/*	public void DispatchOnGUI() {
-		GUI.Label(new Rect (Screen.width/2,Screen.height/2,50,50), "bla"	);
-	}*/
 		
-	public void DispatchUpdate() {
+//	public void DispatchUpdate() {
+//	}
+	
+	public void DispatchFixedUpdate() {
 		if (toBeDisplayedShield != ship.shield) {
 			Debug.Log ("toBeDisplayedShield " + ship.shield + " " + displayedShield);
 			SetShieldCount(displayedShield);
@@ -200,9 +199,7 @@ public class PlayGUI {
 			displayedHealth++;
 			DisplayHealth();
 		}
-	}
-	
-	public void DispatchFixedUpdate() {
+
 		// Enemy target info
 //		Debug.Log (shipTransform.position + " " + shipTransform.forward);
 		int removed = 0;

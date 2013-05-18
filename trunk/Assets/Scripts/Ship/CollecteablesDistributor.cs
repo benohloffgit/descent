@@ -112,6 +112,8 @@ public class CollecteablesDistributor {
 		int positionCount=0;
 		foreach (Room r in play.cave.zone.roomList) {
 			if (r.exits.Count == 1) { // dead end room
+				Debug.Log(positionCount + " " + r);
+				Debug.Log(r.deadEndCell);
 				keyPositions[positionCount] = new GridPosition(r.deadEndCell, r.pos);
 				r.SetCellToKey(r.deadEndCell);
 				positionCount++;

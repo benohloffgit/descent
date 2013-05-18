@@ -1,15 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Sokoban\Sokoban.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="556" Column="2" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="154" Column="21" />
-      <File FileName="Assets\Scripts\Game.cs" Line="16" Column="37" />
-      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="77" Column="11" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="41" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="283" Column="30" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="16" Column="40" />
-      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="103" Column="40" />
+      <File FileName="Assets\Scripts\Sokoban\Board.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Sokoban\Field.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Sokoban\Sokoban.cs" Line="85" Column="49" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="116" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

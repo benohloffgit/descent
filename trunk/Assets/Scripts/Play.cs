@@ -7,6 +7,7 @@ public class Play : MonoBehaviour {
 	
 	public int zoneID;
 	
+	private Mode mode;
 	public Game game;
 	public Cave cave;
 	public Movement movement;
@@ -18,6 +19,7 @@ public class Play : MonoBehaviour {
 	public bool isPaused;
 	private MiniMap miniMap;
 	public PlayGUI playGUI;
+	private Sokoban sokoban;
 	private string keyCommand;
 	public bool isInKeyboardMode;
 	private int caveSeed;
@@ -62,11 +64,14 @@ public class Play : MonoBehaviour {
 	private static float STATS_MIN = 0.01f;
 
 	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);
-	
+
+	public enum Mode { Normal=0, Sokoban=1 }
+
 	void Awake() {
 		lightsHolder = GameObject.Find("Lights").transform;
 		caveLights = lightsHolder.GetComponentsInChildren<Light>();
 		isPaused = false;
+		mode = Mode.Normal;
 	}
 	
 	void OnGUI() {		
@@ -121,6 +126,9 @@ public class Play : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.F5)) {
 				SetPaused();
 			}
+			if (Input.GetKeyDown(KeyCode.F6)) {
+				SwitchMode();
+			}
 /*			if (Input.GetKeyDown(KeyCode.Alpha0)) {
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
 					int triangleIndex = hit.triangleIndex * 3;
@@ -149,7 +157,7 @@ public class Play : MonoBehaviour {
 				//m.RecalculateNormals();
 			}*/
 			
-			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
+/*			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
 				isShipInvincible = (isShipInvincible) ? false : true;
 				Debug.Log ("Setting ship invincible: " + isShipInvincible);
 			}
@@ -184,15 +192,14 @@ public class Play : MonoBehaviour {
 				Debug.Log("Nearest empty grid: " + cave.GetNearestEmptyGridPositionFrom(shipGridPosition));
 			}*/
 			
-			if (aStarThreadState.IsFinishedNow()) {
+/*			if (aStarThreadState.IsFinishedNow()) {
 				aStarThreadState.Complete();
 //				Debug.Log (Time.frameCount);
 				foreach (AStarNode n in aStarThreadState.roomPath) {
 					PlaceTestCube(n.gridPos);
 				}
-			}
+			}*/
 		}
-//		playGUI.DispatchUpdate();
 	}
 	
 	void FixedUpdate() {
@@ -202,6 +209,8 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Restart() {
+		sokoban = new Sokoban(this);
+		
 		botSeed = UnityEngine.Random.Range(0,9999999);
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
@@ -249,6 +258,7 @@ public class Play : MonoBehaviour {
 			enemyDistributor.Distribute();
 		}
 		ship.CalculateHealth();
+		sokoban.RenderLevel(0);
 		ConfigureLighting();
 		ship.transform.position = cave.GetCaveEntryPosition();		
 	}
@@ -577,6 +587,17 @@ public class Play : MonoBehaviour {
 		} else {
 			isPaused = true;
 			Time.timeScale = 0;
+		}
+	}
+	
+	private void SwitchMode() {
+		SetPaused();
+		if (mode == Mode.Normal) {
+			mode = Mode.Sokoban;
+			sokoban.SwitchOn();
+		} else {
+			mode = Mode.Normal;
+			sokoban.SwitchOff();
 		}
 	}
 	

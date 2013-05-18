@@ -44,6 +44,7 @@ public class Game : MonoBehaviour {
 	public GameObject breadcrumbPrefab;
 	public GameObject explosionPrefab;
 	public GameObject hitPrefab;
+	public GameObject sokobanBoardPrefab;
 	// drops
 	public GameObject healthDropPrefab;
 	public GameObject shieldDropPrefab;

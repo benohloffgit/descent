@@ -4,6 +4,7 @@ using UnityEngine;
 public class Game : MonoBehaviour {
 	public GameObject statePrefab;
 	public GameObject guiPrefab;
+	public GameObject mesh3DPrefab;
 
 	public GameObject emptyPrefab;
 	public GameObject roomMeshPrefab;
@@ -52,6 +53,7 @@ public class Game : MonoBehaviour {
 
 	public Texture2D[] caveTextures;
 	public Texture2D[] keyTextures;
+	public Material sokobanMaterial;
 	
 	public State state;
 	public GameInput gameInput;
@@ -82,6 +84,8 @@ public class Game : MonoBehaviour {
 	public static int LAYER_GUN_ENEMY = 15;
 	public static int LAYER_GUN_SHIP = 16;
 	public static int LAYER_COLLECTEABLES = 17;
+	public static int LAYER_MINES = 18;
+	public static int LAYER_SOKOBAN = 19;
 	
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ZONE_SQUARED = DIMENSION_ZONE * DIMENSION_ZONE;

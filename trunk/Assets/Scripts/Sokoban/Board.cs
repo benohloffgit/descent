@@ -17,7 +17,8 @@ public class Board : MonoBehaviour {
 	
 	public static float FIELD_SIZE = 1.0f;
 	public static Vector2 FIELD_CENTER = new Vector2(FIELD_SIZE/2, FIELD_SIZE/2);
-	public static Direction[] DIRECTIONS = new Direction[] {Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT};
+	public static Vector3 FIELD_CENTER_3 = new Vector3(FIELD_SIZE/2, FIELD_SIZE/2, 0);
+//	public static Direction[] DIRECTIONS = new Direction[] {Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT};
 	
 	private static float UV_BORDER = 0.01f;
 		
@@ -143,8 +144,8 @@ public class Board : MonoBehaviour {
 		return p.GetVector2() * Board.FIELD_SIZE + Board.FIELD_CENTER;
 	}
 	
-/*	public static Vector3 GetVector3Pos(IntDouble p, float z) {
-		return p.GetVector3(z) * Board.FIELD_SIZE + Board.FIELD_CENTER;
-	}*/
+	public static Vector3 GetVector3Pos(IntDouble p, float z) {
+		return p.GetVector3(z) * Board.FIELD_SIZE + Board.FIELD_CENTER_3;
+	}
 	
 }

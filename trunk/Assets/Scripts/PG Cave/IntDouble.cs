@@ -39,7 +39,7 @@ public struct IntDouble {
 	public static IntDouble operator +(IntDouble t1, IntDouble t2) {
 		return new IntDouble(t1.x+t2.x, t1.y+t2.y);
 	}
-
+	
 	public static IntDouble operator -(IntDouble t1, IntDouble t2) {
 		return new IntDouble(t1.x-t2.x, t1.y-t2.y);
 	}

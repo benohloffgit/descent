@@ -2,10 +2,11 @@ using System;
 using UnityEngine;
 
 public class Field {
-	private Sokoban sokoban;
-	
 	public IntDouble pos;
 	public int type;
+	
+	private Sokoban sokoban;
+	public Bulb bulb;
 	
 	public static int EMPTY = 0;
 	public static int WALL = 1;
@@ -15,6 +16,22 @@ public class Field {
 		sokoban_ = sokoban_;
 		type = type_;
 		pos = pos_;
+	}
+	
+	public void AddBulb(Bulb bulb_) {
+		bulb = bulb_;
+	}
+	
+	public void RemoveBulb() {
+		bulb = null;
+	}
+	
+	public bool ContainsBulb() {
+		if (bulb != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 		
 }

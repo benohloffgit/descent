@@ -132,7 +132,7 @@
      <Compile Include="Assets\Scripts\Ship\ShipSteering.cs" />
      <Compile Include="Assets\Scripts\ShotStats.cs" />
      <Compile Include="Assets\Scripts\Sokoban\Board.cs" />
-     <Compile Include="Assets\Scripts\Sokoban\Direction.cs" />
+     <Compile Include="Assets\Scripts\Sokoban\Bulb.cs" />
      <Compile Include="Assets\Scripts\Sokoban\Field.cs" />
      <Compile Include="Assets\Scripts\Sokoban\Player.cs" />
      <Compile Include="Assets\Scripts\Sokoban\Sokoban.cs" />

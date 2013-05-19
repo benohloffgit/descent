@@ -1,11 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Sokoban\Sokoban.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
     <Files>
-      <File FileName="Assets\Scripts\Sokoban\Board.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Sokoban\Field.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Sokoban\Sokoban.cs" Line="85" Column="49" />
-      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="116" Column="5" />
+      <File FileName="Assets\Scripts\Sokoban\Board.cs" Line="21" Column="3" />
+      <File FileName="Assets\Scripts\Sokoban\Field.cs" Line="22" Column="15" />
+      <File FileName="Assets\Scripts\Sokoban\Sokoban.cs" Line="194" Column="1" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="115" Column="40" />
+      <File FileName="Assets\Scripts\Game.cs" Line="88" Column="38" />
+      <File FileName="Assets\Scripts\Sokoban\Player.cs" Line="30" Column="26" />
+      <File FileName="Assets\Scripts\Mesh3D.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PG Cave\IntDouble.cs" Line="42" Column="1" />
+      <File FileName="Assets\Scripts\Play.cs" Line="273" Column="24" />
+      <File FileName="Assets\Scripts\Sokoban\Bulb.cs" Line="34" Column="24" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

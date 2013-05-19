@@ -118,6 +118,18 @@ public class Play : MonoBehaviour {
 	void Update() {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
+			if (mode == Mode.Sokoban) {
+				if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+					sokoban.MovePlayer(IntDouble.LEFT);
+				} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+					sokoban.MovePlayer(IntDouble.RIGHT);
+				} else if (Input.GetKeyDown(KeyCode.UpArrow)) {
+					sokoban.MovePlayer(IntDouble.UP);
+				} else if (Input.GetKeyDown(KeyCode.DownArrow)) {
+					sokoban.MovePlayer(IntDouble.DOWN);
+				}
+			}
+			
 			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
 				KeyFound(CollecteableKey.TYPE_SILVER);
 				KeyFound(CollecteableKey.TYPE_GOLD);
@@ -258,7 +270,7 @@ public class Play : MonoBehaviour {
 			enemyDistributor.Distribute();
 		}
 		ship.CalculateHealth();
-		sokoban.RenderLevel(0);
+		sokoban.RenderLevel(2);
 		ConfigureLighting();
 		ship.transform.position = cave.GetCaveEntryPosition();		
 	}

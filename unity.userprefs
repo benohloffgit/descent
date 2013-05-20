@@ -1,17 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\CollecteablesDistributor.cs">
     <Files>
-      <File FileName="Assets\Scripts\Sokoban\Board.cs" Line="21" Column="3" />
-      <File FileName="Assets\Scripts\Sokoban\Field.cs" Line="22" Column="15" />
-      <File FileName="Assets\Scripts\Sokoban\Sokoban.cs" Line="194" Column="1" />
-      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="115" Column="40" />
-      <File FileName="Assets\Scripts\Game.cs" Line="88" Column="38" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="137" Column="87" />
+      <File FileName="Assets\Scripts\Game.cs" Line="115" Column="40" />
       <File FileName="Assets\Scripts\Sokoban\Player.cs" Line="30" Column="26" />
-      <File FileName="Assets\Scripts\Mesh3D.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\PG Cave\IntDouble.cs" Line="42" Column="1" />
-      <File FileName="Assets\Scripts\Play.cs" Line="273" Column="24" />
-      <File FileName="Assets\Scripts\Sokoban\Bulb.cs" Line="34" Column="24" />
+      <File FileName="Assets\Scripts\Play.cs" Line="566" Column="25" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="458" Column="30" />
+      <File FileName="Assets\Scripts\PG Cave\Zone.cs" Line="90" Column="40" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="65" Column="55" />
+      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="203" Column="1" />
+      <File FileName="Assets\Scripts\State.cs" Line="145" Column="1" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="275" Column="20" />
+      <File FileName="Assets\Scripts\Ship\CollecteablePowerUp.cs" Line="41" Column="23" />
+      <File FileName="Assets\Scripts\PG Cave\Room.cs" Line="139" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

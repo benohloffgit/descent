@@ -56,6 +56,9 @@ public class Ship : MonoBehaviour {
 	public static int[] HEALTH = new int[] { 100, 112, 126, 135, 148, 162, 180, 200 };
 	public static int[] SHIELD = new int[] { 45, 50, 56, 60, 66, 72, 80, 85 };
 	public static int[] HULL_POWER_UP = new int[] {0,8,13,20,30,42,58,64};
+
+	public static string[] HULL_TYPES = new string[] {"Armor", "Improved Armor", "Bla Armor", "Blubb Armor", "Keflar Armor", "Iridium Armor", "Nano Armor", "Bloob Armor"};
+	public static string[] SPECIAL_TYPES = new string[] {"Light", "Boost", "Cloak", "Invincible"};
 	
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;

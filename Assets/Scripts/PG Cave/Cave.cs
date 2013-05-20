@@ -15,10 +15,11 @@ public class Cave {
 	private List<RoomMiner> roomMiners;
 	private Door[] doors;
 	private SecretChamberDoor secretChamberDoor;
+	public int secretCaveRoomID;
 	private int exitDoorIndex;
 	private GameObject zoneEntry;
 	private GameObject zoneExit;
-	private GameObject secretCave;
+	public GameObject secretCave;
 
 	public static int DENSITY_FILLED = 0;
 	public static int DENSITY_EMPTY = 1;
@@ -84,7 +85,7 @@ public class Cave {
 				roomsAvailableForSecretCave.Add(i);
 			}
 		}
-		int secretCaveRoomID = roomsAvailableForSecretCave[UnityEngine.Random.Range(0, roomsAvailableForSecretCave.Count)];
+		secretCaveRoomID = roomsAvailableForSecretCave[UnityEngine.Random.Range(0, roomsAvailableForSecretCave.Count)];
 //		Debug.Log ("secretCaveRoomID "+ secretCaveRoomID);
 		
 		int[] connectorsSet = new int[] {0,0,0,0,0,0,0,0,0,0};
@@ -160,6 +161,8 @@ public class Cave {
 				secretChamberDoor.transform.position = secretCave.transform.position;
 				secretChamberDoor.transform.forward = secretCave.transform.forward;
 				secretChamberDoor.transform.Rotate(Vector3.forward, 45f);
+				CloseSecretChamberDoor();
+				play.placeShipBeforeSecretChamberDoor = new GridPosition(startingCell, room.pos);
 //				Debug.Log ("startingCell "+ startingCell);
 			}
 			
@@ -434,7 +437,7 @@ public class Cave {
 		secretChamberDoor.transform.localScale *= RoomMesh.MESH_SCALE;
 		secretChamberDoor.Initialize(play);
 	}
-	
+		
 /*	public GridPosition GetGridFromPosition(Vector3 position) {
 		Vector3 unscaled = position / RoomMesh.MESH_SCALE;
 //		int roomOffset = Mathf.FloorToInt(unscaled.x / Game.DIMENSION_ROOM);
@@ -508,5 +511,13 @@ public class Cave {
 	public void OpenExitDoor() {
 		doors[exitDoorIndex].Open();
 	}
+	
+	public void OpenSecretChamberDoor() {
+		secretChamberDoor.Open();
+	}
 
+	private void CloseSecretChamberDoor() {
+		secretChamberDoor.Close();
+	}
+	
 }

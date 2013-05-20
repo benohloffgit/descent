@@ -108,6 +108,11 @@ public class Game : MonoBehaviour {
 	public static int WEAPON_POSITION_WING_LEFT = 0;
 	public static int WEAPON_POSITION_WING_RIGHT = 1;
 	public static int WEAPON_POSITION_CENTER = 2;
+
+	public static int POWERUP_PRIMARY_WEAPON = 0;
+	public static int POWERUP_SECONDARY_WEAPON = 1;
+	public static int POWERUP_HULL = 2;
+	public static int POWERUP_SPECIAL = 3;	
 	
 	public static Vector4 GUI_UV_NULL = new Vector4(0.0f,0.0f,0.0f,0.0f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);

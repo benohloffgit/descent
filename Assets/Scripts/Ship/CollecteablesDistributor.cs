@@ -11,7 +11,7 @@ public class CollecteablesDistributor {
 	
 	private static int AMOUNT_HEAL = 35;
 	private static int AMOUNT_SHIELD = 20;
-	
+		
 	public CollecteablesDistributor(Play play_) {
 		play = play_;
 		game = play.game;
@@ -103,8 +103,8 @@ public class CollecteablesDistributor {
 		game.CreateFromPrefab().CreateKeyDrop(pos, Quaternion.identity, keyType);
 	}
 
-	public void DropPowerUp(Vector3 pos, int weaponType, int index) {
-		game.CreateFromPrefab().CreatePowerUpDrop(pos, Quaternion.identity, weaponType, index);
+	public void DropPowerUp(Vector3 pos, int type, int id) {
+		game.CreateFromPrefab().CreatePowerUpDrop(pos, Quaternion.identity, type, id);
 	}
 	
 	public void DropKeys() {
@@ -112,14 +112,14 @@ public class CollecteablesDistributor {
 		int positionCount=0;
 		foreach (Room r in play.cave.zone.roomList) {
 			if (r.exits.Count == 1) { // dead end room
-				Debug.Log(positionCount + " " + r);
-				Debug.Log(r.deadEndCell);
+//				Debug.Log(positionCount + " " + r);
+//				Debug.Log(r.deadEndCell);
 				keyPositions[positionCount] = new GridPosition(r.deadEndCell, r.pos);
 				r.SetCellToKey(r.deadEndCell);
 				positionCount++;
 			}
 			if (positionCount == 2) {
-				continue;
+				break;
 			}
 		}
 		while (positionCount < 2) {
@@ -133,8 +133,20 @@ public class CollecteablesDistributor {
 		DropKey(keyPositions[rand1].GetWorldVector3(), CollecteableKey.TYPE_SILVER);
 		DropKey(keyPositions[rand2].GetWorldVector3(), CollecteableKey.TYPE_GOLD);
 	}
+
+// light 7, speed 19, cloak 41, invincible 58, exit door finder? - question mark model
+// 8 hull - little ship
 	
 	public void DropPowerUps() {
+		for (int i=0; i<Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN.Length; i++) {
+			CheckDropPowerUp(Game.POWERUP_PRIMARY_WEAPON, i, Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN[i], Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX[i], new Vector3(-0.5f,0,0));
+		}
+		for (int i=0; i<Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN.Length; i++) {
+			CheckDropPowerUp(Game.POWERUP_SECONDARY_WEAPON, i, Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN[i], Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX[i], new Vector3(0.5f,0,0));
+		}
+		
+		// IF NO POWER UP DROP; DROP HEALTH OR SHIELD OR AMMO
+		
 /*		if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[play.zoneID] != 0) {
 			Room r = play.cave.zone.GetRandomRoom();
 			GridPosition gP = r.GetRandomVoidGridPosition();
@@ -147,6 +159,23 @@ public class CollecteablesDistributor {
 			DropPowerUp(gP.GetWorldVector3(), Weapon.SECONDARY, play.zoneID);
 			r.SetCellToPowerUp(gP.cellPosition);
 		}*/
+	}
+	
+	private void CheckDropPowerUp(int type, int id, int min, int max, Vector3 offset) {
+		if (!play.game.state.HasPowerUp(type, id)) {
+			if (play.zoneID >= min && play.zoneID <= max) {
+				//int parts = (max-play.zoneID);
+				//float probability = 1f / (max-play.zoneID+1);
+				if (UnityEngine.Random.value <= 1f / (max-play.zoneID+1)) {
+					DropPowerUp(GetPositionInSecretChamber(offset), type, id);
+				}
+			}
+		}
+	}
+	
+	private Vector3 GetPositionInSecretChamber(Vector3 offset) {
+		return (play.cave.secretCave.transform.position - play.cave.secretCave.transform.forward*3f*RoomMesh.MESH_SCALE)
+			+ play.cave.secretCave.transform.InverseTransformDirection(offset)*RoomMesh.MESH_SCALE;
 	}
 	
 	public void RemoveAll() {

@@ -7,25 +7,24 @@ public class CollecteablePowerUp : MonoBehaviour {
 	private Play play;
 	
 	private float angle;
-	private int weaponType;
-	private int wType;
+	private int type;
+	private int id;
 	
 //	private Mesh mesh;
 	void Awake() {
 		gameObject.layer = Game.LAYER_COLLECTEABLES;
 	}
 	
-	public void Initialize(Play play_, int weaponType_, int wType_) {
+	public void Initialize(Play play_, int type_, int id_) {
 		play = play_;
-		weaponType = weaponType_;
-		wType = wType_;
+		type = type_;
+		id = id_;
 //		mesh = Resources.Load("Gun", typeof(Mesh)) as Mesh;
 		angle = 0f;
 	}
 
 	void FixedUpdate() {
-		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
-		if (isShipVisible != Vector3.zero) {
+		if (!play.isShipInPlayableArea || play.GetRoomOfShip().id == play.cave.secretCaveRoomID) {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			angle += 0.05f;
 			transform.RotateAround(transform.up, angle);
@@ -39,7 +38,7 @@ public class CollecteablePowerUp : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
-			play.CollectWeapon(weaponType, wType);
+			play.CollectPowerUp(type, id);
 			Destroy(gameObject);
 		}
 	}

@@ -105,7 +105,7 @@ public struct IntTriple {
 	}
 	
 	public static IntTriple operator /(IntTriple t1, int i) {
-		return new IntTriple(Mathf.FloorToInt(t1.x/i), Mathf.FloorToInt(t1.y/i), Mathf.FloorToInt(t1.z/i));
+		return new IntTriple(Mathf.FloorToInt(t1.x/(float)i), Mathf.FloorToInt(t1.y/(float)i), Mathf.FloorToInt(t1.z/(float)i));
 	}
 
 	public static IntTriple operator %(IntTriple t1, int i) {

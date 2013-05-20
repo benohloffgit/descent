@@ -3,11 +3,13 @@ using System.Collections;
 
 public class SecretChamberDoor : MonoBehaviour {
 		
-	private MeshCollider doorCollider;
+	private SphereCollider doorCollider;
 	private Play play;
+	private Renderer myRenderer;
 	
 	void Awake() {
-		doorCollider = GetComponentInChildren<MeshCollider>();
+		doorCollider = GetComponentInChildren<SphereCollider>();
+		myRenderer = GetComponentInChildren<Renderer>();
 	}
 	
 	public void Initialize(Play play_) {
@@ -15,12 +17,22 @@ public class SecretChamberDoor : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other) {
+		if (other.tag == Ship.TAG) {
+			play.SwitchMode();
+		}
 	}
 
 	void OnTriggerExit(Collider other) {
 	}
 	
 	public void Open() {
+		doorCollider.enabled = false;
+		myRenderer.enabled = false;
+	}
+
+	public void Close() {
+		doorCollider.enabled = true;
+		myRenderer.enabled = true;
 	}
 }
 

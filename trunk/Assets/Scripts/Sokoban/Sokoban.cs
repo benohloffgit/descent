@@ -103,7 +103,7 @@ public class Sokoban {
 			}
 		}
 		if (bulbsInGoal == bulbGoal) {
-			Debug.Log ("Won");
+			play.SokobanSolved();
 		}
 	}
 

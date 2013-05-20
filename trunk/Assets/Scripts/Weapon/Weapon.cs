@@ -122,6 +122,76 @@ public class Weapon {
 				
 		Initialize();	
 	}
+
+	private void Initialize() {
+		GameObject weaponGameObject;
+		if (mountAs == PRIMARY) {
+			weaponGameObject = GameObject.Instantiate(game.primaryWeaponPrefabs[type]) as GameObject; 
+			damage =  PRIMARY_DAMAGE[type];
+		} else {
+			weaponGameObject = GameObject.Instantiate(game.emptyPrefab) as GameObject;
+			damage =  SECONDARY_DAMAGE[type];
+		}
+		weaponTransform = weaponGameObject.transform;
+		weaponTransform.parent = parent.transform;
+
+		if (mountAs == PRIMARY) {
+			if (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS) {
+				subWeaponTransforms = new Transform[2];
+				weaponTransform.localPosition = Vector3.zero;
+				weaponTransform.localRotation = Quaternion.identity;
+				subWeaponTransforms[0] = weaponTransform.Find("Gun1");
+				subWeaponTransforms[1] = weaponTransform.Find("Gun2");
+				subWeaponTransforms[0].localPosition = positions[Game.WEAPON_POSITION_WING_LEFT];
+				subWeaponTransforms[1].localPosition = positions[Game.WEAPON_POSITION_WING_RIGHT];
+				subWeaponTransforms[0].localEulerAngles = rotations[Game.WEAPON_POSITION_WING_LEFT];
+				subWeaponTransforms[1].localEulerAngles = rotations[Game.WEAPON_POSITION_WING_RIGHT];
+			} else {
+				weaponTransform.localPosition = positions[Game.WEAPON_POSITION_WING_LEFT];
+				weaponTransform.localEulerAngles = rotations[Game.WEAPON_POSITION_WING_LEFT];
+			}
+			speed = PRIMARY_SPEED[type];
+			accuracy = PRIMARY_ACCURACY[type];
+			frequency = PRIMARY_FREQUENCY[type];
+			myRenderers = weaponTransform.GetComponentsInChildren<Renderer>();
+		} else {
+			weaponTransform.localPosition = positions[Game.WEAPON_POSITION_CENTER];
+			weaponTransform.localEulerAngles = rotations[Game.WEAPON_POSITION_CENTER];
+			speed = SECONDARY_SPEED[type];
+			accuracy = SECONDARY_ACCURACY[type];
+			frequency = SECONDARY_FREQUENCY[type];
+		}
+		Unmount();
+
+		if (mountedTo == Game.SHIP) {
+			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
+			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_SHIP;
+				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_SHIP;
+			} else {
+				weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
+			}
+			accuracy = 0f;
+			if (mountAs == Weapon.PRIMARY) {
+				frequency = 0.2f;
+			}
+		} else {
+			layerMask = Game.LAYER_MASK_SHIP_CAVE;
+			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_ENEMY;
+				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_ENEMY;
+			} else {
+				weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
+			}
+			if (isBoss) {
+				accuracy -= Enemy.BOSS_ACCURACY_MODIFIER;
+				frequency -= Enemy.BOSS_FREQUENCY_MODIFIER;
+				if (mountAs == Weapon.SECONDARY && (type == TYPE_MISSILE || type == TYPE_GUIDED_MISSILE)) {
+					ammunition *= 2;
+				}
+			}
+		}
+	}
 	
 	public void Shoot() {
 		Vector3[] bulletPaths = new Vector3[2];
@@ -264,73 +334,7 @@ public class Weapon {
 		isReloaded = true;
 	}
 	
-	private void Initialize() {
-		GameObject weaponGameObject;
-		if (mountAs == PRIMARY) {
-			weaponGameObject = GameObject.Instantiate(game.primaryWeaponPrefabs[type]) as GameObject; 
-			damage =  PRIMARY_DAMAGE[type];
-		} else {
-			weaponGameObject = GameObject.Instantiate(game.emptyPrefab) as GameObject;
-			damage =  SECONDARY_DAMAGE[type];
-		}
-		weaponTransform = weaponGameObject.transform;
-		weaponTransform.parent = parent.transform;
 
-		if (mountAs == PRIMARY) {
-			if (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS) {
-				subWeaponTransforms = new Transform[2];
-				subWeaponTransforms[0] = weaponTransform.Find("Gun1");
-				subWeaponTransforms[1] = weaponTransform.Find("Gun2");
-				subWeaponTransforms[0].localPosition = positions[Game.WEAPON_POSITION_WING_LEFT];
-				subWeaponTransforms[1].localPosition = positions[Game.WEAPON_POSITION_WING_RIGHT];
-				subWeaponTransforms[0].localEulerAngles = rotations[Game.WEAPON_POSITION_WING_LEFT];
-				subWeaponTransforms[1].localEulerAngles = rotations[Game.WEAPON_POSITION_WING_RIGHT];
-			} else {
-				weaponTransform.localPosition = positions[Game.WEAPON_POSITION_WING_LEFT];
-				weaponTransform.localEulerAngles = rotations[Game.WEAPON_POSITION_WING_LEFT];
-			}
-			speed = PRIMARY_SPEED[type];
-			accuracy = PRIMARY_ACCURACY[type];
-			frequency = PRIMARY_FREQUENCY[type];
-			myRenderers = weaponTransform.GetComponentsInChildren<Renderer>();
-		} else {
-			weaponTransform.localPosition = positions[Game.WEAPON_POSITION_CENTER];
-			weaponTransform.localEulerAngles = rotations[Game.WEAPON_POSITION_CENTER];
-			speed = SECONDARY_SPEED[type];
-			accuracy = SECONDARY_ACCURACY[type];
-			frequency = SECONDARY_FREQUENCY[type];
-		}
-		Unmount();
-
-		if (mountedTo == Game.SHIP) {
-			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
-			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
-				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_SHIP;
-				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_SHIP;
-			} else {
-				weaponTransform.gameObject.layer = Game.LAYER_GUN_SHIP;
-			}
-			accuracy = 0f;
-			if (mountAs == Weapon.PRIMARY) {
-				frequency = 0.2f;
-			}
-		} else {
-			layerMask = Game.LAYER_MASK_SHIP_CAVE;
-			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
-				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_ENEMY;
-				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_ENEMY;
-			} else {
-				weaponTransform.gameObject.layer = Game.LAYER_GUN_ENEMY;
-			}
-			if (isBoss) {
-				accuracy -= Enemy.BOSS_ACCURACY_MODIFIER;
-				frequency -= Enemy.BOSS_FREQUENCY_MODIFIER;
-				if (mountAs == Weapon.SECONDARY && (type == TYPE_MISSILE || type == TYPE_GUIDED_MISSILE)) {
-					ammunition *= 2;
-				}
-			}
-		}
-	}
 	
 }
 

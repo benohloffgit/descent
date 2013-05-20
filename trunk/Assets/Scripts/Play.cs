@@ -28,6 +28,7 @@ public class Play : MonoBehaviour {
 	private bool[] isKeyCollected;
 	
 	public GridPosition placeShipBeforeExitDoor;
+	public GridPosition placeShipBeforeSecretChamberDoor;
 	
 //	private GameInput gI;
 	private State state;
@@ -118,6 +119,9 @@ public class Play : MonoBehaviour {
 	void Update() {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
+			if (Input.GetKeyDown(KeyCode.F6)) {
+				SwitchMode();
+			}
 			if (mode == Mode.Sokoban) {
 				if (Input.GetKeyDown(KeyCode.LeftArrow)) {
 					sokoban.MovePlayer(IntDouble.LEFT);
@@ -128,18 +132,18 @@ public class Play : MonoBehaviour {
 				} else if (Input.GetKeyDown(KeyCode.DownArrow)) {
 					sokoban.MovePlayer(IntDouble.DOWN);
 				}
-			}
-			
-			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
-				KeyFound(CollecteableKey.TYPE_SILVER);
-				KeyFound(CollecteableKey.TYPE_GOLD);
-				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
-			}
-			if (Input.GetKeyDown(KeyCode.F5)) {
-				SetPaused();
-			}
-			if (Input.GetKeyDown(KeyCode.F6)) {
-				SwitchMode();
+			} else {			
+				if (Input.GetKeyDown(KeyCode.Alpha5)) {	
+					KeyFound(CollecteableKey.TYPE_SILVER);
+					KeyFound(CollecteableKey.TYPE_GOLD);
+					ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
+				}
+				if (Input.GetKeyDown(KeyCode.Alpha6)) {	
+					ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
+				}
+				if (Input.GetKeyDown(KeyCode.F5)) {
+					SetPaused();
+				}
 			}
 /*			if (Input.GetKeyDown(KeyCode.Alpha0)) {
 				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
@@ -227,7 +231,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 8;
+		zoneID = 12;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -270,7 +274,7 @@ public class Play : MonoBehaviour {
 			enemyDistributor.Distribute();
 		}
 		ship.CalculateHealth();
-		sokoban.RenderLevel(2);
+		sokoban.RenderLevel(1);
 		ConfigureLighting();
 		ship.transform.position = cave.GetCaveEntryPosition();		
 	}
@@ -378,14 +382,16 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void CachePositionalDataOfShip(Vector3 pos) {
+		isShipInPlayableArea = true;
 		shipGridPosition = cave.GetGridFromPosition(pos);
-		if (shipGridPosition.cellPosition.z < 0 || shipGridPosition.roomPosition.z > Game.DIMENSION_ZONE-1) {
+//		Debug.Log (pos + " " + shipGridPosition);
+		try {
+			if (GetRoomOfShip() == null) {
+				isShipInPlayableArea = false;
+			}
+		} catch (IndexOutOfRangeException e) {
 			isShipInPlayableArea = false;
-		} else {
-			isShipInPlayableArea = true;
 		}
-//		Debug.Log (shipGridPosition);
-//		shipGridPosition = cave.GetClosestEmptyGridFromPosition(pos);
 	}
 	
 	public Vector3 GetShipPosition() {
@@ -555,11 +561,11 @@ public class Play : MonoBehaviour {
 		}
 	}
 
-	public void CollectWeapon(int weaponType, int wType) {
-		if (weaponType == Weapon.PRIMARY) {
-			ship.AddPrimaryWeapon(wType);
-		} else {
-			ship.AddSecondaryWeapon(wType);
+	public void CollectPowerUp(int type, int id) {
+		if (type == Game.POWERUP_PRIMARY_WEAPON) {
+			ship.AddPrimaryWeapon(id);
+		} else if (type == Game.POWERUP_SECONDARY_WEAPON) {
+			ship.AddSecondaryWeapon(id);
 		}
 	}
 	
@@ -602,7 +608,7 @@ public class Play : MonoBehaviour {
 		}
 	}
 	
-	private void SwitchMode() {
+	public void SwitchMode() {
 		SetPaused();
 		if (mode == Mode.Normal) {
 			mode = Mode.Sokoban;
@@ -613,5 +619,9 @@ public class Play : MonoBehaviour {
 		}
 	}
 	
+	public void SokobanSolved() {
+		SwitchMode();
+		cave.OpenSecretChamberDoor();
+	}
 }
 

@@ -134,9 +134,9 @@ public class Room {
 		cells[cellPos.x, cellPos.y, cellPos.z].isSpawn = true;
 	}
 
-	public void SetCellToPowerUp(IntTriple cellPos) {
+/*	public void SetCellToPowerUp(IntTriple cellPos) {
 		cells[cellPos.x, cellPos.y, cellPos.z].isPowerUp = true;
-	}
+	}*/
 
 	public void SetCellToKey(IntTriple cellPos) {
 		cells[cellPos.x, cellPos.y, cellPos.z].isKey = true;

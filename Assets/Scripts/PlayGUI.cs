@@ -133,12 +133,12 @@ public class PlayGUI {
 
 	public void SetHealthCount(int v) {
 		healthCount = new int[] { MyGUI.GetDigitOfNumber(0, v), MyGUI.GetDigitOfNumber(1, v), MyGUI.GetDigitOfNumber(2, v)}; // right to left
-		lastHealthCountTime = Time.time;
+//		lastHealthCountTime = Time.time;
 	}
 
 	public void SetShieldCount(int v) {
 		shieldCount = new int[] { MyGUI.GetDigitOfNumber(0, v), MyGUI.GetDigitOfNumber(1, v), MyGUI.GetDigitOfNumber(2, v)}; // right to left
-		lastShieldCountTime = Time.time;
+//		lastShieldCountTime = Time.time;
 	}
 	
 	public void DisplayHealth(int[] digits) {
@@ -169,11 +169,11 @@ public class PlayGUI {
 	
 	public void DispatchFixedUpdate() {
 		if (toBeDisplayedShield != ship.shield) {
-			Debug.Log ("toBeDisplayedShield " + ship.shield + " " + displayedShield);
+//			Debug.Log ("toBeDisplayedShield " + ship.shield + " " + displayedShield);
 			SetShieldCount(displayedShield);
 			toBeDisplayedShield = ship.shield;
 		} else if (displayedShield == ship.shield && toBeDisplayedHealth != ship.health) {
-			Debug.Log ("toBeDisplayedHealth " + ship.health + " "  + displayedHealth);
+//			Debug.Log ("toBeDisplayedHealth " + ship.health + " "  + displayedHealth);
 			SetHealthCount(displayedHealth);
 			toBeDisplayedHealth = ship.health;
 		}

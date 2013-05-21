@@ -9,7 +9,10 @@ public class PrefabFactory {
 	private GameObject gunBulletTemplate;
 	private GameObject laserShotTemplate;
 	private GameObject phaserShotTemplate;
+	private GameObject gaussShotTemplate;
 	private GameObject missileShotTemplate;
+	private GameObject guidedMissileShotTemplate;
+	private GameObject chargedMissileShotTemplate;
 	private GameObject breadcrumbTemplate;
 	private GameObject explosionTemplate;
 	private GameObject hitTemplate;
@@ -30,8 +33,14 @@ public class PrefabFactory {
 		laserShotTemplate.GetComponent<Shot>().enabled = false;
 		phaserShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.PHASER]) as GameObject;
 		phaserShotTemplate.GetComponent<Shot>().enabled = false;
+		gaussShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.GAUSS]) as GameObject;
+		gaussShotTemplate.GetComponent<Shot>().enabled = false;
 		missileShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.MISSILE]) as GameObject;
 		missileShotTemplate.GetComponent<Shot>().enabled = false;
+		guidedMissileShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.GUIDED_MISSILE]) as GameObject;
+		guidedMissileShotTemplate.GetComponent<Shot>().enabled = false;
+		chargedMissileShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.CHARGED_MISSILE]) as GameObject;
+		chargedMissileShotTemplate.GetComponent<Shot>().enabled = false;
 		breadcrumbTemplate = GameObject.Instantiate(game.breadcrumbPrefab) as GameObject;
 		breadcrumbTemplate.GetComponent<Breadcrumb>().enabled = false;
 		explosionTemplate = GameObject.Instantiate(game.explosionPrefab) as GameObject;
@@ -62,7 +71,7 @@ public class PrefabFactory {
 	public Shot CreateLaserShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject newLaser = GameObject.Instantiate(laserShotTemplate, pos, rot) as GameObject;
 		Shot shot = newLaser.GetComponent<Shot>();
-		shot.Initialize(play, damage, mountedTo, Shot.BULLET);
+		shot.Initialize(play, damage, mountedTo, Shot.LASER);
 		shot.enabled = true;
 		return shot;
 	}
@@ -71,6 +80,14 @@ public class PrefabFactory {
 		GameObject newPhaser = GameObject.Instantiate(phaserShotTemplate, pos, rot) as GameObject;
 		Shot shot = newPhaser.GetComponent<Shot>();
 		shot.Initialize(play, damage, mountedTo, Shot.PHASER);
+		shot.enabled = true;
+		return shot;
+	}
+
+	public Shot CreateGaussShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
+		GameObject newGauss = GameObject.Instantiate(gaussShotTemplate, pos, rot) as GameObject;
+		Shot shot = newGauss.GetComponent<Shot>();
+		shot.Initialize(play, damage, mountedTo, Shot.GAUSS);
 		shot.enabled = true;
 		return shot;
 	}
@@ -86,6 +103,28 @@ public class PrefabFactory {
 		return shot;
 	}
 
+	public Shot CreateGuidedMissileShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
+		GameObject newMissile = GameObject.Instantiate(guidedMissileShotTemplate, pos, rot) as GameObject;
+		Shot shot = newMissile.GetComponent<Shot>();
+		shot.Initialize(play, damage, mountedTo, Shot.GUIDED_MISSILE);
+		shot.enabled = false;
+		if (mountedTo == Game.ENEMY) {
+			shot.gameObject.layer = Game.LAYER_GUN_ENEMY;
+		}
+		return shot;
+	}
+
+	public Shot CreateChargedMissileShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
+		GameObject newMissile = GameObject.Instantiate(chargedMissileShotTemplate, pos, rot) as GameObject;
+		Shot shot = newMissile.GetComponent<Shot>();
+		shot.Initialize(play, damage, mountedTo, Shot.CHARGED_MISSILE);
+		shot.enabled = false;
+		if (mountedTo == Game.ENEMY) {
+			shot.gameObject.layer = Game.LAYER_GUN_ENEMY;
+		}
+		return shot;
+	}
+	
 	public Shot CreateMineTouchShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
 		GameObject newMineTouch = GameObject.Instantiate(mineTouchTemplate, pos, rot) as GameObject;
 		Shot shot = newMineTouch.GetComponent<Shot>();
@@ -99,17 +138,6 @@ public class PrefabFactory {
 		Shot shot = laserBeam.GetComponent<Shot>();
 		shot.Initialize(play, damage, mountedTo, Shot.LASER_BEAM);
 		shot.enabled = false;
-		return shot;
-	}
-	
-	public Shot CreateGuidedMissileShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
-		GameObject newMissile = GameObject.Instantiate(missileShotTemplate, pos, rot) as GameObject;
-		Shot shot = newMissile.GetComponent<Shot>();
-		shot.Initialize(play, damage, mountedTo, Shot.GUIDED);
-		shot.enabled = false;
-		if (mountedTo == Game.ENEMY) {
-			shot.gameObject.layer = Game.LAYER_GUN_ENEMY;
-		}
 		return shot;
 	}
 	
@@ -161,9 +189,13 @@ public class PrefabFactory {
 		GameObject newPowerUpDrop;
 		if (type == Game.POWERUP_PRIMARY_WEAPON) {
 			newPowerUpDrop = GameObject.Instantiate(game.primaryWeaponPrefabs[id], pos, rot) as GameObject;
+		} else if (type == Game.POWERUP_SECONDARY_WEAPON) {
+			newPowerUpDrop = GameObject.Instantiate(game.powerUpSecondaryPrefabs[id], pos, rot) as GameObject;
+		} else if (type == Game.POWERUP_HULL) {
+			newPowerUpDrop = GameObject.Instantiate(game.powerUpHullPrefab, pos, rot) as GameObject;
 		} else {
 //			newPowerUpDrop = GameObject.Instantiate(game.primaryWeaponPrefabs[id], pos, rot) as GameObject;
-			newPowerUpDrop = GameObject.Instantiate(game.powerUpPrefabs[id], pos, rot) as GameObject;
+			newPowerUpDrop = GameObject.Instantiate(game.powerUpSpecialPrefab, pos, rot) as GameObject;
 		}
 		CollecteablePowerUp powerUpDrop = newPowerUpDrop.AddComponent<CollecteablePowerUp>();
 		SphereCollider col = newPowerUpDrop.AddComponent<SphereCollider>();

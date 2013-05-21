@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 363ac82c7161c9e43a9083177f57cc4c
+guid: d917e8052aa58224a8cd01921c7df6ed
 ModelImporter:
   fileIDToRecycleName:
-    4300000: Spike
+    4300000: Guided_Missile
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -44,23 +44,30 @@ ModelImporter:
       data:
         first: 4
         second: 801a0600
-    Lamp:
+    Empty:
       data:
         first: 1
         second: a2860100
       data:
         first: 4
         second: 821a0600
-    Spike:
+    Guided_Missile:
       data:
         first: 1
-        second: a4860100
+        second: a6860100
       data:
         first: 4
-        second: 841a0600
+        second: 861a0600
       data:
         first: 23
         second: 60182300
       data:
         first: 33
         second: a05a3200
+    Lamp:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600

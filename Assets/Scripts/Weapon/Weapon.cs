@@ -306,6 +306,8 @@ public class Weapon {
 			} else if (type == Weapon.TYPE_TWIN_LASER) {
 				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 				loadedShots[1] = game.CreateFromPrefab().CreateLaserShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+			} else if (type == Weapon.TYPE_GAUSS) {
+				loadedShots[0] = game.CreateFromPrefab().CreateGaussShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else {
 				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			}			
@@ -314,6 +316,8 @@ public class Weapon {
 				loadedShots[0] = game.CreateFromPrefab().CreateMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_GUIDED_MISSILE) {
 				loadedShots[0] = game.CreateFromPrefab().CreateGuidedMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_CHARGED_MISSILE) {
+				loadedShots[0] = game.CreateFromPrefab().CreateChargedMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_MINE_TOUCH) {
 				loadedShots[0] = game.CreateFromPrefab().CreateMineTouchShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_LASER_BEAM) {

@@ -197,7 +197,7 @@ public class EnemyDistributor {
 		} else if (clazz == Enemy.CLAZZ_B1) {
 			e = (Enemy)(GameObject.Instantiate(game.mantaPrefab) as GameObject).GetComponent<Manta>();
 		} else if (clazz == Enemy.CLAZZ_C2) {
-			e = (Enemy)(GameObject.Instantiate(game.spikePrefab) as GameObject).GetComponent<Spike>();
+			e = (Enemy)(GameObject.Instantiate(game.pikePrefab) as GameObject).GetComponent<Pike>();
 		} else if (clazz == Enemy.CLAZZ_D3) {
 			e = (Enemy)(GameObject.Instantiate(game.wombatPrefab) as GameObject).GetComponent<Wombat>();
 		} else if (clazz == Enemy.CLAZZ_E4) {

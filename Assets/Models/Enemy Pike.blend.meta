@@ -4,8 +4,10 @@ ModelImporter:
   fileIDToRecycleName:
     4300000: EnemySpikeTurret
     4300002: Turret
+    4300004: Pike
     7400000: Action //// Enemy Spike Turret
     7400002: Forward //// Enemy Spike Turret
+    7400004: Forward //// Enemy Pike
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -132,7 +134,7 @@ ModelImporter:
       data:
         first: 4
         second: 801a0600
-    Turret:
+    Pike:
       data:
         first: 1
         second: a8860100

@@ -1,11 +1,8 @@
 fileFormatVersion: 2
-guid: a3b674ad86ea66a41b4b0b93dd887c77
+guid: 2d9a4f8334d2e21469a3158b756e16b8
 ModelImporter:
   fileIDToRecycleName:
-    4300000: Plane
-    4300002: Gun_Bullet
-    4300004: GunBullet
-    4300006: Gun_Shot
+    4300000: Charged_Missile
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -43,20 +40,34 @@ ModelImporter:
     //RootNode:
       data:
         first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-    Gun_Shot:
-      data:
-        first: 1
         second: a0860100
       data:
         first: 4
         second: 801a0600
+    Charged_Missile:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
       data:
         first: 23
         second: 60182300
       data:
         first: 33
         second: a05a3200
+    Empty:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    Lamp:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600

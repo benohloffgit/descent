@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Spike : Enemy {
+public class Pike : Enemy {
 	private RaycastHit hit;
 	private GridPosition targetPosition;
 	private Mode mode;

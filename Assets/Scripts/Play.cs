@@ -231,7 +231,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 12;
+		zoneID = 42;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -273,7 +273,7 @@ public class Play : MonoBehaviour {
 		if (zoneID > 0) {
 			enemyDistributor.Distribute();
 		}
-		ship.CalculateHealth();
+		ship.CalculateHullClazz();
 		sokoban.RenderLevel(1);
 		ConfigureLighting();
 		ship.transform.position = cave.GetCaveEntryPosition();		
@@ -287,7 +287,7 @@ public class Play : MonoBehaviour {
 	
 	public void RepeatZone() {
 		EndZone();
-		ship.CalculateHealth();
+		ship.SetHealthAndShield();
 		StartZone();
 	}
 	
@@ -521,8 +521,8 @@ public class Play : MonoBehaviour {
 	
 	public bool AddMissile(int type, int amount) {
 		// order is highest first
-		if (ship.secondaryWeapons[type-1].ammunition < Game.MAX_MISSILE_AMMO) {
-			ship.secondaryWeapons[type-1].ammunition += amount;
+		if (ship.secondaryWeapons[type].ammunition < Game.MAX_MISSILE_AMMO) {
+			ship.secondaryWeapons[type].ammunition += amount;
 			playGUI.DisplaySecondaryWeapon(ship.secondaryWeapons[ship.currentSecondaryWeapon]);
 			return true;
 		} else {
@@ -566,6 +566,10 @@ public class Play : MonoBehaviour {
 			ship.AddPrimaryWeapon(id);
 		} else if (type == Game.POWERUP_SECONDARY_WEAPON) {
 			ship.AddSecondaryWeapon(id);
+		} else if (type == Game.POWERUP_HULL) {
+			ship.SetHull(id);
+		} else if (type == Game.POWERUP_SPECIAL) {
+			ship.AddSpecial(id);
 		}
 	}
 	

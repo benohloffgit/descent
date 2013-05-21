@@ -11,6 +11,9 @@ public class CollecteablesDistributor {
 	
 	private static int AMOUNT_HEAL = 35;
 	private static int AMOUNT_SHIELD = 20;
+
+	private int powerUpPositionOffsetLast;
+	private static Vector3[] POWER_UP_POS_OFFSETS = new Vector3[4] {new Vector3(-0.5f,0,0), new Vector3(0.5f,0,0), new Vector3(0,0.5f,0), new Vector3(0,-0.5f,0)};
 		
 	public CollecteablesDistributor(Play play_) {
 		play = play_;
@@ -134,40 +137,33 @@ public class CollecteablesDistributor {
 		DropKey(keyPositions[rand2].GetWorldVector3(), CollecteableKey.TYPE_GOLD);
 	}
 
-// light 7, speed 19, cloak 41, invincible 58, exit door finder? - question mark model
-// 8 hull - little ship
-	
 	public void DropPowerUps() {
+		powerUpPositionOffsetLast = 0;
+		
 		for (int i=0; i<Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN.Length; i++) {
-			CheckDropPowerUp(Game.POWERUP_PRIMARY_WEAPON, i, Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN[i], Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX[i], new Vector3(-0.5f,0,0));
+			CheckDropPowerUp(Game.POWERUP_PRIMARY_WEAPON, i, Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN[i], Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX[i]);
 		}
 		for (int i=0; i<Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN.Length; i++) {
-			CheckDropPowerUp(Game.POWERUP_SECONDARY_WEAPON, i, Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN[i], Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX[i], new Vector3(0.5f,0,0));
+			CheckDropPowerUp(Game.POWERUP_SECONDARY_WEAPON, i, Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN[i], Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX[i]);
 		}
-		
-		// IF NO POWER UP DROP; DROP HEALTH OR SHIELD OR AMMO
-		
-/*		if (Weapon.SHIP_PRIMARY_WEAPON_TYPES[play.zoneID] != 0) {
-			Room r = play.cave.zone.GetRandomRoom();
-			GridPosition gP = r.GetRandomVoidGridPosition();
-			DropPowerUp(gP.GetWorldVector3(), Weapon.PRIMARY, play.zoneID);
-			r.SetCellToPowerUp(gP.cellPosition);
+		for (int i=0; i<Ship.HULL_POWER_UP.Length; i++) {
+			CheckDropPowerUp(Game.POWERUP_HULL, i, Ship.HULL_POWER_UP[i], Ship.HULL_POWER_UP[i]);
+		}		
+		for (int i=0; i<Ship.SPECIAL_POWER_UP.Length; i++) {
+			CheckDropPowerUp(Game.POWERUP_SPECIAL, i, Ship.SPECIAL_POWER_UP[i], Ship.SPECIAL_POWER_UP[i]);
 		}
-		if (Weapon.SHIP_SECONDARY_WEAPON_TYPES[play.zoneID] != 0) {
-			Room r = play.cave.zone.GetRandomRoom();
-			GridPosition gP = r.GetRandomVoidGridPosition();
-			DropPowerUp(gP.GetWorldVector3(), Weapon.SECONDARY, play.zoneID);
-			r.SetCellToPowerUp(gP.cellPosition);
-		}*/
+		// TODO IF NO POWER UP DROP; DROP HEALTH OR SHIELD OR AMMO
+		
 	}
 	
-	private void CheckDropPowerUp(int type, int id, int min, int max, Vector3 offset) {
+	private void CheckDropPowerUp(int type, int id, int min, int max) {
 		if (!play.game.state.HasPowerUp(type, id)) {
 			if (play.zoneID >= min && play.zoneID <= max) {
 				//int parts = (max-play.zoneID);
 				//float probability = 1f / (max-play.zoneID+1);
 				if (UnityEngine.Random.value <= 1f / (max-play.zoneID+1)) {
-					DropPowerUp(GetPositionInSecretChamber(offset), type, id);
+					DropPowerUp(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]), type, id);
+					powerUpPositionOffsetLast++;
 				}
 			}
 		}

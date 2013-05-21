@@ -39,15 +39,16 @@ public class Ship : MonoBehaviour {
 	public MissileLockMode missileLockMode;
 	public Enemy lockedEnemy;
 	public float missileLockTime;
-	
-//	public static int HEALTH_FACTOR = 2;
-		
+	private float chargedMissileTimer;
+	private int chargedMissileShieldDeducted;
+			
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 5.0f;
 	private static float FORCE_YAW = 3.5f;
 	
-//	private static int HEALTH = 200;
-//	private static int SHIELD = 50;
+	private static int CHARGED_MISSILE_SHIELD_MAX = 50;
+	private static float CHARGED_MISSILE_TIME_MAX = 2.5f; // seconds
+	private static float CHARGED_MISSILE_DEDUCTION = 20f; // deducted shield per second
 	
 	private static Vector3[] CAMERA_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 3.0f, -12.0f), new Vector3(-5f, 0f, 0f), new Vector3(5f, 0f, 0f), new Vector3(0, 0f, 5.0f), new Vector3(0, 12f, 0f)};
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(-1.014f, 0f, 1.664f), new Vector3(1.014f, 0f, 1.664f), new Vector3(0, -0.37f, 1.65f)};
@@ -55,7 +56,8 @@ public class Ship : MonoBehaviour {
 	
 	public static int[] HEALTH = new int[] { 100, 112, 126, 135, 148, 162, 180, 200 };
 	public static int[] SHIELD = new int[] { 45, 50, 56, 60, 66, 72, 80, 85 };
-	public static int[] HULL_POWER_UP = new int[] {0,8,13,20,30,42,58,64};
+	public static int[] HULL_POWER_UP = new int[] {0,5,12,20,29,39,50,62};
+	public static int[] SPECIAL_POWER_UP = new int[] {7,19,41,58};
 
 	public static string[] HULL_TYPES = new string[] {"Armor", "Improved Armor", "Bla Armor", "Blubb Armor", "Keflar Armor", "Iridium Armor", "Nano Armor", "Bloob Armor"};
 	public static string[] SPECIAL_TYPES = new string[] {"Light", "Boost", "Cloak", "Invincible"};
@@ -112,6 +114,7 @@ public class Ship : MonoBehaviour {
 		AddWeapons();
 		
 		lastMoveTime = Time.time;
+		chargedMissileTimer = -1f;
 	}
 	
 	void FixedUpdate() {
@@ -119,15 +122,23 @@ public class Ship : MonoBehaviour {
 		
 		if (currentSecondaryWeapon != -1) {
 			secondaryWeapons[currentSecondaryWeapon].IsReloaded();
+			if (chargedMissileTimer != -1f && shield > 0) {
+				float timeDelta = Time.time - chargedMissileTimer;
+				int fullDeduction = Mathf.Min(CHARGED_MISSILE_SHIELD_MAX, Mathf.FloorToInt(Mathf.Min(timeDelta, CHARGED_MISSILE_TIME_MAX) * CHARGED_MISSILE_DEDUCTION));
+				int newDeduction = Mathf.Min(fullDeduction - chargedMissileShieldDeducted, shield);
+//				Debug.Log (newDeduction);
+				shield -= newDeduction;
+				shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
+				chargedMissileShieldDeducted = fullDeduction;
+			}
 		}
 		// Enemy target info
 		if (Physics.Raycast(transform.position, transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
 			if (hit.collider.tag == Enemy.TAG) {
 				Enemy e = hit.transform.GetComponent<Enemy>();
 				play.playGUI.EnemyInSight(e);
-				if (	currentSecondaryWeapon != -1 &&
-						(secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_GUIDED_MISSILE
-						|| secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_DETONATOR_MISSILE)
+				if (	currentSecondaryWeapon != -1
+						&& secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_GUIDED_MISSILE
 						&& secondaryWeapons[currentSecondaryWeapon].ammunition > 0
 					) {
 					if (missileLockMode == MissileLockMode.None || lockedEnemy != e) {
@@ -318,18 +329,31 @@ public class Ship : MonoBehaviour {
 		}
 	}
 	
-	public void CalculateHealth() {
+	public void AddSpecial(int id) {
+		Debug.Log ("Adding special capability TODO " + id);
+	}
+	
+	public void CalculateHullClazz() {
 		for (int i=0; i<8; i++) {
-			if (play.zoneID >= HULL_POWER_UP[i]) {
+			if (play.zoneID > HULL_POWER_UP[i]) {
 				hullCLazz = i;
 			}
 		}
+		SetHealthAndShield();
+	}
+	
+	public void SetHealthAndShield() {
 		maxHealth = HEALTH[hullCLazz];
 		maxShield = SHIELD[hullCLazz];
 		health = maxHealth;
 		shield = maxShield;
 		healthPercentage = 100;
 		shieldPercentage = 100;
+	}
+	
+	public void SetHull(int newHullClazz) {
+		hullCLazz = newHullClazz;
+		SetHealthAndShield();
 	}
 		
 	public void ShootPrimary() {
@@ -340,9 +364,15 @@ public class Ship : MonoBehaviour {
 
 	public void ShootSecondary() {
 		if (play.isShipInPlayableArea && currentSecondaryWeapon != -1 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+			if (currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE && chargedMissileShieldDeducted != 0) {
+				//Debug.Log(chargedMissileShieldDeducted);
+				secondaryWeapons[currentSecondaryWeapon].loadedShots[0].damage += chargedMissileShieldDeducted;
+				chargedMissileShieldDeducted = 0;
+			}
 			secondaryWeapons[currentSecondaryWeapon].Shoot();
 			play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
 		}
+		chargedMissileTimer = -1f;
 	}
 	
 	public void CyclePrimary() {
@@ -376,6 +406,13 @@ public class Ship : MonoBehaviour {
 		if (missileLockMode != MissileLockMode.None && lockedEnemy == e) {
 			lockedEnemy = null;
 			missileLockMode = MissileLockMode.None;
+		}
+	}
+	
+	public void StartChargedMissileTimer() {
+		if (secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+			chargedMissileTimer = Time.time;
+			chargedMissileShieldDeducted = 0;
 		}
 	}
 	

@@ -8,7 +8,7 @@ public class Shot : MonoBehaviour {
 	private Play play;
 	private Enemy enemy;
 	
-	private int damage;
+	public int damage;
 	private int source;
 	
 	private Transform target;
@@ -16,10 +16,12 @@ public class Shot : MonoBehaviour {
 	public static int BULLET = 0;
 	public static int LASER = 1;
 	public static int MISSILE = 2;
-	public static int GUIDED = 3;
+	public static int GUIDED_MISSILE = 3;
 	public static int MINE_TOUCH = 4;
 	public static int LASER_BEAM = 5;
 	public static int PHASER = 6;
+	public static int GAUSS = 7;
+	public static int CHARGED_MISSILE = 8;
 	
 	private static float MISSILE_RADIUS = RoomMesh.MESH_SCALE * 2.5f;
 	private static float GUIDED_MISSILE_TORQUE_MAX = 0.02f;
@@ -41,8 +43,8 @@ public class Shot : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
-		if (type == MISSILE || type == GUIDED) {
-			if (type == GUIDED && target != null) {
+		if (type == MISSILE || type == GUIDED_MISSILE || type == CHARGED_MISSILE) {
+			if (type == GUIDED_MISSILE && target != null) {
 	//			Vector3 pos = new Vector3(137f, 61f, 52f);
 				rigidbody.AddTorque(Vector3.Cross(transform.forward, (target.position - transform.position)).normalized * GUIDED_MISSILE_TORQUE_MAX);
 	//			Debug.Log ("correcting flight " + corrected.magnitude);
@@ -71,7 +73,7 @@ public class Shot : MonoBehaviour {
 			}
 		} else {*/
 			CancelInvoke("DestroySelf");
-			if (type == MISSILE || type == GUIDED) {
+			if (type == MISSILE || type == GUIDED_MISSILE || type == CHARGED_MISSILE) {
 				play.DisplayExplosion(c.contacts[0].point, play.ship.transform.rotation);
 				Collider[] missileHits = Physics.OverlapSphere(c.contacts[0].point, MISSILE_RADIUS, Game.LAYER_MASK_MOVEABLES);
 				foreach (Collider col in missileHits) {

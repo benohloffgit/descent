@@ -70,9 +70,9 @@
      <Compile Include="Assets\Scripts\Enemies\Mana.cs" />
      <Compile Include="Assets\Scripts\Enemies\Manta.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Pike.cs" />
      <Compile Include="Assets\Scripts\Enemies\Snake.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spawn.cs" />
-     <Compile Include="Assets\Scripts\Enemies\Spike.cs" />
      <Compile Include="Assets\Scripts\Enemies\WallLaser.cs" />
      <Compile Include="Assets\Scripts\Enemies\Wombat.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />

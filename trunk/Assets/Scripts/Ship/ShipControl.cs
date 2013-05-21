@@ -30,7 +30,16 @@ public class ShipControl {
 				ship.ShootPrimary();
 			}
 			if (Input.GetKeyDown("mouse 1") || Input.GetKeyDown(KeyCode.RightControl)) {
-				ship.ShootSecondary();
+				if (ship.currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
+					ship.StartChargedMissileTimer();
+				} else {
+					ship.ShootSecondary();
+				}
+			}
+			if (Input.GetKeyUp("mouse 1") || Input.GetKeyUp(KeyCode.RightControl)) {
+				if (ship.currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
+					ship.ShootSecondary();
+				}
 			}
 			if (Input.GetKeyDown(KeyCode.B)) {
 				play.CreateBreadcrumb();

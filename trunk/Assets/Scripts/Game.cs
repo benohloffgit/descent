@@ -25,7 +25,7 @@ public class Game : MonoBehaviour {
 	public GameObject mineBuilderPrefab;
 	public GameObject lightBulbPrefab;
 	public GameObject mantaPrefab;
-	public GameObject spikePrefab;
+	public GameObject pikePrefab;
 	public GameObject bullPrefab;
 	public GameObject bugPrefab;
 	public GameObject snakePrefab;
@@ -34,7 +34,9 @@ public class Game : MonoBehaviour {
 	public GameObject batPrefab;
 	public GameObject[] primaryWeaponPrefabs;
 //	public GameObject[] secondaryWeaponPrefabs;
-	public GameObject[] powerUpPrefabs;
+	public GameObject[] powerUpSecondaryPrefabs;
+	public GameObject powerUpHullPrefab;
+	public GameObject powerUpSpecialPrefab;
 	public GameObject keyPrefab;
 //	public GameObject laserGunPrefab;
 	public GameObject manaPrefab;

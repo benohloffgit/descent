@@ -20,6 +20,7 @@ public class Cave {
 	private GameObject zoneEntry;
 	private GameObject zoneExit;
 	public GameObject secretCave;
+	private GameObject decorationParent;
 
 	public static int DENSITY_FILLED = 0;
 	public static int DENSITY_EMPTY = 1;
@@ -488,14 +489,33 @@ public class Cave {
 	}
 	
 	private void DistributeDecoration() {
+		decorationParent = UnityEngine.GameObject.Instantiate(game.emptyPrefab) as UnityEngine.GameObject;
+		decorationParent.name = "Decoration";
+		decorationParent.layer = Game.LAYER_EFFECT;
 		foreach (Room r in zone.roomList) {
 			for (int i=0; i<UnityEngine.Random.Range(3,7); i++) {
-				PutDecorationOnWall(r, UnityEngine.GameObject.Instantiate(game.crystalPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject);
+				GameObject gO = UnityEngine.GameObject.Instantiate(game.crystalPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject;
+				PutDecorationOnWall(r, gO);
+				gO.transform.parent = decorationParent.transform;
 			}
 			for (int i=0; i<UnityEngine.Random.Range(2,5); i++) {
-				PutDecorationOnWall(r, UnityEngine.GameObject.Instantiate(game.flowerPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject);
+				GameObject gO = UnityEngine.GameObject.Instantiate(game.flowerPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject;
+				PutDecorationOnWall(r, gO);
+				gO.transform.parent = decorationParent.transform;
 			}
 		}
+		MeshFilter[] meshFilters = decorationParent.GetComponentsInChildren<MeshFilter>();
+		CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+		int j = 0;
+        while (j < meshFilters.Length) {
+            combine[j].mesh = meshFilters[j].sharedMesh;
+            combine[j].transform = meshFilters[j].transform.localToWorldMatrix;
+            meshFilters[j].gameObject.active = false;
+            j++;
+        }
+		MeshFilter mF = decorationParent.AddComponent<MeshFilter>();
+        mF.mesh = new Mesh();
+        mF.mesh.CombineMeshes(combine);		
 	}
 	
 	private void PutDecorationOnWall(Room r, UnityEngine.GameObject c) {
@@ -506,6 +526,7 @@ public class Cave {
 	}
 	
 	private void RemoveDecoration() {
+		UnityEngine.GameObject.Destroy(decorationParent);
 	}
 	
 	public void OpenExitDoor() {

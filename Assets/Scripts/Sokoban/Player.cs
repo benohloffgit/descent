@@ -14,6 +14,7 @@ public class Player {
 	public Player(Board board_) {
 		board = board_;
 		playerTransform = (GameObject.Instantiate(board.play.game.mesh3DPrefab) as GameObject).transform;
+		playerTransform.name = "SokobanPlayer";
 		playerTransform.renderer.material = board.play.game.sokobanMaterial;
 		playerTransform.gameObject.layer = Game.LAYER_SOKOBAN;
 		playerTransform.position = new Vector3(0,0,-5f);

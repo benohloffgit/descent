@@ -231,7 +231,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 42;
+		zoneID = 1;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);
@@ -274,7 +274,7 @@ public class Play : MonoBehaviour {
 			enemyDistributor.Distribute();
 		}
 		ship.CalculateHullClazz();
-		sokoban.RenderLevel(1);
+		sokoban.RenderLevel(zoneID);
 		ConfigureLighting();
 		ship.transform.position = cave.GetCaveEntryPosition();		
 	}

@@ -231,7 +231,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 1;
+		zoneID = 13;
 		isInKeyboardMode = false;
 		
 		playGUI = new PlayGUI(this);

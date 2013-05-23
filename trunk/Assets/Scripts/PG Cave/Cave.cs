@@ -514,6 +514,8 @@ public class Cave {
             j++;
         }
 		MeshFilter mF = decorationParent.AddComponent<MeshFilter>();
+		decorationParent.AddComponent<MeshRenderer>();
+		decorationParent.renderer.material = meshFilters[0].renderer.material;
         mF.mesh = new Mesh();
         mF.mesh.CombineMeshes(combine);		
 	}

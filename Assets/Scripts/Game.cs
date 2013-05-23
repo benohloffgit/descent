@@ -33,12 +33,10 @@ public class Game : MonoBehaviour {
 	public GameObject wombatPrefab;
 	public GameObject batPrefab;
 	public GameObject[] primaryWeaponPrefabs;
-//	public GameObject[] secondaryWeaponPrefabs;
 	public GameObject[] powerUpSecondaryPrefabs;
 	public GameObject powerUpHullPrefab;
 	public GameObject powerUpSpecialPrefab;
 	public GameObject keyPrefab;
-//	public GameObject laserGunPrefab;
 	public GameObject manaPrefab;
 	public GameObject spawnPrefab;
 
@@ -56,12 +54,12 @@ public class Game : MonoBehaviour {
 	public Texture2D[] caveTextures;
 	public Texture2D[] keyTextures;
 	public Material sokobanMaterial;
+//	public Material 
 	
 	public State state;
 	public GameInput gameInput;
 	public bool isInitialized = false;
 	public enum Mode { Menu=0, Dialog=1, Play=2, None=3, Preferences=4 }
-//	public enum Shot { Bullet=0, Laser=1, Missile=2 }
 
 	public static int MAX_WIDTH = 1536;
 	

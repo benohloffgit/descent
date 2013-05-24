@@ -42,7 +42,7 @@ public class MyGUI : MonoBehaviour {
 	
 	public enum Focus { NoFocus=0, Focus=1 }	
 	public enum GUIAlignment { Left=0, Right=1, Center=2, Top=3, Bottom=4 }
-	public enum GUIBackground { NinePatch=0, Quad=1, NinePatchWithCollider=2, QuadWithCollider=3 }
+	public enum GUIBackground { NinePatch=0, Quad=1, NinePatchWithCollider=2, QuadWithCollider=3, None=4 }
 	public enum GUIState { Off=0, On=1 }	
 
 //	private NinePatch background;
@@ -306,12 +306,15 @@ public class MyGUI : MonoBehaviour {
 	}
 	
 	private Transform CreateBackground(GUIBackground background, int textureIx, Vector4 uvMap) {
-		if (background == GUIBackground.NinePatch || background == GUIBackground.NinePatchWithCollider) {
+		if (background == GUIBackground.NinePatch || background == GUIBackground.NinePatchWithCollider || background == GUIBackground.None) {
 			NinePatch nP = (GameObject.Instantiate(ninePatchPrefab) as GameObject).GetComponent<NinePatch>();
 			nP.renderer.material = textureAtlas[textureIx];
 			nP.Initialize(uvMap);
 			if (background == GUIBackground.NinePatchWithCollider) {
 				nP.gameObject.AddComponent<BoxCollider>();
+			}
+			if (background == GUIBackground.None) {
+				nP.renderer.enabled = false;
 			}
 			return nP.transform;
 		} else {

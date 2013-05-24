@@ -91,13 +91,6 @@ public class Ship : MonoBehaviour {
 		shipCamera = cameraTransform.GetComponent<Camera>();
 	}
 	
-	void Start() {
-/*		if (currentPrimaryWeapon != -1) {
-			play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
-			play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
-		}*/
-	}
-	
 	public void Initialize(Play p, Game g) {
 		play = p;
 		game = g;

@@ -73,6 +73,8 @@ public class Play : MonoBehaviour {
 		caveLights = lightsHolder.GetComponentsInChildren<Light>();
 		isPaused = false;
 		mode = Mode.Normal;
+		playGUI = new PlayGUI(this);
+		
 	}
 	
 	void OnGUI() {		
@@ -231,10 +233,8 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 13;
+		zoneID = 14;
 		isInKeyboardMode = false;
-		
-		playGUI = new PlayGUI(this);
 		
 		// game setup
 		ship = (GameObject.Instantiate(game.shipPrefab) as GameObject).GetComponent<Ship>();
@@ -276,6 +276,7 @@ public class Play : MonoBehaviour {
 		ship.CalculateHullClazz();
 		sokoban.RenderLevel(zoneID);
 		ConfigureLighting();
+		playGUI.Reset();
 		ship.transform.position = cave.GetCaveEntryPosition();		
 	}
 	
@@ -296,7 +297,6 @@ public class Play : MonoBehaviour {
 		enemyDistributor.RemoveAll();
 		collecteablesDistributor.RemoveAll();
 		cave.RemoveZone();
-		playGUI.Reset();
 		botSeed = UnityEngine.Random.Range(0,9999999);
 		UnityEngine.Random.seed = caveSeed;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
@@ -548,8 +548,10 @@ public class Play : MonoBehaviour {
 	
 	public void KeyFound(int keyType) {
 		isKeyCollected[keyType] = true;
+		playGUI.DisplayKey(keyType);
 		if (AllKeysCollected()) {
 			cave.OpenExitDoor();
+			playGUI.DisplayDoorOpen();
 		}
 	}
 	

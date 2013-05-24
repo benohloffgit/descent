@@ -25,13 +25,12 @@ public class PlayGUI {
 	private Image shieldDigit0;
 	private Image shieldDigit1;
 	private Image shieldDigit2;
-//	private int healthTicks;
-//	private int shieldTicks;
-//	private int[] healthCount;
-//	private int[] shieldCount;
+	private Image[] keysFound;
+	private Image[] keysEmpty;
+	private Image doorClosed;
+	private Image doorOpen;
 	private int[] healthCount;
 	private int[] shieldCount;
-//	private int ticks;
 	
 	private float lastHealthCountTime;
 	private float lastShieldCountTime;
@@ -55,7 +54,10 @@ public class PlayGUI {
 		
 	public PlayGUI(Play p) {
 		play = p;
-		Reset();
+//		Reset();
+		
+		keysFound = new Image[2];
+		keysEmpty = new Image[2];
 		
 		// GUI stuff
 		gui = (GameObject.Instantiate(play.game.guiPrefab) as GameObject).GetComponent<MyGUI>();
@@ -87,17 +89,32 @@ public class PlayGUI {
 		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 3.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit2 = gui.images[imageId];
 		
+		// keys and door
+		int keyAndDoorContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Left, 0.02f, MyGUI.GUIAlignment.Top, 0.03f);
+		imageId = gui.AddImage(keyAndDoorContainer, MyGUI.GUIAlignment.Left, 0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_DOOR_CLOSED, 0);
+		doorClosed = gui.images[imageId];
+		imageId = gui.AddImage(keyAndDoorContainer, MyGUI.GUIAlignment.Left, 0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_DOOR_OPEN, 0);
+		doorOpen = gui.images[imageId];
+		imageId = gui.AddImage(keyAndDoorContainer, MyGUI.GUIAlignment.Left, 2f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_KEY_EMPTY, 0);
+		keysEmpty[CollecteableKey.TYPE_SILVER] = gui.images[imageId];
+		imageId = gui.AddImage(keyAndDoorContainer, MyGUI.GUIAlignment.Left, 2f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_KEY_SILVER, 0);
+		keysFound[CollecteableKey.TYPE_SILVER] = gui.images[imageId];
+		imageId = gui.AddImage(keyAndDoorContainer, MyGUI.GUIAlignment.Left, 4f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_KEY_EMPTY, 0);
+		keysEmpty[CollecteableKey.TYPE_GOLD] = gui.images[imageId];
+		imageId = gui.AddImage(keyAndDoorContainer, MyGUI.GUIAlignment.Left, 4f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_KEY_GOLD, 0);
+		keysFound[CollecteableKey.TYPE_GOLD] = gui.images[imageId];
+		
 		enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
 		gui.SetActiveTextMaterial(5);
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
-			enemyHUDInfoLabels[i] = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+			enemyHUDInfoLabels[i] = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		}
 
-		enemyLockMissileLabel = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+		enemyLockMissileLabel = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
 		gui.SetActiveTextMaterial(4);
-		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, 0f, 0.3f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
-		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_NULL,0);
+		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
 		
 //		ticks = 0;
@@ -119,18 +136,24 @@ public class PlayGUI {
 	
 	public void Reset() {
 		enemyHUDInfo = new List<Enemy>();
+		keysFound[CollecteableKey.TYPE_SILVER].myRenderer.enabled = false;
+		keysFound[CollecteableKey.TYPE_GOLD].myRenderer.enabled = false;
+		keysEmpty[CollecteableKey.TYPE_SILVER].myRenderer.enabled = true;
+		keysEmpty[CollecteableKey.TYPE_GOLD].myRenderer.enabled = true;
+		doorOpen.myRenderer.enabled = false;
+		doorClosed.myRenderer.enabled = true;
 	}
 	
-/*	public void SetHealth(int newHealth) {
-		if (newHealth != currentHealth) {
-			healthTicks = currentHealth - newHealth;
-			healthCount = new int[] { MyGUI.GetDigitOfNumber(0, currentHealth), MyGUI.GetDigitOfNumber(1, currentHealth), MyGUI.GetDigitOfNumber(2, currentHealth)}; // right to left
-			currentHealth = newHealth;
-	//		Debug.Log (count[0] + " " + count[1] + " " + count[2]);
-			lastTick = Time.time;
-		}
-	}*/
+	public void DisplayKey(int keyType) {
+		keysFound[keyType].myRenderer.enabled = true;
+		keysEmpty[keyType].myRenderer.enabled = false;
+	}
 
+	public void DisplayDoorOpen() {
+		doorClosed.myRenderer.enabled = false;
+		doorOpen.myRenderer.enabled = true;
+	}
+	
 	public void SetHealthCount(int v) {
 		healthCount = new int[] { MyGUI.GetDigitOfNumber(0, v), MyGUI.GetDigitOfNumber(1, v), MyGUI.GetDigitOfNumber(2, v)}; // right to left
 //		lastHealthCountTime = Time.time;

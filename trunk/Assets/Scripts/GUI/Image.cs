@@ -7,7 +7,7 @@ public class Image : MonoBehaviour {
 		
 	private Transform meshTransform;
 	private Mesh mesh;
-	private Renderer myRenderer;
+	public Renderer myRenderer;
 	private Game g;
 	private MyGUI myGUI;
 		

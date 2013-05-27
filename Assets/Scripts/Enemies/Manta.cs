@@ -6,7 +6,6 @@ public class Manta : Enemy {
 	private GridPosition targetPosition;
 	private GridPosition coverPosition;
 	private Mode mode;
-	private float currentAngleUp;
 	private bool isOnPath;
 	private float roamingStart;
 	private float aimingStart;
@@ -123,13 +122,16 @@ public class Manta : Enemy {
 				play.movement.CoverFind(coverFindThreadState, coverPosition, play.GetShipGridPosition());
 			} else {
 				play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
-				play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+				play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp,
+					ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 			}
 		} else if (mode == Mode.AIMING) {
 			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
-			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming,
+				ref currentAngleUp, ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		} else {
-			play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+			play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceAiming, ref currentAngleUp,
+				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		}
 	}
 }

@@ -65,6 +65,7 @@
      <Compile Include="Assets\Scripts\Enemies\Bull.cs" />
      <Compile Include="Assets\Scripts\Enemies\Enemy.cs" />
      <Compile Include="Assets\Scripts\Enemies\EnemyDistributor.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Gazelle.cs" />
      <Compile Include="Assets\Scripts\Enemies\Hornet.cs" />
      <Compile Include="Assets\Scripts\Enemies\LightBulb.cs" />
      <Compile Include="Assets\Scripts\Enemies\Mana.cs" />

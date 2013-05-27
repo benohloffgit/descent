@@ -4,7 +4,6 @@ using System.Collections;
 public class Bull : Enemy {	
 	private GridPosition targetPosition;
 	private Mode mode;
-	private float currentAngleUp;
 	
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0, 0.81f, 0.16f), new Vector3(0, -0.81f, 0.16f), new Vector3(0, 0, 0)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
@@ -40,10 +39,12 @@ public class Bull : Enemy {
 		
 		if (mode == Mode.ROAMING) {
 			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
-			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);		
+			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp,
+				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);		
 		} else if (mode == Mode.AIMING) {
 			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
-			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming,
+				ref currentAngleUp, ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		}
 	}
 

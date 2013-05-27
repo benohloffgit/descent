@@ -14,7 +14,7 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_C = "Pike"; // p single
 	public static string CLAZZ_D = "Wombat"; // s single
 	public static string CLAZZ_E = "Bat"; // single
-	public static string CLAZZ_F = "f";
+	public static string CLAZZ_F = "Gazelle"; // twin
 	public static string CLAZZ_G = "g";
 	public static string CLAZZ_H = "h";
 	
@@ -31,7 +31,7 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_C2 = 2; // pike
 	public static int CLAZZ_D3 = 3; // wombat
 	public static int CLAZZ_E4 = 4; // bat
-	public static int CLAZZ_F5 = 5;
+	public static int CLAZZ_F5 = 5; // gazelle
 	public static int CLAZZ_G6 = 6;
 	public static int CLAZZ_H7 = 7;
 	public static int CLAZZ_BUG8 = 8;
@@ -83,6 +83,8 @@ public abstract class Enemy : MonoBehaviour {
 	protected int roamMaxRange;
 	protected float lookAtToleranceAiming;
 	protected float lookAtToleranceRoaming;
+	protected float currentAngleUp;
+	protected float dotProductLookAt;
 	public int currentPrimaryWeapon;
 	public int currentSecondaryWeapon;
 	
@@ -120,18 +122,17 @@ public abstract class Enemy : MonoBehaviour {
 		clazz = CLAZZES[clazzNum];
 		model = model_;
 		displayModel = model + 1;
-//		modelNum = clazzNum * CLAZZ_STEP + model;
 		modelClazzAEquivalent = enemyEquivalentClazzAModel_;
 		health = spawn.isBoss ? health_ * 2 : health_;
-//		shield = spawn.isBoss ? shield_ * 2 : shield_;
 		size = spawn.isBoss ? 2.5f : size_;
 		aggressiveness = 0;//aggressiveness_;
 		movementForce = movementForce_;
 		turningForce = turningForce_;
 		lookAtRange = lookAtRange_;
-//		chaseRange = chaseRange_;
 		roamMinRange = roamMinRange_;
 		roamMaxRange = roamMaxRange_;
+		currentAngleUp = 0;
+		dotProductLookAt = 0;
 		
 		canBeDeactivated = true;
 		firepowerPerSecond = 0;

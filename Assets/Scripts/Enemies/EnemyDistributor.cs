@@ -202,6 +202,8 @@ public class EnemyDistributor {
 			e = (Enemy)(GameObject.Instantiate(game.wombatPrefab) as GameObject).GetComponent<Wombat>();
 		} else if (clazz == Enemy.CLAZZ_E4) {
 			e = (Enemy)(GameObject.Instantiate(game.batPrefab) as GameObject).GetComponent<Bat>();
+		} else if (clazz == Enemy.CLAZZ_F5) {
+			e = (Enemy)(GameObject.Instantiate(game.gazellePrefab) as GameObject).GetComponent<Gazelle>();
 		} else if (clazz == Enemy.CLAZZ_BUG8) {
 			e = (Enemy)(GameObject.Instantiate(game.bugPrefab) as GameObject).GetComponent<Bug>();
 		} else if (clazz == Enemy.CLAZZ_SNAKE9) {
@@ -218,67 +220,11 @@ public class EnemyDistributor {
 		return e;
 	}
 	
-	
 	public LightBulb CreateLightBulb() {
 		GameObject lB = GameObject.Instantiate(game.lightBulbPrefab) as GameObject;
 		LightBulb lightBulb = lB.GetComponent<LightBulb>();
 		return lightBulb;
 	}
-/*	
-	public MineBuilder CreateMineBuilder() {
-		GameObject mB = GameObject.Instantiate(game.mineBuilderPrefab) as GameObject;
-		MineBuilder mineBuilder = mB.GetComponent<MineBuilder>();
-		return mineBuilder;
-	}
-	
-	public WallGun CreateWallGun() {
-		GameObject wG = GameObject.Instantiate(game.wallGunPrefab) as GameObject;
-		WallGun wallGun = wG.GetComponent<WallGun>();
-		wallGun.Initialize(game, play);
-		return wallGun;
-	}
-
-	public WallLaser CreateWallLaser() {
-		GameObject wL = GameObject.Instantiate(game.wallLaserPrefab) as GameObject;
-		WallLaser wallLaser = wL.GetComponent<WallLaser>();
-		return wallLaser;
-	}
-
-	public Manta CreateManta() {
-		GameObject p = GameObject.Instantiate(game.mantaPrefab) as GameObject;
-		Manta manta = p.GetComponent<Manta>();
-		return manta;
-	}
-
-	public Spike CreateSpike() {
-		GameObject p = GameObject.Instantiate(game.spikePrefab) as GameObject;
-		Spike spike = p.GetComponent<Spike>();
-		return spike;
-	}
-
-	public Bull CreateBull() {
-		GameObject p = GameObject.Instantiate(game.bullPrefab) as GameObject;
-		Bull bull = p.GetComponent<Bull>();
-		return bull;
-	}
-
-	public Bug CreateBug() {
-		GameObject p = GameObject.Instantiate(game.bugPrefab) as GameObject;
-		Bug bug = p.GetComponent<Bug>();
-		return bug;
-	}
-
-	public Hornet CreateHornet() {
-		GameObject p = GameObject.Instantiate(game.hornetPrefab) as GameObject;
-		Hornet hornet = p.GetComponent<Hornet>();
-		return hornet;
-	}
-	
-	public Snake CreateSnake() {
-		GameObject p = GameObject.Instantiate(game.snakePrefab) as GameObject;
-		Snake snake = p.GetComponent<Snake>();
-		return snake;
-	}*/
 	
 	public Mana CreateMana() {
 		GameObject p = GameObject.Instantiate(game.manaPrefab) as GameObject;
@@ -349,7 +295,6 @@ public class EnemyDistributor {
 		Enemy enemy = CreateEnemy(clazz);
 		enemy.Initialize(play, spawn, clazz, model, enemyEquivalentClazzAModel,
 				CalculateEnemyHealth(clazz, enemyEquivalentClazzAModel),
-//				CalculateEnemyShield(clazz, enemyEquivalentClazzAModel),
 				CalculateEnemySize(clazz, model),
 				CalculateEnemyAggressiveness(clazz, model),
 				CalculateEnemyMovementForce(clazz, model),

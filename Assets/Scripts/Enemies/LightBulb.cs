@@ -4,7 +4,6 @@ using System.Collections;
 public class LightBulb : Enemy {
 	private RaycastHit hit;
 	private GridPosition targetPosition;
-	private float currentAngleUp;
 	
 	private static float FORCE_MOVE = 5.0f;
 	private static int LOOK_AT_DISTANCE = 4; // measured in cubes

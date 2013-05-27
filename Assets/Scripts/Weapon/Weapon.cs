@@ -48,7 +48,7 @@ public class Weapon {
 	public static float[] PRIMARY_FREQUENCY = new float[] { 3.0f, 2.9f, 2.8f, 2.7f, 2.6f, 2.5f, 2.3f, 2.1f };
 	public static float[] SECONDARY_SPEED = new float[] { 50f, 50f, 50f, 50f, 0f, 0f, 0f, 0f, 0f };
 	public static float[] SECONDARY_ACCURACY = new float[] { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
-	public static float[] SECONDARY_FREQUENCY = new float[] { 6.0f, 5.5f, 5.0f, 5.0f, 0f, 0f, 0f, 0f, 0f};
+	public static float[] SECONDARY_FREQUENCY = new float[] { 6.0f, 5.5f, 5f, 5f, 8f, 0f, 0f, 0f, 0f};
 	public static string[] PRIMARY_TYPES = new string[] {"Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
 	public static string[] SECONDARY_TYPES = new string[] {"Missile", "Guided Missile", "Charged Missile", "Detonator Missile", "Mine", "", "", "", "Laser Beam"};
 	

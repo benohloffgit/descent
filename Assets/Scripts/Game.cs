@@ -32,6 +32,7 @@ public class Game : MonoBehaviour {
 	public GameObject hornetPrefab;
 	public GameObject wombatPrefab;
 	public GameObject batPrefab;
+	public GameObject gazellePrefab;
 	public GameObject[] primaryWeaponPrefabs;
 	public GameObject[] powerUpSecondaryPrefabs;
 	public GameObject powerUpHullPrefab;
@@ -49,7 +50,7 @@ public class Game : MonoBehaviour {
 	// drops
 	public GameObject healthDropPrefab;
 	public GameObject shieldDropPrefab;
-	public GameObject missileDropPrefab;
+	public GameObject[] missileDropPrefabs;
 
 	public Texture2D[] caveTextures;
 	public Texture2D[] keyTextures;

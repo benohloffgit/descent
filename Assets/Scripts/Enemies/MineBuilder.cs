@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class MineBuilder : Enemy {
 	private GridPosition targetPosition;
 	private Mode mode;
-	private float currentAngleUp;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private bool isOnPath;
 	private int exitIndex;
@@ -87,7 +86,8 @@ public class MineBuilder : Enemy {
 				ShootSecondary();
 			}
 		}
-		play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+		play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceRoaming, ref currentAngleUp, ref dotProductLookAt,
+			Movement.LookAtMode.IntoMovingDirection);
 		if (secondaryWeapons[currentSecondaryWeapon].ammunition == 0) {
 			canBeDeactivated = true;
 		}

@@ -34,6 +34,7 @@ public class CollecteablesDistributor {
 			if (random100 > 66 && random100 > ship.shieldPercentage) {
 				DropShield(e.transform.position);
 				hasDropped = true;
+				Debug.Log ("shield drop for " + e.gameObject.GetInstanceID());
 			}
 		}
 		// HEALTH
@@ -42,13 +43,16 @@ public class CollecteablesDistributor {
 			if (random100 > 80 && random100 > ship.healthPercentage) {
 				DropHealth(e.transform.position);
 				hasDropped = true;
+				Debug.Log ("health drop for " + e.gameObject.GetInstanceID());
 			}
 		}
+		Debug.Log ("hasDropped is " + hasDropped);
 		// MISSILES starting from zone 2 on
 		if (!hasDropped && ship.secondaryWeapons[Weapon.TYPE_MISSILE] != null) {
 			float rand = UnityEngine.Random.value;
 			if (rand < 0.1f) { // 10% chance
 				hasDropped = true;
+				Debug.Log ("missile drop for " + e.gameObject.GetInstanceID());
 				if (ship.secondaryWeapons[Weapon.TYPE_DETONATOR_MISSILE] == null) {
 					if (ship.secondaryWeapons[Weapon.TYPE_CHARGED_MISSILE] == null) {
 						if (ship.secondaryWeapons[Weapon.TYPE_GUIDED_MISSILE] == null) {

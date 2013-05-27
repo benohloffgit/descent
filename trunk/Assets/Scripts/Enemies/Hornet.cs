@@ -4,7 +4,6 @@ using System.Collections;
 public class Hornet : Enemy {	
 	private GridPosition targetPosition;
 	private Mode mode;
-	private float currentAngleUp;
 	private int damage;
 
 	public enum Mode { ROAMING=0, ATTACKING=1 }
@@ -35,7 +34,8 @@ public class Hornet : Enemy {
 			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 		}
 		
-		play.movement.LookAt(myRigidbody, play.ship.transform, 0, 0, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+		play.movement.LookAt(myRigidbody, play.ship.transform, 0, 0, ref currentAngleUp,
+			ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 	}
 
 	void OnCollisionEnter(Collision c) {

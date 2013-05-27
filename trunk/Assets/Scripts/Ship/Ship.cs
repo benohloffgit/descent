@@ -305,11 +305,13 @@ public class Ship : MonoBehaviour {
 		for (int i=0; i < 8; i++) {
 			if (play.zoneID > Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX[i]) {
 				AddPrimaryWeapon(i);
+				primaryWeapons[currentPrimaryWeapon].Unmount();
 			}	
 		}
 		for (int i=0; i < 4; i++) {
 			if (play.zoneID > Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX[i]) {
 				AddSecondaryWeapon(i);
+				secondaryWeapons[currentSecondaryWeapon].Unmount();
 			}
 		}
 		

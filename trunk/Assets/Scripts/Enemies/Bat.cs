@@ -6,7 +6,6 @@ public class Bat : Enemy {
 	private RaycastHit hit;
 	private GridPosition targetPosition;
 	private Mode mode;
-	private float currentAngleUp;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private bool isOnPath;
 
@@ -27,7 +26,6 @@ public class Bat : Enemy {
 	void Start() {
 		targetPosition = cave.GetGridFromPosition(transform.position);
 		mode = Mode.ROAMING;
-		currentAngleUp = 0f;
 		isOnPath = false;
 		canBeDeactivated = false;
 	}
@@ -80,9 +78,11 @@ public class Bat : Enemy {
 			}
 		}
 		if (aggressiveness > Enemy.AGGRESSIVENESS_OFF) {
-			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.None);
+			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude),
+				lookAtToleranceAiming, ref currentAngleUp, ref dotProductLookAt, Movement.LookAtMode.None);
 		} else {
-			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp,
+				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		}
 		
 	}

@@ -6,7 +6,6 @@ public class Snake : Enemy {
 	private GridPosition targetPosition;
 	private GridPosition coverPosition;
 	private Mode mode;
-	private float currentAngleUp;
 	private bool isOnPath;
 	private float roamingStart;
 
@@ -90,7 +89,8 @@ public class Snake : Enemy {
 			}
 		}
 		
-		play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);
+		play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceAiming, ref currentAngleUp,
+			ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 	}
 
 }

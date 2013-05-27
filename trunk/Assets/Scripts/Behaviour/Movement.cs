@@ -83,11 +83,13 @@ public class Movement {
 		}
 	}
 
-	public float LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance, ref float currentAngleUp, LookAtMode mode) {
-		float angleForward = 0f;
+	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance,
+			float angleTolerance, ref float currentAngleUp, ref float dotProduct, LookAtMode mode) {
+		//float angleForward = 0f;
 		Vector3 position = rigidbody.transform.position;
 		if ( Vector3.Distance(cave.GetGridFromPosition(position).GetVector3(), cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
 			Vector3 toTarget = target.position - position;
+			dotProduct = Vector3.Dot(toTarget.normalized, rigidbody.transform.forward);
 			float angleUp = Vector3.Angle(rigidbody.transform.up, target.up);
 			if (angleUp > 35.0f) {
 				currentAngleUp = angleUp;
@@ -98,17 +100,17 @@ public class Movement {
 			} else {
 				currentAngleUp = 0f;
 			}
-			angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
+			float angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
 			if (angleForward > angleTolerance) {
 				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 5.0f);
 			}
 		} else if (mode == LookAtMode.IntoMovingDirection) { // look to moving direction
-			angleForward = Vector3.Angle(rigidbody.transform.forward, rigidbody.velocity.normalized);
+			float angleForward = Vector3.Angle(rigidbody.transform.forward, rigidbody.velocity.normalized);
 			if (angleForward > angleTolerance) {
 				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, rigidbody.velocity) * 5.0f);
 			}
 		}
-		return angleForward;
+		//return angleForward;
 	}
 	
 /*	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance) {

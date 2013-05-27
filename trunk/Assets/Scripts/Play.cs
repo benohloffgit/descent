@@ -233,7 +233,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 14;
+		zoneID = 30;
 		isInKeyboardMode = false;
 		
 		// game setup
@@ -287,9 +287,11 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void RepeatZone() {
+		SetPaused();
 		EndZone();
 		ship.SetHealthAndShield();
 		StartZone();
+		SetPaused();
 	}
 	
 	private void EndZone() {
@@ -577,15 +579,23 @@ public class Play : MonoBehaviour {
 	
 	public void PlaceOnWall(Vector3 worldPos, Room r, Transform t) {
 		Vector3 rayPath = Play.RandomVector();
-		
-		if (Physics.Raycast(worldPos, rayPath, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {			
-			Mesh mesh = r.roomMesh.mesh;
-			Vector3 v1 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 0]];
-			Vector3 v2 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 1]];
-			Vector3 v3 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 2]];
-			t.position = ((v1 + v2 + v3)/3) * RoomMesh.MESH_SCALE;
-			t.forward = hit.normal;
+		int triangleIndex = -1;
+		if (Physics.Raycast(worldPos, rayPath, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {
+			if (hit.transform.gameObject.GetInstanceID() == r.roomMesh.transform.gameObject.GetInstanceID()) {
+				triangleIndex = hit.triangleIndex;
+			} else {
+				Debug.Log ("Hit DIFFERENT room while placing object on wall " + hit.transform.name + " " + r.roomMesh.transform.name);
+			}
 		}
+		Mesh mesh = r.roomMesh.mesh;
+		if (triangleIndex == -1) {
+			triangleIndex = UnityEngine.Random.Range(0, mesh.triangles.Length/3);
+		}
+		Vector3 v1 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 0]];
+		Vector3 v2 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 1]];
+		Vector3 v3 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 2]];
+		t.position = ((v1 + v2 + v3)/3) * RoomMesh.MESH_SCALE;
+		t.forward = hit.normal;
 	}
 	
 	public static Vector3 RandomVector() {

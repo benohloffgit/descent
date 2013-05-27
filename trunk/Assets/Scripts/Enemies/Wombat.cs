@@ -4,8 +4,6 @@ using System.Collections;
 public class Wombat : Enemy {	
 	private GridPosition targetPosition;
 	private Mode mode;
-	private float currentAngleUp;
-//	private float angleForward;
 	private float aimingStart;
 	private bool isReloaded;
 	
@@ -19,7 +17,6 @@ public class Wombat : Enemy {
 	void Start() {
 		targetPosition = play.cave.GetGridFromPosition(transform.position);
 		mode = Mode.ROAMING;
-//		angleForward = 0f;
 		isReloaded = false;
 	}
 	
@@ -27,7 +24,7 @@ public class Wombat : Enemy {
 		if (mount == Weapon.SECONDARY) {
 			int ammo = Mathf.FloorToInt(modelClazzAEquivalent/6.0f)+1;
 			secondaryWeapons.Add
-				(new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS,
+				(new Weapon(this, mount, transform, play, Weapon.TYPE_MISSILE, WEAPON_POSITIONS,
 					WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss, ammo));
 		}
 	}
@@ -53,11 +50,13 @@ public class Wombat : Enemy {
 		
 		if (mode == Mode.ROAMING) {
 			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
-			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp, Movement.LookAtMode.IntoMovingDirection);		
+			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp,
+				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);		
 		} else if (mode == Mode.AIMING) {
 			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
-			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming, ref currentAngleUp, Movement.LookAtMode.None);
-			if (isShipVisible != Vector3.zero && currentAngleUp < 2.5f && Time.time > aimingStart + AIMING_TIME) {
+			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming,
+				ref currentAngleUp, ref dotProductLookAt, Movement.LookAtMode.None);
+			if (isShipVisible != Vector3.zero && dotProductLookAt > 0.95f && Time.time > aimingStart + AIMING_TIME) {
 				ShootSecondary();
 				isReloaded = false;
 			}

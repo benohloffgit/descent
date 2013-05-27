@@ -18,7 +18,7 @@ public class PrefabFactory {
 	private GameObject hitTemplate;
 	private GameObject healthDropTemplate;
 	private GameObject shieldDropTemplate;
-	private GameObject missileDropTemplate;
+	private GameObject[] missileDropTemplates;
 	private GameObject mineTouchTemplate;
 	
 	public PrefabFactory(Game g) {
@@ -53,9 +53,19 @@ public class PrefabFactory {
 		shieldDropTemplate = GameObject.Instantiate(game.shieldDropPrefab) as GameObject;
 		shieldDropTemplate.GetComponent<CollecteableShield>().enabled = false;
 		shieldDropTemplate.tag = "";
-		missileDropTemplate = GameObject.Instantiate(game.missileDropPrefab) as GameObject;
-		missileDropTemplate.GetComponent<CollecteableMissile>().enabled = false;
-		missileDropTemplate.tag = "";
+		missileDropTemplates = new GameObject[4];
+		missileDropTemplates[Weapon.TYPE_MISSILE] = GameObject.Instantiate(game.missileDropPrefabs[Weapon.TYPE_MISSILE]) as GameObject;
+		missileDropTemplates[Weapon.TYPE_MISSILE].GetComponent<CollecteableMissile>().enabled = false;
+		missileDropTemplates[Weapon.TYPE_MISSILE].tag = "";
+		missileDropTemplates[Weapon.TYPE_GUIDED_MISSILE] = GameObject.Instantiate(game.missileDropPrefabs[Weapon.TYPE_GUIDED_MISSILE]) as GameObject;
+		missileDropTemplates[Weapon.TYPE_GUIDED_MISSILE].GetComponent<CollecteableMissile>().enabled = false;
+		missileDropTemplates[Weapon.TYPE_GUIDED_MISSILE].tag = "";
+		missileDropTemplates[Weapon.TYPE_CHARGED_MISSILE] = GameObject.Instantiate(game.missileDropPrefabs[Weapon.TYPE_CHARGED_MISSILE]) as GameObject;
+		missileDropTemplates[Weapon.TYPE_CHARGED_MISSILE].GetComponent<CollecteableMissile>().enabled = false;
+		missileDropTemplates[Weapon.TYPE_CHARGED_MISSILE].tag = "";
+		missileDropTemplates[Weapon.TYPE_DETONATOR_MISSILE] = GameObject.Instantiate(game.missileDropPrefabs[Weapon.TYPE_DETONATOR_MISSILE]) as GameObject;
+		missileDropTemplates[Weapon.TYPE_DETONATOR_MISSILE].GetComponent<CollecteableMissile>().enabled = false;
+		missileDropTemplates[Weapon.TYPE_DETONATOR_MISSILE].tag = "";
 		mineTouchTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.MINE_TOUCH]) as GameObject;
 		mineTouchTemplate.GetComponent<Shot>().enabled = false;
 	}
@@ -168,7 +178,7 @@ public class PrefabFactory {
 	}
 
 	public GameObject CreateMissileDrop(Vector3 pos, Quaternion rot, int type, int amount) {
-		GameObject newMissileDrop = GameObject.Instantiate(missileDropTemplate, pos, rot) as GameObject;
+		GameObject newMissileDrop = GameObject.Instantiate(missileDropTemplates[type], pos, rot) as GameObject;
 		newMissileDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableMissile missileDrop = newMissileDrop.GetComponent<CollecteableMissile>();
 		missileDrop.Initialize(play, type, amount);

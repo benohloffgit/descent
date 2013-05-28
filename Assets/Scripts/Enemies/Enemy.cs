@@ -12,10 +12,10 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_A = "Bull"; // p twin 
 	public static string CLAZZ_B = "Manta"; // p twin 
 	public static string CLAZZ_C = "Pike"; // p single
-	public static string CLAZZ_D = "Wombat"; // s single
-	public static string CLAZZ_E = "Bat"; // single
-	public static string CLAZZ_F = "Gazelle"; // twin
-	public static string CLAZZ_G = "g";
+	public static string CLAZZ_D = "Wombat"; // secondary
+	public static string CLAZZ_E = "Bat"; // p twin
+	public static string CLAZZ_F = "Gazelle"; // p twin + secondary
+	public static string CLAZZ_G = "Spider"; // p single
 	public static string CLAZZ_H = "h";
 	
 	public static string CLAZZ_BUG = "Bug";

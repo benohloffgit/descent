@@ -1,8 +1,9 @@
 fileFormatVersion: 2
-guid: 11ac83d28f214bb4c863bd7c8b1f3c9a
+guid: eba84b307d6dbb244a4a2562eae65feb
 ModelImporter:
   fileIDToRecycleName:
-    4300000: RoomEntry
+    4300000: Bombpack
+    4300002: Detonator_MIssile
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -40,10 +41,30 @@ ModelImporter:
     //RootNode:
       data:
         first: 1
-        second: a4860100
+        second: a8860100
       data:
         first: 4
-        second: 841a0600
+        second: 881a0600
+    Detonator_MIssile:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+      data:
+        first: 23
+        second: 62182300
+      data:
+        first: 33
+        second: a25a3200
+    Empty:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
     Lamp:
       data:
         first: 1
@@ -51,16 +72,3 @@ ModelImporter:
       data:
         first: 4
         second: 801a0600
-    RoomEntry:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200

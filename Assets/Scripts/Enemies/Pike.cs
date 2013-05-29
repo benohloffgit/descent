@@ -8,6 +8,10 @@ public class Pike : Enemy {
 	private Mode mode;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private bool isOnPath;
+	private float aimingStart;
+	private bool isReloaded;
+	
+	private static float AIMING_TIME = 1.0f;
 
 	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {Vector3.zero, new Vector3(0, 0, 0), new Vector3(0, 0, 0)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
@@ -18,19 +22,31 @@ public class Pike : Enemy {
 		if (mount == Weapon.PRIMARY) {
 			primaryWeapons.Add(new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS,
 				WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss));
-//		} else {
-//			secondaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
+		}
+		if (mount == Weapon.SECONDARY) {
+			int ammo = Mathf.FloorToInt(modelClazzAEquivalent/12.0f)+1;
+			secondaryWeapons.Add
+				(new Weapon(this, mount, transform, play, Weapon.TYPE_MISSILE, WEAPON_POSITIONS,
+					WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss, ammo));
 		}
 	}
 	
 	void Start() {
 		targetPosition = cave.GetGridFromPosition(transform.position);
 		mode = Mode.ROAMING;
+		currentAngleUp = 0f;
 		isOnPath = false;
 		canBeDeactivated = false;
 	}
 					
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
+		if (secondaryWeapons[currentSecondaryWeapon].ammunition > 0) {
+			if (!isReloaded && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+				aimingStart = Time.time;
+				isReloaded = true;
+			}
+		}
+		
 		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
 			aggressiveness = Enemy.AGGRESSIVENESS_ON;
 		}
@@ -80,6 +96,10 @@ public class Pike : Enemy {
 		if (aggressiveness > Enemy.AGGRESSIVENESS_OFF) {
 			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming,
 				ref currentAngleUp, ref dotProductLookAt, Movement.LookAtMode.None);
+			if (isShipVisible != Vector3.zero && dotProductLookAt > 0.95f && Time.time > aimingStart + AIMING_TIME) {
+				ShootSecondary();
+				isReloaded = false;
+			}			
 		} else {
 			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp,
 				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
@@ -87,7 +107,6 @@ public class Pike : Enemy {
 		
 	}
 	
-
 }
 
 

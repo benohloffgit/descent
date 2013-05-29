@@ -39,8 +39,8 @@ public class Weapon {
 	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN = new int[] {1,4,8,13,20,30,42,58};
 	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX = new int[] {1,7,12,19,29,41,57,63};
 	//missile cap: 3, light 6, twin primary 7, speed 19, cloak 41
-	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN = new int[] { 4, 13, 30, 42 };
-	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX = new int[] { 12, 29, 41, 63 };
+	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN = new int[] { 4, 9, 19, 31 };
+	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX = new int[] { 8, 18, 30, 42 };
 	public static int[] PRIMARY_DAMAGE = new int[] { 22, 25, 28, 30, 33, 36, 40, 43, 0, 0, 0, 0, 0, 0, 0, 0 };
 	public static int[] SECONDARY_DAMAGE = new int[] { 65, 85, 100, 120, 150, 50, 0, 0, 30 };	
 	public static float[] PRIMARY_SPEED = new float[] { 100f, 150f, 100f, 200f, 150f, 175f, 200f, 175f};
@@ -51,6 +51,10 @@ public class Weapon {
 	public static float[] SECONDARY_FREQUENCY = new float[] { 6.0f, 5.5f, 5f, 5f, 8f, 0f, 0f, 0f, 0f};
 	public static string[] PRIMARY_TYPES = new string[] {"Gun", "Laser", "Twin Gun", "Phaser", "Twin Laser", "Gauss", "Twin Phaser", "Twin Gauss"};
 	public static string[] SECONDARY_TYPES = new string[] {"Missile", "Guided Missile", "Charged Missile", "Detonator Missile", "Mine", "", "", "", "Laser Beam"};
+	public static Vector3[] DETONATOR_BOMB_DIRECTIONS = new Vector3[] {new Vector3(0f,0.114f,-0.1f), new Vector3(0f,-0.114f,-0.1f),
+		new Vector3(0.114f,0f,-0.1f), new Vector3(-0.114f,0f,-0.1f)};
+	public static Vector3[] DETONATOR_EXPL_DIRECTIONS = new Vector3[] {new Vector3(0f,-0.114f,-0.1f), new Vector3(0f,0.114f,-0.1f),
+		new Vector3(-0.114f,0f,-0.1f), new Vector3(0.114f,0f,-0.1f)};
 	
 	public float lastShotTime;
 	public Transform weaponTransform;
@@ -296,20 +300,24 @@ public class Weapon {
 		if (mountAs == PRIMARY) {
 			if (type == TYPE_GUN) {
 				loadedShots[0] = game.CreateFromPrefab().CreateGunShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
-			} else if (type == Weapon.TYPE_LASER) {
-				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_TWIN_GUN) {
 				loadedShots[0] = game.CreateFromPrefab().CreateGunShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 				loadedShots[1] = game.CreateFromPrefab().CreateGunShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
-			} else if (type == Weapon.TYPE_PHASER) {
-				loadedShots[0] = game.CreateFromPrefab().CreatePhaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_LASER) {
+				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_TWIN_LASER) {
 				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 				loadedShots[1] = game.CreateFromPrefab().CreateLaserShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+			} else if (type == Weapon.TYPE_PHASER) {
+				loadedShots[0] = game.CreateFromPrefab().CreatePhaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_TWIN_PHASER) {
+				loadedShots[0] = game.CreateFromPrefab().CreatePhaserShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[1] = game.CreateFromPrefab().CreatePhaserShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 			} else if (type == Weapon.TYPE_GAUSS) {
 				loadedShots[0] = game.CreateFromPrefab().CreateGaussShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
-			} else {
-				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else { //type == Weapon.TYPE_TWIN_GAUSS)
+				loadedShots[0] = game.CreateFromPrefab().CreateGaussShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[1] = game.CreateFromPrefab().CreateGaussShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 			}			
 		} else {
 			if (type == TYPE_MISSILE) {
@@ -318,6 +326,8 @@ public class Weapon {
 				loadedShots[0] = game.CreateFromPrefab().CreateGuidedMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_CHARGED_MISSILE) {
 				loadedShots[0] = game.CreateFromPrefab().CreateChargedMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+			} else if (type == Weapon.TYPE_DETONATOR_MISSILE) {
+				loadedShots[0] = game.CreateFromPrefab().CreateDetonatorMissileShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_MINE_TOUCH) {
 				loadedShots[0] = game.CreateFromPrefab().CreateMineTouchShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_LASER_BEAM) {

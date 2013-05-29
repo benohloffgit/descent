@@ -1,15 +1,17 @@
 fileFormatVersion: 2
-guid: 11ac83d28f214bb4c863bd7c8b1f3c9a
+guid: ef0bfd92b0e92954185b8a9194f5a50b
 ModelImporter:
   fileIDToRecycleName:
-    4300000: RoomEntry
+    4300000: Sphere.001
+    4300002: Sphere
+    4300004: Circle
   serializedVersion: 10
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 0
+    generateAnimations: 3
     bakeSimulation: 0
     splitAnimations: 1
     animationCompression: 1
@@ -40,6 +42,29 @@ ModelImporter:
     //RootNode:
       data:
         first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+      data:
+        first: 111
+        second: 605fa900
+    Circle:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200
+    Empty:
+      data:
+        first: 1
         second: a4860100
       data:
         first: 4
@@ -47,11 +72,11 @@ ModelImporter:
     Lamp:
       data:
         first: 1
-        second: a0860100
+        second: a6860100
       data:
         first: 4
-        second: 801a0600
-    RoomEntry:
+        second: 861a0600
+    Sphere:
       data:
         first: 1
         second: a2860100
@@ -60,7 +85,20 @@ ModelImporter:
         second: 821a0600
       data:
         first: 23
-        second: 60182300
+        second: 62182300
       data:
         first: 33
-        second: a05a3200
+        second: a25a3200
+    Sphere.001:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+      data:
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200

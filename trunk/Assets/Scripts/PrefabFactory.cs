@@ -13,6 +13,8 @@ public class PrefabFactory {
 	private GameObject missileShotTemplate;
 	private GameObject guidedMissileShotTemplate;
 	private GameObject chargedMissileShotTemplate;
+	private GameObject detonatorMissileShotTemplate;
+	private GameObject detonatorBombShotTemplate;
 	private GameObject breadcrumbTemplate;
 	private GameObject explosionTemplate;
 	private GameObject hitTemplate;
@@ -41,6 +43,10 @@ public class PrefabFactory {
 		guidedMissileShotTemplate.GetComponent<Shot>().enabled = false;
 		chargedMissileShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.CHARGED_MISSILE]) as GameObject;
 		chargedMissileShotTemplate.GetComponent<Shot>().enabled = false;
+		detonatorMissileShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.DETONATOR_MISSILE]) as GameObject;
+		detonatorMissileShotTemplate.GetComponent<Shot>().enabled = false;
+		detonatorBombShotTemplate = GameObject.Instantiate(game.shotPrefabs[Shot.DETONATOR_BOMB]) as GameObject;
+		detonatorBombShotTemplate.GetComponent<Shot>().enabled = false;
 		breadcrumbTemplate = GameObject.Instantiate(game.breadcrumbPrefab) as GameObject;
 		breadcrumbTemplate.GetComponent<Breadcrumb>().enabled = false;
 		explosionTemplate = GameObject.Instantiate(game.explosionPrefab) as GameObject;
@@ -132,6 +138,25 @@ public class PrefabFactory {
 		if (mountedTo == Game.ENEMY) {
 			shot.gameObject.layer = Game.LAYER_GUN_ENEMY;
 		}
+		return shot;
+	}
+
+	public Shot CreateDetonatorMissileShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
+		GameObject newMissile = GameObject.Instantiate(detonatorMissileShotTemplate, pos, rot) as GameObject;
+		Shot shot = newMissile.GetComponent<Shot>();
+		shot.Initialize(play, damage, mountedTo, Shot.DETONATOR_MISSILE);
+		shot.enabled = false;
+		if (mountedTo == Game.ENEMY) {
+			shot.gameObject.layer = Game.LAYER_GUN_ENEMY;
+		}
+		return shot;
+	}
+
+	public Shot CreateDetonatorBombShot(Vector3 pos, Quaternion rot, int damage, int mountedTo) {
+		GameObject newDetonatorBomb = GameObject.Instantiate(detonatorBombShotTemplate, pos, rot) as GameObject;
+		Shot shot = newDetonatorBomb.GetComponent<Shot>();
+		shot.Initialize(play, damage, mountedTo, Shot.DETONATOR_BOMB);
+		shot.enabled = true;
 		return shot;
 	}
 	

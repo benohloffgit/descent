@@ -74,6 +74,7 @@
      <Compile Include="Assets\Scripts\Enemies\Pike.cs" />
      <Compile Include="Assets\Scripts\Enemies\Snake.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spawn.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Spider.cs" />
      <Compile Include="Assets\Scripts\Enemies\WallLaser.cs" />
      <Compile Include="Assets\Scripts\Enemies\Wombat.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />

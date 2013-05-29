@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 11ac83d28f214bb4c863bd7c8b1f3c9a
+guid: 674f19916a3b810409a5ba0e9377883c
 ModelImporter:
   fileIDToRecycleName:
-    4300000: RoomEntry
+    4300000: Detonator_Bomb
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -40,27 +40,34 @@ ModelImporter:
     //RootNode:
       data:
         first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-    Lamp:
-      data:
-        first: 1
         second: a0860100
       data:
         first: 4
         second: 801a0600
-    RoomEntry:
+    Detonator_Bomb:
       data:
         first: 1
-        second: a2860100
+        second: a4860100
       data:
         first: 4
-        second: 821a0600
+        second: 841a0600
       data:
         first: 23
         second: 60182300
       data:
         first: 33
         second: a05a3200
+    Empty:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    Lamp:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600

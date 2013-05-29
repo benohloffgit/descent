@@ -41,6 +41,7 @@ public class Ship : MonoBehaviour {
 	public float missileLockTime;
 	private float chargedMissileTimer;
 	private int chargedMissileShieldDeducted;
+	public bool isDetonatorMissileExploded;
 			
 	private static float FORCE_MOVE = 25.0f;
 	private static float FORCE_TURN = 5.0f;
@@ -108,6 +109,7 @@ public class Ship : MonoBehaviour {
 		
 		lastMoveTime = Time.time;
 		chargedMissileTimer = -1f;
+		isDetonatorMissileExploded = true;
 	}
 	
 	void FixedUpdate() {
@@ -358,16 +360,23 @@ public class Ship : MonoBehaviour {
 	}
 
 	public void ShootSecondary() {
-		if (play.isShipInPlayableArea && currentSecondaryWeapon != -1 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
-			if (currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE && chargedMissileShieldDeducted != 0) {
-				//Debug.Log(chargedMissileShieldDeducted);
-				secondaryWeapons[currentSecondaryWeapon].loadedShots[0].damage += chargedMissileShieldDeducted;
-				chargedMissileShieldDeducted = 0;
+		if (isDetonatorMissileExploded) {
+			if (play.isShipInPlayableArea && currentSecondaryWeapon != -1 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+				if (currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE && chargedMissileShieldDeducted != 0) {
+					//Debug.Log(chargedMissileShieldDeducted);
+					secondaryWeapons[currentSecondaryWeapon].loadedShots[0].damage += chargedMissileShieldDeducted;
+					chargedMissileShieldDeducted = 0;
+				} else if (currentSecondaryWeapon == Weapon.TYPE_DETONATOR_MISSILE) {
+					isDetonatorMissileExploded = false;
+				}
+				secondaryWeapons[currentSecondaryWeapon].Shoot();
+				play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
 			}
-			secondaryWeapons[currentSecondaryWeapon].Shoot();
-			play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
+			chargedMissileTimer = -1f;
+		} else {
+			secondaryWeapons[currentSecondaryWeapon].loadedShots[0].Detonate();
+			isDetonatorMissileExploded = true;
 		}
-		chargedMissileTimer = -1f;
 	}
 	
 	public void CyclePrimary() {

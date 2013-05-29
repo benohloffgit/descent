@@ -193,17 +193,19 @@ public class EnemyDistributor {
 	public Enemy CreateEnemy(int clazz) {
 		Enemy e;
 		if (clazz == Enemy.CLAZZ_A0) {
-			e = (Enemy)(GameObject.Instantiate(game.bullPrefab) as GameObject).GetComponent<Bull>();
+			e = (Enemy)(GameObject.Instantiate(game.spiderPrefab) as GameObject).GetComponent<Spider>();
 		} else if (clazz == Enemy.CLAZZ_B1) {
-			e = (Enemy)(GameObject.Instantiate(game.mantaPrefab) as GameObject).GetComponent<Manta>();
+			e = (Enemy)(GameObject.Instantiate(game.batPrefab) as GameObject).GetComponent<Bat>();
 		} else if (clazz == Enemy.CLAZZ_C2) {
-			e = (Enemy)(GameObject.Instantiate(game.pikePrefab) as GameObject).GetComponent<Pike>();
+			e = (Enemy)(GameObject.Instantiate(game.gazellePrefab) as GameObject).GetComponent<Gazelle>();
 		} else if (clazz == Enemy.CLAZZ_D3) {
 			e = (Enemy)(GameObject.Instantiate(game.wombatPrefab) as GameObject).GetComponent<Wombat>();
 		} else if (clazz == Enemy.CLAZZ_E4) {
-			e = (Enemy)(GameObject.Instantiate(game.batPrefab) as GameObject).GetComponent<Bat>();
+			e = (Enemy)(GameObject.Instantiate(game.mantaPrefab) as GameObject).GetComponent<Manta>();
 		} else if (clazz == Enemy.CLAZZ_F5) {
-			e = (Enemy)(GameObject.Instantiate(game.gazellePrefab) as GameObject).GetComponent<Gazelle>();
+			e = (Enemy)(GameObject.Instantiate(game.pikePrefab) as GameObject).GetComponent<Pike>();
+		} else if (clazz == Enemy.CLAZZ_G6) {
+			e = (Enemy)(GameObject.Instantiate(game.bullPrefab) as GameObject).GetComponent<Bull>();
 		} else if (clazz == Enemy.CLAZZ_BUG8) {
 			e = (Enemy)(GameObject.Instantiate(game.bugPrefab) as GameObject).GetComponent<Bug>();
 		} else if (clazz == Enemy.CLAZZ_SNAKE9) {

@@ -33,6 +33,7 @@ public class Game : MonoBehaviour {
 	public GameObject wombatPrefab;
 	public GameObject batPrefab;
 	public GameObject gazellePrefab;
+	public GameObject spiderPrefab;
 	public GameObject[] primaryWeaponPrefabs;
 	public GameObject[] powerUpSecondaryPrefabs;
 	public GameObject powerUpHullPrefab;

@@ -233,7 +233,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 30;
+		zoneID = 45;
 		isInKeyboardMode = false;
 		
 		// game setup
@@ -591,9 +591,9 @@ public class Play : MonoBehaviour {
 		if (triangleIndex == -1) {
 			triangleIndex = UnityEngine.Random.Range(0, mesh.triangles.Length/3);
 		}
-		Vector3 v1 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 0]];
-		Vector3 v2 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 1]];
-		Vector3 v3 = mesh.vertices[mesh.triangles[hit.triangleIndex * 3 + 2]];
+		Vector3 v1 = mesh.vertices[mesh.triangles[triangleIndex * 3 + 0]];
+		Vector3 v2 = mesh.vertices[mesh.triangles[triangleIndex * 3 + 1]];
+		Vector3 v3 = mesh.vertices[mesh.triangles[triangleIndex * 3 + 2]];
 		t.position = ((v1 + v2 + v3)/3) * RoomMesh.MESH_SCALE;
 		t.forward = hit.normal;
 	}

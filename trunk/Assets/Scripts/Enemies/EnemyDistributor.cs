@@ -206,6 +206,8 @@ public class EnemyDistributor {
 			e = (Enemy)(GameObject.Instantiate(game.pikePrefab) as GameObject).GetComponent<Pike>();
 		} else if (clazz == Enemy.CLAZZ_G6) {
 			e = (Enemy)(GameObject.Instantiate(game.bullPrefab) as GameObject).GetComponent<Bull>();
+		} else if (clazz == Enemy.CLAZZ_H7) {
+			e = (Enemy)(GameObject.Instantiate(game.rhinoPrefab) as GameObject).GetComponent<Rhino>();
 		} else if (clazz == Enemy.CLAZZ_BUG8) {
 			e = (Enemy)(GameObject.Instantiate(game.bugPrefab) as GameObject).GetComponent<Bug>();
 		} else if (clazz == Enemy.CLAZZ_SNAKE9) {
@@ -315,12 +317,13 @@ public class EnemyDistributor {
 	// Super Formula stuff
 	
 	private int CalculateEnemyClazzVariety(int zoneID) {
-		for (int i=0; i< CLAZZ_A_EQUIVALENT_MODEL.Length; i++) {
-			if (CLAZZ_A_EQUIVALENT_MODEL[i] > zoneID) {
-				return i;
+		int variety = 0;
+		for (int i=0; i<8; i++) {
+			if (CLAZZ_A_EQUIVALENT_MODEL[i] <= zoneID) {
+				variety++;
 			}
 		}
-		return -1;
+		return variety;
 		//return Mathf.Min(Mathf.CeilToInt( Mathf.Sqrt(zone5ID) ), Enemy.DISTRIBUTION_CLAZZ_MAX); // 1-8
 	}
 	

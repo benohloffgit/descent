@@ -91,7 +91,7 @@ public class MyGUI : MonoBehaviour {
 	public int AddContainer() {
 		zLevel -= 2.0f;
 		Container c = (GameObject.Instantiate(containerPrefab, new Vector3(transform.position.x, transform.position.y, zLevel), Quaternion.identity) as GameObject).GetComponent<Container>();
-		c.Initialize(transform.localScale, true);
+		c.Initialize(this, transform.localScale, true);
 		containers.Add(c.gameObject.GetInstanceID(), c);
 		c.transform.parent = transform;
 		return c.gameObject.GetInstanceID();		
@@ -106,7 +106,7 @@ public class MyGUI : MonoBehaviour {
 	// as child of another container, with absolute position and zLevel
 	public int AddContainer(int containerID, Vector3 size, Vector3 pos, bool isFixedSize) {
 		Container c = (GameObject.Instantiate(containerPrefab, pos, Quaternion.identity) as GameObject).GetComponent<Container>();
-		c.Initialize(size, isFixedSize);
+		c.Initialize(this, size, isFixedSize);
 		containers.Add(c.gameObject.GetInstanceID(), c);
 		c.transform.parent = containers[containerID].transform;
 		return c.gameObject.GetInstanceID();		
@@ -122,7 +122,7 @@ public class MyGUI : MonoBehaviour {
 	public int AddContainer(int containerID, Vector3 scale, bool isFixedSize, GUIAlignment alignLeftRightCenter, float borderLeftRight,
 					GUIAlignment alignTopBottomCenter, float borderTopBottom) {		
 		Container c = (GameObject.Instantiate(containerPrefab) as GameObject).GetComponent<Container>();
-		c.Initialize(scale, isFixedSize);
+		c.Initialize(this, scale, isFixedSize);
 		containers.Add(c.gameObject.GetInstanceID(), c);
 		containers[containerID].AddElement(c.transform, c.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 		return c.gameObject.GetInstanceID();

@@ -35,23 +35,24 @@ public class Menu : MonoBehaviour {
 	}
 	
 	public void Restart() {
-/*		gui = (GameObject.Instantiate(guiPrefab) as GameObject).GetComponent<MyGUI>();
+		gui = (GameObject.Instantiate(game.guiPrefab) as GameObject).GetComponent<MyGUI>();
 		gui.Initialize(game, game.gameInput);
-		MyGUI.CenterOnScreen(gui.transform);
-		MyGUI.ResizeToScreenSize(gui.transform);
+		gui.CenterOnScreen(gui.transform);
+		gui.ResizeToScreenSize(gui.transform);
 		container = gui.AddContainer();
 		
 		Vector3 fullSize = gui.containers[container].GetSize();
 		Vector3 screenCenter = gui.containers[container].GetCenter();
-		int topContainer = gui.AddContainer(container, fullSize, new Vector2(screenCenter.x, screenCenter.y), true);
+//		int topContainer = gui.AddContainer(container, fullSize, new Vector2(screenCenter.x, screenCenter.y), true);
 		
-		TouchDelegate toCredits = new TouchDelegate(ToCredits);
-		gui.AddButton(topContainer, new Vector3(0.12f, 0.12f, 1.0f), toCredits, MyGUI.GUIAlignment.Right, 0.025f, MyGUI.GUIAlignment.Top, 0.025f, Game.GUI_UV_CREDITS_BUTTON, 1);
-#if UNITY_ANDROID || UNITY_IPHONE
-		TouchDelegate toRateIt = new TouchDelegate(ToRateIt);
-		gui.AddButton(topContainer, new Vector3(0.12f, 0.12f, 1.0f), toRateIt, MyGUI.GUIAlignment.Left, 0.025f, MyGUI.GUIAlignment.Top, 0.025f, Game.GUI_UV_RATEIT_BUTTON, 1);
-#endif	
-		TouchDelegate toHelp = new TouchDelegate(ToHelp);
+		gui.AddImage(container, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		gui.containers[container].AddZLevel();
+		gui.AddLabel(state.GetDialog(0), container,  new Vector3(0.5f, 0.5f, 1.0f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center,
+			-0.1f, 0.0125f, 0.4f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 1);
+
+/*		TouchDelegate toNewGame = new TouchDelegate(ToNewGame);
+		gui.AddButton(topContainer, new Vector3(0.12f, 0.12f, 1.0f), toNewGame, MyGUI.GUIAlignment.Center, 0.025f, MyGUI.GUIAlignment.Top, 0.025f, Game.GUI_UV_CREDITS_BUTTON, 1);
+/*		TouchDelegate toHelp = new TouchDelegate(ToHelp);
 		gui.AddButton(topContainer, new Vector3(0.12f, 0.12f, 1.0f), toHelp, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.025f, Game.GUI_UV_HELP_BUTTON, 1);
 
 		TouchDelegate toUpgrade = new TouchDelegate(ToUpgrade);

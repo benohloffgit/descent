@@ -72,6 +72,7 @@
      <Compile Include="Assets\Scripts\Enemies\Manta.cs" />
      <Compile Include="Assets\Scripts\Enemies\MineBuilder.cs" />
      <Compile Include="Assets\Scripts\Enemies\Pike.cs" />
+     <Compile Include="Assets\Scripts\Enemies\Rhino.cs" />
      <Compile Include="Assets\Scripts\Enemies\Snake.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spawn.cs" />
      <Compile Include="Assets\Scripts\Enemies\Spider.cs" />
@@ -216,6 +217,7 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\PrepareSunShaftsBlur.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\Blend.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\BlendModesOverlay.shader" />
+     <None Include="Assets\AndruidsShaders\InverseFont.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\SimpleClear.shader" />
      <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpLocal_Unlit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAA3Console.shader" />

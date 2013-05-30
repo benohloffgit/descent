@@ -35,7 +35,7 @@ public class Container : MonoBehaviour {
 	}
 	
 	void Start() {
-		camZero = Camera.main.ScreenToWorldPoint(Vector3.zero);		
+		camZero = myGUI.guiCamera.ScreenToWorldPoint(Vector3.zero);		
 		if (isScrollableContainer) {
 			// even though the scrolleable container is not fixed size we use lossy scale here to get its real size
 			float amountToScroll = GetSize().y - transform.lossyScale.y;
@@ -91,24 +91,24 @@ public class Container : MonoBehaviour {
 		}
 	}
 	
-	public void Initialize(Vector3 s, bool isFS) {
-		isFixedSize = isFS;
-		transform.localScale = s;
+	public void Initialize(MyGUI myGUI_, Vector3 scale_, bool isFixedSize_) {
+		myGUI = myGUI_;
+		isFixedSize = isFixedSize_;
+		transform.localScale = scale_;
 		if (isFixedSize) {
 			bottomLeft = GetBottomLeftFixedSize(); //new Vector3(transform.position.x - s.x/2.0f, transform.position.y - s.y, transform.position.z);
 			topRight = GetTopRightFixedSize(); //new Vector3(transform.position.x + s.x/2.0f, transform.position.y, transform.position.z);
 		} else {
-			bottomLeft = new Vector3(transform.position.x - s.x/2.0f, transform.position.y, transform.position.z);
-			topRight = new Vector3(transform.position.x + s.x/2.0f, transform.position.y, transform.position.z);
+			bottomLeft = new Vector3(transform.position.x - scale_.x/2.0f, transform.position.y, transform.position.z);
+			topRight = new Vector3(transform.position.x + scale_.x/2.0f, transform.position.y, transform.position.z);
 		}
 		nextPos = bottomLeft + new Vector3(0,0,-1f);
 	}
-	
+
+	// unused ???
 	public void Initialize(MyGUI mG, int cID, TouchDelegate tD, Transform backgr) {
 		myGUI = mG;
-//		containerID = cID;
-		touchDelegate = tD;
-		
+		touchDelegate = tD;		
 		SetBackground(backgr);
 	}
 	
@@ -191,6 +191,10 @@ public class Container : MonoBehaviour {
 			mode = SelectionMode.On;
 			scrollFinger = finger;
 		}
+	}
+	
+	public void AddZLevel() {
+		nextPos.z -= 1f;
 	}
 
 }

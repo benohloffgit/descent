@@ -34,6 +34,7 @@ public class Game : MonoBehaviour {
 	public GameObject batPrefab;
 	public GameObject gazellePrefab;
 	public GameObject spiderPrefab;
+	public GameObject rhinoPrefab;
 	public GameObject[] primaryWeaponPrefabs;
 	public GameObject[] powerUpSecondaryPrefabs;
 	public GameObject powerUpHullPrefab;
@@ -117,6 +118,7 @@ public class Game : MonoBehaviour {
 	public static int POWERUP_SPECIAL = 3;	
 	
 	public static Vector4 GUI_UV_NULL = new Vector4(0.0f,0.0f,0.0f,0.0f);
+	public static Vector4 GUI_UV_COLOR_BLACK = new Vector4(0.0f,0.0f,0.0625f,0.0625f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_2 = new Vector4(0.25f,0.875f,0.375f,1.0f);

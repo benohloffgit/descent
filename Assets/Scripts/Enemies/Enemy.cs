@@ -5,15 +5,6 @@ using System.Collections.Generic;
 public abstract class Enemy : MonoBehaviour {
 	public static string TAG = "Enemy";
 	
-/*	public static string CLAZZ_A = "Bull"; // p twin 
-	public static string CLAZZ_B = "Manta"; // p twin 
-	public static string CLAZZ_C = "Pike"; // p single
-	public static string CLAZZ_D = "Wombat"; // secondary
-	public static string CLAZZ_E = "Bat"; // p twin - > single
-	public static string CLAZZ_F = "Gazelle"; // p twin + secondary
-	public static string CLAZZ_G = "Spider"; // p single
-	public static string CLAZZ_H = "h";*/
-
 	public static string CLAZZ_A = "Spider"; // TYPE_GUN 
 	public static string CLAZZ_B = "Bat"; // TYPE_LASER 
 	public static string CLAZZ_C = "Gazelle"; // TYPE_TWIN_GUN
@@ -21,7 +12,7 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_E = "Manta"; // TYPE_TWIN_LASER
 	public static string CLAZZ_F = "Pike"; // TYPE_GAUSS
 	public static string CLAZZ_G = "Bull"; // TYPE_TWIN_PHASER
-	public static string CLAZZ_H = "h"; // TYPE_TWIN_GAUSS
+	public static string CLAZZ_H = "Rhino"; // TYPE_TWIN_GAUSS
 	
 	public static string CLAZZ_BUG = "Bug";
 	public static string CLAZZ_SNAKE = "Eel";
@@ -38,7 +29,7 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_E4 = 4; // manta
 	public static int CLAZZ_F5 = 5; // pike
 	public static int CLAZZ_G6 = 6; // bull
-	public static int CLAZZ_H7 = 7; // ?
+	public static int CLAZZ_H7 = 7; // rhino
 	public static int CLAZZ_BUG8 = 8;
 	public static int CLAZZ_SNAKE9 = 9;
 	public static int CLAZZ_MINEBUILDER10 = 10;

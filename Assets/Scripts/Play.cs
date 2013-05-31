@@ -71,39 +71,92 @@ public class Play : MonoBehaviour {
 	void Awake() {
 		lightsHolder = GameObject.Find("Lights").transform;
 		caveLights = lightsHolder.GetComponentsInChildren<Light>();
-		isPaused = false;
+	}
+
+	public void Initialize(Game g) {
+		game = g;
+		state = game.state;
+		isShipInvincible = false;
+		isMiniMapOn = false;
+		isMiniMapFollowOn = false;
+		isPaused = true;
 		mode = Mode.Normal;
 		playGUI = new PlayGUI(this);
+	}
+
+	public void Restart() {
+		isPaused = false;
+		sokoban = new Sokoban(this);
 		
+		botSeed = UnityEngine.Random.Range(0,9999999);
+//		caveSeed = 2122215;
+		caveSeed = UnityEngine.Random.Range(1000000,9999999);
+		
+		zoneID = 3;
+		isInKeyboardMode = false;
+		
+		// game setup
+		ship = (GameObject.Instantiate(game.shipPrefab) as GameObject).GetComponent<Ship>();
+		ship.Initialize(this, game);
+		playGUI.Initialize();
+		
+		GameObject newMiniMap = GameObject.Instantiate(game.miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
+		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
+		
+		cave = new Cave(this);
+		collecteablesDistributor = new CollecteablesDistributor(this);
+		enemyDistributor = new EnemyDistributor(this);
+		movement = new Movement(this);
+		
+		StartZone ();
+				
+//		currentGravitiyDirection = 0;
+//		lastGravitiyChange = Time.time;
+		
+		shipHitRatio = 0;
+		enemyHitRatio = 0;
+		shipToEnemyHitRatio = 1.0f;
+		InvokeRepeating("UpdateStats", 0, 1.0f);
 	}
 	
-	void OnGUI() {		
- 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
-			Application.Quit();
-		}
-		GUI.Label(new Rect (20,Screen.height-90,500,80),
-				"Active-Living-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +"--"+ enemyDistributor.enemiesAll +
-				"\nHealth E: " + enemyDistributor.enemiesHealthActive +"--"+ enemyDistributor.enemiesHealthActiveAvg.ToString("F2") +
-				"\nFPS S-E-S/E: " + ship.firepowerPerSecond.ToString("F2") +"--"+ enemyDistributor.enemiesFirepowerPerSecondActive.ToString("F2") +"--"+enemiesToShipFPSRatio.ToString("F2")+
-				"\nHealth/FPS S-E: " + activeEnemiesHealthToShipFPSRatio.ToString("F2") +"--"+ shipHealthToActiveEnemiesFPSRatio.ToString("F2") +
-				"\nHit/Miss S-E-S/E: " + shipHitRatio.ToString("F2") +"--"+enemyHitRatio.ToString("F2") + "--" + shipToEnemyHitRatio.ToString("F2")
-			);
-		
-		Event e = Event.current;
-        if (e.isKey && e.type == EventType.KeyDown) { // keydown and characters can come as seperate events!!!
-//			Debug.Log("> " + keyCommand + " "  + e.type + " " +  e.keyCode);
-			if (e.keyCode == KeyCode.Backslash) {
-				keyCommand = "";
-				isInKeyboardMode = true;
-			} else if (e.keyCode == KeyCode.Return) {
-				ExecuteKeyCommand();
-			} else if (isInKeyboardMode) {
-				if (e.character != 0) {
-//					Debug.Log ("here 2 " + e.character + " " + e.keyCode);
-					keyCommand += e.character;
+	public void Activate() {
+		playGUI.Activate();
+	}
+	
+	public void Deactivate() {
+		playGUI.Deactivate();
+	}
+
+	void OnGUI() {
+		if (!isPaused) {
+/*	 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
+				Application.Quit();
+			}*/
+			GUI.Label(new Rect (20,Screen.height-90,500,80),
+					"Active-Living-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +"--"+ enemyDistributor.enemiesAll +
+					"\nHealth E: " + enemyDistributor.enemiesHealthActive +"--"+ enemyDistributor.enemiesHealthActiveAvg.ToString("F2") +
+					"\nFPS S-E-S/E: " + ship.firepowerPerSecond.ToString("F2") +"--"+ enemyDistributor.enemiesFirepowerPerSecondActive.ToString("F2") +"--"+enemiesToShipFPSRatio.ToString("F2")+
+					"\nHealth/FPS S-E: " + activeEnemiesHealthToShipFPSRatio.ToString("F2") +"--"+ shipHealthToActiveEnemiesFPSRatio.ToString("F2") +
+					"\nHit/Miss S-E-S/E: " + shipHitRatio.ToString("F2") +"--"+enemyHitRatio.ToString("F2") + "--" + shipToEnemyHitRatio.ToString("F2")
+				);
+			
+			Event e = Event.current;
+	        if (e.isKey && e.type == EventType.KeyDown) { // keydown and characters can come as seperate events!!!
+	//			Debug.Log("> " + keyCommand + " "  + e.type + " " +  e.keyCode);
+				if (e.keyCode == KeyCode.Backslash) {
+					keyCommand = "";
+					isInKeyboardMode = true;
+				} else if (e.keyCode == KeyCode.Return) {
+					ExecuteKeyCommand();
+				} else if (isInKeyboardMode) {
+					if (e.character != 0) {
+	//					Debug.Log ("here 2 " + e.character + " " + e.keyCode);
+						keyCommand += e.character;
+					}
 				}
+				e.Use();
 			}
-			e.Use();
 		}
    	}
 	
@@ -121,6 +174,9 @@ public class Play : MonoBehaviour {
 	void Update() {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
+			if (Input.GetKeyDown(KeyCode.Escape)) {
+				SetPaused();
+			}
 			if (Input.GetKeyDown(KeyCode.F6)) {
 				SwitchMode();
 			}
@@ -142,9 +198,6 @@ public class Play : MonoBehaviour {
 				}
 				if (Input.GetKeyDown(KeyCode.Alpha6)) {	
 					ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
-				}
-				if (Input.GetKeyDown(KeyCode.F5)) {
-					SetPaused();
 				}
 			}
 /*			if (Input.GetKeyDown(KeyCode.Alpha0)) {
@@ -226,41 +279,6 @@ public class Play : MonoBehaviour {
 		}
 	}
 	
-	public void Restart() {
-		sokoban = new Sokoban(this);
-		
-		botSeed = UnityEngine.Random.Range(0,9999999);
-//		caveSeed = 2122215;
-		caveSeed = UnityEngine.Random.Range(1000000,9999999);
-		
-		zoneID = 1;
-		isInKeyboardMode = false;
-		
-		// game setup
-		ship = (GameObject.Instantiate(game.shipPrefab) as GameObject).GetComponent<Ship>();
-		ship.Initialize(this, game);
-		playGUI.Initialize();
-		
-		GameObject newMiniMap = GameObject.Instantiate(game.miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-		miniMap = newMiniMap.GetComponent<MiniMap>() as MiniMap;
-		miniMap.Initialize(ship, this, game.gameInput, newMiniMap.GetComponentInChildren<Camera>());
-		
-		cave = new Cave(this);
-		collecteablesDistributor = new CollecteablesDistributor(this);
-		enemyDistributor = new EnemyDistributor(this);
-		movement = new Movement(this);
-		
-		StartZone ();
-				
-//		currentGravitiyDirection = 0;
-//		lastGravitiyChange = Time.time;
-		
-		shipHitRatio = 0;
-		enemyHitRatio = 0;
-		shipToEnemyHitRatio = 1.0f;
-		InvokeRepeating("UpdateStats", 0, 1.0f);
-	}
-	
 	private void StartZone() {
 		isShipInPlayableArea = false;
 		Debug.Log (" ------------------------------- Cave Seed: " + caveSeed);
@@ -302,14 +320,6 @@ public class Play : MonoBehaviour {
 		botSeed = UnityEngine.Random.Range(0,9999999);
 		UnityEngine.Random.seed = caveSeed;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
-	}
-	
-	public void Initialize(Game g, GameInput input) {
-		game = g;
-		state = game.state;
-		isShipInvincible = false;
-		isMiniMapOn = false;
-		isMiniMapFollowOn = false;
 	}
 		
 	void onDisable() {
@@ -614,14 +624,21 @@ public class Play : MonoBehaviour {
 		}
 	}
 	
-	private void SetPaused() {
+	public void SetPaused() {
 		if (isPaused) {
 			isPaused = false;
 			Time.timeScale = 1f;
+			playGUI.CloseDialog();
 		} else {
 			isPaused = true;
 			Time.timeScale = 0;
+			playGUI.ToQuit();
 		}
+	}
+
+	public void BackToMenu() {
+		EndZone();
+		game.SetGameMode(Game.Mode.Menu);
 	}
 	
 	public void SwitchMode() {
@@ -639,5 +656,6 @@ public class Play : MonoBehaviour {
 		SwitchMode();
 		cave.OpenSecretChamberDoor();
 	}
+	
 }
 

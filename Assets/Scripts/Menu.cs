@@ -34,21 +34,15 @@ public class Menu : MonoBehaviour {
 		}
 	}
 	
+	public void Activate() {
+		gui.containers[container].gameObject.SetActiveRecursively(true);
+	}
+	
+	public void Deactivate() {
+		gui.containers[container].gameObject.SetActiveRecursively(false);
+	}
+	
 	public void Restart() {
-		gui = (GameObject.Instantiate(game.guiPrefab) as GameObject).GetComponent<MyGUI>();
-		gui.Initialize(game, game.gameInput);
-		gui.CenterOnScreen(gui.transform);
-		gui.ResizeToScreenSize(gui.transform);
-		container = gui.AddContainer();
-		
-		Vector3 fullSize = gui.containers[container].GetSize();
-		Vector3 screenCenter = gui.containers[container].GetCenter();
-//		int topContainer = gui.AddContainer(container, fullSize, new Vector2(screenCenter.x, screenCenter.y), true);
-		
-		gui.AddImage(container, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
-		gui.containers[container].AddZLevel();
-		gui.AddLabel(state.GetDialog(0), container,  new Vector3(0.5f, 0.5f, 1.0f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center,
-			-0.1f, 0.0125f, 0.4f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 1);
 
 /*		TouchDelegate toNewGame = new TouchDelegate(ToNewGame);
 		gui.AddButton(topContainer, new Vector3(0.12f, 0.12f, 1.0f), toNewGame, MyGUI.GUIAlignment.Center, 0.025f, MyGUI.GUIAlignment.Top, 0.025f, Game.GUI_UV_CREDITS_BUTTON, 1);
@@ -99,22 +93,57 @@ public class Menu : MonoBehaviour {
 		}*/
 	}
 	
-	public void Initialize(Game g, GameInput input) {
+	public void Initialize(Game g) {
 		game = g;
 		state = game.state;
-//		gI = input;
+		gui = game.gui;
+		
+		container = gui.AddContainer();
+		
+		Vector3 fullSize = gui.containers[container].GetSize();
+		Vector3 screenCenter = gui.containers[container].GetCenter();
+//		int topContainer = gui.AddContainer(container, fullSize, new Vector2(screenCenter.x, screenCenter.y), true);
+		
+		gui.AddImage(container, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		gui.containers[container].AddZLevel();
+/*		gui.AddLabel(state.GetDialog(0), container,  new Vector3(0.5f, 0.5f, 1.0f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center,
+			-0.1f, 0.0125f, 0.4f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 1);
+		gui.containers[container].AddZLevel();*/
+		TouchDelegate toNewGame = new TouchDelegate(ToNewGame);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toNewGame, state.GetDialog(0), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);
+		TouchDelegate toContinueGame = new TouchDelegate(ToContinueGame);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toContinueGame, state.GetDialog(1), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		TouchDelegate toQuit = new TouchDelegate(ToQuit);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toQuit, state.GetDialog(2), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_COLOR_BLACK, 0);
 	}
 	
 	public void RemovePaygate() {
-		gui.buttons[upgradeButton].gameObject.SetActiveRecursively(false);
+		gui.imageButtons[upgradeButton].gameObject.SetActiveRecursively(false);
 		CancelInvoke();
 	}
 	
 	public void ShowPaygate() {
-		gui.buttons[upgradeButton].gameObject.SetActiveRecursively(true);
+		gui.imageButtons[upgradeButton].gameObject.SetActiveRecursively(true);
 		InvokeRepeating("ScaleUpgradeButton", 0f, UPGRADE_BUTTON_SCALE_INTERVAL);
 	}
-	
+
+	public void ToNewGame() {
+		game.SetGameMode(Game.Mode.Play);
+/*		CancelInvoke();
+		Destroy(gui.gameObject);
+		game.StartClient();*/
+	}
+
+	public void ToContinueGame() {
+		game.SetGameMode(Game.Mode.Play);
+/*		CancelInvoke();
+		Destroy(gui.gameObject);
+		game.StartClient();*/
+	}
+
 	public void ToUpgrade() {
 		game.BuyProduct(0);
 	}
@@ -205,18 +234,6 @@ public class Menu : MonoBehaviour {
 		gui.AddLabel(" ", dialogBox, MyGUI.GUIAlignment.Center, MyGUI.GUIBackground.NinePatch, 0f, 0.0125f, 0.125f, 1, Game.GUI_UV_RADIO_BOX_FOOTER);*/
 	}
 
-	public void ToClient() {
-/*		CancelInvoke();
-		Destroy(gui.gameObject);
-		game.StartClient();*/
-	}
-
-	public void ToServer() {
-/*		CancelInvoke();
-		Destroy(gui.gameObject);
-		game.StartServer();*/
-	}
-	
 	public void ToPreferences() {
 		CancelInvoke();
 		Destroy(gui.gameObject);

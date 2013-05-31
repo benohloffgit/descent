@@ -68,6 +68,7 @@ public class TextCC : MonoBehaviour {
 			textMesh.Alignment = CCText.AlignmentMode.Right;
 		}
 		textMesh.Bounding = CCText.BoundingMode.Caret;
+		textMesh.Width = Mathf.CeilToInt(t.Length/2f);
 		//Debug.Log ("size " + myGUI.containers[containerID].GetSize().x + " textsize " + GetSize().x);
 	}
 	

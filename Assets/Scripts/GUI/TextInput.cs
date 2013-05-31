@@ -10,7 +10,7 @@ public class TextInput : MonoBehaviour, Focussable {
 	private Transform cursorMesh;
 	private MyGUI.Focus focus;
 	private Cursor cursorStatus;
-	private Button editButton;
+	private ImageButton editButton;
 	private MeshRenderer editButtonMeshRenderer;
 	private BoxCollider editButtonMeshCollider;
 	private int cursorPos;
@@ -33,7 +33,7 @@ public class TextInput : MonoBehaviour, Focussable {
 		text = GetComponentInChildren<TextCC>();
 		cursor = transform.Find("Cursor");
 		cursorMesh = cursor.Find ("Mesh");
-		editButton = GetComponentInChildren<Button>();
+		editButton = GetComponentInChildren<ImageButton>();
 		editButtonMeshRenderer = editButton.GetComponentInChildren<MeshRenderer>();
 		editButtonMeshCollider = editButton.GetComponentInChildren<BoxCollider>();
 		focus = MyGUI.Focus.NoFocus;

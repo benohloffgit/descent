@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Button : MonoBehaviour, Focussable {
+public class ImageButton : MonoBehaviour, Focussable {
 	
 	public int id = -1; // set for id based event handling
 		
@@ -17,11 +17,7 @@ public class Button : MonoBehaviour, Focussable {
 		myRenderer = GetComponentInChildren<Renderer>();
 		id = gameObject.GetInstanceID();
 	}
-	
-	void Start() {
-		g = GameObject.Find("/Game(Clone)").GetComponent<Game>();
-	}
-	
+		
 	public void Initialize(MyGUI mG, TouchDelegate tD, int textureID, Vector4 uvMapDropdownOpenButton, Vector3 scale) {
 		myGUI = mG;
 		touchDelegate = tD;
@@ -38,8 +34,7 @@ public class Button : MonoBehaviour, Focussable {
 	
 	public void Select() {
 		myGUI.SetGUIInFocus(this);
-		animation.Play("Button3D");
-		g.state.PlaySound(7);	
+		myGUI.game.state.PlaySound(7);	
 	}
 
 	public Vector3 GetSize() {

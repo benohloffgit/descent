@@ -29,19 +29,18 @@ public class LabelCC : MonoBehaviour {
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
 			Vector3 scale, int textureID) {
 		myGUI = mG;
-//		containerID = cID;
 		background = backgr;
 		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
-
-//		Vector3 textSize = text.GetSize();
-		background.transform.localScale = scale;
+		text.transform.localScale = scale;
+		background.transform.localScale = text.GetSize();
 		background.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		background.transform.parent = transform;
+		
 	}
 	
-	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter, int textureID) {
+	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
+			int textureID) {
 		myGUI = mG;
-//		containerID = cID;
 		background = backgr;
 		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
 
@@ -55,14 +54,11 @@ public class LabelCC : MonoBehaviour {
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, Vector4 textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
 			Transform imageT, float scaleImage, int textureID) {
 		myGUI = mG;
-//		containerID = cID;
 		background = backgr;
 		labelImage = imageT;
 		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
 		
 		Vector3 textSize = text.GetSize();
-//		transform.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin.z + textMargin.w, 1.0f);
-//		background.localScale = transform.localScale;
 		background.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin.z + textMargin.w, 1.0f);
 		background.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		background.parent = transform;

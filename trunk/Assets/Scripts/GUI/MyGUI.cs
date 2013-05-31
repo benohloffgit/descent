@@ -8,12 +8,13 @@ public delegate int OpenRadioBoxDelegate(int containerID, DropdownDelegate dropd
 
 public class MyGUI : MonoBehaviour {
 	public GameObject containerPrefab;
-	public GameObject labelPrefab;
+//	public GameObject labelPrefab;
 	public GameObject labelBitmapPrefab;
 	public GameObject dropdownPrefab;
 	public GameObject ninePatchPrefab;
 	public GameObject quadPrefab;
-	public GameObject buttonPrefab;
+	public GameObject imageButtonPrefab;
+	public GameObject labelButtonPrefab;
 	public GameObject imagePrefab;
 	public GameObject textPrefab;
 	public GameObject dimPrefab;
@@ -27,17 +28,18 @@ public class MyGUI : MonoBehaviour {
 	public CCFont activeFont;
 	public Material activeTextMaterial;
 	
-	private Game game;
+	public Game game;
 	public GameInput gameInput;
 	public Camera guiCamera;
 	
 	public Dictionary<int, Container> containers;
-	public Dictionary<int, Label> labels;
+//	public Dictionary<int, Label> labels;
 	public Dictionary<int, LabelCC> labelsCC;
 	public Dictionary<int, TextInput> textInputs;
 	public Dictionary<int, Dropdown> dropdowns;
 	public Dictionary<int, Dim> dims;
-	public Dictionary<int, Button> buttons;
+	public Dictionary<int, ImageButton> imageButtons;
+	public Dictionary<int, LabelButton> labelButtons;
 	public Dictionary<int, Image> images;
 	
 	public enum Focus { NoFocus=0, Focus=1 }	
@@ -52,15 +54,16 @@ public class MyGUI : MonoBehaviour {
 	private float zLevel;
 		
 	void Awake() {
-		guiCamera = GameObject.Find ("GUI Camera").GetComponent<Camera>();
+		guiCamera = GetComponentInChildren<Camera>();
 			
 		containers = new Dictionary<int, Container>();
-		labels = new Dictionary<int, Label>();
+//		labels = new Dictionary<int, Label>();
 		labelsCC = new Dictionary<int, LabelCC>();
 		textInputs = new Dictionary<int, TextInput>();
 		dropdowns = new Dictionary<int, Dropdown>();
 		dims = new Dictionary<int, Dim>();
-		buttons = new Dictionary<int, Button>();
+		imageButtons = new Dictionary<int, ImageButton>();
+		labelButtons = new Dictionary<int, LabelButton>();
 		images = new Dictionary<int, Image>();
 		
 //		background = GetComponent<NinePatch>();
@@ -70,19 +73,11 @@ public class MyGUI : MonoBehaviour {
 		isGUIElementInFocus = false;
 	}
 	
-	void Start() {
-//		Game game =  GameObject.Find("/Game(Clone)").GetComponent<Game>();
-//		gameInput = game.gameInput;
-//		gameInput.RegisterGUI(this);
-	}
-	
-/*	public void Restart() {
-	}*/
-	
 	public void Initialize(Game g, GameInput input) {
 		game = g;
 		gameInput = input;
 		gameInput.RegisterGUI(this);
+		ResetGameInputZLevel();
 		activeTextMaterial = GetTextMaterial();
 		activeFont = GetBitmapFont();
 	}
@@ -96,14 +91,15 @@ public class MyGUI : MonoBehaviour {
 		c.transform.parent = transform;
 		return c.gameObject.GetInstanceID();		
 	}
-
+	
+	// Container clickable with image background
 	public int AddContainer(int containerID, Vector3 size, Vector3 pos, TouchDelegate tD, GUIBackground background, int textureIx, Vector4 uvMap, bool isFixedSize) {
 		int cID = AddContainer(containerID, size, pos, isFixedSize);
 		containers[cID].Initialize(this, containerID, tD, CreateBackground(background, textureIx, uvMap));
 		return cID;
 	}
 	
-	// as child of another container, with absolute position and zLevel
+	// Container with absolute position (Vector3) and zLevel
 	public int AddContainer(int containerID, Vector3 size, Vector3 pos, bool isFixedSize) {
 		Container c = (GameObject.Instantiate(containerPrefab, pos, Quaternion.identity) as GameObject).GetComponent<Container>();
 		c.Initialize(this, size, isFixedSize);
@@ -112,13 +108,13 @@ public class MyGUI : MonoBehaviour {
 		return c.gameObject.GetInstanceID();		
 	}
 	
-	// as child of another container and absolute position
+	// Container with absolute position (Vector2) and zLevel
 	public int AddContainer(int containerID, Vector3 size, Vector2 pos, bool isFixedSize) {
 		zLevel = containers[containerID].transform.position.z - 2.0f;
 		return AddContainer (containerID, size, new Vector3(pos.x, pos.y, zLevel), isFixedSize);
 	}
 	
-	// as child and positioned relative
+	// Container with floating position
 	public int AddContainer(int containerID, Vector3 scale, bool isFixedSize, GUIAlignment alignLeftRightCenter, float borderLeftRight,
 					GUIAlignment alignTopBottomCenter, float borderTopBottom) {		
 		Container c = (GameObject.Instantiate(containerPrefab) as GameObject).GetComponent<Container>();
@@ -128,6 +124,7 @@ public class MyGUI : MonoBehaviour {
 		return c.gameObject.GetInstanceID();
 	}
 	
+	// Container Scrollable with absolute position (Vector2) and image backgrounds
 	public int AddContainerScrollable(int containerID, Vector3 size, Vector2 pos, GUIBackground background, int textureIx, Vector4 uvMap,
 			int textureIDBlendTop, Vector4 uvMapBlendTop, int textureIDBlendBottom, Vector4 uvMapBlendBottom) {
 		int cID = AddContainer(containerID, size, pos, false);
@@ -136,17 +133,33 @@ public class MyGUI : MonoBehaviour {
 			CreateBackground(GUIBackground.Quad, textureIDBlendBottom, uvMapBlendBottom));
 		return cID;
 	}
-
-	public int AddButton(int containerID, Vector3 scale, TouchDelegate tD, GUIAlignment alignLeftRightCenter, float borderLeftRight,
+	
+	// ImageButton clickeable with image background and floating position
+	public int AddImageButton(int containerID, Vector3 scale, TouchDelegate tD, GUIAlignment alignLeftRightCenter, float borderLeftRight,
 					GUIAlignment alignTopBottomCenter, float borderTopBottom, Vector4 uvMap, int textureID) {
-		Button b = (GameObject.Instantiate(buttonPrefab) as GameObject).GetComponent<Button>();
+		ImageButton b = (GameObject.Instantiate(imageButtonPrefab) as GameObject).GetComponent<ImageButton>();
 		b.Initialize(this, tD, textureID, uvMap, scale);
-		buttons.Add(b.gameObject.GetInstanceID(), b);
+		imageButtons.Add(b.gameObject.GetInstanceID(), b);
 		containers[containerID].AddElement(b.transform, b.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 		return b.gameObject.GetInstanceID();
 	}	
+
+	// Button clickeable with image background and floating position
+	public int AddLabelButton(
+					int containerID, Vector3 scale, TouchDelegate tD,
+					string text, float textMargin, float size, int textureIDText, 
+					GUIAlignment alignLeftRightCenter, float borderLeftRight, GUIAlignment alignTopBottomCenter, float borderTopBottom,
+					Vector4 uvMapBackground, int textureIDBackground) {
+		
+		LabelButton b = (GameObject.Instantiate(labelButtonPrefab) as GameObject).GetComponent<LabelButton>();
+		b.Initialize(this, tD, containerID, text, textMargin, size, alignLeftRightCenter, textureIDText, textureIDBackground, uvMapBackground, scale);
+		labelButtons.Add(b.gameObject.GetInstanceID(), b);
+		containers[containerID].AddElement(b.transform, b.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
+		
+		return b.gameObject.GetInstanceID();
+	}	
 	
-	// scaled by bounding container
+	// Image with floating position and scaled by bounding container
 	public int AddImage(int containerID, GUIAlignment alignLeftRightCenter, float borderLeftRight,
 					GUIAlignment alignTopBottomCenter, float borderTopBottom, Vector4 uvMap, int textureID) {
 		Image i = (GameObject.Instantiate(imagePrefab) as GameObject).GetComponent<Image>();
@@ -156,7 +169,7 @@ public class MyGUI : MonoBehaviour {
 		return i.gameObject.GetInstanceID();
 	}	
 	
-	// add floating
+	//  Label with left/right alignment and floating position and image background
 	public int AddLabel(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, float textMargin,
 					float size, int textureIDText, int textureIDBackground, Vector4 uvMap) {
 //		if (text != " ") {
@@ -176,7 +189,7 @@ public class MyGUI : MonoBehaviour {
 		}*/
 	}
 	
-	// add with position
+	// Label with scale and absolute position and image background
 	public int AddLabel(string text, int containerID, Vector3 scale, GUIAlignment alignLeftRightCenter, float borderLeftRight,
 					GUIAlignment alignTopBottomCenter, float borderTopBottom, float textMargin, float size, int textureIDText, GUIBackground background,
 					Vector4 uvMap, int textureIDBackground) {
@@ -189,7 +202,7 @@ public class MyGUI : MonoBehaviour {
 	}
 
 	// add floating
-	public int AddImageLabel(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, Vector4 textMargin,
+/*	public int AddImageLabel(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, Vector4 textMargin,
 					float size, int textureIDText, int textureIDBackground, Vector4 uvMap, int textureIDImage, Vector4 uvMapImage, float scaleImage) {
 		LabelCC l;
 		l = (GameObject.Instantiate(labelBitmapPrefab) as GameObject).GetComponent<LabelCC>();
@@ -198,7 +211,7 @@ public class MyGUI : MonoBehaviour {
 		labelsCC.Add(l.gameObject.GetInstanceID(), l);
 		containers[containerID].AddElement(l.transform, l.GetSize());
 		return l.gameObject.GetInstanceID();
-	}
+	}*/
 	
 	public int AddTextInput(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, float textMargin,
 					float size, int textureIDText,
@@ -237,13 +250,14 @@ public class MyGUI : MonoBehaviour {
 		return r.gameObject.GetInstanceID();
 	}
 
-	public int AddDim(int containerID, TouchDelegate tD) {
+	public int AddDim(int containerID, TouchDelegate tD, GUIAlignment alignLeftRightCenter, float borderLeftRight,
+					GUIAlignment alignTopBottomCenter, float borderTopBottom, Vector4 uvMap, int textureID) {
 		Dim d = (GameObject.Instantiate(dimPrefab) as GameObject).GetComponent<Dim>();
-		d.Initialize(this, tD);
+		d.Initialize(this, tD, textureID, uvMap, containers[containerID].GetSize());
 		dims.Add(d.gameObject.GetInstanceID(), d);
-		containers[containerID].AddElement(d.transform, d.GetSize(), GUIAlignment.Center, 0f, GUIAlignment.Center, 0f);
+		containers[containerID].AddElement(d.transform, containers[containerID].GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 		return d.gameObject.GetInstanceID();
-	}
+	}	
 	
 	public void AddCustomAnimation(Transform t) {
 		t.gameObject.AddComponent<CustomAnimation>();
@@ -344,14 +358,14 @@ public class MyGUI : MonoBehaviour {
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Right) {
 			reposition.x = sizeParentT.x/2 - sizeT.x/2 - (sizeParentT.x/2) * borderLeftRight;
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Center) {
-			reposition.x = 0;
+			reposition.x = borderLeftRight;
 		}
 		if (alignTopBottomCenter == MyGUI.GUIAlignment.Top) {
 			reposition.y = sizeParentT.y/2 - sizeT.y/2 - (sizeParentT.y/2) * borderTopBottom;
 		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Bottom) {
 			reposition.y = -sizeParentT.y/2 + sizeT.y/2 + (sizeParentT.y/2) * borderTopBottom;
 		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Center) {
-			reposition.y = 0;
+			reposition.y = borderTopBottom;
 		}
 		t.position = center + reposition;
 	}
@@ -386,6 +400,12 @@ public class MyGUI : MonoBehaviour {
 	
 	public void SetActiveTextMaterial(int materialID) {
 		activeTextMaterial = textureAtlas[materialID];
+	}
+
+	public void CloseDialog(int containerID) {
+		GameObject.Destroy(containers[containerID].gameObject);
+		ResetGameInputZLevel();
+		DeleteGUIInFocus();
 	}
 	
 	private Material GetTextMaterial() {

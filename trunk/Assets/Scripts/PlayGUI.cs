@@ -59,11 +59,7 @@ public class PlayGUI {
 		keysFound = new Image[2];
 		keysEmpty = new Image[2];
 		
-		// GUI stuff
-		gui = (GameObject.Instantiate(play.game.guiPrefab) as GameObject).GetComponent<MyGUI>();
-		gui.Initialize(play.game, play.game.gameInput);
-		gui.CenterOnScreen(gui.transform);
-		gui.ResizeToScreenSize(gui.transform);
+		gui = play.game.gui;
 		container = gui.AddContainer();
 		
 		Vector3 fullSize = gui.containers[container].GetSize();
@@ -107,14 +103,14 @@ public class PlayGUI {
 		enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
 		gui.SetActiveTextMaterial(5);
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
-			enemyHUDInfoLabels[i] = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+			enemyHUDInfoLabels[i] = gui.AddLabel("", topContainer, new Vector3(0.03f,0.03f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		}
 
-		enemyLockMissileLabel = gui.AddLabel("", topContainer, new Vector3(1.0f,1.0f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		enemyLockMissileLabel = gui.AddLabel("", topContainer, new Vector3(0.03f,0.03f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
 		gui.SetActiveTextMaterial(4);
-		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
-		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.05f,0.05f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.05f,0.05f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
 		
 //		ticks = 0;
@@ -143,7 +139,15 @@ public class PlayGUI {
 		doorOpen.myRenderer.enabled = false;
 		doorClosed.myRenderer.enabled = true;
 	}
+
+	public void Activate() {
+		gui.containers[container].gameObject.SetActiveRecursively(true);
+	}
 	
+	public void Deactivate() {
+		gui.containers[container].gameObject.SetActiveRecursively(false);
+	}
+
 	public void DisplayKey(int keyType) {
 		keysFound[keyType].myRenderer.enabled = true;
 		keysEmpty[keyType].myRenderer.enabled = false;
@@ -337,10 +341,9 @@ public class PlayGUI {
 		}
 	}
 	
-	private void CloseDialog() {
-		GameObject.Destroy(gui.containers[dialogContainer].gameObject);
-		gui.ResetGameInputZLevel();
-		gui.DeleteGUIInFocus();
+	public void CloseDialog() {
+		gui.CloseDialog(dialogContainer);
+		Screen.showCursor = false;
 	}
 	
 	public void DisplayPrimaryWeapon(Weapon w) {
@@ -350,4 +353,33 @@ public class PlayGUI {
 	public void DisplaySecondaryWeapon(Weapon w) {
 		gui.labelsCC[secondaryWeaponLabel].SetText("T: " + Weapon.SECONDARY_TYPES[w.type] + " ("+ w.ammunition +")");
 	}
+	
+	private void ToMenu() {
+		CloseDialog();
+		play.BackToMenu();
+	}
+	
+	private void ToGame() {
+		play.SetPaused();
+	}
+	
+	public void ToQuit() {
+		Screen.showCursor = true;
+		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
+		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+			//gui.AddDim(dialogContainer, closeDialog);
+		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
+
+		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), false);
+		gui.AddLabel(play.game.state.GetDialog(5), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, 
+			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		TouchDelegate toMenu = new TouchDelegate(ToMenu);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toMenu, play.game.state.GetDialog(6), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, -0.1f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_NULL, 0);
+		TouchDelegate toGame = new TouchDelegate(ToGame);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(7), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0.1f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_NULL, 0);
+	}
+	
 }

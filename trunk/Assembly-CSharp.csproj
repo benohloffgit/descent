@@ -79,7 +79,6 @@
      <Compile Include="Assets\Scripts\Enemies\WallLaser.cs" />
      <Compile Include="Assets\Scripts\Enemies\Wombat.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />
-     <Compile Include="Assets\Scripts\GUI\Button.cs" />
      <Compile Include="Assets\Scripts\GUI\Center.cs" />
      <Compile Include="Assets\Scripts\GUI\Container.cs" />
      <Compile Include="Assets\Scripts\GUI\CustomAnimation.cs" />
@@ -87,7 +86,9 @@
      <Compile Include="Assets\Scripts\GUI\Dropdown.cs" />
      <Compile Include="Assets\Scripts\GUI\Focussable.cs" />
      <Compile Include="Assets\Scripts\GUI\Image.cs" />
+     <Compile Include="Assets\Scripts\GUI\ImageButton.cs" />
      <Compile Include="Assets\Scripts\GUI\Label.cs" />
+     <Compile Include="Assets\Scripts\GUI\LabelButton.cs" />
      <Compile Include="Assets\Scripts\GUI\LabelCC.cs" />
      <Compile Include="Assets\Scripts\GUI\MyGUI.cs" />
      <Compile Include="Assets\Scripts\GUI\NinePatch.cs" />

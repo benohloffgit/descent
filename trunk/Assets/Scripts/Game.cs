@@ -61,6 +61,7 @@ public class Game : MonoBehaviour {
 	
 	public State state;
 	public GameInput gameInput;
+	public MyGUI gui;
 	public bool isInitialized = false;
 	public enum Mode { Menu=0, Dialog=1, Play=2, None=3, Preferences=4 }
 
@@ -119,6 +120,7 @@ public class Game : MonoBehaviour {
 	
 	public static Vector4 GUI_UV_NULL = new Vector4(0.0f,0.0f,0.0f,0.0f);
 	public static Vector4 GUI_UV_COLOR_BLACK = new Vector4(0.0f,0.0f,0.0625f,0.0625f);
+	public static Vector4 GUI_UV_DIM = new Vector4(0.0625f,0.0f,0.125f,0.0625f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_2 = new Vector4(0.25f,0.875f,0.375f,1.0f);
@@ -163,15 +165,20 @@ public class Game : MonoBehaviour {
 			
 			gameInput = GetComponent<GameInput>();
 
+			gui = (GameObject.Instantiate(guiPrefab) as GameObject).GetComponent<MyGUI>();
+			gui.Initialize(this, gameInput);
+			gui.CenterOnScreen(gui.transform);
+			gui.ResizeToScreenSize(gui.transform);
+			
 			o = GameObject.Find("/Menu");
 			if (o != null) {
 				menu = o.GetComponent<Menu>();
-				menu.Initialize(this, gameInput);
+				menu.Initialize(this);
 			}
 			o = GameObject.Find("/Play");
 			if (o != null) {
 				play = o.GetComponent<Play>();
-				play.Initialize(this, gameInput);
+				play.Initialize(this);
 			}
 			
 			prefabFactory = new PrefabFactory(this);
@@ -191,18 +198,21 @@ public class Game : MonoBehaviour {
 	}
 	
 	public void SetGameMode(Mode mode) {
-		gameInput.DeRegisterGUI();
+//		gameInput.DeRegisterGUI();
 		state.gameMode = mode;
 		if (mode == Mode.Menu) {
+			Screen.lockCursor = false;
+			Screen.showCursor = true;
 			Screen.sleepTimeout = SleepTimeout.SystemSetting;
-			menu.gameObject.SetActiveRecursively(true);
-			menu.Restart();
-			play.gameObject.SetActiveRecursively(false);
+			menu.Activate();
+			play.Deactivate();
 		} else if (mode == Mode.Play) {
+			Screen.lockCursor = true;
+			Screen.showCursor = false;
 			Screen.sleepTimeout = SleepTimeout.NeverSleep;
-			play.gameObject.SetActiveRecursively(true);
+			play.Activate();
 			play.Restart();
-			menu.gameObject.SetActiveRecursively(false);			
+			menu.Deactivate();			
 		}
 	}
 		

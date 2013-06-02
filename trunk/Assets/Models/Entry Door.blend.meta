@@ -10,7 +10,7 @@ ModelImporter:
     7400008: Door Close //// Entry Door
   serializedVersion: 10
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:

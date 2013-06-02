@@ -39,7 +39,7 @@ public class Sokoban {
 		
 		CreateBoard();
 		CreatePlayer();
-		board.SwitchCameraOff();
+		SwitchOff();
 	}
 	
 	public void SwitchOn() {

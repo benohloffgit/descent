@@ -92,9 +92,9 @@ public class Ship : MonoBehaviour {
 		shipCamera = cameraTransform.GetComponent<Camera>();
 	}
 	
-	public void Initialize(Play p, Game g) {
+	public void Initialize(Play p) {
 		play = p;
-		game = g;
+		game = play.game;
 		gameInput = game.gameInput;
 		
 		shipSteering.Initialize(this, play, gameInput);
@@ -112,45 +112,55 @@ public class Ship : MonoBehaviour {
 		isDetonatorMissileExploded = true;
 	}
 	
+	public void Activate() {
+		shipCamera.enabled = true;
+	}
+	
+	public void Deactivate() {
+		shipCamera.enabled = false;
+	}
+	
 	void FixedUpdate() {
-		play.CachePositionalDataOfShip(transform.position);
-		
-		if (currentSecondaryWeapon != -1) {
-			secondaryWeapons[currentSecondaryWeapon].IsReloaded();
-			if (chargedMissileTimer != -1f && shield > 0) {
-				float timeDelta = Time.time - chargedMissileTimer;
-				int fullDeduction = Mathf.Min(CHARGED_MISSILE_SHIELD_MAX, Mathf.FloorToInt(Mathf.Min(timeDelta, CHARGED_MISSILE_TIME_MAX) * CHARGED_MISSILE_DEDUCTION));
-				int newDeduction = Mathf.Min(fullDeduction - chargedMissileShieldDeducted, shield);
-//				Debug.Log (newDeduction);
-				shield -= newDeduction;
-				shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
-				chargedMissileShieldDeducted = fullDeduction;
+		if (!play.isPaused) {
+			play.CachePositionalDataOfShip(transform.position);
+			
+			if (currentSecondaryWeapon != -1) {
+				secondaryWeapons[currentSecondaryWeapon].IsReloaded();
+				if (chargedMissileTimer != -1f && shield > 0) {
+					float timeDelta = Time.time - chargedMissileTimer;
+					int fullDeduction = Mathf.Min(CHARGED_MISSILE_SHIELD_MAX, Mathf.FloorToInt(Mathf.Min(timeDelta, CHARGED_MISSILE_TIME_MAX) * CHARGED_MISSILE_DEDUCTION));
+					int newDeduction = Mathf.Min(fullDeduction - chargedMissileShieldDeducted, shield);
+	//				Debug.Log (newDeduction);
+					shield -= newDeduction;
+					shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
+					chargedMissileShieldDeducted = fullDeduction;
+				}
 			}
-		}
-		// Enemy target info
-		if (Physics.Raycast(transform.position, transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
-			if (hit.collider.tag == Enemy.TAG) {
-				Enemy e = hit.transform.GetComponent<Enemy>();
-				play.playGUI.EnemyInSight(e);
-				if (	currentSecondaryWeapon != -1
-						&& secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_GUIDED_MISSILE
-						&& secondaryWeapons[currentSecondaryWeapon].ammunition > 0
-					) {
-					if (missileLockMode == MissileLockMode.None || lockedEnemy != e) {
-//						Debug.Log ("Aiming at enemy");
-						lockedEnemy = e;
-						missileLockTime = Time.time;
-						missileLockMode = MissileLockMode.Aiming;
-					} else {
-						if (missileLockMode == MissileLockMode.Aiming && Time.time > missileLockTime + MISSILE_LOCK_DURATION) {
-//							Debug.Log ("Enemy locked after 3 seconds");
-							missileLockMode = MissileLockMode.Locked;
+			// Enemy target info
+			if (Physics.Raycast(transform.position, transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
+				if (hit.collider.tag == Enemy.TAG) {
+					Enemy e = hit.transform.GetComponent<Enemy>();
+					play.playGUI.EnemyInSight(e);
+					if (	currentSecondaryWeapon != -1
+							&& secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_GUIDED_MISSILE
+							&& secondaryWeapons[currentSecondaryWeapon].ammunition > 0
+						) {
+						if (missileLockMode == MissileLockMode.None || lockedEnemy != e) {
+	//						Debug.Log ("Aiming at enemy");
+							lockedEnemy = e;
+							missileLockTime = Time.time;
+							missileLockMode = MissileLockMode.Aiming;
+						} else {
+							if (missileLockMode == MissileLockMode.Aiming && Time.time > missileLockTime + MISSILE_LOCK_DURATION) {
+	//							Debug.Log ("Enemy locked after 3 seconds");
+								missileLockMode = MissileLockMode.Locked;
+							}
 						}
 					}
+				} else if (missileLockMode != MissileLockMode.None) {
+					missileLockMode = MissileLockMode.None;
+	//				Debug.Log ("Lock lost");
 				}
-			} else if (missileLockMode != MissileLockMode.None) {
-				missileLockMode = MissileLockMode.None;
-//				Debug.Log ("Lock lost");
 			}
 		}
 	}

@@ -7,7 +7,6 @@ public class CollecteablesDistributor {
 	private Play play;
 	private Game game;
 	private Ship ship;
-//	private List<GameObject> drops;
 	
 	private static int AMOUNT_HEAL = 35;
 	private static int AMOUNT_SHIELD = 20;
@@ -19,7 +18,6 @@ public class CollecteablesDistributor {
 		play = play_;
 		game = play.game;
 		ship = play.ship;
-//		drops = new List<GameObject>();
 	}
 	
 	public void DistributeOnEnemyDeath(Enemy e) {

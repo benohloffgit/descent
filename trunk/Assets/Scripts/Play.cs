@@ -12,6 +12,7 @@ public class Play : MonoBehaviour {
 	public Cave cave;
 	public Movement movement;
 	public Ship ship;
+	public ExitHelper exitHelper;
 	public bool isShipInvincible;
 	public bool isShipInPlayableArea;
 	public bool isMiniMapOn;
@@ -79,13 +80,9 @@ public class Play : MonoBehaviour {
 		isShipInvincible = false;
 		isMiniMapOn = false;
 		isMiniMapFollowOn = false;
-		isPaused = true;
 		mode = Mode.Normal;
 		playGUI = new PlayGUI(this);
-	}
 
-	public void Restart() {
-		isPaused = false;
 		sokoban = new Sokoban(this);
 		
 		botSeed = UnityEngine.Random.Range(0,9999999);
@@ -97,7 +94,12 @@ public class Play : MonoBehaviour {
 		
 		// game setup
 		ship = (GameObject.Instantiate(game.shipPrefab) as GameObject).GetComponent<Ship>();
-		ship.Initialize(this, game);
+		ship.Initialize(this);
+		ship.Deactivate();
+		
+		exitHelper = (GameObject.Instantiate(game.exitHelperPrefab) as GameObject).GetComponent<ExitHelper>();
+		exitHelper.Initialize(this);
+		
 		playGUI.Initialize();
 		
 		GameObject newMiniMap = GameObject.Instantiate(game.miniMapPrefab, Vector3.zero, Quaternion.identity) as GameObject;
@@ -109,23 +111,18 @@ public class Play : MonoBehaviour {
 		enemyDistributor = new EnemyDistributor(this);
 		movement = new Movement(this);
 		
-		StartZone ();
-				
-//		currentGravitiyDirection = 0;
-//		lastGravitiyChange = Time.time;
-		
-		shipHitRatio = 0;
-		enemyHitRatio = 0;
-		shipToEnemyHitRatio = 1.0f;
-		InvokeRepeating("UpdateStats", 0, 1.0f);
+		SetPaused(true);
 	}
 	
 	public void Activate() {
 		playGUI.Activate();
+		StartZone ();
+		InvokeRepeating("UpdateStats", 0, 1.0f);
 	}
 	
 	public void Deactivate() {
 		playGUI.Deactivate();
+		CancelInvoke();
 	}
 
 	void OnGUI() {
@@ -175,7 +172,13 @@ public class Play : MonoBehaviour {
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
 			if (Input.GetKeyDown(KeyCode.Escape)) {
-				SetPaused();
+				if (isPaused) {
+					SetPaused(false);
+					playGUI.CloseDialog();
+				} else {
+					SetPaused(true);
+					playGUI.ToQuit();
+				}
 			}
 			if (Input.GetKeyDown(KeyCode.F6)) {
 				SwitchMode();
@@ -200,76 +203,6 @@ public class Play : MonoBehaviour {
 					ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
 				}
 			}
-/*			if (Input.GetKeyDown(KeyCode.Alpha0)) {
-				if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit, MAX_RAYCAST_DISTANCE, 1 << Game.LAYER_CAVE)) {
-					int triangleIndex = hit.triangleIndex * 3;
-					Debug.Log ("Triangle Index: " + triangleIndex);
-					Mesh m = GetRoomOfShip().roomMesh.mesh;
-					int[] vertexIndices = new int[3];
-					vertexIndices[0] = m.triangles[triangleIndex];
-					vertexIndices[1] = m.triangles[triangleIndex+1];
-					vertexIndices[2] = m.triangles[triangleIndex+2];
-					Vector3[] normals = new Vector3[3];
-					normals[0] = m.normals[vertexIndices[0]];
-					normals[1] = m.normals[vertexIndices[1]];
-					normals[2] = m.normals[vertexIndices[2]];
-					Debug.Log ("Vertex index is " + vertexIndices[0] +","+vertexIndices[1]+","+vertexIndices[2]);
-					Debug.Log ("Vertex is " + m.vertices[vertexIndices[0]] +","+m.vertices[vertexIndices[1]]+","+m.vertices[vertexIndices[2]]);
-					Debug.Log ("Triangle (Editor mode): " + hit.normal + " (" + normals[0]+","+normals[1]+","+normals[2]+ ")");
-				}
-			}*/
-	/*		if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.LeftArrow)) {
-				Debug.Log ("Changing Vertex");
-				Mesh m = GetRoomOfShip().roomMesh.mesh;
-				Vector3[] vertices = m.vertices;
-				int i = 462; // 462,403,469
-				vertices[i].z += 0.1f;
-				m.vertices = vertices;
-				//m.RecalculateNormals();
-			}*/
-			
-/*			if ((Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl)) && Input.GetKeyDown(KeyCode.I)) {
-				isShipInvincible = (isShipInvincible) ? false : true;
-				Debug.Log ("Setting ship invincible: " + isShipInvincible);
-			}
-			if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.C)) {
-				PlaceTestCubes();
-				Debug.Log ("Placing test cubes");
-			}
-			if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.V)) {
-				RemoveTestCubes();
-				Debug.Log ("Removing test cubes");
-			}
-			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.I)) {
-				testPathStart = new GridPosition(new IntTriple(7,2,2), new IntTriple(1,2,0));
-				testPathEnd = new GridPosition(new IntTriple(9,2,10), new IntTriple(1,2,0));
-				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
-				Debug.Log ("Setting AStar path from/to : " + testPathStart + " / "  + testPathEnd);
-			}
-			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.O)) {
-				testPathStart = cave.GetGridFromPosition(ship.transform.position);
-				Debug.Log ("Setting AStar path start at : " + testPathStart);
-			}
-			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.P)) {
-				testPathEnd = cave.GetGridFromPosition(ship.transform.position);
-				Debug.Log ("Setting AStar path end at : " + testPathEnd);
-				movement.AStarPath(aStarThreadState, testPathStart, testPathEnd);
-//				Debug.Log (Time.frameCount);
-			}
-			if (Input.GetKey(KeyCode.RightAlt) && Input.GetKeyDown(KeyCode.K)) {
-				Debug.Log("Ship Grid: " + shipGridPosition + ", " + cave.GetCellDensity(shipGridPosition));
-			}
-/*			if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.L)) {
-				Debug.Log("Nearest empty grid: " + cave.GetNearestEmptyGridPositionFrom(shipGridPosition));
-			}*/
-			
-/*			if (aStarThreadState.IsFinishedNow()) {
-				aStarThreadState.Complete();
-//				Debug.Log (Time.frameCount);
-				foreach (AStarNode n in aStarThreadState.roomPath) {
-					PlaceTestCube(n.gridPos);
-				}
-			}*/
 		}
 	}
 	
@@ -280,6 +213,9 @@ public class Play : MonoBehaviour {
 	}
 	
 	private void StartZone() {
+		shipHitRatio = 0;
+		enemyHitRatio = 0;
+		shipToEnemyHitRatio = 1.0f;
 		isShipInPlayableArea = false;
 		Debug.Log (" ------------------------------- Cave Seed: " + caveSeed);
 		UnityEngine.Random.seed = caveSeed;
@@ -292,10 +228,12 @@ public class Play : MonoBehaviour {
 			enemyDistributor.Distribute();
 		}
 		ship.CalculateHullClazz();
+		ship.Activate();
 		sokoban.RenderLevel(zoneID);
 		ConfigureLighting();
 		playGUI.Reset();
-		ship.transform.position = cave.GetCaveEntryPosition();		
+		ship.transform.position = cave.GetCaveEntryPosition();
+		SetPaused(false);
 	}
 	
 	public void NextZone() {
@@ -305,11 +243,11 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void RepeatZone() {
-		SetPaused();
+		SetPaused(true);
 		EndZone();
 		ship.SetHealthAndShield();
 		StartZone();
-		SetPaused();
+		SetPaused(false);
 	}
 	
 	private void EndZone() {
@@ -320,12 +258,12 @@ public class Play : MonoBehaviour {
 		botSeed = UnityEngine.Random.Range(0,9999999);
 		UnityEngine.Random.seed = caveSeed;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
+		ship.Deactivate();
 	}
 		
 	void onDisable() {
 		CancelInvoke();
-		Destroy(ship.gameObject);
-//		Destroy(cave.gameObject);
+//		Destroy(ship.gameObject);
 	}
 	
 	public void DispatchGameInput() {
@@ -624,15 +562,15 @@ public class Play : MonoBehaviour {
 		}
 	}
 	
-	public void SetPaused() {
-		if (isPaused) {
-			isPaused = false;
-			Time.timeScale = 1f;
-			playGUI.CloseDialog();
-		} else {
+	public void SetPaused(bool toPaused) {
+		if (toPaused) {
 			isPaused = true;
 			Time.timeScale = 0;
-			playGUI.ToQuit();
+//			Time.fixedDeltaTime = 0;
+		} else {
+			isPaused = false;
+			Time.timeScale = 1f;
+//			Time.fixedDeltaTime = 0.0166666f;
 		}
 	}
 
@@ -642,11 +580,12 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void SwitchMode() {
-		SetPaused();
 		if (mode == Mode.Normal) {
+			SetPaused(true);
 			mode = Mode.Sokoban;
 			sokoban.SwitchOn();
 		} else {
+			SetPaused(false);
 			mode = Mode.Normal;
 			sokoban.SwitchOff();
 		}

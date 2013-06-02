@@ -20,6 +20,7 @@ public class Game : MonoBehaviour {
 	
 	public GameObject testCubePrefab;
 	public GameObject shipPrefab;
+	public GameObject exitHelperPrefab;
 	public GameObject wallGunPrefab;
 	public GameObject wallLaserPrefab;
 	public GameObject mineBuilderPrefab;
@@ -204,15 +205,14 @@ public class Game : MonoBehaviour {
 			Screen.lockCursor = false;
 			Screen.showCursor = true;
 			Screen.sleepTimeout = SleepTimeout.SystemSetting;
-			menu.Activate();
 			play.Deactivate();
+			menu.Activate();
 		} else if (mode == Mode.Play) {
 			Screen.lockCursor = true;
 			Screen.showCursor = false;
 			Screen.sleepTimeout = SleepTimeout.NeverSleep;
-			play.Activate();
-			play.Restart();
 			menu.Deactivate();			
+			play.Activate();
 		}
 	}
 		

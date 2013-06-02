@@ -360,7 +360,8 @@ public class PlayGUI {
 	}
 	
 	private void ToGame() {
-		play.SetPaused();
+		CloseDialog();
+		play.SetPaused(false);
 	}
 	
 	public void ToQuit() {

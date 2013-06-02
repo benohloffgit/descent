@@ -1,6 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\ExitHelper.cs">
     <Files>
       <File FileName="Assets\Scripts\GUI\LabelButton.cs" Line="33" Column="18" />
       <File FileName="Assets\Scripts\GUI\ImageButton.cs" Line="37" Column="1" />
@@ -8,12 +8,14 @@
       <File FileName="Assets\Scripts\GUI\MyGUI.cs" Line="371" Column="3" />
       <File FileName="Assets\Scripts\Menu.cs" Line="109" Column="1" />
       <File FileName="Assets\Scripts\GameInput.cs" Line="103" Column="2" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="359" Column="21" />
-      <File FileName="Assets\Scripts\Game.cs" Line="123" Column="65" />
-      <File FileName="Assets\Scripts\Play.cs" Line="87" Column="21" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="364" Column="1" />
+      <File FileName="Assets\Scripts\Game.cs" Line="23" Column="37" />
+      <File FileName="Assets\Scripts\Play.cs" Line="101" Column="29" />
       <File FileName="Assets\Scripts\State.cs" Line="283" Column="21" />
-      <File FileName="Assets\Scripts\GUI\TextCC.cs" Line="71" Column="37" />
-      <File FileName="Assets\Scripts\Sokoban\Sokoban.cs" Line="5" Column="14" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="98" Column="1" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="136" Column="27" />
+      <File FileName="Assets\Scripts\Enemies\Pike.cs" Line="113" Column="1" />
+      <File FileName="Assets\Scripts\Ship\ExitHelper.cs" Line="79" Column="16" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

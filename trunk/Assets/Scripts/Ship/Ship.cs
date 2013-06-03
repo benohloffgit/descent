@@ -23,6 +23,7 @@ public class Ship : MonoBehaviour {
 	public float lastMoveTime;
 		
 	private Play play;
+	private ExitHelper exitHelper;
 	private GameInput gameInput;
 	
 	// ship components
@@ -34,6 +35,7 @@ public class Ship : MonoBehaviour {
 	private Transform cameraTransform;
 	public Camera shipCamera;
 	
+	private bool isExitHelperLaunched;
 	private bool isHeadlightOn;
 	private int cameraPosition;
 	public MissileLockMode missileLockMode;
@@ -44,8 +46,8 @@ public class Ship : MonoBehaviour {
 	public bool isDetonatorMissileExploded;
 			
 	private static float FORCE_MOVE = 25.0f;
-	private static float FORCE_TURN = 5.0f;
-	private static float FORCE_YAW = 3.5f;
+	private static float FORCE_TURN = 12.5f; // 5.0f
+	private static float FORCE_YAW = 10f; // 3.5f
 	
 	private static int CHARGED_MISSILE_SHIELD_MAX = 50;
 	private static float CHARGED_MISSILE_TIME_MAX = 2.5f; // seconds
@@ -65,9 +67,7 @@ public class Ship : MonoBehaviour {
 	
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;
-//	private static int CAMERA_POSITION_LEFT = 2;
-//	private static int CAMERA_POSITION_RIGHT = 3;
-//	private static int CAMERA_POSITION_FRONT = 4;
+	private static Vector3 EXIT_HELPER_LAUNCH_POSITION = new Vector3(0f, 0f, 2f);
 		
 	public Weapon[] primaryWeapons = new Weapon[8];
 	public Weapon[] secondaryWeapons = new Weapon[4];
@@ -92,14 +92,16 @@ public class Ship : MonoBehaviour {
 		shipCamera = cameraTransform.GetComponent<Camera>();
 	}
 	
-	public void Initialize(Play p) {
-		play = p;
+	public void Initialize(Play play_, ExitHelper exitHelper_) {
+		play = play_;
 		game = play.game;
 		gameInput = game.gameInput;
+		exitHelper = exitHelper_;
 		
 		shipSteering.Initialize(this, play, gameInput);
 		shipControl.Initialize(this, game, play, gameInput);
 		
+		isExitHelperLaunched = false;
 		isHeadlightOn = true;
 		SwitchHeadlight();
 		cameraPosition = CAMERA_POSITION_COCKPIT;
@@ -123,6 +125,10 @@ public class Ship : MonoBehaviour {
 	void FixedUpdate() {
 		if (!play.isPaused) {
 			play.CachePositionalDataOfShip(transform.position);
+			
+			if (cameraPosition != CAMERA_POSITION_COCKPIT) {
+				PositionCamera();
+			}
 			
 			if (currentSecondaryWeapon != -1) {
 				secondaryWeapons[currentSecondaryWeapon].IsReloaded();
@@ -256,7 +262,7 @@ public class Ship : MonoBehaviour {
 		if (cameraPosition == CAMERA_POSITIONS.Length) {
 			cameraPosition = CAMERA_POSITION_COCKPIT;
 		}
-		cameraTransform.localPosition = CAMERA_POSITIONS[cameraPosition];
+		PositionCamera();
 
 		if (cameraPosition == CAMERA_POSITION_COCKPIT) {
 			shipCamera.cullingMask = Game.LAYER_MASK_CAMERA_WITHOUT_SHIP;
@@ -270,15 +276,15 @@ public class Ship : MonoBehaviour {
 		}
 		
 	}
-		
-/*	private void Calibrate() {
-		if (Input.acceleration != Vector3.zero) {
-//			calibration = Quaternion.FromToRotation(Input.acceleration, new Vector3(0,0,-1.0f));
-			calibration = Input.gyro.attitude;
-			isCalibrated = true;
+	
+	private void PositionCamera() {
+		Vector3 toCamera = transform.TransformDirection(CAMERA_POSITIONS[cameraPosition]);
+		Vector3 pos = transform.position + toCamera;
+		if (Physics.Raycast(transform.position, toCamera, out hit,	toCamera.magnitude, 1 << Game.LAYER_CAVE)) {
+			pos = Vector3.Lerp(transform.position, hit.point, 0.9f);
 		}
-//		Debug.Log ("Calibration " + Input.acceleration +" " + calibration);
-	}*/
+		cameraTransform.position = pos;
+	}
 
 	private void InstantiateShipHUD() {
 		shipHUD = GameObject.Instantiate(shipHUDPrefab) as GameObject;
@@ -427,6 +433,31 @@ public class Ship : MonoBehaviour {
 		if (secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
 			chargedMissileTimer = Time.time;
 			chargedMissileShieldDeducted = 0;
+		}
+	}
+	
+	public void LaunchExitHelper() {
+		if (isExitHelperLaunched) {
+			LaunchExitHelper(false);
+		} else {
+			LaunchExitHelper(true);
+		}
+	}
+	
+	public void LaunchExitHelper(bool toLaunch) {
+		if (toLaunch) {
+			Vector3 pos = transform.position + transform.TransformDirection(EXIT_HELPER_LAUNCH_POSITION);
+			if (Physics.Raycast(transform.position, transform.forward, out hit,
+					transform.TransformDirection(EXIT_HELPER_LAUNCH_POSITION).magnitude, 1 << Game.LAYER_CAVE)) {
+				pos = hit.point;
+			}
+			exitHelper.transform.position = pos;
+			exitHelper.Activate();
+			isExitHelperLaunched = true;
+		} else {
+			exitHelper.transform.position = new Vector3(9000f, 9000f, 9000f);
+			exitHelper.Deactivate();
+			isExitHelperLaunched = false;
 		}
 	}
 	

@@ -62,6 +62,9 @@ public class ShipControl {
 			if (Input.GetKeyDown(KeyCode.PageDown)) {
 				ship.CycleSecondary();
 			}
+			if (Input.GetKeyDown(KeyCode.F2)) {
+				ship.LaunchExitHelper();
+			}
 		}
 	}
 }

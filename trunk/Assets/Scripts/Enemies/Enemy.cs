@@ -157,7 +157,7 @@ public abstract class Enemy : MonoBehaviour {
 		
 		// derived values
 		shootingRange = RoomMesh.MESH_SCALE * lookAtRange;
-		chasingRange = RoomMesh.MESH_SCALE * (lookAtRange-2);//RoomMesh.MESH_SCALE * chaseRange;
+		chasingRange = RoomMesh.MESH_SCALE * (lookAtRange-2);
 		lookAtToleranceAiming = 0.5f;
 		lookAtToleranceRoaming = 20.0f;
 		

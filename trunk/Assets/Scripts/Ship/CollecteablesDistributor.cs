@@ -154,7 +154,14 @@ public class CollecteablesDistributor {
 		for (int i=0; i<Ship.SPECIAL_POWER_UP.Length; i++) {
 			CheckDropPowerUp(Game.POWERUP_SPECIAL, i, Ship.SPECIAL_POWER_UP[i], Ship.SPECIAL_POWER_UP[i]);
 		}
-		// TODO IF NO POWER UP DROP; DROP HEALTH OR SHIELD OR AMMO
+		if (powerUpPositionOffsetLast < 4) {
+			// 50 : 50
+			if (UnityEngine.Random.Range (0,2) == 0) {
+				DropHealth(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
+			} else {
+				DropShield(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
+			}
+		}
 		
 	}
 	

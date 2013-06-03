@@ -31,6 +31,7 @@ public class Game : MonoBehaviour {
 	public GameObject bugPrefab;
 	public GameObject snakePrefab;
 	public GameObject hornetPrefab;
+	public GameObject bulbPrefab;
 	public GameObject wombatPrefab;
 	public GameObject batPrefab;
 	public GameObject gazellePrefab;

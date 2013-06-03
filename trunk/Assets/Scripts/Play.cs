@@ -89,7 +89,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 3;
+		zoneID = 12;
 		isInKeyboardMode = false;
 		
 		exitHelper = (GameObject.Instantiate(game.exitHelperPrefab) as GameObject).GetComponent<ExitHelper>();
@@ -299,12 +299,8 @@ public class Play : MonoBehaviour {
 /*		if (keyCommand.Substring(1, 1) == "e") {
 				Enemy e = enemyDistributor.CreateEnemy(null, Enemy.CLAZZ_NUM(keyCommand.Substring(2, 1)), Convert.ToInt32(keyCommand.Substring(3, 2)));
 				e.transform.position = GetShipPosition();
-				Debug.Log ("Adding Enemy " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");
-		} else */ if (keyCommand.Substring(1, 1) == "m") {
-				Mana m = enemyDistributor.CreateMana();
-				m.transform.position = GetShipPosition();
-				Debug.Log ("Adding Mana (Editor mode)");
-		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 5) == "power") {
+				Debug.Log ("Adding Enemy " + keyCommand.Substring(2, 1) + Convert.ToInt32(keyCommand.Substring(3, 2)) + " (Editor mode)");*/
+		if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 5) == "power") {
 				collecteablesDistributor.DropPowerUp(GetShipPosition() + ship.transform.forward * RoomMesh.MESH_SCALE, Weapon.PRIMARY, 0);
 				Debug.Log ("Adding Power Up Primary 1 (Editor mode)");
 		} else if (keyCommand.Substring(1, 1) == "d" && keyCommand.Substring(2, 6) == "health") {

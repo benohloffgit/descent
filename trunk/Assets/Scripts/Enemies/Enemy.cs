@@ -19,6 +19,7 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_MINEBUILDER = "Wasp";
 	public static string CLAZZ_WALLLASER = "Cricket";
 	public static string CLAZZ_HORNET = "Hornet";
+	public static string CLAZZ_BULB = "Bulb";
 	
 //	public static string CLAZZ_K = "k";
 //	public static string CLAZZ_L = "l";
@@ -35,8 +36,9 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_MINEBUILDER10 = 10;
 	public static int CLAZZ_WALLLASER11 = 11;
 	public static int CLAZZ_HORNET12 = 12;
+	public static int CLAZZ_BULB13 = 13;
 	
-	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_BUG, CLAZZ_SNAKE, CLAZZ_MINEBUILDER, CLAZZ_WALLLASER, CLAZZ_HORNET};
+	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_BUG, CLAZZ_SNAKE, CLAZZ_MINEBUILDER, CLAZZ_WALLLASER, CLAZZ_HORNET, CLAZZ_BULB};
 	
 	public static int MODEL_MIN = 0;
 	public static int MODEL_MAX = 63;
@@ -203,16 +205,6 @@ public abstract class Enemy : MonoBehaviour {
 	}
 	
 	public void Damage(int damage) {
-/*		if (shield > 0) {
-			shield -= damage * 2;
-			if (shield < 0) {
-				damage = Mathf.Abs(shield);
-				shield = 0;
-			} else {
-				damage = 0;
-			}
-		}*/
-		
 		if (health-damage <= 0) {
 			if (spawn != null) {
 				spawn.LoseHealth(this, health);
@@ -271,6 +263,8 @@ public abstract class Enemy : MonoBehaviour {
 			return 11;
 		} else if (clazz_ == CLAZZ_HORNET) {
 			return 12;
+		} else if (clazz_ == CLAZZ_BULB) {
+			return 13;
 		}
 		return -1;
 	}

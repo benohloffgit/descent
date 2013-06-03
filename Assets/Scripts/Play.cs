@@ -12,7 +12,7 @@ public class Play : MonoBehaviour {
 	public Cave cave;
 	public Movement movement;
 	public Ship ship;
-	public ExitHelper exitHelper;
+	private ExitHelper exitHelper;
 	public bool isShipInvincible;
 	public bool isShipInPlayableArea;
 	public bool isMiniMapOn;
@@ -92,13 +92,12 @@ public class Play : MonoBehaviour {
 		zoneID = 3;
 		isInKeyboardMode = false;
 		
+		exitHelper = (GameObject.Instantiate(game.exitHelperPrefab) as GameObject).GetComponent<ExitHelper>();
+		
 		// game setup
 		ship = (GameObject.Instantiate(game.shipPrefab) as GameObject).GetComponent<Ship>();
-		ship.Initialize(this);
+		ship.Initialize(this, exitHelper);
 		ship.Deactivate();
-		
-		exitHelper = (GameObject.Instantiate(game.exitHelperPrefab) as GameObject).GetComponent<ExitHelper>();
-		exitHelper.Initialize(this);
 		
 		playGUI.Initialize();
 		
@@ -111,6 +110,8 @@ public class Play : MonoBehaviour {
 		enemyDistributor = new EnemyDistributor(this);
 		movement = new Movement(this);
 		
+		exitHelper.Initialize(this);
+
 		SetPaused(true);
 	}
 	
@@ -259,6 +260,7 @@ public class Play : MonoBehaviour {
 		UnityEngine.Random.seed = caveSeed;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		ship.Deactivate();
+		ship.LaunchExitHelper(false);
 	}
 		
 	void onDisable() {
@@ -482,7 +484,12 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void CreateBreadcrumb() {
-		breadcrumbs.Add(game.CreateFromPrefab().CreateBreadcrumb(ship.transform.position + ship.transform.TransformDirection(BREADCRUMB_POSITION), Quaternion.identity));
+		Vector3 pos = ship.transform.position + ship.transform.TransformDirection(BREADCRUMB_POSITION);
+		if (Physics.Raycast(ship.transform.position, ship.transform.forward, out hit,
+				ship.transform.TransformDirection(BREADCRUMB_POSITION).magnitude, 1 << Game.LAYER_CAVE)) {
+			pos = hit.point;
+		}
+		breadcrumbs.Add(game.CreateFromPrefab().CreateBreadcrumb(pos, Quaternion.identity));
 		if (breadcrumbs.Count > Game.MAX_BREADCRUMBS) {
 			Destroy(breadcrumbs[0]);
 			breadcrumbs.RemoveAt(0);

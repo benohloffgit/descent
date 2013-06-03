@@ -113,36 +113,6 @@ public class Movement {
 		//return angleForward;
 	}
 	
-/*	public void LookAt(Rigidbody rigidbody, Transform target, int minDistance, float angleTolerance) {
-		Vector3 position = rigidbody.transform.position;
-		if ( Vector3.Distance(Cave.GetGridFromPosition(position).GetVector3(), Cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
-			Vector3 toTarget = target.position - position;
-//			Vector3 tangent = Vector3.zero;
-//			Vector3 binormal = Vector3.zero;
-//			Vector3.OrthoNormalize(ref toTarget, ref tangent, ref binormal);
-			float angleUp = Vector3.Angle(rigidbody.transform.up, target.up);
-			if (angleUp > 30.0f) {
-				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.up, target.up) * 10.0f);
-			}
-			float angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
-			if (angleForward > angleTolerance) {
-				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 10.0f);
-			}
-		}*/
-/*		Vector3 position = rigidbody.transform.position;
-		if ( Vector3.Distance(Cave.GetGridFromPosition(position).GetVector3(), Cave.GetGridFromPosition(target.position).GetVector3()) <= minDistance ) {
-			float angleUp = Vector3.Angle(rigidbody.transform.up, target.up);
-			if (angleUp > angleTolerance) {
-				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.up, -target.up) * 10.0f);
-			}
-			Vector3 toTarget = target.position-position;
-			float angleForward = Vector3.Angle(rigidbody.transform.forward, toTarget);
-			if (angleForward > angleTolerance) {
-				rigidbody.AddTorque(Vector3.Cross(rigidbody.transform.forward, toTarget) * 1.0f);
-			}
-		}
-	}*/
-	
 	// http://en.wikipedia.org/wiki/A*
 	public void AStarPath(AStarThreadState aStarThreadState, GridPosition s, GridPosition g) {
 		

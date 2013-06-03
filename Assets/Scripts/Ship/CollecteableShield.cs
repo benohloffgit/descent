@@ -15,7 +15,8 @@ public class CollecteableShield : MonoBehaviour {
 
 	void FixedUpdate() {
 		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
-		if (isShipVisible != Vector3.zero) {
+//		if (isShipVisible != Vector3.zero) {
+		if (isShipVisible != Vector3.zero || (!play.isShipInPlayableArea || play.GetRoomOfShip().id == play.cave.secretCaveRoomID)) {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			angle += 0.05f;
 			transform.RotateAround(transform.up, angle);

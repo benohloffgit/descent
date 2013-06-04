@@ -65,9 +65,7 @@ public class Game : MonoBehaviour {
 	public GameInput gameInput;
 	public MyGUI gui;
 	public bool isInitialized = false;
-	public enum Mode { Menu=0, Dialog=1, Play=2, None=3, Preferences=4 }
-
-	public static int MAX_WIDTH = 1536;
+	public enum Mode { Menu=0, Play=2, None=3, Preferences=4 }
 	
 	public static Vector3 CELL_CENTER = new Vector3(0.5f,0.5f,0.5f);
 	
@@ -92,6 +90,7 @@ public class Game : MonoBehaviour {
 	public static int LAYER_COLLECTEABLES = 17;
 	public static int LAYER_MINES = 18;
 	public static int LAYER_SOKOBAN = 19;
+	public static int DOOR_TRIGGER = 20;
 	
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ZONE_SQUARED = DIMENSION_ZONE * DIMENSION_ZONE;

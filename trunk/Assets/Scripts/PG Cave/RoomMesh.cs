@@ -26,7 +26,7 @@ public class RoomMesh : MonoBehaviour {
 	public Mesh mesh;
 
 	public static Vector3[] DIRECTIONS = new Vector3[] { Vector3.forward, -Vector3.forward, Vector3.up, -Vector3.up, Vector3.right, -Vector3.right };
-	public static float MESH_SCALE = 5.0f;
+	public static float MESH_SCALE = 15.0f;
 	
 	private Room room;
 //	private int[,] gridCellDensity; 

@@ -45,9 +45,9 @@ public class Ship : MonoBehaviour {
 	private int chargedMissileShieldDeducted;
 	public bool isDetonatorMissileExploded;
 			
-	private static float FORCE_MOVE = 25.0f;
-	private static float FORCE_TURN = 12.5f; // 5.0f
-	private static float FORCE_YAW = 10f; // 3.5f
+	private static float FORCE_MOVE = 65.0f;
+	private static float FORCE_TURN = 24f; // 5.0f
+	private static float FORCE_YAW = 16f; // 3.5f
 	
 	private static int CHARGED_MISSILE_SHIELD_MAX = 50;
 	private static float CHARGED_MISSILE_TIME_MAX = 2.5f; // seconds

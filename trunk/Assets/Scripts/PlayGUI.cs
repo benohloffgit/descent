@@ -363,16 +363,47 @@ public class PlayGUI {
 		CloseDialog();
 		play.SetPaused(false);
 	}
+
+	private void ToNextZone() {
+		CloseDialog();
+		play.NextZone();
+	}
 	
-	public void ToQuit() {
-		Screen.showCursor = true;
+	public void ToStory() {
+		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
 		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
 		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
 			//gui.AddDim(dialogContainer, closeDialog);
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 
-		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), false);
+		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.85f, 1.0f),
+			new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
+		gui.AddLabel(play.game.state.GetDialog(8) + (play.zoneID+1), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center,
+			0f, MyGUI.GUIAlignment.Top, 0.1f, 
+			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_COLOR_BLACK, 0);
+		int scrollableContainer = gui.AddContainerScrollable(dialogBox, new Vector3(1f,gui.GetSize().y,1f),
+			new Vector2(gui.GetCenter().x, gui.GetCenter().y + gui.GetSize().y/2f * 0.5f), MyGUI.GUIBackground.QuadWithCollider,
+			0, Game.GUI_UV_COLOR_BLACK, 0, Game.GUI_UV_COLOR_BLACK, 0, Game.GUI_UV_COLOR_BLACK);
+		gui.AddLabel("How the hell did I end up in this situation? I tried to ignore the fact that I knew the answer as I armed and charged the pulsar lasers on the only ship on the planet. You see I had graduated from the cybernautics and neural networking division of the university with barely a pass. My compatriots were all off to Starship headquarters, or the prestigious planets, Veluma and Tratoria. Whilst I had been commissioned to join the prison company, Illicitus. Not the worst assignment for a third-rate robotic neural scientist I thought at the time. But the last few days on this hell-hole had changed my opinion somewhat. The hum of the charging lasers stopped, signaling it was time to die ...",
+			scrollableContainer, MyGUI.GUIAlignment.Center, MyGUI.GUIBackground.Quad, 0f, 0f, 0.3f, 3, 0, Game.GUI_UV_COLOR_BLACK);
+		TouchDelegate toMenu = new TouchDelegate(ToMenu);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toMenu, play.game.state.GetDialog(6), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, -0.1f, MyGUI.GUIAlignment.Bottom, 0.1f, Game.GUI_UV_NULL, 0);
+		TouchDelegate toNextZone = new TouchDelegate(ToNextZone);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toNextZone, play.game.state.GetDialog(7), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0.1f, MyGUI.GUIAlignment.Bottom, 0.1f, Game.GUI_UV_NULL, 0);
+	}
+	
+	public void ToQuit() {
+		gui.OpenDialog();
+		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
+		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+			//gui.AddDim(dialogContainer, closeDialog);
+		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
+
+		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
 		gui.AddLabel(play.game.state.GetDialog(5), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, 
 			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
 		TouchDelegate toMenu = new TouchDelegate(ToMenu);

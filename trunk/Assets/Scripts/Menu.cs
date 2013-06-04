@@ -177,9 +177,7 @@ public class Menu : MonoBehaviour {
 	}
 	
 	private void CloseDialog() {
-		Destroy(gui.containers[dialogContainer].gameObject);
-		gui.ResetGameInputZLevel();
-		gui.DeleteGUIInFocus();
+		gui.CloseDialog(dialogContainer);
 		if (inDisclaimerDialog) {
 			ToHelp();
 			inDisclaimerDialog = false;;

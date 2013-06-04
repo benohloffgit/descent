@@ -237,8 +237,12 @@ public class Play : MonoBehaviour {
 		SetPaused(false);
 	}
 	
-	public void NextZone() {
+	public void ZoneCompleted() {
 		EndZone();
+		playGUI.ToStory();
+	}
+	
+	public void NextZone() {
 		zoneID++;
 		StartZone();
 	}
@@ -261,6 +265,7 @@ public class Play : MonoBehaviour {
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		ship.Deactivate();
 		ship.LaunchExitHelper(false);
+		SetPaused(true);
 	}
 		
 	void onDisable() {

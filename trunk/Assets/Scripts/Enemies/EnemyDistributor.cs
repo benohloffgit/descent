@@ -243,6 +243,7 @@ public class EnemyDistributor {
 		spawn.Initialize(this, play, gridPos, enemyClazz, enemyModel, enemyEquivalentClazzAModel,
 			frequency, maxLiving, maxGenerated, isBoss, distributionMode);
 		spawn.transform.position = gridPos.GetVector3() * RoomMesh.MESH_SCALE;
+		spawn.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		play.cave.zone.GetRoom(gridPos).SetCellToSpawn(gridPos.cellPosition);
 		return spawn;
 	}
@@ -393,8 +394,10 @@ public class EnemyDistributor {
 	
 	private float CalculateEnemySize(int clazz, int model) {
 		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10
-				|| clazz == Enemy.CLAZZ_WALLLASER11 || clazz == Enemy.CLAZZ_HORNET12 || clazz == Enemy.CLAZZ_D3 || clazz == Enemy.CLAZZ_BULB13) {
+			 || clazz == Enemy.CLAZZ_HORNET12 || clazz == Enemy.CLAZZ_D3 || clazz == Enemy.CLAZZ_BULB13) {
 			return ENEMY_SIZES[0];
+		} else if (clazz == Enemy.CLAZZ_WALLLASER11) {
+			return ENEMY_SIZES[0] * (RoomMesh.MESH_SCALE/5f);
 		} else {
 			return ENEMY_SIZES[(clazz + model) % 10];
 		}

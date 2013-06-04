@@ -43,7 +43,7 @@ public class Weapon {
 	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX = new int[] { 8, 18, 30, 42 };
 	public static int[] PRIMARY_DAMAGE = new int[] { 22, 25, 28, 30, 33, 36, 40, 43, 0, 0, 0, 0, 0, 0, 0, 0 };
 	public static int[] SECONDARY_DAMAGE = new int[] { 65, 85, 100, 120, 150, 50, 0, 0, 30 };	
-	public static float[] PRIMARY_SPEED = new float[] { 100f, 150f, 100f, 200f, 150f, 175f, 200f, 175f};
+	public static float[] PRIMARY_SPEED = new float[] { 200f, 300f, 200f, 400f, 300f, 350f, 400f, 350f};
 	public static float[] PRIMARY_ACCURACY = new float[] { 4.0f, 3.0f, 4.0f, 3.0f, 3.0f, 2.5f, 3.0f, 2.5f };
 	public static float[] PRIMARY_FREQUENCY = new float[] { 3.0f, 2.9f, 2.8f, 2.7f, 2.6f, 2.5f, 2.3f, 2.1f };
 	public static float[] SECONDARY_SPEED = new float[] { 50f, 50f, 50f, 50f, 0f, 0f, 0f, 0f, 0f };

@@ -46,8 +46,10 @@ public class TextCC : MonoBehaviour {
 	}
 	
 	public void SetText(string t) {
+//		Debug.Log (textMesh.LineWidth +" "+ textMesh.Width);
 		textMesh.Bounding = CCText.BoundingMode.Margin;
 		textMesh.Text = t;
+//		Debug.Log (textMesh.LineWidth +" "+ textMesh.Width);
 		// shorten string if oversized
 		float textWidth = textMesh.lastCaret.x;
 		if (textMesh.LineCount > 1) {
@@ -67,8 +69,11 @@ public class TextCC : MonoBehaviour {
 			transform.position = new Vector3(containerPos.x + (myGUI.containers[containerID].GetSize().x/2.0f - GetSize().x/2.0f) - textMargin.y, transform.position.y, transform.position.z);
 			textMesh.Alignment = CCText.AlignmentMode.Right;
 		}
-		textMesh.Bounding = CCText.BoundingMode.Caret;
-		textMesh.Width = Mathf.CeilToInt(t.Length/2f);
+//		Debug.Log (t +" " + textMesh.LineCount + " " + textWidth + " " +textMesh.Width);
+		if (textMesh.Width == 1) {
+			textMesh.Width = Mathf.CeilToInt(t.Length/2f) + 1;
+		}
+		//textMesh.Bounding = CCText.BoundingMode.Caret;
 		//Debug.Log ("size " + myGUI.containers[containerID].GetSize().x + " textsize " + GetSize().x);
 	}
 	

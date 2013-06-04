@@ -50,6 +50,7 @@ public class MyGUI : MonoBehaviour {
 //	private NinePatch background;
 	private Focussable guiElementInFocus;
 	private bool isGUIElementInFocus; // another gui element, not our MyGUI
+	public bool isInDialogMode;
 	
 	private float zLevel;
 		
@@ -80,6 +81,7 @@ public class MyGUI : MonoBehaviour {
 		ResetGameInputZLevel();
 		activeTextMaterial = GetTextMaterial();
 		activeFont = GetBitmapFont();
+		isInDialogMode = false;
 	}
 	
 	// as child of this GUI
@@ -125,10 +127,10 @@ public class MyGUI : MonoBehaviour {
 	}
 	
 	// Container Scrollable with absolute position (Vector2) and image backgrounds
-	public int AddContainerScrollable(int containerID, Vector3 size, Vector2 pos, GUIBackground background, int textureIx, Vector4 uvMap,
+	public int AddContainerScrollable(int containerID, Vector3 size, Vector2 pos, GUIBackground background, int textureIDBackground, Vector4 uvMap,
 			int textureIDBlendTop, Vector4 uvMapBlendTop, int textureIDBlendBottom, Vector4 uvMapBlendBottom) {
 		int cID = AddContainer(containerID, size, pos, false);
-		containers[cID].InitializeAsScrollable(this, CreateBackground(background, textureIx, uvMap),
+		containers[cID].InitializeAsScrollable(this, CreateBackground(background, textureIDBackground, uvMap),
 			CreateBackground(GUIBackground.Quad, textureIDBlendTop, uvMapBlendTop),
 			CreateBackground(GUIBackground.Quad, textureIDBlendBottom, uvMapBlendBottom));
 		return cID;
@@ -354,44 +356,22 @@ public class MyGUI : MonoBehaviour {
 		t.parent = parentT;
 		Vector3 reposition = Vector3.zero;
 		if (alignLeftRightCenter == MyGUI.GUIAlignment.Left) {
-			reposition.x = -sizeParentT.x/2 + sizeT.x/2 + (sizeParentT.x/2) * borderLeftRight;
+			reposition.x = -sizeParentT.x/2f + sizeT.x/2f + (sizeParentT.x/2f) * borderLeftRight;
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Right) {
-			reposition.x = sizeParentT.x/2 - sizeT.x/2 - (sizeParentT.x/2) * borderLeftRight;
+			reposition.x = sizeParentT.x/2f - sizeT.x/2f - (sizeParentT.x/2f) * borderLeftRight;
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Center) {
 			reposition.x = borderLeftRight;
 		}
 		if (alignTopBottomCenter == MyGUI.GUIAlignment.Top) {
-			reposition.y = sizeParentT.y/2 - sizeT.y/2 - (sizeParentT.y/2) * borderTopBottom;
+			reposition.y = sizeParentT.y/2f - sizeT.y/2f - (sizeParentT.y/2f) * borderTopBottom;
 		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Bottom) {
-			reposition.y = -sizeParentT.y/2 + sizeT.y/2 + (sizeParentT.y/2) * borderTopBottom;
+			reposition.y = -sizeParentT.y/2f + sizeT.y/2f + (sizeParentT.y/2f) * borderTopBottom;
 		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Center) {
 			reposition.y = borderTopBottom;
 		}
 		t.position = center + reposition;
 	}
 
-/*	public static void Align(Vector3 center, Vector3 sizeT, Vector3 sizeParentT, Transform t,
-				Transform parentT, GUIAlignment alignLeftRightCenter, float borderLeftRight,
-				GUIAlignment alignTopBottomCenter, float borderTopBottom) {
-		t.parent = parentT;
-		Vector3 reposition = Vector3.zero;
-		if (alignLeftRightCenter == MyGUI.GUIAlignment.Left) {
-			reposition.x = -sizeParentT.x/2 + sizeT.x/2 + (sizeParentT.x/2) * borderLeftRight;
-		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Right) {
-			reposition.x = sizeParentT.x/2 - sizeT.x/2 - (sizeParentT.x/2) * borderLeftRight;
-		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Center) {
-			reposition.x = (sizeParentT.x/2) * borderLeftRight;
-		}
-		if (alignTopBottomCenter == MyGUI.GUIAlignment.Top) {
-			reposition.y = sizeParentT.y/2 - sizeT.y/2 - (sizeParentT.y/2) * borderTopBottom;
-		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Bottom) {
-			reposition.y = -sizeParentT.y/2 + sizeT.y/2 + (sizeParentT.y/2) * borderTopBottom;
-		} else if (alignTopBottomCenter == MyGUI.GUIAlignment.Center) {
-			reposition.y = (sizeParentT.y/2) * borderTopBottom;
-		}
-		t.position = center + reposition;
-	}*/
-	
 	public static Vector2 RectifyUV(Vector2 uv, float rectify) {
 		uv.x += rectify;
 		uv.y += rectify;
@@ -406,6 +386,13 @@ public class MyGUI : MonoBehaviour {
 		GameObject.Destroy(containers[containerID].gameObject);
 		ResetGameInputZLevel();
 		DeleteGUIInFocus();
+		isInDialogMode = false;
+	}
+	
+	public void OpenDialog() {
+		Screen.showCursor = true;
+		Screen.lockCursor = false;
+		isInDialogMode = true;
 	}
 	
 	private Material GetTextMaterial() {

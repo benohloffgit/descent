@@ -180,6 +180,7 @@ public class PrefabFactory {
 		GameObject newBreadcrumb = GameObject.Instantiate(breadcrumbTemplate, pos, rot) as GameObject;
 		Breadcrumb breadcrumb = newBreadcrumb.GetComponent<Breadcrumb>();
 		breadcrumb.Initialize(play);
+		breadcrumb.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		breadcrumb.enabled = true;
 		return newBreadcrumb;
 	}
@@ -189,6 +190,7 @@ public class PrefabFactory {
 		newHealthDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableHealth healthDrop = newHealthDrop.GetComponent<CollecteableHealth>();
 		healthDrop.Initialize(play, amount);
+		healthDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		healthDrop.enabled = true;
 		return newHealthDrop;
 	}
@@ -198,6 +200,7 @@ public class PrefabFactory {
 		newShieldDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableShield shieldDrop = newShieldDrop.GetComponent<CollecteableShield>();
 		shieldDrop.Initialize(play, amount);
+		shieldDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		shieldDrop.enabled = true;
 		return newShieldDrop;
 	}
@@ -207,6 +210,7 @@ public class PrefabFactory {
 		newMissileDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableMissile missileDrop = newMissileDrop.GetComponent<CollecteableMissile>();
 		missileDrop.Initialize(play, type, amount);
+		missileDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		missileDrop.enabled = true;
 		return newMissileDrop;
 	}
@@ -215,6 +219,7 @@ public class PrefabFactory {
 		GameObject newKeyDrop = GameObject.Instantiate(game.keyPrefab, pos, rot) as GameObject;
 		CollecteableKey keyDrop = newKeyDrop.GetComponent<CollecteableKey>();
 		keyDrop.Initialize(play, keyType);
+		keyDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		keyDrop.renderer.material.mainTexture = play.game.keyTextures[keyType];
 		keyDrop.enabled = true;
 		return newKeyDrop;
@@ -236,6 +241,7 @@ public class PrefabFactory {
 		SphereCollider col = newPowerUpDrop.AddComponent<SphereCollider>();
 		col.isTrigger = true;
 		powerUpDrop.Initialize(play, type, id);
+		powerUpDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		powerUpDrop.enabled = true;
 		return newPowerUpDrop;
 	}
@@ -245,6 +251,7 @@ public class PrefabFactory {
 		Explosion explosion = newExplosion.GetComponent<Explosion>();
 		explosion.enabled = true;
 		explosion.Initialize(play);
+		explosion.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		return newExplosion;
 	}
 
@@ -253,6 +260,7 @@ public class PrefabFactory {
 		Hit hit = newHit.GetComponent<Hit>();
 		hit.enabled = true;
 		hit.Initialize(play);
+		hit.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		return newHit;
 	}
 	

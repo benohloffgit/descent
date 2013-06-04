@@ -97,9 +97,10 @@ public class GameInput : MonoBehaviour {
 			if (Input.GetButtonDown("Fire1")) {
 				isTouchDown[0] = true;
 				wasTouchDown[0] = true;
+				oldTouchPosition[0] = Vector2.zero;
 				startTouchPosition[0] = touchPosition[0];
 				if (fingerCount+1 <= maxTouchFingers) fingerCount++;
-				if (state.gameMode == Game.Mode.Play) {
+				if (state.gameMode == Game.Mode.Play && !game.gui.isInDialogMode) {
 					Screen.lockCursor = true;
 				}
 			}
@@ -123,11 +124,8 @@ public class GameInput : MonoBehaviour {
 		for (int i=0; i< maxTouchFingers; i++) {
 			if (isTouchDown[i]) {
 				isGUIClicked[i] = IsGUIClicked(i);
-				if (!isGUIClicked[i]) {
-					if (state.gameMode == Game.Mode.Dialog) {
-					//	game.NonGUIClickInDialog();
-					}
-				}
+//				if (!isGUIClicked[i]) {
+//				}
 			}
 			
 			oldTouchPosition[i] = touchPosition[i];

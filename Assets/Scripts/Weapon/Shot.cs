@@ -27,7 +27,7 @@ public class Shot : MonoBehaviour {
 	
 	private static float MISSILE_RADIUS = RoomMesh.MESH_SCALE * 2.5f;
 	private static float GUIDED_MISSILE_TORQUE_MAX = 0.02f;
-	private static float MISSILE_SPEED = 5.0f;
+	private static float MISSILE_SPEED = 5.0f * (RoomMesh.MESH_SCALE/5f);
 	private static float MINE_EXPLOSION_POWER = 500.0f;
 	private static float MINE_EXPLOSION_RADIUS = 2.0f * RoomMesh.MESH_SCALE;
 	

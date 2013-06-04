@@ -58,9 +58,10 @@ public class Container : MonoBehaviour {
 		if (mode == SelectionMode.On) {
 			if (myGUI.gameInput.isTouchMoved[scrollFinger] || myGUI.gameInput.isTouchDown[scrollFinger] || myGUI.gameInput.isTouchUp[scrollFinger]) {
 				// delta in pixels
-				Vector3 delta = myGUI.gameInput.touchPosition[scrollFinger] - myGUI.gameInput.oldTouchPosition[scrollFinger];
-				Vector3 camDelta = Camera.main.ScreenToWorldPoint(new Vector3(0, Mathf.Abs(delta.y), 0));
+				Vector3 delta = myGUI.gameInput.touchPositionDelta[scrollFinger]; //myGUI.gameInput.touchPosition[scrollFinger] - myGUI.gameInput.oldTouchPosition[scrollFinger];
+				Vector3 camDelta = myGUI.guiCamera.ScreenToWorldPoint(new Vector3(0, Mathf.Abs(delta.y), 0));
 				Vector3 camFinalDelta = camDelta - camZero;
+//				Debug.Log (delta + " " + camDelta + " " + camFinalDelta);
 				transform.position += new Vector3(0, camFinalDelta.y*Mathf.Sign(delta.y), 0);
 			}
 			if (myGUI.gameInput.isTouchUp[scrollFinger]) {

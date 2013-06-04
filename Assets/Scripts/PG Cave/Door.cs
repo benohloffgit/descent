@@ -11,13 +11,13 @@ public class Door : MonoBehaviour {
 	private static string ANIM_OPEN_DOOR = "Door Open";
 	private static string ANIM_CLOSE_DOOR = "Door Close";
 	
-	private MeshCollider doorCollider;
+	private BoxCollider doorCollider;
 	private Play play;
 	private int type;
 	private bool isShut;
 	
 	void Awake() {
-		doorCollider = GetComponentInChildren<MeshCollider>();
+		doorCollider = GetComponentInChildren<BoxCollider>();
 	}
 	
 	public void Initialize(Play play_, int type_) {
@@ -50,7 +50,7 @@ public class Door : MonoBehaviour {
 				isShut = true;
 			} else if (type == TYPE_EXIT && !play.isShipInPlayableArea) {
 				isShut = true;
-				play.NextZone();
+				play.ZoneCompleted();
 			}
 		}
 	}

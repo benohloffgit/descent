@@ -522,7 +522,7 @@ public class Cave {
 	
 	private void PutDecorationOnWall(Room r, UnityEngine.GameObject c) {
 		Vector3 pos = r.GetRandomNonExitGridPosition().GetWorldVector3();
-		c.transform.localScale *= (2.0f * UnityEngine.Random.Range(0.5f,2.0f));
+		c.transform.localScale *= (RoomMesh.MESH_SCALE/5f) * (2.0f * UnityEngine.Random.Range(0.5f,2.0f));
 		c.transform.RotateAroundLocal(Vector3.forward, UnityEngine.Random.Range(0f, 360f));
 		play.PlaceOnWall(pos, r, c.transform);
 	}

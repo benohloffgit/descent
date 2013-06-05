@@ -31,7 +31,7 @@ public class EnemyDistributor {
 	private static int[] ENEMY_LOOK_RANGES = new int[] {4,6,10,8,3,11,7,14,9,5,13,12,15};
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,13,20,30,42,58,   1,14,6,10,15,8};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,13,20,30,42,58,   1,14,6,10,15,8,0};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 2.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 6.0f};
 	private static int[] SPAWN_MIN_LIVING = new int[] {1, 1}; // first value is for BEGINNER Zones
@@ -187,6 +187,16 @@ public class EnemyDistributor {
 						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
 			enemiesAll += number;
 		}
+		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLGUN14] <= play.zoneID) {
+//		Debug.Log ("Distriuting Walllaser");
+			enemyEquivalentClazzAModel = play.zoneID;
+			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLGUN14];
+			number = 4;//Mathf.FloorToInt(play.zoneID / 8f) + 1;
+			CreateSpawn(Enemy.CLAZZ_WALLGUN14, enemyModel, enemyEquivalentClazzAModel,
+					play.cave.zone.roomList[1].GetRandomNonExitGridPosition(), //play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition(),
+					1.0f, number, number, false, Spawn.DistributionMode.PlaceOnWall);
+			enemiesAll += number;
+		}
 	}
 	
 	public void RemoveAll() {
@@ -229,6 +239,8 @@ public class EnemyDistributor {
 			e = (Enemy)(GameObject.Instantiate(game.hornetPrefab) as GameObject).GetComponent<Hornet>();
 		} else if (clazz == Enemy.CLAZZ_BULB13) {
 			e = (Enemy)(GameObject.Instantiate(game.bulbPrefab) as GameObject).GetComponent<LightBulb>();
+		} else if (clazz == Enemy.CLAZZ_WALLGUN14) {
+			e = (Enemy)(GameObject.Instantiate(game.wallGunPrefab) as GameObject).GetComponent<WallGunNew>();
 		} else {
 			e = (Enemy)(GameObject.Instantiate(game.bullPrefab) as GameObject).GetComponent<Bull>();
 		}
@@ -396,7 +408,7 @@ public class EnemyDistributor {
 		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_MINEBUILDER10
 			 || clazz == Enemy.CLAZZ_HORNET12 || clazz == Enemy.CLAZZ_D3 || clazz == Enemy.CLAZZ_BULB13) {
 			return ENEMY_SIZES[0];
-		} else if (clazz == Enemy.CLAZZ_WALLLASER11) {
+		} else if (clazz == Enemy.CLAZZ_WALLLASER11 || clazz == Enemy.CLAZZ_WALLGUN14) {
 			return ENEMY_SIZES[0] * (RoomMesh.MESH_SCALE/5f);
 		} else {
 			return ENEMY_SIZES[(clazz + model) % 10];

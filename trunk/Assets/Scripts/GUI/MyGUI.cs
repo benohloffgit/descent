@@ -170,25 +170,38 @@ public class MyGUI : MonoBehaviour {
 		containers[containerID].AddElement(i.transform, containers[containerID].GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 		return i.gameObject.GetInstanceID();
 	}	
+
+	// Image with floating position and fixed size
+	public int AddImage(int containerID, Vector3 size, GUIAlignment alignLeftRightCenter, float borderLeftRight,
+					GUIAlignment alignTopBottomCenter, float borderTopBottom, Vector4 uvMap, int textureID) {
+		Image i = (GameObject.Instantiate(imagePrefab) as GameObject).GetComponent<Image>();
+		i.Initialize(this, textureID, uvMap, size);
+		images.Add(i.gameObject.GetInstanceID(), i);
+		containers[containerID].AddElement(i.transform, i.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
+		return i.gameObject.GetInstanceID();
+	}	
 	
 	//  Label with left/right alignment and floating position and image background
 	public int AddLabel(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, float textMargin,
 					float size, int textureIDText, int textureIDBackground, Vector4 uvMap) {
-//		if (text != " ") {
 			LabelCC l;
 			l = (GameObject.Instantiate(labelBitmapPrefab) as GameObject).GetComponent<LabelCC>();
 			l.Initialize(this, text, containerID, CreateBackground(background, textureIDBackground, uvMap), textMargin, size, alignLeftRightCenter, textureIDText);
 			labelsCC.Add(l.gameObject.GetInstanceID(), l);
 			containers[containerID].AddElement(l.transform, l.GetSize());
 			return l.gameObject.GetInstanceID();
-/*		} else { // specially for bottom line in preferences 
-			Label l;
-			l = (GameObject.Instantiate(labelPrefab) as GameObject).GetComponent<Label>();
-			l.Initialize(this, text, containerID, CreateBackground(background, textureIx, uvMap), textMargin, size, alignLeftRightCenter);
-			labels.Add(l.gameObject.GetInstanceID(), l);
+	}
+
+	//  Label with left/right alignment and floating position and NO background
+	public int AddLabel(string text, int containerID, GUIAlignment alignLeftRightCenter,
+					float border, float textMargin,	float size, int textureIDText) {
+			LabelCC l;
+			l = (GameObject.Instantiate(labelBitmapPrefab) as GameObject).GetComponent<LabelCC>();
+			l.Initialize(this, text, containerID, textMargin, size, alignLeftRightCenter, textureIDText);
+			labelsCC.Add(l.gameObject.GetInstanceID(), l);
 			containers[containerID].AddElement(l.transform, l.GetSize());
+//			containers[containerID].AddElement(l.transform, l.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 			return l.gameObject.GetInstanceID();
-		}*/
 	}
 	
 	// Label with scale and absolute position and image background

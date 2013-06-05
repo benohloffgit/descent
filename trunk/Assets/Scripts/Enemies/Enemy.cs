@@ -20,6 +20,7 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_WALLLASER = "Cricket";
 	public static string CLAZZ_HORNET = "Hornet";
 	public static string CLAZZ_BULB = "Bulb";
+	public static string CLAZZ_WALLGUN = "Cricket";
 	
 //	public static string CLAZZ_K = "k";
 //	public static string CLAZZ_L = "l";
@@ -37,8 +38,9 @@ public abstract class Enemy : MonoBehaviour {
 	public static int CLAZZ_WALLLASER11 = 11;
 	public static int CLAZZ_HORNET12 = 12;
 	public static int CLAZZ_BULB13 = 13;
+	public static int CLAZZ_WALLGUN14 = 14;
 	
-	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_BUG, CLAZZ_SNAKE, CLAZZ_MINEBUILDER, CLAZZ_WALLLASER, CLAZZ_HORNET, CLAZZ_BULB};
+	public static string[] CLAZZES = new string[] {CLAZZ_A, CLAZZ_B, CLAZZ_C, CLAZZ_D, CLAZZ_E, CLAZZ_F, CLAZZ_G, CLAZZ_H, CLAZZ_BUG, CLAZZ_SNAKE, CLAZZ_MINEBUILDER, CLAZZ_WALLLASER, CLAZZ_HORNET, CLAZZ_BULB, CLAZZ_WALLGUN};
 	
 	public static int MODEL_MIN = 0;
 	public static int MODEL_MAX = 63;
@@ -85,6 +87,7 @@ public abstract class Enemy : MonoBehaviour {
 	protected float dotProductLookAt;
 	public int currentPrimaryWeapon;
 	public int currentSecondaryWeapon;
+	public bool flaggedForDestruction;
 	
 	public bool isActive;
 	private float lastTimeShipVisible;
@@ -132,6 +135,7 @@ public abstract class Enemy : MonoBehaviour {
 		currentAngleUp = 0;
 		dotProductLookAt = 0;
 		
+		flaggedForDestruction = false;
 		canBeDeactivated = true;
 		firepowerPerSecond = 0;
 		
@@ -144,6 +148,8 @@ public abstract class Enemy : MonoBehaviour {
 			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_LASER_BEAM);
 		} else if (clazzNum == CLAZZ_HORNET12) {
 			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_MINE_SUICIDAL);
+		} else if (clazzNum == CLAZZ_WALLGUN14) {
+			InitializeWeapon(Weapon.PRIMARY, Weapon.TYPE_GUN);
 		}
 		
 		currentPrimaryWeapon = 0;
@@ -206,13 +212,16 @@ public abstract class Enemy : MonoBehaviour {
 	
 	public void Damage(int damage) {
 		if (health-damage <= 0) {
-			if (spawn != null) {
-				spawn.LoseHealth(this, health);
-				spawn.Die(this);
+			if (!flaggedForDestruction) {
+				if (spawn != null) {
+					spawn.LoseHealth(this, health);
+					spawn.Die(this);
+				}
+				health = 0;
+				play.DisplayExplosion(transform.position, play.ship.transform.rotation);
+				flaggedForDestruction = true; // this is necessary because the following Destroy does not get executed immediately
+				Destroy(gameObject);
 			}
-			health = 0;
-			play.DisplayExplosion(transform.position, play.ship.transform.rotation);
-			Destroy(gameObject);
 		} else {
 			spawn.LoseHealth(this, damage);
 			health -= damage;
@@ -265,6 +274,8 @@ public abstract class Enemy : MonoBehaviour {
 			return 12;
 		} else if (clazz_ == CLAZZ_BULB) {
 			return 13;
+		} else if (clazz_ == CLAZZ_WALLGUN) {
+			return 14;
 		}
 		return -1;
 	}

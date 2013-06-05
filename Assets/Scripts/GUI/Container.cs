@@ -38,6 +38,8 @@ public class Container : MonoBehaviour {
 		camZero = myGUI.guiCamera.ScreenToWorldPoint(Vector3.zero);		
 		if (isScrollableContainer) {
 			// even though the scrolleable container is not fixed size we use lossy scale here to get its real size
+//			Debug.Log ("isFixedSize " + isFixedSize + " " + topRight+ " " + bottomLeft);
+//			Debug.Log (GetSize().y + " size " + transform.lossyScale.y);
 			float amountToScroll = GetSize().y - transform.lossyScale.y;
 			if (amountToScroll < 0) {
 				amountToScroll = 0;
@@ -49,8 +51,7 @@ public class Container : MonoBehaviour {
 			SetBackgroundScrollable();
 			blendTop.renderer.enabled = false;
 			scrollEndPos = scrollStartPos + new Vector3(0, amountToScroll, 0); 
-//			Debug.Log("scrollStartPos " +  scrollStartPos + " scrollEndPos " + scrollEndPos);
-			
+//			Debug.Log("scrollStartPos " +  scrollStartPos + " scrollEndPos " + scrollEndPos +  " amountToScroll " + amountToScroll);
 		}
 	}
 	
@@ -71,11 +72,11 @@ public class Container : MonoBehaviour {
 		if (isScrollableContainer) {
 			// if beyond start or end pos, slow down
 			if (transform.position.y < scrollStartPos.y) {
-				realignTimer += Time.deltaTime;
+				realignTimer += Time.fixedDeltaTime;
 				transform.position = Vector3.Lerp(transform.position, scrollStartPos, realignTimer);
 				blendTop.renderer.enabled = false;
 			} else if (transform.position.y > scrollEndPos.y) {
-				realignTimer += Time.deltaTime;
+				realignTimer += Time.fixedDeltaTime;
 				transform.position = Vector3.Lerp(transform.position, scrollEndPos, realignTimer);
 				blendBottom.renderer.enabled = false;
 			} else {
@@ -100,8 +101,10 @@ public class Container : MonoBehaviour {
 			bottomLeft = GetBottomLeftFixedSize(); //new Vector3(transform.position.x - s.x/2.0f, transform.position.y - s.y, transform.position.z);
 			topRight = GetTopRightFixedSize(); //new Vector3(transform.position.x + s.x/2.0f, transform.position.y, transform.position.z);
 		} else {
-			bottomLeft = new Vector3(transform.position.x - scale_.x/2.0f, transform.position.y, transform.position.z);
-			topRight = new Vector3(transform.position.x + scale_.x/2.0f, transform.position.y, transform.position.z);
+			bottomLeft = new Vector3(transform.position.x -  transform.lossyScale.x/2.0f, transform.position.y, transform.position.z);
+			topRight = new Vector3(transform.position.x +  transform.lossyScale.x/2.0f, transform.position.y, transform.position.z);
+//			bottomLeft = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+//			topRight = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		}
 		nextPos = bottomLeft + new Vector3(0,0,-1f);
 	}
@@ -149,10 +152,11 @@ public class Container : MonoBehaviour {
 		elements.Add(t);
 		if (!isFixedSize) {
 			bottomLeft = new Vector3(bottomLeft.x, bottomLeft.y - size.y, bottomLeft.z);
+//			Debug.Log ("bottomLeft" + bottomLeft+ " nextPos" + nextPos + " " + GetSize() + " " + transform.lossyScale + " " +size);
 		}
 		
 		t.parent = transform;
-		t.position = nextPos + new Vector3(size.x/2.0f, -size.y/2.0f, 0);
+		t.position = nextPos + new Vector3(transform.lossyScale.x/2f , -size.y/2.0f, 0);
 		nextPos.y -= size.y;		
 	}
 
@@ -198,4 +202,8 @@ public class Container : MonoBehaviour {
 		nextPos.z -= 1f;
 	}
 
+	public void AddZLevel(float byLevel) {
+		nextPos.z -= byLevel;
+	}
+	
 }

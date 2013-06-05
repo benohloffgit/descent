@@ -23,9 +23,16 @@ public class LabelCC : MonoBehaviour {
 	}
 	
 	public Vector3 GetSize() {
-		return background.renderer.bounds.size;
+		return new Vector3(myRenderer.bounds.size.x, myRenderer.bounds.size.y, 1.0f);
+//		return background.renderer.bounds.size;
 	}
-
+	
+	public void Initialize(MyGUI mG, string t, int cID, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
+			int textureID) {
+		myGUI = mG;
+		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
+	}
+	
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
 			Vector3 scale, int textureID) {
 		myGUI = mG;
@@ -34,8 +41,7 @@ public class LabelCC : MonoBehaviour {
 		text.transform.localScale = scale;
 		background.transform.localScale = text.GetSize();
 		background.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-		background.transform.parent = transform;
-		
+		background.transform.parent = transform;	
 	}
 	
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,

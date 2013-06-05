@@ -155,7 +155,11 @@ public class Weapon {
 				weaponTransform.localEulerAngles = rotations[Game.WEAPON_POSITION_WING_LEFT];
 			}
 			speed = PRIMARY_SPEED[type];
-			accuracy = PRIMARY_ACCURACY[type];
+			if (mountedTo == Game.ENEMY && enemy.clazzNum == Enemy.CLAZZ_WALLGUN14) {
+				accuracy = 0f;
+			} else {
+				accuracy = PRIMARY_ACCURACY[type];
+			}
 			frequency = PRIMARY_FREQUENCY[type];
 			myRenderers = weaponTransform.GetComponentsInChildren<Renderer>();
 		} else {

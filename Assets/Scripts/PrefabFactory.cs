@@ -190,7 +190,7 @@ public class PrefabFactory {
 		newHealthDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableHealth healthDrop = newHealthDrop.GetComponent<CollecteableHealth>();
 		healthDrop.Initialize(play, amount);
-		healthDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
+//		healthDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		healthDrop.enabled = true;
 		return newHealthDrop;
 	}
@@ -200,7 +200,7 @@ public class PrefabFactory {
 		newShieldDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableShield shieldDrop = newShieldDrop.GetComponent<CollecteableShield>();
 		shieldDrop.Initialize(play, amount);
-		shieldDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
+//		shieldDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		shieldDrop.enabled = true;
 		return newShieldDrop;
 	}
@@ -210,7 +210,7 @@ public class PrefabFactory {
 		newMissileDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableMissile missileDrop = newMissileDrop.GetComponent<CollecteableMissile>();
 		missileDrop.Initialize(play, type, amount);
-		missileDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
+//		missileDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		missileDrop.enabled = true;
 		return newMissileDrop;
 	}

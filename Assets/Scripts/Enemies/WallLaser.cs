@@ -65,9 +65,9 @@ public class WallLaser : Enemy {
 		} else {
 			aimAt = laserAnchor.position + laserAnchor.forward * RAYCAST_DISTANCE;
 		}
-		float laserLength = Vector3.Distance(laserAnchor.position, aimAt * LASER_LENGTH_MODIFIER);
+		float laserLength = (Vector3.Distance(laserAnchor.position, aimAt) * LASER_LENGTH_MODIFIER) / transform.localScale.x;
 		laserBeam.localScale = new Vector3(1.0f, 1.0f, laserLength);
-		laserBeam.position = laserAnchor.position + laserAnchor.forward * (laserLength/2.0f);
+		laserBeam.localPosition = laserAnchor.InverseTransformDirection(laserAnchor.forward) * (laserLength/2f);
 	}
 	
 	private void GetNewAimForward() {

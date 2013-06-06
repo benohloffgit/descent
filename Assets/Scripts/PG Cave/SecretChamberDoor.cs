@@ -4,11 +4,13 @@ using System.Collections;
 public class SecretChamberDoor : MonoBehaviour {
 		
 	private SphereCollider doorCollider;
+	private BoxCollider caveCollider;
 	private Play play;
 	private Renderer myRenderer;
 	
 	void Awake() {
 		doorCollider = GetComponentInChildren<SphereCollider>();
+		caveCollider = GetComponentInChildren<BoxCollider>();
 		myRenderer = GetComponentInChildren<Renderer>();
 	}
 	
@@ -27,11 +29,13 @@ public class SecretChamberDoor : MonoBehaviour {
 	
 	public void Open() {
 		doorCollider.enabled = false;
+		caveCollider.enabled = false;
 		myRenderer.enabled = false;
 	}
 
 	public void Close() {
 		doorCollider.enabled = true;
+		caveCollider.enabled = true;
 		myRenderer.enabled = true;
 	}
 }

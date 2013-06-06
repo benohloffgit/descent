@@ -5,6 +5,8 @@ public class Player {
 	private Board board;
 	
 	public IntDouble pos;
+	public Vector3 newPos;
+	public Vector3 currentPos;
 	
 	private Transform playerTransform;
 	private IntTriple pointingTo;
@@ -22,9 +24,20 @@ public class Player {
 		Mesh3D.SetUVMapping(playerTransform.GetComponent<MeshFilter>().mesh, Sokoban.UV_IMAGE_PLAYER);
 	}
 	
-	public void MoveTo(IntDouble newPos) {
-		pos = newPos;
-		playerTransform.transform.position = Board.GetVector3Pos(pos, Z_POS);
+	public void MoveTo(IntDouble p) {
+		pos = p;
+		newPos = Board.GetVector3Pos(p, Z_POS);
+	}
+
+	public void SetTo(IntDouble p) {
+		pos = p;
+		currentPos = Board.GetVector3Pos(p, Z_POS);
+		playerTransform.position = currentPos;
+	}
+	
+	public void DispatchUpdate(float byLerp) {
+		currentPos = Vector3.Lerp(currentPos, newPos, byLerp);
+		playerTransform.position = currentPos;
 	}
 	
 	public void PointTo(IntDouble to) {

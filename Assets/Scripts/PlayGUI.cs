@@ -369,6 +369,14 @@ public class PlayGUI {
 		play.NextZone();
 	}
 	
+	private void ToRetrySokoban() {
+		play.RetrySokoban();
+	}
+	
+	private void ToQuitSokoban() {
+		play.SwitchMode();
+	}
+	
 	public void ToStory() {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
@@ -418,6 +426,21 @@ public class PlayGUI {
 		TouchDelegate toGame = new TouchDelegate(ToGame);
 		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(7), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, 0.1f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_NULL, 0);
+	}
+
+	public void ToSokoban() {
+		gui.OpenDialog();
+		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
+		
+		int dialogBox = gui.AddContainer(dialogContainer, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
+		TouchDelegate toRetrySokoban = new TouchDelegate(ToRetrySokoban);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toRetrySokoban, play.game.state.GetDialog(11), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, -(gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_NULL, 0);
+		TouchDelegate toQuitSokoban = new TouchDelegate(ToQuitSokoban);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toQuitSokoban, play.game.state.GetDialog(12), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, (gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_NULL, 0);
 	}
 	
 }

@@ -6,6 +6,8 @@ public class Bulb {
 	private Mesh mesh;
 	
 	public IntDouble pos;
+	public Vector3 newPos;
+	public Vector3 currentPos;
 
 	public Transform bulbTransform;
 	
@@ -20,12 +22,23 @@ public class Bulb {
 		bulbTransform.renderer.material = board.play.game.sokobanMaterial;
 		bulbTransform.gameObject.layer = Game.LAYER_SOKOBAN;
 		bulbTransform.position = new Vector3(0,0,-5f);
-		MoveTo(pos);
+		SetTo(pos);
 	}
 
-	public void MoveTo(IntDouble newPos) {
-		pos = newPos;
-		bulbTransform.transform.position = Board.GetVector3Pos(pos, Z_POS);
+	public void DispatchUpdate(float byLerp) {
+		currentPos = Vector3.Lerp(currentPos, newPos, byLerp);
+		bulbTransform.position = currentPos;
+	}
+	
+	public void MoveTo(IntDouble p) {
+		pos = p;
+		newPos = Board.GetVector3Pos(p, Z_POS);
+	}
+
+	public void SetTo(IntDouble p) {
+		pos = p;
+		currentPos = Board.GetVector3Pos(p, Z_POS);
+		bulbTransform.position = currentPos;
 	}
 	
 	public void SetToFull() {

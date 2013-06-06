@@ -1,20 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\WallGunNew.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PrefabFactory.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="112" Column="3" />
-      <File FileName="Assets\Scripts\Menu.cs" Line="108" Column="1" />
-      <File FileName="Assets\Scripts\GameInput.cs" Line="128" Column="3" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="400" Column="102" />
+      <File FileName="Assets\Scripts\Play.cs" Line="179" Column="28" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="373" Column="23" />
       <File FileName="Assets\Scripts\Game.cs" Line="104" Column="20" />
       <File FileName="Assets\Scripts\Ship\Ship.cs" Line="296" Column="21" />
       <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="525" Column="51" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="114" Column="14" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="152" Column="54" />
       <File FileName="Assets\Scripts\GUI\MyGUI.cs" Line="109" Column="38" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="186" Column="48" />
-      <File FileName="Assets\Scripts\Enemies\WallGunNew.cs" Line="30" Column="23" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="210" Column="48" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="134" Column="35" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="244" Column="64" />
+      <File FileName="Assets\Scripts\Sokoban\Board.cs" Line="67" Column="31" />
+      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="61" Column="1" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="164" Column="57" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

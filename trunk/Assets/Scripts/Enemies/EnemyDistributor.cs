@@ -188,12 +188,11 @@ public class EnemyDistributor {
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLGUN14] <= play.zoneID) {
-//		Debug.Log ("Distriuting Walllaser");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLGUN14];
-			number = 4;//Mathf.FloorToInt(play.zoneID / 8f) + 1;
+			number = Mathf.FloorToInt(play.zoneID / 8f) + 1;
 			CreateSpawn(Enemy.CLAZZ_WALLGUN14, enemyModel, enemyEquivalentClazzAModel,
-					play.cave.zone.roomList[1].GetRandomNonExitGridPosition(), //play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition(),
+					play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition(), // play.cave.zone.roomList[0].GetRandomNonExitGridPosition(), 
 					1.0f, number, number, false, Spawn.DistributionMode.PlaceOnWall);
 			enemiesAll += number;
 		}

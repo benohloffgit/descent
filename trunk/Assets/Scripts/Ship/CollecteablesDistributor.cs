@@ -21,7 +21,7 @@ public class CollecteablesDistributor {
 	}
 	
 	public void DistributeOnEnemyDeath(Enemy e) {
-		if (e.clazzNum == Enemy.CLAZZ_WALLLASER11) {
+		if (e.clazzNum == Enemy.CLAZZ_WALLLASER11 || e.clazzNum == Enemy.CLAZZ_WALLGUN14) {
 			return;
 		}
 		int random100;
@@ -92,12 +92,12 @@ public class CollecteablesDistributor {
 		}
 	}
 	
-	public void DropHealth(Vector3 pos) {
-		game.CreateFromPrefab().CreateHealthDrop(pos, Quaternion.identity, AMOUNT_HEAL);
+	public GameObject DropHealth(Vector3 pos) {
+		return game.CreateFromPrefab().CreateHealthDrop(pos, Quaternion.identity, AMOUNT_HEAL);
 	}
 
-	public void DropShield(Vector3 pos) {
-		game.CreateFromPrefab().CreateShieldDrop(pos, Quaternion.identity, AMOUNT_SHIELD);
+	public GameObject DropShield(Vector3 pos) {
+		return game.CreateFromPrefab().CreateShieldDrop(pos, Quaternion.identity, AMOUNT_SHIELD);
 	}		
 	
 	private void DropMissile(Enemy e, int type, int amount) {
@@ -157,9 +157,11 @@ public class CollecteablesDistributor {
 		if (powerUpPositionOffsetLast < 4) {
 			// 50 : 50
 			if (UnityEngine.Random.Range (0,2) == 0) {
-				DropHealth(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
+				GameObject gO = DropHealth(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
+				gO.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 			} else {
-				DropShield(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
+				GameObject gO = DropShield(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
+				gO.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 			}
 		}
 		

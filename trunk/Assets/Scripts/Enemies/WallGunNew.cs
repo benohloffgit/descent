@@ -12,7 +12,7 @@ public class WallGunNew : Enemy {
 	private static float TURNING_SPEED = 0.005f;
 	private static float UPDATE_FREQUENCY = 1.0f; // seconds
 
-	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0,0,0.3f), new Vector3(0, 0, 0), new Vector3(0, 0, 0)};
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0,0,0.2f), new Vector3(0, 0, 0), new Vector3(0, 0, 0)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(0,0,0)};
 
 	void Awake() {
@@ -26,7 +26,7 @@ public class WallGunNew : Enemy {
 	}
 	
 	public override void InitializeWeapon(int mount, int type) {
-		weapon = new Weapon(this, mount, gunAnchor, play, type, WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.ENEMY,
+		weapon = new Weapon(this, mount, transform, gunAnchor, play, type, WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.ENEMY,
 				spawn.isBoss, -1);
 		primaryWeapons.Add(weapon);
 	}
@@ -37,6 +37,7 @@ public class WallGunNew : Enemy {
 			if (Vector3.Angle(baseForward, rotateTo) < 45.0f) {
 				aggressiveness = Enemy.AGGRESSIVENESS_ON;
 				gunAnchor.forward = rotateTo;
+				weapon.weaponTransform.forward = gunAnchor.forward;
 			}
 		}		
 	}	

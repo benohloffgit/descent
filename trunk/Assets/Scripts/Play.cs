@@ -158,18 +158,10 @@ public class Play : MonoBehaviour {
 		}
    	}
 	
-/*	void FixedUpdate() {
-		if (Time.time > lastGravitiyChange + GRAVITY_INTERVAL) {
-			currentGravitiyDirection++;
-			if (currentGravitiyDirection == Cave.ROOM_DIRECTIONS.Length) {
-				currentGravitiyDirection = 0;
-			}
-			//Physics.gravity = Cave.ROOM_DIRECTIONS[currentGravitiyDirection].GetVector3();
-			lastGravitiyChange = Time.time;
-		}
-	}*/
-	
 	void Update() {
+		if (mode == Mode.Sokoban && sokoban.isAnimatingMove) {
+			sokoban.DispatchUpdate();
+		}
 		// editor commands
 		if (Application.platform == RuntimePlatform.WindowsEditor) {
 			if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -574,11 +566,11 @@ public class Play : MonoBehaviour {
 		if (toPaused) {
 			isPaused = true;
 			Time.timeScale = 0;
-//			Time.fixedDeltaTime = 0;
+			Time.fixedDeltaTime = 0;
 		} else {
 			isPaused = false;
 			Time.timeScale = 1f;
-//			Time.fixedDeltaTime = 0.0166666f;
+			Time.fixedDeltaTime = 0.0166666f;
 		}
 	}
 
@@ -592,16 +584,22 @@ public class Play : MonoBehaviour {
 			SetPaused(true);
 			mode = Mode.Sokoban;
 			sokoban.SwitchOn();
+			playGUI.ToSokoban();
 		} else {
 			SetPaused(false);
 			mode = Mode.Normal;
 			sokoban.SwitchOff();
+			playGUI.CloseDialog();
 		}
 	}
 	
 	public void SokobanSolved() {
 		SwitchMode();
 		cave.OpenSecretChamberDoor();
+	}
+	
+	public void RetrySokoban() {
+		sokoban.Retry();
 	}
 	
 }

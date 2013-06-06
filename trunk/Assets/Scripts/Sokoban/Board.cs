@@ -12,24 +12,20 @@ public class Board : MonoBehaviour {
 	
 	private Vector3 mapCenter;
 	private int dimension;
-//	private IntDouble cameraPos;
 	public IntDouble center;
 	
 	public static float FIELD_SIZE = 1.0f;
 	public static Vector2 FIELD_CENTER = new Vector2(FIELD_SIZE/2, FIELD_SIZE/2);
 	public static Vector3 FIELD_CENTER_3 = new Vector3(FIELD_SIZE/2, FIELD_SIZE/2, 0);
-//	public static Direction[] DIRECTIONS = new Direction[] {Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT};
 	
 	private static float UV_BORDER = 0.01f;
 		
 	void Awake() {
 		mesh = GetComponent<MeshFilter>().mesh;
-//		meshCollider = GetComponent<MeshCollider>();
 		mapCamera = GetComponentInChildren<Camera>();		
 	}
 	
 	public void CreateBoard(Play play_, int dimension_) {
-		Debug.Log ("Creating Mesh");
 		play = play_;
 		dimension = dimension_;
 		center = new IntDouble((dimension-1)/2 - 1, (dimension-1)/2 - 1);
@@ -108,25 +104,6 @@ public class Board : MonoBehaviour {
 			(pos.y+1)*FIELD_SIZE+FIELD_CENTER.y,
 			mapCamera.transform.position.z);
 	}
-	
-/*	public void PlaceWall(IntDouble pos, Direction dir, int player) {
-		fields[pos.x, pos.y].PlaceWall(dir, player);
-		try {
-			fields[pos.x+dir.iDouble.x, pos.y + dir.iDouble.y].SetWall(dir*-1);
-		} catch (IndexOutOfRangeException e) {
-			Game.DefNull(e);
-		}
-	}*/
-	
-/*	public void RemoveWall(IntDouble pos, Direction dir) {		
-		fields[pos.x, pos.y].RemoveWall(dir);
-		IntDouble newPos = pos+dir.iDouble;
-		fields[newPos.x, newPos.y].RemoveWall(dir * -1);
-	}*/
-	
-/*	public bool HasWall(IntDouble pos, Direction dir) {
-		return fields[pos.x, pos.y].HasWall(dir);
-	}*/
 	
 	public void SwitchCameraOff() {
 		mapCamera.enabled = false;

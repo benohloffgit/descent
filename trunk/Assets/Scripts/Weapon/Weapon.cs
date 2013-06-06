@@ -76,12 +76,14 @@ public class Weapon {
 	private Vector3 binormal = Vector3.zero;
 	private bool isReloaded;
 	private bool isBoss;
+	private bool isTwin;
 		
 	private Play play;
 	private Game game;
 	private Ship ship;
 	private Enemy enemy;
 	private Transform parent;
+	private Transform aimingAnchor; // needed for wallgun
 	private int layerMask;
 	private RaycastHit hit;
 	public Shot[] loadedShots;
@@ -127,6 +129,15 @@ public class Weapon {
 		Initialize();	
 	}
 
+	// Special constructor needed for WallGun
+	public Weapon(Enemy parentEnemy_, int mountAs_, Transform parent_, Transform aimingAnchor_,
+			Play play_, int type_, Vector3[] positions_, Vector3[] rotations_, int mountedTo_,
+			bool isBoss_ = false, int ammunition_ = -1) :
+				this(parentEnemy_, mountAs_, parent_, play_, type_, positions_, rotations_, mountedTo_, isBoss_, ammunition_)
+	{
+		aimingAnchor = aimingAnchor_;
+	}
+	
 	private void Initialize() {
 		GameObject weaponGameObject;
 		if (mountAs == PRIMARY) {
@@ -139,6 +150,8 @@ public class Weapon {
 		weaponTransform = weaponGameObject.transform;
 		weaponTransform.parent = parent.transform;
 
+		isTwin = (mountAs == PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) ? true : false;
+		
 		if (mountAs == PRIMARY) {
 			if (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS) {
 				subWeaponTransforms = new Transform[2];
@@ -169,11 +182,12 @@ public class Weapon {
 			accuracy = SECONDARY_ACCURACY[type];
 			frequency = SECONDARY_FREQUENCY[type];
 		}
+		
 		Unmount();
 
 		if (mountedTo == Game.SHIP) {
 			layerMask = Game.LAYER_MASK_ENEMIES_CAVE;
-			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+			if (isTwin) {
 				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_SHIP;
 				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_SHIP;
 			} else {
@@ -185,7 +199,7 @@ public class Weapon {
 			}
 		} else {
 			layerMask = Game.LAYER_MASK_SHIP_CAVE;
-			if (mountAs == Weapon.PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+			if (isTwin) {
 				subWeaponTransforms[0].gameObject.layer = Game.LAYER_GUN_ENEMY;
 				subWeaponTransforms[1].gameObject.layer = Game.LAYER_GUN_ENEMY;
 			} else {
@@ -203,20 +217,26 @@ public class Weapon {
 	
 	public void Shoot() {
 		Vector3[] bulletPaths = new Vector3[2];
-				
-		if (Physics.Raycast(parent.position, parent.forward, out hit, MAX_RAYCAST_DISTANCE, layerMask)) {
-			if (mountAs == PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
-				bulletPaths[0] = (hit.point - subWeaponTransforms[0].position).normalized;
-				bulletPaths[1] = (hit.point - subWeaponTransforms[1].position).normalized;
-			} else {
-				bulletPaths[0] = (hit.point - weaponTransform.position).normalized;
-			}
+		
+		if (mountedTo == Game.ENEMY && enemy.clazzNum == Enemy.CLAZZ_WALLGUN14) {
+			bulletPaths[0] = aimingAnchor.forward;
+			loadedShots[0].transform.localScale *= RoomMesh.MESH_SCALE/5f;
+
 		} else {
-			if (mountAs == PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
-				bulletPaths[0] = subWeaponTransforms[0].forward;
-				bulletPaths[1] = subWeaponTransforms[1].forward;
+			if (Physics.Raycast(parent.position, parent.forward, out hit, MAX_RAYCAST_DISTANCE, layerMask)) {
+				if (isTwin) {
+					bulletPaths[0] = (hit.point - subWeaponTransforms[0].position).normalized;
+					bulletPaths[1] = (hit.point - subWeaponTransforms[1].position).normalized;
+				} else {
+					bulletPaths[0] = (hit.point - weaponTransform.position).normalized;
+				}
 			} else {
-				bulletPaths[0] = parent.forward;
+				if (isTwin) {
+					bulletPaths[0] = subWeaponTransforms[0].forward;
+					bulletPaths[1] = subWeaponTransforms[1].forward;
+				} else {
+					bulletPaths[0] = parent.forward;
+				}
 			}
 		}
 
@@ -228,14 +248,14 @@ public class Weapon {
 			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
 			Quaternion deviation2 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), binormal);
 			bulletPaths[0] = deviation1 * deviation2 * bulletPaths[0];
-			if (mountAs == PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+			if (isTwin) {
 				bulletPaths[1] = deviation1 * deviation2 * bulletPaths[1];
 			}
 		}
 		
 		ConfigureLoadedShot(0);
 		loadedShots[0].rigidbody.AddForce(bulletPaths[0] * speed);
-		if (mountAs == PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+		if (isTwin) {
 			ConfigureLoadedShot(1);
 			loadedShots[1].rigidbody.AddForce(bulletPaths[1] * speed);
 			loadedShots[1].gameObject.layer = Game.LAYER_BULLETS;
@@ -343,7 +363,7 @@ public class Weapon {
 				loadedShots[0].rigidbody.isKinematic = true;
 			}
 		}
-		if (mountAs == PRIMARY && (type == TYPE_TWIN_GUN || type == TYPE_TWIN_LASER || type == TYPE_TWIN_PHASER || type == TYPE_TWIN_GAUSS)) {
+		if (isTwin) {
 			loadedShots[0].transform.parent = subWeaponTransforms[0];
 			loadedShots[1].transform.parent = subWeaponTransforms[1];
 		} else {

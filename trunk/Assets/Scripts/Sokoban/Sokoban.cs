@@ -13,6 +13,11 @@ public class Sokoban {
 	private List<Bulb> bulbs;
 	private int bulbGoal;
 	private int bulbsInGoal;
+	private int currentLevel;
+	public bool isAnimatingMove;
+	private float animationTimer;
+	private Bulb movingBulb;
+	private IntDouble nextDir;
 	
 	private static int BOARD_SIZE = 17;
 	
@@ -23,7 +28,9 @@ public class Sokoban {
 	private static string FIELD_BULB = "$";
 	private static string FIELD_EMPTY = " ";
 	private static string LINE_END = "-";
-
+	
+	private static float ANIMATION_DURATION = 0.25f;
+	
 	public static Vector4 UV_IMAGE_BLANK = new Vector4(0.5f, 0.5f, 1.0f, 1.0f);
 	public static Vector4 UV_IMAGE_WALL = new Vector4(0f, 0.5f, 0.5f, 1.0f);
 	public static Vector4 UV_IMAGE_GOAL = new Vector4(0f, 0f, 0.5f, 0.5f);
@@ -50,13 +57,20 @@ public class Sokoban {
 		board.SwitchCameraOff();
 	}
 	
-	public void RenderLevel(int id) {
+	public void RenderLevel(int currentLevel_) {
+		currentLevel = currentLevel_;
 		Reset();
 		bulbs = new List<Bulb>();
-		CreateFields(id);
+		CreateFields(currentLevel);
+	}
+	
+	public void Retry() {
+		RenderLevel(currentLevel);
 	}
 	
 	private void Reset() {
+		isAnimatingMove = false;
+		nextDir = IntDouble.MINUSONE;
 		bulbGoal = 0;
 		bulbsInGoal = 0;
 		if (bulbs != null) {
@@ -78,34 +92,81 @@ public class Sokoban {
 		player = new Player(board);
 	}
 	
+	public void DispatchUpdate() {
+		float animationTimeDelta = Time.realtimeSinceStartup-animationTimer;
+//		Debug.Log ("here");
+		if (animationTimeDelta < ANIMATION_DURATION) {
+//			Debug.Log ("there");
+			player.DispatchUpdate(animationTimeDelta * 4f);
+			if (movingBulb != null) {
+				movingBulb.DispatchUpdate(animationTimeDelta * 4f);
+			}
+		} else {
+			StopAnimation();
+		}
+	}
+	
 	public void MovePlayer(IntDouble dir) {
-		IntDouble newPos = player.pos + dir;
-		player.PointTo(newPos);
-		if (FieldEquals(newPos, Field.EMPTY) || FieldEquals(newPos, Field.GOAL)) {
-			if (fields[newPos.x, newPos.y].ContainsBulb()) {
-				IntDouble newBulbPos = newPos + dir;
-				if ((FieldEquals(newBulbPos, Field.EMPTY) || FieldEquals(newBulbPos, Field.GOAL)) && !fields[newBulbPos.x, newBulbPos.y].ContainsBulb()) {
+		if (isAnimatingMove) {
+			// store next key press
+			if (nextDir == IntDouble.MINUSONE) {
+				nextDir = dir;
+			}
+		} else {
+			IntDouble newPos = player.pos + dir;
+			player.PointTo(newPos);
+			if (FieldEquals(newPos, Field.EMPTY) || FieldEquals(newPos, Field.GOAL)) {
+				if (fields[newPos.x, newPos.y].ContainsBulb()) {
+					IntDouble newBulbPos = newPos + dir;
+					if ((FieldEquals(newBulbPos, Field.EMPTY) || FieldEquals(newBulbPos, Field.GOAL)) && !fields[newBulbPos.x, newBulbPos.y].ContainsBulb()) {
+						StartAnimation();
+						player.MoveTo(newPos);
+						movingBulb = fields[newPos.x, newPos.y].bulb;
+						if (FieldEquals(movingBulb.pos, Field.GOAL)) {
+							bulbsInGoal--;
+						}
+						if (FieldEquals(newBulbPos, Field.GOAL)) {
+							bulbsInGoal++;
+						}
+						movingBulb.MoveTo(newBulbPos);
+						fields[newBulbPos.x,newBulbPos.y].AddBulb(movingBulb);
+						fields[newPos.x,newPos.y].RemoveBulb();
+					} else {
+						movingBulb = null;
+					}
+				} else {
+					StartAnimation();
 					player.MoveTo(newPos);
-					Bulb b = fields[newPos.x, newPos.y].bulb;
-					b.MoveTo(newBulbPos);
-					fields[newBulbPos.x,newBulbPos.y].AddBulb(b);
-					fields[newPos.x,newPos.y].RemoveBulb();
-					if (FieldEquals(newPos, Field.GOAL)) {
-						bulbsInGoal--;
-						b.SetToEmpty();
-					}
-					if (FieldEquals(newBulbPos, Field.GOAL)) {
-						bulbsInGoal++;
-						b.SetToFull();
-					}
 				}
-			} else {
-				player.MoveTo(newPos);
 			}
 		}
+	}
+	
+	private void StartAnimation() {
+		isAnimatingMove = true;
+		animationTimer = Time.realtimeSinceStartup;
+	}
+	
+	private void StopAnimation() {
+		if (movingBulb != null) {
+			if (FieldEquals(movingBulb.pos, Field.EMPTY)) {
+				movingBulb.SetToEmpty();
+			}
+			if (FieldEquals(movingBulb.pos, Field.GOAL)) {
+				movingBulb.SetToFull();
+			}
+			movingBulb = null;
+		}
+		isAnimatingMove = false;
 		if (bulbsInGoal == bulbGoal) {
 			play.SokobanSolved();
+		} else {
+			if (nextDir != IntDouble.MINUSONE) {
+				MovePlayer(nextDir);
+				nextDir = IntDouble.MINUSONE;
+			}
 		}
+		
 	}
 
 	private void CreateFields(int id) {
@@ -143,7 +204,7 @@ public class Sokoban {
 							bulbsInGoal++;
 						} else if (fieldChar == FIELD_PLAYER) {
 							fields[x,y] = new Field(this, Field.EMPTY, pos);
-							player.MoveTo(new IntDouble(x,y));
+							player.SetTo(new IntDouble(x,y));
 						} else if (fieldChar == FIELD_BULB) {
 							fields[x,y] = new Field(this, Field.EMPTY, pos);
 							bulbs.Add(new Bulb(board, new IntDouble(x,y)));

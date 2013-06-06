@@ -149,7 +149,7 @@ public abstract class Enemy : MonoBehaviour {
 		} else if (clazzNum == CLAZZ_HORNET12) {
 			InitializeWeapon(Weapon.SECONDARY, Weapon.TYPE_MINE_SUICIDAL);
 		} else if (clazzNum == CLAZZ_WALLGUN14) {
-			InitializeWeapon(Weapon.PRIMARY, Weapon.TYPE_GUN);
+			InitializeWeapon(Weapon.PRIMARY, Weapon.TYPE_LASER);
 		}
 		
 		currentPrimaryWeapon = 0;

@@ -89,7 +89,7 @@ public class Play : MonoBehaviour {
 //		caveSeed = 2122215;
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 2;
+		zoneID = 20;
 		isInKeyboardMode = false;
 		
 		exitHelper = (GameObject.Instantiate(game.exitHelperPrefab) as GameObject).GetComponent<ExitHelper>();

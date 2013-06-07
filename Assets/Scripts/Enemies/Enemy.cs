@@ -220,6 +220,10 @@ public abstract class Enemy : MonoBehaviour {
 				health = 0;
 				play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 				flaggedForDestruction = true; // this is necessary because the following Destroy does not get executed immediately which leads to problems with twin projectiles
+				AudioSource aS = GetComponentInChildren<AudioSource>();
+				if (aS != null) {
+					aS.transform.parent = play.transform;
+				}
 				Destroy(gameObject);
 			}
 		} else {

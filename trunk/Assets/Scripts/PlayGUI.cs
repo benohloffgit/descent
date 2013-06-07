@@ -128,7 +128,7 @@ public class PlayGUI {
 		
 		gui.SetActiveTextMaterial(4);
 		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.15f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
-		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.04f,0.4f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
 		
 //		ticks = 0;

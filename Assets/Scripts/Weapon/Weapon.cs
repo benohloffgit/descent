@@ -88,19 +88,7 @@ public class Weapon {
 	private RaycastHit hit;
 	public Shot[] loadedShots;
 	private Renderer[] myRenderers;
-
-/*	public static int[] SHIP_PRIMARY_WEAPON_TYPES = new int[] { 
-		1,1,2,1,1,2,3, 1,1,2,1,1,2,3,4, 2,2,3,2,2,3,4,5, 3,3,4,3,3,4,5,6, 4,4,5,4,4,5,6,7, 5,5,6,5,5,6,7,8, 6,6,7,6,6,7,8, 7,7,8,7,7,8, 8,8,8,8
-	};
-	public static int[] SHIP_PRIMARY_WEAPON_MODELS = new int[] { 
-		1,2,1,3,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2,1, 5,6,3,7,8,4,2, 5,6,3,7,8,4, 5,6,7,8,
-	};
-	public static int[] SHIP_SECONDARY_WEAPON_TYPES = new int[] {
-		0,0,1,1,2,1,1, 2,3,1,1,2,1,1,2, 3,4,2,2,3,2,2,3, 4,1,3,3,4,3,3,4, 1,2,4,4,1,4,4,1, 2,3,1,1,2,1,1,2, 3,4,2,2,3,2,2, 3,4,3,3,4,3, 4,4,4,4
-	};
-	public static int[] SHIP_SECONDARY_WEAPON_MODELS = new int[] {
-		0,0,1,2,1,3,4, 2,1,5,6,3,7,8,4, 2,1,5,6,3,7,8,4, 2,9,5,6,3,7,8,4, 10,9,5,6,11,7,8,12, 10,9,13,14,11,15,16,12, 10,9,13,14,11,15,16, 12,10,13,14,11,15, 12,13,14,15
-	};*/
+	private int myAudioSourceID = AudioSourcePool.NO_AUDIO_SOURCE;
 
 	private static float MAX_RAYCAST_DISTANCE = Game.MAX_VISIBILITY_DISTANCE * 1.5f;
 	
@@ -216,12 +204,19 @@ public class Weapon {
 	}
 	
 	public void Shoot() {
+		//play.game.state.PlaySound(type);
+		
 		Vector3[] bulletPaths = new Vector3[2];
+		
+		if (mountedTo == Game.ENEMY) {
+			myAudioSourceID = play.game.PlaySound(myAudioSourceID, weaponTransform, mountAs, type);
+		} else {
+			ship.PlaySound(mountAs, type);
+		}
 		
 		if (mountedTo == Game.ENEMY && enemy.clazzNum == Enemy.CLAZZ_WALLGUN14) {
 			bulletPaths[0] = aimingAnchor.forward;
 			loadedShots[0].transform.localScale *= RoomMesh.MESH_SCALE/5f;
-
 		} else {
 			if (Physics.Raycast(parent.position, parent.forward, out hit, MAX_RAYCAST_DISTANCE, layerMask)) {
 				if (isTwin) {

@@ -44,6 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\AudioSourcePool.cs" />
      <Compile Include="Assets\Scripts\Behaviour\AStarNode.cs" />
      <Compile Include="Assets\Scripts\Behaviour\AStarThreadState.cs" />
      <Compile Include="Assets\Scripts\Behaviour\CoverFindThreadState.cs" />
@@ -121,6 +122,7 @@
      <Compile Include="Assets\Scripts\PG Cave\Zone.cs" />
      <Compile Include="Assets\Scripts\Play.cs" />
      <Compile Include="Assets\Scripts\PlayGUI.cs" />
+     <Compile Include="Assets\Scripts\PooledAudioSource.cs" />
      <Compile Include="Assets\Scripts\PrefabFactory.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />
      <Compile Include="Assets\Scripts\Ship\Breadcrumb.cs" />

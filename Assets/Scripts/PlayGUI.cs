@@ -25,10 +25,14 @@ public class PlayGUI {
 	private Image shieldDigit0;
 	private Image shieldDigit1;
 	private Image shieldDigit2;
+	private Image zoneIDDigit0;
+	private Image zoneIDDigit1;
 	private Image[] keysFound;
 	private Image[] keysEmpty;
 	private Image doorClosed;
 	private Image doorOpen;
+	private Image lights;
+	private Image exitHelper;
 	private int[] healthCount;
 	private int[] shieldCount;
 	
@@ -65,25 +69,39 @@ public class PlayGUI {
 		Vector3 fullSize = gui.containers[container].GetSize();
 		Vector3 screenCenter = gui.containers[container].GetCenter();
 		topContainer = gui.AddContainer(container, fullSize, new Vector2(screenCenter.x, screenCenter.y), true);
-
-		// ship health
-		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.02f, MyGUI.GUIAlignment.Top, 0.14f);
+		
 		int imageId;
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		// zone ID
+		imageId = gui.AddImage(topContainer, new Vector3(0.1f, 0.1f, 1f), MyGUI.GUIAlignment.Center, 0.04f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_NUMBER_0, 0);
+		zoneIDDigit0 = gui.images[imageId];
+		imageId = gui.AddImage(topContainer, new Vector3(0.1f, 0.1f, 1f), MyGUI.GUIAlignment.Center, -0.04f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_NUMBER_0, 0);
+		zoneIDDigit1 = gui.images[imageId];
+
+		int powerUpContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.075f, MyGUI.GUIAlignment.Top, 0.01f);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, -1.25f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_LIGHTS, 0);
+		lights = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 1.25f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_EXITHELPER, 0);
+		exitHelper = gui.images[imageId];
+		
+		// ship health
+		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Center, 0.25f, MyGUI.GUIAlignment.Top, 0.01f);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, -1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 2);
 		healthDigit0 = gui.images[imageId];
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 2);
 		healthDigit1 = gui.images[imageId];
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 3.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 0);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 2);
 		healthDigit2 = gui.images[imageId];
+		gui.AddImage(healthContainer, new Vector3(0.05f, 0.05f, 1f), MyGUI.GUIAlignment.Center, -0.1f, MyGUI.GUIAlignment.Top, 0.1f, Game.GUI_UV_HEALTH, 0);
 		
 		// ship shield
-		int shieldContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.02f, MyGUI.GUIAlignment.Top, 0.01f);
-		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 0.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
+		int shieldContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Center, -0.25f, MyGUI.GUIAlignment.Top, 0.01f);
+		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, -1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit0 = gui.images[imageId];
-		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
+		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit1 = gui.images[imageId];
-		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 3.0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
+		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit2 = gui.images[imageId];
+		gui.AddImage(shieldContainer, new Vector3(0.05f, 0.05f, 1f), MyGUI.GUIAlignment.Center, 0.1f, MyGUI.GUIAlignment.Top, 0.1f, Game.GUI_UV_SHIELD, 0);
 		
 		// keys and door
 		int keyAndDoorContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Left, 0.02f, MyGUI.GUIAlignment.Top, 0.03f);
@@ -109,8 +127,8 @@ public class PlayGUI {
 		enemyLockMissileLabel = gui.AddLabel("", topContainer, new Vector3(0.03f,0.03f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
 		gui.SetActiveTextMaterial(4);
-		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.05f,0.05f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
-		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.05f,0.05f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.15f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.04f,0.4f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
 		
 //		ticks = 0;
@@ -138,6 +156,9 @@ public class PlayGUI {
 		keysEmpty[CollecteableKey.TYPE_GOLD].myRenderer.enabled = true;
 		doorOpen.myRenderer.enabled = false;
 		doorClosed.myRenderer.enabled = true;
+		SwitchHeadlight();
+		SwitchExitHelper();
+		DisplayZoneID();
 	}
 
 	public void Activate() {
@@ -148,6 +169,14 @@ public class PlayGUI {
 		gui.containers[container].gameObject.SetActiveRecursively(false);
 	}
 
+	public void SwitchHeadlight() {
+		lights.myRenderer.enabled = ship.isHeadlightOn;
+	}
+
+	public void SwitchExitHelper() {
+		exitHelper.myRenderer.enabled = ship.isExitHelperLaunched;
+	}
+	
 	public void DisplayKey(int keyType) {
 		keysFound[keyType].myRenderer.enabled = true;
 		keysEmpty[keyType].myRenderer.enabled = false;
@@ -171,6 +200,11 @@ public class PlayGUI {
 	public void DisplayHealth(int[] digits) {
 		healthCount = digits;
 		DisplayHealth();
+	}
+	
+	private void DisplayZoneID() {
+		zoneIDDigit0.SetUVMapping(DIGITS[MyGUI.GetDigitOfNumber(0, play.zoneID)]);
+		zoneIDDigit1.SetUVMapping(DIGITS[MyGUI.GetDigitOfNumber(1, play.zoneID)]);
 	}
 	
 	private void DisplayHealth() {

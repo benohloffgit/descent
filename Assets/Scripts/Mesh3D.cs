@@ -11,6 +11,8 @@ public class Mesh3D : MonoBehaviour {
 	public Vector2 uv0;
 	public Vector2 uv1;
 	
+	private static float UV_BORDER = 0.01f;
+	
 	private Transform mesh;
 	
 	void Awake() {
@@ -48,7 +50,12 @@ public class Mesh3D : MonoBehaviour {
 		uvs[3] = new Vector2(uv0.x, uv1.y);
 		uvs[0] = uv1;
 		uvs[1] = new Vector2(uv1.x, uv0.y);
-		
+/*
+		uvs[2] = new Vector2(uv0.x-UV_BORDER, uv0.y-UV_BORDER);
+		uvs[3] = new Vector2(uv0.x+UV_BORDER, uv1.y-UV_BORDER);
+		uvs[0] = new Vector2(uv1.x+UV_BORDER, uv1.y+UV_BORDER);
+		uvs[1] = new Vector2(uv1.x-UV_BORDER, uv0.y+UV_BORDER);
+		 */
 		m.uv = uvs;
 	}
 

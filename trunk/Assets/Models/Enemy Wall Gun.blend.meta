@@ -3,9 +3,10 @@ guid: 79d2db19844ac7047b59be5d501e36ad
 ModelImporter:
   fileIDToRecycleName:
     4300000: Sphere
+    4300002: WallGun
   serializedVersion: 10
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
@@ -51,7 +52,7 @@ ModelImporter:
       data:
         first: 4
         second: 821a0600
-    Sphere:
+    WallGun:
       data:
         first: 1
         second: a4860100

@@ -15,6 +15,7 @@ public class Door : MonoBehaviour {
 	private Play play;
 	private int type;
 	private bool isShut;
+	private int myAudioSourceID = AudioSourcePool.NO_AUDIO_SOURCE;
 	
 	void Awake() {
 		doorCollider = GetComponentInChildren<BoxCollider>();
@@ -32,12 +33,13 @@ public class Door : MonoBehaviour {
 		} else {
 			isShut = false;
 		}
-		animation.Play(ANIM_CLOSE_DOOR);
+		//animation.Play(ANIM_CLOSE_DOOR);
 	}
 
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG && !isShut) {
 			animation.Play(ANIM_OPEN_DOOR);
+			myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
 			doorCollider.enabled = false;
 		}
 	}
@@ -45,6 +47,7 @@ public class Door : MonoBehaviour {
 	void OnTriggerExit(Collider other) {
 		if (!isShut && other.tag == Ship.TAG) {
 			animation.Play(ANIM_CLOSE_DOOR);
+			myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
 			doorCollider.enabled = true;
 			if (type == TYPE_ENTRY && play.isShipInPlayableArea) {
 				isShut = true;

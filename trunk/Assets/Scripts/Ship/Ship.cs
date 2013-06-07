@@ -25,6 +25,7 @@ public class Ship : MonoBehaviour {
 	private Play play;
 	private ExitHelper exitHelper;
 	private GameInput gameInput;
+	private AudioSource audioSource;
 	
 	// ship components
 	private GameObject shipHUD;
@@ -35,8 +36,8 @@ public class Ship : MonoBehaviour {
 	private Transform cameraTransform;
 	public Camera shipCamera;
 	
-	private bool isExitHelperLaunched;
-	private bool isHeadlightOn;
+	public bool isExitHelperLaunched;
+	public bool isHeadlightOn;
 	private int cameraPosition;
 	public MissileLockMode missileLockMode;
 	public Enemy lockedEnemy;
@@ -90,6 +91,7 @@ public class Ship : MonoBehaviour {
 		headlight = transform.FindChild("Headlight");
 		cameraTransform = transform.FindChild("Camera");
 		shipCamera = cameraTransform.GetComponent<Camera>();
+		audioSource = GetComponent<AudioSource>();
 	}
 	
 	public void Initialize(Play play_, ExitHelper exitHelper_) {
@@ -102,8 +104,8 @@ public class Ship : MonoBehaviour {
 		shipControl.Initialize(this, game, play, gameInput);
 		
 		isExitHelperLaunched = false;
-		isHeadlightOn = true;
-		SwitchHeadlight();
+		isHeadlightOn = false;
+		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
 		cameraPosition = CAMERA_POSITION_COCKPIT;
 		missileLockMode = MissileLockMode.None;
 		
@@ -254,6 +256,7 @@ public class Ship : MonoBehaviour {
 	public void SwitchHeadlight() {
 		isHeadlightOn = (isHeadlightOn) ? false : true;
 		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
+		play.playGUI.SwitchHeadlight();
 	}
 	
 	public void CycleCamera() {
@@ -459,6 +462,11 @@ public class Ship : MonoBehaviour {
 			exitHelper.Deactivate();
 			isExitHelperLaunched = false;
 		}
+		play.playGUI.SwitchExitHelper();
+	}
+	
+	public void PlaySound(int weaponMountAsType, int type) {
+		game.PlaySound(audioSource, weaponMountAsType, type);
 	}
 	
 }

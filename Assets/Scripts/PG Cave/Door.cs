@@ -11,6 +11,8 @@ public class Door : MonoBehaviour {
 	private static string ANIM_OPEN_DOOR = "Door Open";
 	private static string ANIM_CLOSE_DOOR = "Door Close";
 	
+	public Transform doorL;
+	
 	private BoxCollider doorCollider;
 	private Play play;
 	private int type;
@@ -19,6 +21,7 @@ public class Door : MonoBehaviour {
 	
 	void Awake() {
 		doorCollider = GetComponentInChildren<BoxCollider>();
+		doorL = transform.FindChild("Armature/Door.L");
 	}
 	
 	public void Initialize(Play play_, int type_) {

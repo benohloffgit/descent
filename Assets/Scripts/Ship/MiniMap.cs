@@ -44,9 +44,6 @@ public class MiniMap : MonoBehaviour {
 	private static float ZOOM_MAX = 5.0f;
 	private static float ZOOM_MIN = 0.5f;
 	private static float CAMERA_FOLLOW_ROTATION_SPEED = 10.0f;
-//	private static float TOUCH_THRESHOLD = Screen.dpi * 0.2f;
-//	private static float TOUCH_SENSITIVITY = Screen.dpi * 0.5f;
-//	private static float TOUCH_TIME_THRESHOLD = 0.3f;
 
 	public enum Mode { Off=0, On=1 }
 	public enum Follow { Off=0, On=1 }
@@ -76,7 +73,6 @@ public class MiniMap : MonoBehaviour {
 
 		for (int i=0; i<4; i++) {
 			roomConnectors[i] = (GameObject.Instantiate(play.game.miniMapRoomConnectorPrefab, Vector3.zero, Quaternion.identity) as GameObject).transform;
-//			roomConnectors[i].localScale *= MINI_MAP_SCALE;
 			roomConnectors[i].parent = transform;
 		}
 		

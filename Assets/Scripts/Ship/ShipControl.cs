@@ -41,6 +41,16 @@ public class ShipControl {
 					ship.ShootSecondary();
 				}
 			}
+			if (Input.GetKeyDown(KeyCode.Escape)) {
+				/*if (isPaused && !play.game.gui.isInDialogMode) {
+					SetPaused(false);
+					playGUI.CloseDialog();
+				}*/
+				if (!play.isPaused) {
+					play.SetPaused(true);
+					play.playGUI.ToQuit();
+				}
+			}
 			if (Input.GetKeyDown(KeyCode.B)) {
 				play.CreateBreadcrumb();
 			}
@@ -64,6 +74,17 @@ public class ShipControl {
 			}
 			if (Input.GetKeyDown(KeyCode.F2)) {
 				ship.LaunchExitHelper();
+			}
+			if (play.mode == Play.Mode.Sokoban) {
+				if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+					play.sokoban.MovePlayer(IntDouble.LEFT);
+				} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+					play.sokoban.MovePlayer(IntDouble.RIGHT);
+				} else if (Input.GetKeyDown(KeyCode.UpArrow)) {
+					play.sokoban.MovePlayer(IntDouble.UP);
+				} else if (Input.GetKeyDown(KeyCode.DownArrow)) {
+					play.sokoban.MovePlayer(IntDouble.DOWN);
+				}
 			}
 		}
 	}

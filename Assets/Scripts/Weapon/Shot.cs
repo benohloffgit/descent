@@ -26,7 +26,7 @@ public class Shot : MonoBehaviour {
 	public static int DETONATOR_BOMB = 10;
 	
 	private static float MISSILE_RADIUS = RoomMesh.MESH_SCALE * 2.5f;
-	private static float GUIDED_MISSILE_TORQUE_MAX = 0.02f;
+	private static float GUIDED_MISSILE_TORQUE_MAX = 0.01f;
 	private static float MISSILE_SPEED = 5.0f * (RoomMesh.MESH_SCALE/5f);
 	private static float MINE_EXPLOSION_POWER = 500.0f;
 	private static float MINE_EXPLOSION_RADIUS = 2.0f * RoomMesh.MESH_SCALE;
@@ -63,7 +63,7 @@ public class Shot : MonoBehaviour {
 				play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 				c.rigidbody.AddExplosionForce(MINE_EXPLOSION_POWER, transform.position, MINE_EXPLOSION_RADIUS);
 				if (c.collider.tag == Ship.TAG) {
-					play.ship.Damage(damage);
+					play.ship.Damage(damage, c.contacts[0].point);
 					play.DamageShip(source);
 				}
 				((MineBuilder)enemy).MineDestroyed();
@@ -89,7 +89,7 @@ public class Shot : MonoBehaviour {
 			}
 			
 			if (c.collider.tag == Ship.TAG) {
-				play.ship.Damage(damage);
+				play.ship.Damage(damage, c.contacts[0].point);
 				play.DamageShip(source);
 			} else if (c.collider.tag == Enemy.TAG) {
 				c.collider.GetComponent<Enemy>().Damage(damage);
@@ -114,10 +114,10 @@ public class Shot : MonoBehaviour {
 	private void ApplyCollateralDamage(Vector3 pos) {
 		Collider[] missileHits = Physics.OverlapSphere(pos, MISSILE_RADIUS, Game.LAYER_MASK_MOVEABLES);
 		foreach (Collider col in missileHits) {
-			if (col.gameObject.layer == Game.LAYER_ENEMIES) {
+			if (col.gameObject.tag == Enemy.TAG) {
 				col.GetComponent<Enemy>().Damage(Mathf.RoundToInt(damage/2.0f));
 			} else {
-				play.ship.Damage(Mathf.RoundToInt(damage/4.0f));
+				play.ship.Damage(Mathf.RoundToInt(damage/4.0f), col.transform.position);
 			}
 			play.DisplayHit(col.transform.position, play.ship.transform.rotation);
 		}
@@ -125,7 +125,7 @@ public class Shot : MonoBehaviour {
 	
 	public void ExecuteLaserBeamDamage(Vector3 point) {
 		play.DisplayHit(point, play.ship.transform.rotation);
-		play.ship.Damage(damage);
+		play.ship.Damage(damage, point);
 		play.DamageShip(source);
 	}
 	

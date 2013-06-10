@@ -58,6 +58,14 @@ public class Room {
 		}
 	}	
 	
+	public int GetMinerIDOfCell(IntTriple pos) {
+		if (cells[pos.x, pos.y, pos.z] != null) {
+			return cells[pos.x, pos.y, pos.z].minerId;
+		} else {
+			return RoomMiner.NO_MINER;
+		}
+	}	
+	
 	public int GetCellDensity(IntTriple pos) {
 //		try {
 		if (cells[pos.x, pos.y, pos.z] == null) {

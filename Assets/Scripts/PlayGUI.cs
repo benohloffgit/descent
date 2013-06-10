@@ -29,6 +29,7 @@ public class PlayGUI {
 	private Image zoneIDDigit1;
 	private Image[] keysFound;
 	private Image[] keysEmpty;
+	private Image[] damageIndicators;
 	private Image doorClosed;
 	private Image doorOpen;
 	private Image lights;
@@ -38,6 +39,8 @@ public class PlayGUI {
 	
 	private float lastHealthCountTime;
 	private float lastShieldCountTime;
+	private float[] damageIndicatorTimers;
+	private bool isOneDamageIndicatorActive;
 	
 	private List<Enemy> enemyHUDInfo;
 	private int topContainer;
@@ -48,10 +51,11 @@ public class PlayGUI {
 	
 	private static int MAX_ENEMY_HUD_INFOS = 5;
 	private static float ENEMY_HUD_INFO_MAX_TIME = 5.0f;
+	private static float DAMAGE_INDICATOR_DURATION = 1.0f;
 	
 	private static Vector3 ENEMY_HUD_OFFSET_GLOBAL = new Vector3(0.5f, 0.5f, 0f);
-	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(-1.0f, -1.0f, 0f);
-	private static Vector3 ENEMY_LOCK_OFFSET_LOCAL = new Vector3(1.0f, 1.0f, 0f);
+	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(-3.0f, -3.0f, 0f);
+	private static Vector3 ENEMY_LOCK_OFFSET_LOCAL = new Vector3(3.0f, 3.0f, 0f);
 	private static float TICK_DELTA = 0.05f;
 	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
 												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
@@ -62,7 +66,9 @@ public class PlayGUI {
 		
 		keysFound = new Image[2];
 		keysEmpty = new Image[2];
-		
+		damageIndicators = new Image[4];
+		damageIndicatorTimers = new float[4];
+			
 		gui = play.game.gui;
 		container = gui.AddContainer();
 		
@@ -118,6 +124,20 @@ public class PlayGUI {
 		imageId = gui.AddImage(keyAndDoorContainer, MyGUI.GUIAlignment.Left, 4f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_KEY_GOLD, 0);
 		keysFound[CollecteableKey.TYPE_GOLD] = gui.images[imageId];
 		
+		// damage indicators
+		int damageIndicatorContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f);
+		imageId = gui.AddImage(damageIndicatorContainer, MyGUI.GUIAlignment.Left, 6f, MyGUI.GUIAlignment.Center, 0.0f, Game.GUI_UV_DAMAGEINDICATOR, 0);
+		damageIndicators[0] = gui.images[imageId];
+		damageIndicators[0].transform.Rotate(Vector3.forward, -90f);
+		imageId = gui.AddImage(damageIndicatorContainer, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -6f, Game.GUI_UV_DAMAGEINDICATOR, 0);
+		damageIndicators[1] = gui.images[imageId];
+		imageId = gui.AddImage(damageIndicatorContainer, MyGUI.GUIAlignment.Right, 6f, MyGUI.GUIAlignment.Center, 0.0f, Game.GUI_UV_DAMAGEINDICATOR, 0);
+		damageIndicators[2] = gui.images[imageId];
+		damageIndicators[2].transform.Rotate(Vector3.forward, 90f);
+		imageId = gui.AddImage(damageIndicatorContainer, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, -6f, Game.GUI_UV_DAMAGEINDICATOR, 0);
+		damageIndicators[3] = gui.images[imageId];
+		damageIndicators[3].transform.Rotate(Vector3.forward, 180f);
+		
 		enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
 		gui.SetActiveTextMaterial(5);
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
@@ -154,6 +174,10 @@ public class PlayGUI {
 		keysFound[CollecteableKey.TYPE_GOLD].myRenderer.enabled = false;
 		keysEmpty[CollecteableKey.TYPE_SILVER].myRenderer.enabled = true;
 		keysEmpty[CollecteableKey.TYPE_GOLD].myRenderer.enabled = true;
+		for (int i=0; i<4; i++) {
+			damageIndicators[i].myRenderer.enabled = false;
+		}
+		isOneDamageIndicatorActive = false;
 		doorOpen.myRenderer.enabled = false;
 		doorClosed.myRenderer.enabled = true;
 		SwitchHeadlight();
@@ -203,8 +227,8 @@ public class PlayGUI {
 	}
 	
 	private void DisplayZoneID() {
-		zoneIDDigit0.SetUVMapping(DIGITS[MyGUI.GetDigitOfNumber(0, play.zoneID)]);
-		zoneIDDigit1.SetUVMapping(DIGITS[MyGUI.GetDigitOfNumber(1, play.zoneID)]);
+		zoneIDDigit0.SetUVMapping(DIGITS[MyGUI.GetDigitOfNumber(0, play.zoneID+1)]);
+		zoneIDDigit1.SetUVMapping(DIGITS[MyGUI.GetDigitOfNumber(1, play.zoneID+1)]);
 	}
 	
 	private void DisplayHealth() {
@@ -287,6 +311,19 @@ public class PlayGUI {
 		} else {
 			gui.labelsCC[enemyLockMissileLabel].SetText("");
 		}
+		
+		if (isOneDamageIndicatorActive) {
+			isOneDamageIndicatorActive = false;
+			for (int i=0; i<4; i++) {
+				if (damageIndicators[i].myRenderer.enabled) {
+					if ( Time.fixedTime > damageIndicatorTimers[i] + DAMAGE_INDICATOR_DURATION) {
+						damageIndicators[i].myRenderer.enabled = false;
+					} else {
+						isOneDamageIndicatorActive = true;
+					}
+				}
+			}
+		}
 	}
 	
 	public void EnemyInSight(Enemy e) {
@@ -302,31 +339,42 @@ public class PlayGUI {
 	private void ShowEnemyHUDInfo(int index, Enemy e) {
 //		if (e == null) Debug.Log ("enemy is null " + index);
 //		Debug.Log (e.transform.TransformDirection(e.transform.localScale));
-		Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
-			+ ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f);
 		gui.labelsCC[enemyHUDInfoLabels[index]].SetText(
-			e.clazz.ToUpper() + " " + e.displayModel.ToString("00")
+			e.clazz + " " + e.displayModel.ToString("00")
 				+ " [H:" + e.health + "]"
 				+ " (F:"+ Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
 		);
-		gui.labelsCC[enemyHUDInfoLabels[index]].transform.localPosition = new Vector2(
-			Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f),
-			Mathf.Clamp(p.y - ENEMY_HUD_OFFSET_GLOBAL.y, -0.45f, 0.45f)
-		);
+		gui.labelsCC[enemyHUDInfoLabels[index]].transform.localPosition =
+			Calculate2DHUDPosition(e.transform.position, ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f, e);
 		gui.labelsCC[enemyHUDInfoLabels[index]].myRenderer.enabled = true;
 	}
 	
 	private void ShowEnemyMissileLockInfo() {
 		Enemy e = ship.lockedEnemy;
 		if (e != null) {
-			Vector3 p = shipCamera.WorldToViewportPoint(e.transform.position
-				+ ship.transform.TransformDirection(ENEMY_LOCK_OFFSET_LOCAL) * e.radius * 0.5f);
 			gui.labelsCC[enemyLockMissileLabel].SetText("L: " 
 				+ (Ship.MISSILE_LOCK_DURATION - Mathf.Clamp(Mathf.FloorToInt(Time.time-ship.missileLockTime),0,Ship.MISSILE_LOCK_DURATION)));
-			gui.labelsCC[enemyLockMissileLabel].transform.localPosition = new Vector2(
+			gui.labelsCC[enemyLockMissileLabel].transform.localPosition =
+				Calculate2DHUDPosition(e.transform.position, ship.transform.TransformDirection(ENEMY_LOCK_OFFSET_LOCAL) * e.radius * 0.5f, e);
+		}
+	}
+	
+	private Vector2 Calculate2DHUDPosition(Vector3 pos, Vector3 offset, Enemy e) {
+		Vector3 p = shipCamera.WorldToViewportPoint(pos + offset);
+		if (p.z > 0) { // in front of us
+			return new Vector2(
 				Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f),
 				Mathf.Clamp(p.y - ENEMY_HUD_OFFSET_GLOBAL.y, -0.45f, 0.45f)
 			);
+		} else {
+			float x = -Mathf.Clamp(p.x - ENEMY_HUD_OFFSET_GLOBAL.x, -0.45f, 0.45f);
+			float y = -Mathf.Clamp(p.y - ENEMY_HUD_OFFSET_GLOBAL.y, -0.45f, 0.45f);
+			if (Mathf.Abs(x) > Mathf.Abs(y)) {
+				y = 0.45f * Mathf.Sign(y);
+			} else {
+				x = 0.45f * Mathf.Sign(x);
+			}
+			return new Vector2(x, y);
 		}
 	}
 	
@@ -375,9 +423,32 @@ public class PlayGUI {
 		}
 	}
 	
+	public void IndicateDamage(Vector3 worldPos) {
+		isOneDamageIndicatorActive = true;
+		Vector3 p = shipCamera.WorldToViewportPoint(worldPos); // 1.0, -1.7, -0.3
+//		Vector3 q = shipCamera.WorldToScreenPoint(worldPos); // 1.0, -1.7, -0.3
+//		Debug.Log (p + " " + q);
+		if (p.z < 0) p *= -1f;
+		if (p.x < 0.5f) {
+			damageIndicators[2].myRenderer.enabled = true;
+			damageIndicatorTimers[2] = Time.fixedTime;
+		} else if (p.x > 0.5f) {
+			damageIndicators[0].myRenderer.enabled = true;
+			damageIndicatorTimers[0] = Time.fixedTime;
+		}
+		if (p.y < 0.5f) {
+			damageIndicators[3].myRenderer.enabled = true;
+			damageIndicatorTimers[3] = Time.fixedTime;
+		} else if (p.y > 0.5f) {
+			damageIndicators[1].myRenderer.enabled = true;
+			damageIndicatorTimers[1] = Time.fixedTime;
+		}
+	}
+	
 	public void CloseDialog() {
 		gui.CloseDialog(dialogContainer);
 		Screen.showCursor = false;
+		Screen.lockCursor = true;
 	}
 	
 	public void DisplayPrimaryWeapon(Weapon w) {

@@ -18,13 +18,18 @@ public class ExitHelper : MonoBehaviour {
 	private Mode mode;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private bool isOnPath;
+	private float lastTimeSoundPlayed;
+	private int myAudioSourceID = AudioSourcePool.NO_AUDIO_SOURCE;
+	private float nextSoundTime;
 	
-	private static float MOVEMENT_FORCE = 10f;
-	private static int CHASING_RANGE = 4;
+	private static float MOVEMENT_FORCE = 20f;
 	private static int ROAM_MIN_RANGE = 1;
 	private static int ROAM_MAX_RANGE = 2;
-	private static float MAX_DISTANCE_TO_SHIP = RoomMesh.MESH_SCALE * 5;
-	private static float MIN_DISTANCE_TO_SHIP = RoomMesh.MESH_SCALE * 3;
+	private static float MAX_DISTANCE_TO_SHIP = RoomMesh.MESH_SCALE * 4;
+	private static float MIN_DISTANCE_TO_SHIP = RoomMesh.MESH_SCALE * 2;
+	
+	private static int SOUND_MIN_ID = 12;
+	private static int SOUND_MAX_ID = 18;
 	
 	public enum Mode { Deactive=0, Roaming=1, FindingPathToExit=2, FindingPathToShip=3, MovingToExit=4, MovingToShip=5  }
 	
@@ -42,6 +47,7 @@ public class ExitHelper : MonoBehaviour {
 	
 	void FixedUpdate() {
 		if (mode != Mode.Deactive && play.isShipInPlayableArea) {
+			PlaySound();
 			currentGridPosition = cave.GetGridFromPosition(transform.position);
 //			float distanceToCaveExit = targetPositionV3-transform.position;
 			
@@ -106,6 +112,7 @@ public class ExitHelper : MonoBehaviour {
 		currentAngleUp = 0f;
 		isOnPath = false;
 		FindPathToExit();
+		lastTimeSoundPlayed = -1f;
 	}
 	
 	private void FindPathToExit() {
@@ -122,6 +129,14 @@ public class ExitHelper : MonoBehaviour {
 
 	public void Deactivate() {
 		mode = Mode.Deactive;
+	}
+	
+	private void PlaySound() {
+		if (lastTimeSoundPlayed == -1f || Time.fixedTime > lastTimeSoundPlayed + nextSoundTime) {
+			myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, Random.Range(SOUND_MIN_ID, SOUND_MAX_ID+1));
+			lastTimeSoundPlayed = Time.fixedTime;
+			nextSoundTime = Random.Range (5f, 20f);
+		}
 	}
 
 }

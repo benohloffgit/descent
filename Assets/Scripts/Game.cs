@@ -15,6 +15,7 @@ public class Game : MonoBehaviour {
 	public GameObject miniMapPrefab;
 	public GameObject miniMapRoomConnectorPrefab;
 	public GameObject doorPrefab;
+	public GameObject exitSignPrefab;
 	public GameObject secretChamberDoorPrefab;
 	public GameObject crystalPrefab;
 	public GameObject flowerPrefab;
@@ -146,6 +147,7 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_SHIELD = new Vector4(0.125f,0.625f,0.25f,0.75f);
 	public static Vector4 GUI_UV_LIGHTS = new Vector4(0.875f,0.75f,1f,0.875f);
 	public static Vector4 GUI_UV_EXITHELPER = new Vector4(0.25f,0.625f,0.375f,0.75f);
+	public static Vector4 GUI_UV_DAMAGEINDICATOR = new Vector4(0.375f,0.625f,0.5f,0.75f);
 	
 	private Menu menu;
 	private Play play;
@@ -271,14 +273,14 @@ public class Game : MonoBehaviour {
 	public static void DefNull(object o) {
 	}
 	
-	// From dedicated AudioSource
+	// From dedicated AudioSource / Ship
 	public void PlaySound(AudioSource audioSource, int soundType, int type) {
 		if (soundType == Weapon.PRIMARY) {
 			audioSource.PlayOneShot(audioClips[type]);
 		} else if (soundType == Weapon.SECONDARY) {
+			audioSource.PlayOneShot(audioClips[8]);
 		} else if (soundType == SOUND_TYPE_VARIOUS) {
-			
-			
+			audioSource.PlayOneShot(audioClips[type]);
 		}
 	}
 	
@@ -287,6 +289,7 @@ public class Game : MonoBehaviour {
 		if (soundType == Weapon.PRIMARY) {
 			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
 		} else if (soundType == Weapon.SECONDARY) {
+			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[8]);
 		} else if (soundType == SOUND_TYPE_VARIOUS) {
 			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
 		}

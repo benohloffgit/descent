@@ -102,13 +102,22 @@ public class Menu : MonoBehaviour {
 		
 		Vector3 fullSize = gui.containers[container].GetSize();
 		Vector3 screenCenter = gui.containers[container].GetCenter();
-//		int topContainer = gui.AddContainer(container, fullSize, new Vector2(screenCenter.x, screenCenter.y), true);
 		
 		gui.AddImage(container, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
 		gui.containers[container].AddZLevel();
-/*		gui.AddLabel(state.GetDialog(0), container,  new Vector3(0.5f, 0.5f, 1.0f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center,
-			-0.1f, 0.0125f, 0.4f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 1);
-		gui.containers[container].AddZLevel();*/
+		TouchDelegate toZone01 = new TouchDelegate(ToZone01);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone01, state.GetDialog(13), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, -0.4f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
+		TouchDelegate toZone12 = new TouchDelegate(ToZone12);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone12, state.GetDialog(14), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
+		TouchDelegate toZone29 = new TouchDelegate(ToZone29);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone29, state.GetDialog(15), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
+		TouchDelegate toZone57 = new TouchDelegate(ToZone57);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone57, state.GetDialog(16), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0.4f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
+		
 		TouchDelegate toNewGame = new TouchDelegate(ToNewGame);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toNewGame, state.GetDialog(0), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);
@@ -129,19 +138,34 @@ public class Menu : MonoBehaviour {
 		gui.imageButtons[upgradeButton].gameObject.SetActiveRecursively(true);
 		InvokeRepeating("ScaleUpgradeButton", 0f, UPGRADE_BUTTON_SCALE_INTERVAL);
 	}
-
-	public void ToNewGame() {
+	
+	private void ToZone01() {
+		game.state.level = 1;
 		game.SetGameMode(Game.Mode.Play);
-/*		CancelInvoke();
-		Destroy(gui.gameObject);
-		game.StartClient();*/
+	}
+
+	private void ToZone12() {
+		game.state.level = 12;
+		game.SetGameMode(Game.Mode.Play);
+	}
+
+	private void ToZone29() {
+		game.state.level = 29;
+		game.SetGameMode(Game.Mode.Play);
+	}
+
+	private void ToZone57() {
+		game.state.level = 57;
+		game.SetGameMode(Game.Mode.Play);
+	}
+	
+	public void ToNewGame() {
+		game.state.level = 0;
+		game.SetGameMode(Game.Mode.Play);
 	}
 
 	public void ToContinueGame() {
 		game.SetGameMode(Game.Mode.Play);
-/*		CancelInvoke();
-		Destroy(gui.gameObject);
-		game.StartClient();*/
 	}
 
 	public void ToUpgrade() {

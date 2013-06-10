@@ -7,7 +7,7 @@ public class Play : MonoBehaviour {
 	
 	public int zoneID;
 	
-	private Mode mode;
+	public Mode mode;
 	public Game game;
 	public Cave cave;
 	public Movement movement;
@@ -20,7 +20,7 @@ public class Play : MonoBehaviour {
 	public bool isPaused;
 	private MiniMap miniMap;
 	public PlayGUI playGUI;
-	private Sokoban sokoban;
+	public Sokoban sokoban;
 	private string keyCommand;
 	public bool isInKeyboardMode;
 	private int caveSeed;
@@ -86,10 +86,10 @@ public class Play : MonoBehaviour {
 		sokoban = new Sokoban(this);
 		
 		botSeed = UnityEngine.Random.Range(0,9999999);
-//		caveSeed = 2122215;
+//		caveSeed = 2122215; 9164008 4995052;//
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
-		zoneID = 20;
+//		zoneID = state.level;
 		isInKeyboardMode = false;
 		
 		exitHelper = (GameObject.Instantiate(game.exitHelperPrefab) as GameObject).GetComponent<ExitHelper>();
@@ -117,27 +117,27 @@ public class Play : MonoBehaviour {
 	
 	public void Activate() {
 		playGUI.Activate();
-		StartZone ();
+		ship.CalculateHullClazz();
+		StartZone();
+		ship.AddWeapons();
 		InvokeRepeating("UpdateStats", 0, 1.0f);
 	}
 	
 	public void Deactivate() {
 		playGUI.Deactivate();
+		ship.RemoveWeapons();
 		CancelInvoke();
 	}
 
 	void OnGUI() {
 		if (!isPaused) {
-/*	 		if (GUI.RepeatButton  (new Rect (60,400,50,50), "Exit")) {
-				Application.Quit();
-			}*/
-			GUI.Label(new Rect (20,Screen.height-90,500,80),
+/*			GUI.Label(new Rect (20,Screen.height-90,500,80),
 					"Active-Living-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +"--"+ enemyDistributor.enemiesAll +
 					"\nHealth E: " + enemyDistributor.enemiesHealthActive +"--"+ enemyDistributor.enemiesHealthActiveAvg.ToString("F2") +
 					"\nFPS S-E-S/E: " + ship.firepowerPerSecond.ToString("F2") +"--"+ enemyDistributor.enemiesFirepowerPerSecondActive.ToString("F2") +"--"+enemiesToShipFPSRatio.ToString("F2")+
 					"\nHealth/FPS S-E: " + activeEnemiesHealthToShipFPSRatio.ToString("F2") +"--"+ shipHealthToActiveEnemiesFPSRatio.ToString("F2") +
 					"\nHit/Miss S-E-S/E: " + shipHitRatio.ToString("F2") +"--"+enemyHitRatio.ToString("F2") + "--" + shipToEnemyHitRatio.ToString("F2")
-				);
+				);*/
 			
 			Event e = Event.current;
 	        if (e.isKey && e.type == EventType.KeyDown) { // keydown and characters can come as seperate events!!!
@@ -163,38 +163,17 @@ public class Play : MonoBehaviour {
 			sokoban.DispatchUpdate();
 		}
 		// editor commands
-		if (Application.platform == RuntimePlatform.WindowsEditor) {
-			if (Input.GetKeyDown(KeyCode.Escape)) {
-				if (isPaused) {
-					SetPaused(false);
-					playGUI.CloseDialog();
-				} else {
-					SetPaused(true);
-					playGUI.ToQuit();
-				}
-			}
-			if (Input.GetKeyDown(KeyCode.F6)) {
+		if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer) {
+			/*if (Input.GetKeyDown(KeyCode.F6)) {
 				SwitchMode();
+			}*/
+			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
+				KeyFound(CollecteableKey.TYPE_SILVER);
+				KeyFound(CollecteableKey.TYPE_GOLD);
+				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
 			}
-			if (mode == Mode.Sokoban) {
-				if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-					sokoban.MovePlayer(IntDouble.LEFT);
-				} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
-					sokoban.MovePlayer(IntDouble.RIGHT);
-				} else if (Input.GetKeyDown(KeyCode.UpArrow)) {
-					sokoban.MovePlayer(IntDouble.UP);
-				} else if (Input.GetKeyDown(KeyCode.DownArrow)) {
-					sokoban.MovePlayer(IntDouble.DOWN);
-				}
-			} else {			
-				if (Input.GetKeyDown(KeyCode.Alpha5)) {	
-					KeyFound(CollecteableKey.TYPE_SILVER);
-					KeyFound(CollecteableKey.TYPE_GOLD);
-					ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
-				}
-				if (Input.GetKeyDown(KeyCode.Alpha6)) {	
-					ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
-				}
+			if (Input.GetKeyDown(KeyCode.Alpha6)) {	
+				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
 			}
 		}
 	}
@@ -206,6 +185,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	private void StartZone() {
+		zoneID = state.level;
 		shipHitRatio = 0;
 		enemyHitRatio = 0;
 		shipToEnemyHitRatio = 1.0f;
@@ -220,7 +200,6 @@ public class Play : MonoBehaviour {
 		if (zoneID > 0) {
 			enemyDistributor.Distribute();
 		}
-		ship.CalculateHullClazz();
 		ship.Activate();
 		sokoban.RenderLevel(zoneID);
 		ConfigureLighting();
@@ -235,7 +214,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void NextZone() {
-		zoneID++;
+		state.SetLevel(zoneID+1);
 		StartZone();
 	}
 	
@@ -558,6 +537,10 @@ public class Play : MonoBehaviour {
 			lightZone = 2-(9-lightZone); // 1-2
 			for (int i=0; i<caveLights.Length; i++) {
 				caveLights[i].intensity = 1.0f - (0.45f*lightZone);
+			}
+		} else {
+			for (int i=0; i<caveLights.Length; i++) {
+				caveLights[i].intensity = 1.0f;
 			}
 		}
 	}

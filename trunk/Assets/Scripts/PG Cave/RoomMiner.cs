@@ -7,13 +7,23 @@ public class RoomMiner {
 	public bool isActive = true;
 	public IntTriple pos;
 	public int id;
-	public bool isConnectedToOtherMiner = false;
+	/*
+	 * if 3 Miners: all need to be connected to 1 other miner
+	 * if 4 Miners: 1 needs to be connected to 2 other mines and all to 1
+	 * if 5 Miners: (2 need to be connected to 2 other miners OR 1 needs to be connected to 3) and all to 1 
+	 */ 				
+//	public bool isConnectedToOneOtherMiner = false;
+//	public bool isConnectedToTwoOtherMiners = false;
+	private List<int> connectedMinerIDs;
+	public int connectedToNumberOfOtherMiners = 0;
 	public Type type;
-	private int quitOnConnectionMaxMined;
+	private int quitOnMaxMined;
+	
+	public static int NO_MINER = -1;
 	
 	private Cave cave;
 	private Room room;
-	private int mineCount;
+	public int mineCount;
 	
 //	private List<IntTriple> weightedCells;
 	
@@ -22,15 +32,16 @@ public class RoomMiner {
 //	private static int MINE_COUNT_MAX_WHEN_QUIT_ON_CONNECTION = 50;
 	
 	// dead end miners
-	public RoomMiner(Cave c, IntTriple p, Room r, int i, RoomMiner.Type t, int quitOnConnectionMaxMined_ = -1) {
+	public RoomMiner(Cave c, IntTriple p, Room r, int i, RoomMiner.Type t, int quitOnMaxMined_ = -1) {
 		cave = c;
 		pos = p;
 		room = r;
 		id = i;
 		type = t;
 		mineCount = 1;
-		quitOnConnectionMaxMined = quitOnConnectionMaxMined_;
+		quitOnMaxMined = quitOnMaxMined_;
 		room.AddDeadEndCell(pos, id);
+		connectedMinerIDs = new List<int>();
 		DigStarChamber();
 		
 /*		if (type == Type.WeightBased) {
@@ -45,7 +56,7 @@ public class RoomMiner {
 	}
 	
 	// exit miners
-	public RoomMiner(Cave c, IntTriple p, IntTriple alignment, Room r, int i, RoomMiner.Type t, int quitOnConnectionMaxMined_ = -1) {
+	public RoomMiner(Cave c, IntTriple p, IntTriple alignment, Room r, int i, RoomMiner.Type t, int quitOnMaxMined_ = -1) {
 		cave = c;
 		pos = p;
 		room = r;
@@ -53,7 +64,8 @@ public class RoomMiner {
 		type = t;
 		room.AddExitCell(pos, alignment, id);
 		mineCount = 1;
-		quitOnConnectionMaxMined = quitOnConnectionMaxMined_;
+		connectedMinerIDs = new List<int>();
+		quitOnMaxMined = quitOnMaxMined_;
 		
 /*		if (type == Type.WeightBased) {
 			weightedCells = new List<IntTriple>();
@@ -70,26 +82,41 @@ public class RoomMiner {
 		int digged = 0;
 		if (type == Type.QuitOnConnection) {
 			IntTriple newPos = pos;
-			if (mineCount < quitOnConnectionMaxMined)  {
+			if (mineCount < quitOnMaxMined)  {
 				newPos = GetMineableNeighbour();
 			}
 			if (newPos != pos) {
-				room.AddCell(newPos, id);
+				Dig(newPos);
 				digged++;
 			} else {
 				newPos = MoveTowardsOtherMiner();
 				if (room.GetCellDensity(newPos) == Cave.DENSITY_FILLED) {
-					room.AddCell(newPos, id);
+					Dig(newPos);
 					digged++;
 				}
 			}
 			pos = newPos;
 		} else if (type == Type.QuitOnPercent) {
-			pos = GetRandomNeighbour();
-			if (room.GetCellDensity(pos) == Cave.DENSITY_FILLED) {
-				room.AddCell(pos, id);
-				digged++;
+			IntTriple newPos = pos;
+			if (mineCount < quitOnMaxMined)  {
+				newPos = GetRandomNeighbour();
 			}
+			if (newPos != pos) {
+				Dig(newPos);
+				digged++;
+			} else {
+				newPos = MoveTowardsOtherMiner();
+				if (room.GetCellDensity(newPos) == Cave.DENSITY_FILLED) {
+					Dig(newPos);
+					digged++;
+				}
+			}
+			pos = newPos;
+//			pos = GetRandomNeighbour();
+//			if (room.GetCellDensity(pos) == Cave.DENSITY_FILLED) {
+//				digged++;
+//				room.AddCell(pos, id);
+//			}
 /*		} else if (type == Type.WeightBased) {
 			pos = GetWeightedNeighbour();
 			if (room.GetCellDensity(pos) == Cave.DENSITY_FILLED) {
@@ -139,9 +166,13 @@ public class RoomMiner {
 					&& 	newPos.y > 0 && newPos.y < room.dimension-1 
 					&& 	newPos.z > 0 && newPos.z < room.dimension-1 ) {
 				possibilities.Add(newPos);
-				if (room.GetCellDensity(newPos) == Cave.DENSITY_EMPTY && room.IsCellNotEmptiedByMiner(newPos, id)) {
+//				if (room.GetCellDensity(newPos) == Cave.DENSITY_EMPTY && room.IsCellNotEmptiedByMiner(newPos, id)) {
+				if (room.GetCellDensity(newPos) == Cave.DENSITY_EMPTY && room.GetMinerIDOfCell(newPos) != id) {
 					// we have a connection
-					isConnectedToOtherMiner = true;
+					if (!connectedMinerIDs.Contains(room.GetMinerIDOfCell(newPos))) {
+						connectedToNumberOfOtherMiners++;
+						connectedMinerIDs.Add(room.GetMinerIDOfCell(newPos));
+					}
 				}				
 			}
 		}
@@ -158,11 +189,15 @@ public class RoomMiner {
 					&& 	newPos.z > 0 && newPos.z < room.dimension-1 ) {
 				if (room.GetCellDensity(newPos) == Cave.DENSITY_FILLED) {
 					possibilities.Add(newPos);
-				} else if (room.GetCellDensity(newPos) == Cave.DENSITY_EMPTY && room.IsCellNotEmptiedByMiner(newPos, id)) {
+				} else if (room.GetCellDensity(newPos) == Cave.DENSITY_EMPTY && room.GetMinerIDOfCell(newPos) != id) {
 					// we have a connection
-					isConnectedToOtherMiner = true;
+					//isConnectedToOtherMiner = true;
+					if (!connectedMinerIDs.Contains(room.GetMinerIDOfCell(newPos))) {
+						connectedToNumberOfOtherMiners++;
+						connectedMinerIDs.Add(room.GetMinerIDOfCell(newPos));
+						return pos;
+					}
 //					Debug.Log ("minecount A " + mineCount + " " + id);
-					return pos;
 				}				
 			}
 		}
@@ -177,10 +212,12 @@ public class RoomMiner {
 	
 	private IntTriple MoveTowardsOtherMiner() {
 		IntTriple newPos = pos;
-		IntTriple otherMinerPos = cave.GetPosOfMinerOtherThan(id);
+		IntTriple otherMinerPos = cave.GetPosOfMinerOtherThan(id, connectedMinerIDs);
 		IntTriple delta = otherMinerPos - pos;
 		if (delta == IntTriple.ZERO) {
-			isConnectedToOtherMiner = true;
+			connectedToNumberOfOtherMiners++;
+			connectedMinerIDs.Add(room.GetMinerIDOfCell(otherMinerPos));
+//			isConnectedToOtherMiner = true;
 //			Debug.Log ("minecount B " + mineCount);
 		} else {
 			int biggestFactor = delta.GetBiggestAbsFactor();

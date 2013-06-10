@@ -24,14 +24,15 @@ public class EnemyDistributor {
 	
 	private static float[] ENEMY_HEALTH_MULTIPLICATOR = new float[] {3.0f, 3.125f, 3.25f, 3.375f, 3.5f, 3.675f, 3.75f, 3.875f, 4.0f };
 	private static float[] ENEMY_HEALTH_MODIFIER = new float[] {-0.1f, -0.075f, -0.05f, -0.025f, 0f, 0.025f, 0.05f, 0.075f, 0.1f };
-	private static float[] ENEMY_SIZES = new float[] {1.0f, 0.5f, 1.5f, 0.7f, 1.3f, 0.3f, 0.7f, 1.7f, 2.0f, 1.0f};
+	private static float[] ENEMY_SIZES = new float[] {1.0f, 0.7f, 1.5f, 0.5f, 1.3f, 0.6f, 1.4f, 1.7f, 0.8f, 1.2f};
 	private static float[] ENEMY_AGGRESSIVENESSES = new float[] {0.05f, 0.2f, 0.5f, 0.1f, 0.7f, 0.3f, 0.2f, 0.6f, 0.4f, 0.1f, 0.3f};
 	private static float[] ENEMY_MOVEMENT_FORCES = new float[] {5.0f, 10f, 7.5f, 2.5f, 12.5f, 6.0f, 8.0f, 4.0f, 15.0f, 3.0f, 7.0f, 9f};
 	private static float[] ENEMY_TURN_FORCES = new float[] {5.0f, 2.5f, 7.5f, 3.0f, 6.0f};
 	private static int[] ENEMY_LOOK_RANGES = new int[] {4,6,10,8,3,11,7,14,9,5,13,12,15};
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,13,20,30,42,58,   1,14,6,10,15,8,0};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,13,20,30,42,58,   1,14,6,10,15,8,1};
+	public static int[] SECONDARY_ENEMIES_HEALTH = new int[] {28,33,72,10,1,28,10};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 2.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 6.0f};
 	private static int[] SPAWN_MIN_LIVING = new int[] {1, 1}; // first value is for BEGINNER Zones
@@ -74,10 +75,10 @@ public class EnemyDistributor {
 					if (play.zoneID > Game.BEGINNER_ZONES) {
 						spawnMinFrequency = SPAWN_MIN_FREQUENCY[1];
 						spawnMaxFrequency = SPAWN_MAX_FREQUENCY[1];
-						spawnMinLiving = SPAWN_MIN_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
-						spawnMaxLiving = SPAWN_MAX_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
-						spawnMinGenerated = SPAWN_MIN_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
-						spawnMaxGenerated = SPAWN_MAX_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+						spawnMinLiving = SPAWN_MIN_LIVING[1] + Mathf.FloorToInt(play.zoneID/16.0f);
+						spawnMaxLiving = SPAWN_MAX_LIVING[1] + Mathf.FloorToInt(play.zoneID/16.0f);
+						spawnMinGenerated = SPAWN_MIN_GENERATED[1] + Mathf.FloorToInt(play.zoneID/16.0f);
+						spawnMaxGenerated = SPAWN_MAX_GENERATED[1] + Mathf.FloorToInt(play.zoneID/16.0f);
 					} else {
 						spawnMinFrequency = SPAWN_MIN_FREQUENCY[0];
 						spawnMaxFrequency = SPAWN_MAX_FREQUENCY[0];
@@ -152,8 +153,7 @@ public class EnemyDistributor {
 //		Debug.Log ("Distriuting Walllaser");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11];
-			// 2-10 per zone
-			number = Mathf.FloorToInt(play.zoneID / 8f) + 2;
+			number = Mathf.FloorToInt(play.zoneID / 12f) + 2;
 			int keyCellCounter = 0;
 			for (int i=0; i<number; i+=3) {
 				GridPosition keyPos;
@@ -190,7 +190,7 @@ public class EnemyDistributor {
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLGUN14] <= play.zoneID) {
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLGUN14];
-			number = Mathf.FloorToInt(play.zoneID / 8f) + 1;
+			number = Mathf.FloorToInt(play.zoneID / 6f) + 1;
 			CreateSpawn(Enemy.CLAZZ_WALLGUN14, enemyModel, enemyEquivalentClazzAModel,
 					play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition(), // play.cave.zone.roomList[0].GetRandomNonExitGridPosition(), 
 					1.0f, number, number, false, Spawn.DistributionMode.PlaceOnWall);
@@ -386,21 +386,18 @@ public class EnemyDistributor {
 	}
 	
 	private int CalculateEnemyHealth(int clazz, int model) {
-		int lookUp = (clazz + model) % 9;
-		float baseHealth = Weapon.PRIMARY_DAMAGE[clazz] * ENEMY_HEALTH_MULTIPLICATOR[lookUp];
-//		Debug.Log (clazz + " " +model + " " + baseHealth + " " + lookUp +" " + ENEMY_HEALTH_MODIFIER[lookUp]);
-		return (int)(baseHealth + baseHealth * ENEMY_HEALTH_MODIFIER[lookUp]);
-		
-	//	return model * Game.HEALTH_MODIFIER;
+		if (clazz < 8) {
+			int lookUp = (clazz + model) % 9;
+			float baseHealth = Weapon.PRIMARY_DAMAGE[clazz] * ENEMY_HEALTH_MULTIPLICATOR[lookUp];
+	//		Debug.Log (clazz + " " +model + " " + baseHealth + " " + lookUp +" " + ENEMY_HEALTH_MODIFIER[lookUp]);
+			return (int)(baseHealth + baseHealth * ENEMY_HEALTH_MODIFIER[lookUp]);		
+		} else {
+			return SECONDARY_ENEMIES_HEALTH[clazz-8];
+		}
 	}
 
 	private int CalculateEnemyShield(int clazz, int model) {
 		return 0;
-/*		if (clazz == Enemy.CLAZZ_BUG8 || clazz == Enemy.CLAZZ_SNAKE9 || clazz == Enemy.CLAZZ_WALLLASER11 || clazz == Enemy.CLAZZ_HORNET12) {
-			return 0;
-		} else {
-			return Mathf.FloorToInt((model * Game.HEALTH_MODIFIER) / 2f);
-		}*/
 	}
 	
 	private float CalculateEnemySize(int clazz, int model) {
@@ -424,7 +421,11 @@ public class EnemyDistributor {
 	}
 	
 	private float CalculateEnemyMovementForce(int clazz, int model) {
-		return ENEMY_MOVEMENT_FORCES[(clazz + model) % 12];
+		if (clazz == Enemy.CLAZZ_HORNET12) {
+			return ENEMY_MOVEMENT_FORCES[(clazz + model) % 12] * 2f;
+		} else {
+			return ENEMY_MOVEMENT_FORCES[(clazz + model) % 12];
+		}
 	}
 
 	private float CalculateEnemyTurnForce(int clazz, int model) {
@@ -435,10 +436,6 @@ public class EnemyDistributor {
 		return ENEMY_LOOK_RANGES[(clazz + model) % 13];
 	}
 	
-/*	private int CalculateEnemyChaseRange(int clazz, int model) {
-		return ENEMY_CHASE_RANGES[(clazz + (model-1)) % 6];
-	}*/
-
 	private int CalculateEnemyRoamMin(int clazz, int model) {
 		return ENEMY_ROAM_MINS[(clazz + model) % 9];
 	}

@@ -42,7 +42,7 @@ public class Hornet : Enemy {
 		if (c.collider.tag == Ship.TAG) {
 			play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 			//c.rigidbody.AddExplosionForce(MINE_EXPLOSION_POWER, transform.position, MINE_EXPLOSION_RADIUS);
-			play.ship.Damage(damage);
+			play.ship.Damage(damage, c.contacts[0].point);
 			play.DamageShip(Game.ENEMY);
 			Destroy(gameObject);
 		}

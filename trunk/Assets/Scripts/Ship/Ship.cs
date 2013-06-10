@@ -69,6 +69,7 @@ public class Ship : MonoBehaviour {
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;
 	private static Vector3 EXIT_HELPER_LAUNCH_POSITION = new Vector3(0f, 0f, 2f);
+	private static float SPHERE_CAST_RADIUS = RoomMesh.MESH_SCALE/3f;
 		
 	public Weapon[] primaryWeapons = new Weapon[8];
 	public Weapon[] secondaryWeapons = new Weapon[4];
@@ -103,21 +104,18 @@ public class Ship : MonoBehaviour {
 		shipSteering.Initialize(this, play, gameInput);
 		shipControl.Initialize(this, game, play, gameInput);
 		
-		isExitHelperLaunched = false;
-		isHeadlightOn = false;
-		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
-		cameraPosition = CAMERA_POSITION_COCKPIT;
-		missileLockMode = MissileLockMode.None;
-		
-		AddWeapons();
-		
-		lastMoveTime = Time.time;
-		chargedMissileTimer = -1f;
-		isDetonatorMissileExploded = true;
 	}
 	
 	public void Activate() {
 		shipCamera.enabled = true;
+		isExitHelperLaunched = false;
+		lastMoveTime = Time.time;
+		chargedMissileTimer = -1f;
+		isDetonatorMissileExploded = true;
+		cameraPosition = CAMERA_POSITION_COCKPIT;
+		isHeadlightOn = false;
+		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
+		missileLockMode = MissileLockMode.None;		
 	}
 	
 	public void Deactivate() {
@@ -145,7 +143,7 @@ public class Ship : MonoBehaviour {
 				}
 			}
 			// Enemy target info
-			if (Physics.Raycast(transform.position, transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
+			if (Physics.SphereCast(transform.position, SPHERE_CAST_RADIUS, transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
 				if (hit.collider.tag == Enemy.TAG) {
 					Enemy e = hit.transform.GetComponent<Enemy>();
 					play.playGUI.EnemyInSight(e);
@@ -208,7 +206,7 @@ public class Ship : MonoBehaviour {
 		rigidbody.AddRelativeTorque(direction * FORCE_YAW);
 	}
 	
-	public void Damage(int damage) {
+	public void Damage(int damage, Vector3 worldPos) {
 		if (shield > 0) {
 			shield -= damage;
 			if (shield < 0) {
@@ -218,6 +216,7 @@ public class Ship : MonoBehaviour {
 				damage = 0;
 			}
 		}
+		play.playGUI.IndicateDamage(worldPos);
 		health = Mathf.Max (0, health-damage);
 		healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
 		shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
@@ -307,7 +306,7 @@ public class Ship : MonoBehaviour {
 	}
 
 	public void AddSecondaryWeapon(int wType) {
-		int ammunition = 1;
+		int ammunition = 2;
 		if (secondaryWeapons[wType] != null) {
 			ammunition += secondaryWeapons[wType].ammunition;
 		}
@@ -320,7 +319,8 @@ public class Ship : MonoBehaviour {
 		Debug.Log ("adding secondary weapon type: " + wType);
 	}
 	
-	private void AddWeapons() {			
+	public void AddWeapons() {
+		Debug.Log ("adding weapons");
 		currentPrimaryWeapon = -1;
 		currentSecondaryWeapon = -1;
 		for (int i=0; i < 8; i++) {
@@ -342,6 +342,21 @@ public class Ship : MonoBehaviour {
 		}
 		if (currentSecondaryWeapon != -1) {
 			secondaryWeapons[currentSecondaryWeapon].Mount();
+		}
+	}
+	
+	public void RemoveWeapons() {
+		for (int i=0; i<8; i++) {
+			if (primaryWeapons[i] != null) {
+				Destroy(primaryWeapons[i].weaponTransform.gameObject);
+				primaryWeapons[i] = null;
+			}
+		}
+		for (int i=0; i<4; i++) {
+			if (secondaryWeapons[i] != null) {
+				Destroy (secondaryWeapons[i].weaponTransform.gameObject);
+				secondaryWeapons[i] = null;
+			}
 		}
 	}
 	
@@ -408,6 +423,7 @@ public class Ship : MonoBehaviour {
 			primaryWeapons[currentPrimaryWeapon].Mount();
 			firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
 			play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
+			PlaySound(Game.SOUND_TYPE_VARIOUS, 10);
 		}
 	}
 
@@ -423,6 +439,7 @@ public class Ship : MonoBehaviour {
 			if (secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_GUIDED_MISSILE && secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_DETONATOR_MISSILE) {
 				missileLockMode = MissileLockMode.None;
 			}
+			PlaySound(Game.SOUND_TYPE_VARIOUS, 11);
 		}
 	}
 	public void RemoveEnemy(Enemy e) {

@@ -46,6 +46,7 @@ public class AudioSourcePool {
 		} else {
 			usedAudioSource = nextAudioSource;
 			audioSources[nextAudioSource].transform.parent = t;
+			audioSources[nextAudioSource].transform.localPosition = Vector3.zero;
 			nextAudioSource++;
 			if (nextAudioSource == MAX_AUDIO_SOURCES) {
 				nextAudioSource = 0;
@@ -53,5 +54,11 @@ public class AudioSourcePool {
 		}		
 		audioSources[usedAudioSource].PlayOneShot(clip);
 		return usedAudioSource;
+	}
+	
+	public static void DecoupleAudioSource(AudioSource aS) {
+		if (aS != null) {
+			aS.transform.parent = null;
+		}
 	}
 }

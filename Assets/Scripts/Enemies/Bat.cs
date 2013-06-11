@@ -2,6 +2,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+/*
+ * Normal Roaming/Aiming behaviour according to generated model values
+ * Hides 
+ * 
+ */
 public class Bat : Enemy {
 	private GridPosition targetPosition;
 	private GridPosition coverPosition;
@@ -18,8 +23,8 @@ public class Bat : Enemy {
 		
 	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2, HIDING=3, PATHFINDING=4, COVERFINDING=5 }
 
-	private static float MAX_ROAMING_TIME = 10.0f;
-	private static float MAX_AIMING_TIME = 12.0f;
+	private static float MAX_ROAMING_TIME = 6.0f;
+	private static float MAX_AIMING_TIME = 6.0f;
 	
 	public override void InitializeWeapon(int mount, int type) {
 		if (mount == Weapon.PRIMARY) {
@@ -70,7 +75,7 @@ public class Bat : Enemy {
 					if (coverPosition != currentGridPosition) {
 //						Debug.Log ("Mode.PATHFINDING" );					
 						mode = Mode.PATHFINDING;
-						play.movement.AStarPath(aStarThreadState, currentGridPosition, coverFindThreadState.coverPosition);
+						play.movement.AStarPath(aStarThreadState, currentGridPosition, coverPosition);
 					} else {
 						mode = Mode.ROAMING;
 						roamingStart = Time.time;
@@ -107,7 +112,7 @@ public class Bat : Enemy {
 			}
 		}
 		if (mode == Mode.ROAMING || mode == Mode.AIMING) {
-			if (isShipVisible.magnitude <= shootingRange) {
+			if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
 				aggressiveness = Enemy.AGGRESSIVENESS_ON;
 			}
 		}

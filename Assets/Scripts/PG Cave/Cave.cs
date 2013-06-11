@@ -6,7 +6,8 @@ using System.Collections.Generic;
 public class Cave {
 	public Zone zone;
 	
-	public IntTriple[] textureCombinations;
+	public IntTriple[] textureCombinationsNormal;
+	public IntTriple[] textureCombinationsHell;
 	
 	private Game game;
 	public Play play;
@@ -28,15 +29,20 @@ public class Cave {
 
 	public static int DENSITY_FILLED = 0;
 	public static int DENSITY_EMPTY = 1;
+	
+	private static int[] TEXTURES_NORMAL = new int [] {0,1,2,3,4,5,6,7};
+	private static int[] TEXTURES_HELL = new int [] {8,9,10,11,12};
 
 	public static IntTriple[] ZONE_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	public static IntTriple[] ROOM_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.BACKWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	
 	private static Vector3 EXIT_SIGN_POSITION = new Vector3(-0.19f, 0f, -0.07f);
 	
-	public static int[] MINER_QUIT_ON_PERCENT_TYPES = new int[] { 100, 200, 300, 400, 500, 600, 700, 800 };
+//	public static int[] MINER_QUIT_ON_PERCENT_TYPES = new int[] { 100, 200, 300, 400, 500, 600, 700, 800 };
 //	public static float[] MINER_QUIT_ON_PERCENT_TYPES = new float[] { 0.025f, 0.05f, 0.075f, 0.1f, 0.125f, 0.15f, 0.175f, 0.2f };
-	public static int[] MINER_QUIT_ON_CONNECTION_TYPES = new int[] { 50, 75, 100, 125, 150, 175, 200 };
+	//public static int[] MINER_QUIT_ON_CONNECTION_TYPES = new int[] { 50, 75, 100, 125, 150, 175, 200 };
+	public static int[] MINER_ENTRYEXITROOMS_DIG_AMOUNT = new int[] { 50, 75, 100, 125, 150, 175, 200 };
+	public static int[] MINER_MIDDLEROOMS_DIG_AMOUNT = new int[] { 100, 200, 300, 400, 500, 600, 700, 800 };
 		
 	public Cave(Play p) {
 		play = p;
@@ -53,18 +59,30 @@ public class Cave {
 	}
 	
 	private void CalculateMaterialCombinations() {
-		textureCombinations = new IntTriple[90]; // with 9 textures we have 83 combinations
-		int[] textureIDs = new int[] {0,1,2,3,4,5,6,7,8};
+		textureCombinationsNormal = new IntTriple[56]; // with 8 textures we have 56 combinations
+		textureCombinationsHell = new IntTriple[10]; // with 5 textures we have 10 combinations
+		int[] textureIDs = TEXTURES_NORMAL;
 		int count = 0;
 		for (int a=0; a<textureIDs.Length; a++) {
 			for (int b=a+1; b<textureIDs.Length; b++) {
 				for (int c=b+1; c<textureIDs.Length; c++) {
-					textureCombinations[count] = new IntTriple(a,b,c);
+					textureCombinationsNormal[count] = new IntTriple(a,b,c);
 					count++;
 				}
 			}
 		}
-		//Debug.Log ("Texture Combinations " + (count-1));	
+		//Debug.Log ("Texture Combinations normal " + (count));	
+		textureIDs = TEXTURES_HELL;
+		count = 0;
+		for (int a=8; a<8+textureIDs.Length; a++) {
+			for (int b=a+1; b<8+textureIDs.Length; b++) {
+				for (int c=b+1; c<8+textureIDs.Length; c++) {
+					textureCombinationsHell[count] = new IntTriple(a,b,c);
+					count++;
+				}
+			}
+		}
+		//Debug.Log ("Texture Combinations Hell " + (count));	
 	}
 	
 	public void AddZone(int id) {
@@ -98,7 +116,7 @@ public class Cave {
 //		Debug.Log ("secretCaveRoomID "+ secretCaveRoomID);
 		
 		int[] connectorsSet = new int[] {0,0,0,0,0,0,0,0,0,0};
-		quitOnPercentThreshold = UnityEngine.Random.Range(0, MINER_QUIT_ON_PERCENT_TYPES.Length);
+//		quitOnPercentThreshold = UnityEngine.Random.Range(0, MINER_QUIT_ON_PERCENT_TYPES.Length);
 		for (int i=0; i<zone.roomList.Count; i++) { // first in array is entry room
 			roomMiners = new List<RoomMiner>();
 			Room room = zone.roomList[i];
@@ -120,23 +138,22 @@ public class Cave {
 				if (room.id > 1) { // all rooms other than entry or exit room
 					if (neighbours.Count == 1) { // dead end room with just one exit, we have to add a second miner
 						int quitOnConnRandom = UnityEngine.Random.Range(0,7);
-						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[quitOnConnRandom]));
+						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.WalkRandom, MINER_MIDDLEROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_MIDDLEROOMS_DIG_AMOUNT.Length)]));
 						startingCell = SetEntryExit(alignment, 2, Game.DIMENSION_ROOM-2, 2);
 						// dead end miner
 						roomMiners.Add(
-							new RoomMiner(this, startingCell, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[quitOnConnRandom]));
+							new RoomMiner(this, startingCell, room, roomMiners.Count, RoomMiner.Type.WalkDirected, MINER_ENTRYEXITROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_ENTRYEXITROOMS_DIG_AMOUNT.Length)]));
 					} else {
 						// non dead-end middle rooms
-						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnPercent, MINER_QUIT_ON_PERCENT_TYPES[quitOnPercentThreshold]));
+						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.WalkRandom, MINER_MIDDLEROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_MIDDLEROOMS_DIG_AMOUNT.Length)]));
 					}
 				} else {
-					roomMiners.Add(
-						new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[UnityEngine.Random.Range(0,3)]));
+					roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.WalkDirected, MINER_ENTRYEXITROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_ENTRYEXITROOMS_DIG_AMOUNT.Length)]));
 				}
 			}
 			if (room.id == 0) { // entry room
 				startingCell = SetEntryExit(IntTriple.BACKWARD, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[UnityEngine.Random.Range(0,3)]));
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.BACKWARD, room, roomMiners.Count, RoomMiner.Type.WalkDirected, MINER_ENTRYEXITROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_ENTRYEXITROOMS_DIG_AMOUNT.Length)]));
 //				Debug.Log ("Entry Room: " + startingCell);
 				if (zoneExit == null) {
 					zoneEntry = AddZoneEntryExit(new GridPosition(startingCell, room.pos), 0f);
@@ -152,11 +169,12 @@ public class Cave {
 				exitSigns[0].localPosition = EXIT_SIGN_POSITION;
 			} else if (room.id == 1) { // exit room
 				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[UnityEngine.Random.Range(0,3)]));
+				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.WalkRandom, MINER_ENTRYEXITROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_ENTRYEXITROOMS_DIG_AMOUNT.Length)]));
 				zoneExit = AddZoneEntryExit(new GridPosition(startingCell, room.pos), 180.0f);
 				doors[Door.TYPE_EXIT].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,1), room.pos));
 				exitSigns[1].parent = doors[Door.TYPE_EXIT].doorL;
-				exitSigns[1].localPosition = EXIT_SIGN_POSITION;
+				exitSigns[1].localPosition = EXIT_SIGN_POSITION;//;new Vector3(EXIT_SIGN_POSITION.x, EXIT_SIGN_POSITION.y, -EXIT_SIGN_POSITION.z);
+				//exitSigns[1].Rotate(new Vector3(0f, 180f, 0f));
 				doors[Door.TYPE_NEXT_ENTRY].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,7), room.pos));
 				play.placeShipBeforeExitDoor = new GridPosition(startingCell, room.pos);
 //				Debug.Log ("Exit Room: " + startingCell);				
@@ -164,7 +182,7 @@ public class Cave {
 				List<IntTriple> filledNeighbourPositions = zone.GetFilledNeighboursOfRoom(room.pos);
 				IntTriple secretCaveRoomPos = filledNeighbourPositions[UnityEngine.Random.Range(0, filledNeighbourPositions.Count)];
 				startingCell = SetEntryExit(secretCaveRoomPos - room.pos, 0, Game.DIMENSION_ROOM, 2);
-				roomMiners.Add(new RoomMiner(this, startingCell, secretCaveRoomPos - room.pos, room, roomMiners.Count, RoomMiner.Type.QuitOnConnection, MINER_QUIT_ON_CONNECTION_TYPES[UnityEngine.Random.Range(0,3)]));
+				roomMiners.Add(new RoomMiner(this, startingCell, secretCaveRoomPos - room.pos, room, roomMiners.Count, RoomMiner.Type.WalkRandom, MINER_ENTRYEXITROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_ENTRYEXITROOMS_DIG_AMOUNT.Length)]));
 				if (secretCave == null) {
 					secretCave = AddSecretCave(new GridPosition(startingCell, room.pos), (room.pos-secretCaveRoomPos).GetVector3());
 				} else {
@@ -206,8 +224,8 @@ public class Cave {
 //						isAtLeastOneMinerActive = true;
 						digCount += miner.Mine();
 						if (roomMiners.Count <= 3) {
-							if (miner.connectedToNumberOfOtherMiners == 1) {
-								TestMinerForDeactivation(miner);
+							if (miner.connectedToNumberOfOtherMiners >= 1) {
+								miner.isActive = false;
 							} else {
 								allMinersConnectedToOneOther = false;
 							}
@@ -215,23 +233,23 @@ public class Cave {
 							if (miner.connectedToNumberOfOtherMiners == 0) {
 								allMinersConnectedToOneOther = false;
 							} else if (miner.connectedToNumberOfOtherMiners == 1 && oneMinerConnectedToTwoOthers) {
-								TestMinerForDeactivation(miner);
+								miner.isActive = false;
 							} else if (miner.connectedToNumberOfOtherMiners == 2) {
 								oneMinerConnectedToTwoOthers = true;
-								TestMinerForDeactivation(miner);
+								miner.isActive = false;
 							}								
 						} else if (roomMiners.Count == 5) {
 							if (miner.connectedToNumberOfOtherMiners == 0) {
 								allMinersConnectedToOneOther = false;
 							} else if (miner.connectedToNumberOfOtherMiners == 1 && (oneMinerConnectedToThreeOthers || twoMinersConnectedToTwoOthers)) {
-								TestMinerForDeactivation(miner);
+								miner.isActive = false;
 							} else if (miner.connectedToNumberOfOtherMiners == 2) {
 								if (idOfMinerConnectedToTwo == RoomMiner.NO_MINER) {
 									oneMinerConnectedToTwoOthers = true;
 									idOfMinerConnectedToTwo = miner.id;
 								} else if (miner.id != idOfMinerConnectedToTwo) {
 									twoMinersConnectedToTwoOthers = true;
-									TestMinerForDeactivation(miner);
+									miner.isActive = false;
 								}
 							} else if (miner.connectedToNumberOfOtherMiners == 3) {
 								if (oneMinerConnectedToTwoOthers && miner.id == idOfMinerConnectedToTwo) {
@@ -245,30 +263,32 @@ public class Cave {
 				}
 			}
 			
-//			if (j==10000) Debug.Log ("room miner count " + roomMiners.Count);
-			Debug.Log ("Room " + room.id + " " + room.pos + " has cells: " + (digCount+roomMiners.Count) + " j=" + j + " " + MINER_QUIT_ON_PERCENT_TYPES[quitOnPercentThreshold] + " miners: " + roomMiners.Count);
-//			if (i==2) room.TestRoomForSingleCells();
+			Debug.Log ("Room " + room.id + " " + room.pos + " has cells: " + digCount + " j=" + j + " miners: " + roomMiners.Count);
+			foreach (RoomMiner miner in roomMiners) {
+				Debug.Log ("Miner " +  miner.id + " type: " + miner.type +" " + miner.connectedToNumberOfOtherMiners + " mineCount:"+miner.mineCount + " quitOn " + miner.quitOnMaxMined);
+			}
 			CreateRoomMesh(room);
 		}
 		roomMiners.Clear();
 		foreach (Door d in doors) {
 			d.Reset();
 		}
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureCombinations[Mathf.FloorToInt(play.zoneID/5)].x]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureCombinations[UnityEngine.Random.Range(0,13)].y]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureCombinations[UnityEngine.Random.Range(0,13)].z]);
-//		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[3]);
-	}
-	
-	private void TestMinerForDeactivation(RoomMiner miner) {
-		if (miner.type == RoomMiner.Type.QuitOnConnection) {
-			miner.isActive = false;
-		} else if (miner.type == RoomMiner.Type.QuitOnPercent) {
-			if (miner.mineCount > MINER_QUIT_ON_PERCENT_TYPES[quitOnPercentThreshold]) {
-				//Debug.Log ("deactivated miner " + miner.id + " on digCount "+digCount);
-				miner.isActive = false;
-			}
+		IntTriple textureSet;
+		if (play.zoneID < 8) {	
+			textureSet = textureCombinationsNormal[UnityEngine.Random.Range(0,textureCombinationsNormal.Length)];
+		} else if (play.zoneID < 24) {
+			textureSet = textureCombinationsNormal[UnityEngine.Random.Range(0,textureCombinationsNormal.Length)];
+			// replace one with hell textures
+			textureSet.SetFactor(UnityEngine.Random.Range(0,3), TEXTURES_HELL[UnityEngine.Random.Range(0,TEXTURES_HELL.Length)]);
+		} else {
+			textureSet = textureCombinationsHell[UnityEngine.Random.Range(0,textureCombinationsHell.Length)];
+			// replace one with normal textures
+			textureSet.SetFactor(UnityEngine.Random.Range(0,3), TEXTURES_NORMAL[UnityEngine.Random.Range(0,TEXTURES_NORMAL.Length)]);
 		}
+			
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureSet.x]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureSet.y]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureSet.z]);
 	}
 	
 	private IntTriple GetOppositeCell(Cell cell, IntTriple alignment) {
@@ -302,7 +322,7 @@ public class Cave {
 	}
 
 	public IntTriple GetPosOfMinerOtherThan(int minerId, List<int> alreadyConnectedToMiners) {
-		IntTriple result = IntTriple.ZERO;
+		IntTriple result = IntTriple.LEFT;
 		foreach (RoomMiner miner in roomMiners) {
 			if (miner.id != minerId && !alreadyConnectedToMiners.Contains(miner.id)) {
 				result = miner.pos;

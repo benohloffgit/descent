@@ -108,14 +108,14 @@ public class Menu : MonoBehaviour {
 		TouchDelegate toZone01 = new TouchDelegate(ToZone01);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone01, state.GetDialog(13), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, -0.4f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
-		TouchDelegate toZone12 = new TouchDelegate(ToZone12);
-		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone12, state.GetDialog(14), 1.0f, 1.0f, 3, 
+		TouchDelegate toZone09 = new TouchDelegate(ToZone09);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone09, state.GetDialog(14), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
-		TouchDelegate toZone29 = new TouchDelegate(ToZone29);
-		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone29, state.GetDialog(15), 1.0f, 1.0f, 3, 
+		TouchDelegate toZone18 = new TouchDelegate(ToZone18);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone18, state.GetDialog(15), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
-		TouchDelegate toZone57 = new TouchDelegate(ToZone57);
-		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone57, state.GetDialog(16), 1.0f, 1.0f, 3, 
+		TouchDelegate toZone24 = new TouchDelegate(ToZone24);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone24, state.GetDialog(16), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, 0.4f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
 		
 		TouchDelegate toNewGame = new TouchDelegate(ToNewGame);
@@ -144,23 +144,23 @@ public class Menu : MonoBehaviour {
 		game.SetGameMode(Game.Mode.Play);
 	}
 
-	private void ToZone12() {
-		game.state.level = 12;
+	private void ToZone09() {
+		game.state.level = 9;
 		game.SetGameMode(Game.Mode.Play);
 	}
 
-	private void ToZone29() {
-		game.state.level = 29;
+	private void ToZone18() {
+		game.state.level = 18;
 		game.SetGameMode(Game.Mode.Play);
 	}
 
-	private void ToZone57() {
-		game.state.level = 57;
+	private void ToZone24() {
+		game.state.level = 24;
 		game.SetGameMode(Game.Mode.Play);
 	}
 	
 	public void ToNewGame() {
-		game.state.level = 0;
+		game.state.level = 3;
 		game.SetGameMode(Game.Mode.Play);
 	}
 

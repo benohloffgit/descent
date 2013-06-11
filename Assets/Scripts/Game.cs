@@ -148,6 +148,7 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_LIGHTS = new Vector4(0.875f,0.75f,1f,0.875f);
 	public static Vector4 GUI_UV_EXITHELPER = new Vector4(0.25f,0.625f,0.375f,0.75f);
 	public static Vector4 GUI_UV_DAMAGEINDICATOR = new Vector4(0.375f,0.625f,0.5f,0.75f);
+	public static Vector4 GUI_UV_SHIPBOOST = new Vector4(0.5f,0.625f,0.625f,0.75f);
 	
 	private Menu menu;
 	private Play play;

@@ -36,11 +36,11 @@ public class Weapon {
 	
 	private static float TWIN_WEAPON_DAMAGE_MODIFIER = 0.6f;
 	
-	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN = new int[] {1,4,8,13,20,30,42,58};
-	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX = new int[] {1,7,12,19,29,41,57,63};
+	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MIN = new int[] {1,2,4,7,10,14,19,25}; //{1,4,8,13,20,30,42,58};
+	public static int[] SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX = new int[] {1,3,6,9,13,18,24,31}; //{1,7,12,19,29,41,57,63}
 	//missile cap: 3, light 6, twin primary 7, speed 19, cloak 41
-	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN = new int[] { 4, 9, 19, 31 };
-	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX = new int[] { 8, 18, 30, 42 };
+	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MIN = new int[] { 3, 6, 13, 21 }; //{ 4, 9, 19, 31 }
+	public static int[] SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX = new int[] { 5, 12, 20, 28 }; //{ 8, 18, 30, 42 };
 	public static int[] PRIMARY_DAMAGE = new int[] { 22, 25, 28, 30, 33, 36, 40, 43, 0, 0, 0, 0, 0, 0, 0, 0 };
 	public static int[] SECONDARY_DAMAGE = new int[] { 65, 85, 100, 120, 150, 50, 0, 0, 30 };	
 	public static float[] PRIMARY_SPEED = new float[] { 200f, 300f, 200f, 400f, 300f, 350f, 400f, 350f};

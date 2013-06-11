@@ -117,8 +117,8 @@ public class Play : MonoBehaviour {
 	
 	public void Activate() {
 		playGUI.Activate();
-		ship.CalculateHullClazz();
 		StartZone();
+		ship.CalculateHullClazz();
 		ship.AddWeapons();
 		InvokeRepeating("UpdateStats", 0, 1.0f);
 	}
@@ -533,8 +533,8 @@ public class Play : MonoBehaviour {
 		lightsHolder.rotation = Quaternion.identity;
 		lightsHolder.Rotate(UnityEngine.Random.value*360f,UnityEngine.Random.value*360f,UnityEngine.Random.value*360f);
 		int lightZone = zoneID % 10;
-		if (lightZone >= 8 && lightZone <= 9) {
-			lightZone = 2-(9-lightZone); // 1-2
+		if (lightZone >= 7 && lightZone <= 8) {
+			lightZone = 2-(8-lightZone); // 1-2
 			for (int i=0; i<caveLights.Length; i++) {
 				caveLights[i].intensity = 1.0f - (0.45f*lightZone);
 			}

@@ -38,6 +38,7 @@ public class Ship : MonoBehaviour {
 	
 	public bool isExitHelperLaunched;
 	public bool isHeadlightOn;
+	public bool isBoosterOn;
 	private int cameraPosition;
 	public MissileLockMode missileLockMode;
 	public Enemy lockedEnemy;
@@ -45,10 +46,15 @@ public class Ship : MonoBehaviour {
 	private float chargedMissileTimer;
 	private int chargedMissileShieldDeducted;
 	public bool isDetonatorMissileExploded;
+	private float boostTimer;
 			
 	private static float FORCE_MOVE = 65.0f;
 	private static float FORCE_TURN = 24f; // 5.0f
 	private static float FORCE_YAW = 16f; // 3.5f
+	private static float FORCE_BOOST = 40f;
+	
+	private static float BOOST_DURATION = 5f;
+	private static float BOOST_INTERVAL = 60f;
 	
 	private static int CHARGED_MISSILE_SHIELD_MAX = 50;
 	private static float CHARGED_MISSILE_TIME_MAX = 2.5f; // seconds
@@ -60,8 +66,8 @@ public class Ship : MonoBehaviour {
 	
 	public static int[] HEALTH = new int[] { 100, 112, 126, 135, 148, 162, 180, 200 };
 	public static int[] SHIELD = new int[] { 45, 50, 56, 60, 66, 72, 80, 85 };
-	public static int[] HULL_POWER_UP = new int[] {0,5,12,20,29,39,50,62};
-	public static int[] SPECIAL_POWER_UP = new int[] {7,19,41,58};
+	public static int[] HULL_POWER_UP = new int[] {0,2,5,9,14,19,25,31}; // {0,5,12,20,29,39,50,62}
+	public static int[] SPECIAL_POWER_UP = new int[] {6,12,18,28};
 
 	public static string[] HULL_TYPES = new string[] {"Armor", "Improved Armor", "Bla Armor", "Blubb Armor", "Keflar Armor", "Iridium Armor", "Nano Armor", "Bloob Armor"};
 	public static string[] SPECIAL_TYPES = new string[] {"Light", "Boost", "Cloak", "Invincible"};
@@ -109,7 +115,9 @@ public class Ship : MonoBehaviour {
 	public void Activate() {
 		shipCamera.enabled = true;
 		isExitHelperLaunched = false;
-		lastMoveTime = Time.time;
+		isBoosterOn = false;
+		boostTimer = -65;
+		lastMoveTime = Time.fixedTime;
 		chargedMissileTimer = -1f;
 		isDetonatorMissileExploded = true;
 		cameraPosition = CAMERA_POSITION_COCKPIT;
@@ -128,6 +136,12 @@ public class Ship : MonoBehaviour {
 			
 			if (cameraPosition != CAMERA_POSITION_COCKPIT) {
 				PositionCamera();
+			}
+			
+			if (isBoosterOn && Time.time > boostTimer + BOOST_DURATION) {
+				isBoosterOn = false;
+				boostTimer = Time.fixedTime;
+				play.playGUI.SwitchShipBoost();
 			}
 			
 			if (currentSecondaryWeapon != -1) {
@@ -172,29 +186,15 @@ public class Ship : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter(Collision c) {
-		//Move(c.impactForceSum*5f);
-		 //Vector3.Dot(col.contacts[0].normal,col.relativeVelocity) * rigidbody.mass
-//		rigidbody.freezeRotation = true;
-//    	Debug.Log("First point that collided: " + c.contacts[0].normal + " / " + c.contacts[0].point);
-//		collisionPoint = c.contacts[0].point;
-//		collisionNormal = c.contacts[0].normal;
 	}
 	
-	void OnTriggerEnter(Collider collider) {
-//		Debug.Log ("OnTriggerEnter");
-	}
-	
-	void OnTriggerExit(Collider collider) {
-//		Debug.Log ("OnTriggerExit");
-	}
-
 	public void DispatchGameInput() {
 		shipSteering.DispatchGameInput();
 		shipControl.DispatchGameInput();
 	}
 	
 	public void Move(Vector3 direction) {
-		rigidbody.AddRelativeForce(direction * FORCE_MOVE);
+		rigidbody.AddRelativeForce(direction * (FORCE_MOVE + (isBoosterOn ? FORCE_BOOST : 0)));
 		lastMoveTime = Time.time;
 	}
 	
@@ -461,6 +461,14 @@ public class Ship : MonoBehaviour {
 			LaunchExitHelper(false);
 		} else {
 			LaunchExitHelper(true);
+		}
+	}
+	
+	public void BoostShip() {
+		if (!isBoosterOn && Time.fixedTime > boostTimer + BOOST_INTERVAL) {
+			isBoosterOn = true;
+			boostTimer = Time.fixedTime;
+			play.playGUI.SwitchShipBoost();
 		}
 	}
 	

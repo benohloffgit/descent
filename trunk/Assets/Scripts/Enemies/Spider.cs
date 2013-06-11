@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+/*
+ * Normal Roaming/Aiming behaviour according to generated model values
+ * 
+ */
 public class Spider : Enemy {
 	private GridPosition targetPosition;
 	private Mode mode;
@@ -25,7 +29,7 @@ public class Spider : Enemy {
 	}
 		
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {		
-		if (isShipVisible.magnitude <= shootingRange) {
+		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
 			aggressiveness = Enemy.AGGRESSIVENESS_ON;
 		}
 		

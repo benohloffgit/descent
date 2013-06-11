@@ -31,7 +31,7 @@ public class EnemyDistributor {
 	private static int[] ENEMY_LOOK_RANGES = new int[] {4,6,10,8,3,11,7,14,9,5,13,12,15};
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,4,8,13,20,30,42,58,   1,14,6,10,15,8,1};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,3,4,7,10,14,19,25,   1,12,6,10,18,7,1}; // {2,4,8,13,20,30,42,58,   1,14,6,10,15,8,1};
 	public static int[] SECONDARY_ENEMIES_HEALTH = new int[] {28,33,72,10,1,28,10};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 2.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 6.0f};
@@ -75,10 +75,10 @@ public class EnemyDistributor {
 					if (play.zoneID > Game.BEGINNER_ZONES) {
 						spawnMinFrequency = SPAWN_MIN_FREQUENCY[1];
 						spawnMaxFrequency = SPAWN_MAX_FREQUENCY[1];
-						spawnMinLiving = SPAWN_MIN_LIVING[1] + Mathf.FloorToInt(play.zoneID/16.0f);
-						spawnMaxLiving = SPAWN_MAX_LIVING[1] + Mathf.FloorToInt(play.zoneID/16.0f);
-						spawnMinGenerated = SPAWN_MIN_GENERATED[1] + Mathf.FloorToInt(play.zoneID/16.0f);
-						spawnMaxGenerated = SPAWN_MAX_GENERATED[1] + Mathf.FloorToInt(play.zoneID/16.0f);
+						spawnMinLiving = SPAWN_MIN_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+						spawnMaxLiving = SPAWN_MAX_LIVING[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+						spawnMinGenerated = SPAWN_MIN_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
+						spawnMaxGenerated = SPAWN_MAX_GENERATED[1] + Mathf.FloorToInt(play.zoneID/8.0f);
 					} else {
 						spawnMinFrequency = SPAWN_MIN_FREQUENCY[0];
 						spawnMaxFrequency = SPAWN_MAX_FREQUENCY[0];
@@ -121,7 +121,7 @@ public class EnemyDistributor {
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_BUG8];
 			// Bug 2-8 per zone
-			number = Mathf.FloorToInt(play.zoneID / 10f) + 2;
+			number = Mathf.FloorToInt(play.zoneID / 5f) + 2;
 			CreateSpawn(Enemy.CLAZZ_BUG8, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
 						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
@@ -132,7 +132,7 @@ public class EnemyDistributor {
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_SNAKE9];
 			// Bug 1-4 per zone
-			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
+			number = Mathf.FloorToInt(play.zoneID / 8f) + 1;
 			CreateSpawn(Enemy.CLAZZ_SNAKE9, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
 						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
@@ -143,7 +143,7 @@ public class EnemyDistributor {
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_MINEBUILDER10];
 			// 1-4 per zone
-			number = Mathf.FloorToInt(play.zoneID / 16f) + 1;
+			number = Mathf.FloorToInt(play.zoneID / 8f) + 1;
 			CreateSpawn(Enemy.CLAZZ_MINEBUILDER10, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
 						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
@@ -153,7 +153,7 @@ public class EnemyDistributor {
 //		Debug.Log ("Distriuting Walllaser");
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11];
-			number = Mathf.FloorToInt(play.zoneID / 12f) + 2;
+			number = Mathf.FloorToInt(play.zoneID / 6f) + 2;
 			int keyCellCounter = 0;
 			for (int i=0; i<number; i+=3) {
 				GridPosition keyPos;
@@ -181,7 +181,7 @@ public class EnemyDistributor {
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_BULB13];
 			// Bug 1-4 per zone
-			number = Mathf.FloorToInt(play.zoneID / 8f) + 1;
+			number = Mathf.FloorToInt(play.zoneID / 6f) + 1;
 			CreateSpawn(Enemy.CLAZZ_BULB13, enemyModel, enemyEquivalentClazzAModel,
 						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
 						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
@@ -190,7 +190,7 @@ public class EnemyDistributor {
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLGUN14] <= play.zoneID) {
 			enemyEquivalentClazzAModel = play.zoneID;
 			enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLGUN14];
-			number = Mathf.FloorToInt(play.zoneID / 6f) + 1;
+			number = Mathf.FloorToInt(play.zoneID / 4f) + 1;
 			CreateSpawn(Enemy.CLAZZ_WALLGUN14, enemyModel, enemyEquivalentClazzAModel,
 					play.cave.zone.GetRandomRoom().GetRandomNonExitGridPosition(), // play.cave.zone.roomList[0].GetRandomNonExitGridPosition(), 
 					1.0f, number, number, false, Spawn.DistributionMode.PlaceOnWall);

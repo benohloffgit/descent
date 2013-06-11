@@ -57,6 +57,9 @@ public class ShipControl {
 			if (Input.GetKeyDown(KeyCode.L)) {
 				ship.SwitchHeadlight();
 			}
+			if (Input.GetKeyDown(KeyCode.V)) {
+				ship.BoostShip();
+			}
 			if (Input.GetKeyDown(KeyCode.M)) {
 				play.SwitchMiniMap();
 			}

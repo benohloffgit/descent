@@ -34,6 +34,7 @@ public class PlayGUI {
 	private Image doorOpen;
 	private Image lights;
 	private Image exitHelper;
+	private Image shipBoost;
 	private int[] healthCount;
 	private int[] shieldCount;
 	
@@ -82,12 +83,15 @@ public class PlayGUI {
 		zoneIDDigit0 = gui.images[imageId];
 		imageId = gui.AddImage(topContainer, new Vector3(0.1f, 0.1f, 1f), MyGUI.GUIAlignment.Center, -0.04f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_NUMBER_0, 0);
 		zoneIDDigit1 = gui.images[imageId];
-
-		int powerUpContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.075f, MyGUI.GUIAlignment.Top, 0.01f);
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, -1.25f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_LIGHTS, 0);
+		
+		// power ups / special capabilities
+		int powerUpContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.02f, MyGUI.GUIAlignment.Top, 0.03f);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_LIGHTS, 0);
 		lights = gui.images[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 1.25f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_EXITHELPER, 0);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_EXITHELPER, 0);
 		exitHelper = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST, 0);
+		shipBoost = gui.images[imageId];
 		
 		// ship health
 		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Center, 0.25f, MyGUI.GUIAlignment.Top, 0.01f);
@@ -182,6 +186,7 @@ public class PlayGUI {
 		doorClosed.myRenderer.enabled = true;
 		SwitchHeadlight();
 		SwitchExitHelper();
+		SwitchShipBoost();
 		DisplayZoneID();
 	}
 
@@ -199,6 +204,10 @@ public class PlayGUI {
 
 	public void SwitchExitHelper() {
 		exitHelper.myRenderer.enabled = ship.isExitHelperLaunched;
+	}
+
+	public void SwitchShipBoost() {
+		shipBoost.myRenderer.enabled = ship.isBoosterOn;
 	}
 	
 	public void DisplayKey(int keyType) {

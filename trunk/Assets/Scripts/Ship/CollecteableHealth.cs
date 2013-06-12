@@ -28,8 +28,9 @@ public class CollecteableHealth : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
 			play.HealShip(amount);
+			play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 22);
 			Destroy(gameObject);
 		}
 	}
-	
+
 }

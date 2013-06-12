@@ -297,7 +297,7 @@ public class Sokoban {
 "#  @  #" +
 "#######";
 		
-		levelDims[7] = new IntDouble(8,11);
+		levelDims[7] = new IntDouble(8,12);
 		levels[7] = 
 "  ######" +
 "  # ..@#" +
@@ -306,11 +306,11 @@ public class Sokoban {
 "   # #-" +
 "   # #-" +
 "#### #-" +
-"#    ##" +
-"# #   #" +
-"#   # #" +
-"###   #" +
-"  #####";
+"#    ##-" +
+"# #   #-" +
+"#   # #-" +
+"###   #-" +
+"  #####-";
 
 		levelDims[8] = new IntDouble(6,7);
 		levels[8] = 

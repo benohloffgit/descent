@@ -23,9 +23,6 @@ public class SecretChamberDoor : MonoBehaviour {
 			play.SwitchMode();
 		}
 	}
-
-	void OnTriggerExit(Collider other) {
-	}
 	
 	public void Open() {
 		doorCollider.enabled = false;

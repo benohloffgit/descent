@@ -29,14 +29,9 @@ public class CollecteableShield : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
 			play.ShieldShip(amount);
+			play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 23);
 			Destroy(gameObject);
 		}
 	}
 	
-/*	void OnCollisionEnter(Collision c) {
-		if (c.collider.tag == Ship.TAG) {
-			play.ShieldShip(amount);
-			Destroy(gameObject);
-		}
-	}*/
 }

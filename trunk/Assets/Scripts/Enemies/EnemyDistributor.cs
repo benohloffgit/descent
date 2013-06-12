@@ -31,7 +31,7 @@ public class EnemyDistributor {
 	private static int[] ENEMY_LOOK_RANGES = new int[] {4,6,10,8,3,11,7,14,9,5,13,12,15};
 	private static int[] ENEMY_ROAM_MINS = new int[] {3, 2, 5, 8, 6, 1, 7, 4, 9};
 	private static int[] ENEMY_ROAM_MAXS = new int[] {6, 4, 7, 8, 9, 5, 8, 9, 10};
-	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,3,4,7,10,14,19,25,   1,12,6,10,18,7,1}; // {2,4,8,13,20,30,42,58,   1,14,6,10,15,8,1};
+	public static int[] CLAZZ_A_EQUIVALENT_MODEL = new int[] {2,3,5,7,10,14,19,25,   1,12,6,10,18,7,1}; // {2,4,8,13,20,30,42,58,   1,14,6,10,15,8,1};
 	public static int[] SECONDARY_ENEMIES_HEALTH = new int[] {28,33,72,10,1,28,10};
 	private static float[] SPAWN_MIN_FREQUENCY = new float[] {2.0f, 2.0f};
 	private static float[] SPAWN_MAX_FREQUENCY = new float[] {4.0f, 6.0f};
@@ -87,8 +87,14 @@ public class EnemyDistributor {
 						spawnMinGenerated = SPAWN_MIN_GENERATED[0];
 						spawnMaxGenerated = SPAWN_MAX_GENERATED[0];
 					}
+					Room rR;
+					if (enemyClazz == 4) {
+						rR = play.cave.zone.roomList[0];
+					} else {
+						rR = play.cave.zone.GetRandomRoom();
+					}
 					CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
-						play.cave.zone.GetRandomRoom().GetRandomVoidGridPosition(),
+						rR.GetRandomVoidGridPosition(),
 						UnityEngine.Random.Range(spawnMinFrequency, spawnMaxFrequency),
 						UnityEngine.Random.Range(spawnMinLiving, spawnMaxLiving),
 						UnityEngine.Random.Range(spawnMinGenerated, spawnMaxGenerated)); // Spawn.INFINITY
@@ -387,7 +393,7 @@ public class EnemyDistributor {
 	
 	private int CalculateEnemyHealth(int clazz, int model) {
 		if (clazz < 8) {
-			int lookUp = (clazz + model) % 9;
+			int lookUp = model % 9;
 			float baseHealth = Weapon.PRIMARY_DAMAGE[clazz] * ENEMY_HEALTH_MULTIPLICATOR[lookUp];
 	//		Debug.Log (clazz + " " +model + " " + baseHealth + " " + lookUp +" " + ENEMY_HEALTH_MODIFIER[lookUp]);
 			return (int)(baseHealth + baseHealth * ENEMY_HEALTH_MODIFIER[lookUp]);		
@@ -423,6 +429,8 @@ public class EnemyDistributor {
 	private float CalculateEnemyMovementForce(int clazz, int model) {
 		if (clazz == Enemy.CLAZZ_HORNET12) {
 			return ENEMY_MOVEMENT_FORCES[(clazz + model) % 12] * 2f;
+		} else if (clazz == Enemy.CLAZZ_B1) { // Bat
+			return ENEMY_MOVEMENT_FORCES[(clazz + model) % 12] / 2f;
 		} else {
 			return ENEMY_MOVEMENT_FORCES[(clazz + model) % 12];
 		}

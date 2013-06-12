@@ -33,9 +33,10 @@ public class CollecteableKey : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
 			play.KeyFound(type);
+			play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 24);
 			Destroy(gameObject);
 		}
 	}
-	
+
 }
 

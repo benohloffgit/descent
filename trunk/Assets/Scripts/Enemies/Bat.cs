@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 /*
  * Normal Roaming/Aiming behaviour according to generated model values
- * Hides 
+ * Hides in regular intervals from ship
  * 
  */
 public class Bat : Enemy {
@@ -30,8 +30,6 @@ public class Bat : Enemy {
 		if (mount == Weapon.PRIMARY) {
 			primaryWeapons.Add(new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS,
 				WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss));
-//		} else {
-//			secondaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 		}
 	}
 	
@@ -39,7 +37,7 @@ public class Bat : Enemy {
 		targetPosition = play.cave.GetGridFromPosition(transform.position);
 		mode = Mode.ROAMING;
 		isOnPath = false;
-		roamingStart = Time.time;
+		roamingStart = Time.fixedTime;
 	}
 
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {		
@@ -50,10 +48,10 @@ public class Bat : Enemy {
 				aStarThreadState.Complete();
 			}
 			mode = Mode.AIMING;
-			aimingStart = Time.time;
+			aimingStart = Time.fixedTime;
 		}
 		
-		if (mode == Mode.AIMING && Time.time > aimingStart + MAX_AIMING_TIME) {
+		if (mode == Mode.AIMING && Time.fixedTime > aimingStart + MAX_AIMING_TIME) {
 			mode = Mode.COVERFINDING;
 //				Debug.Log ("Mode.COVERFINDING 1" );
 			if (coverPosition == GridPosition.ZERO) {
@@ -68,7 +66,7 @@ public class Bat : Enemy {
 				coverFindThreadState.Complete();
 				if (coverFindThreadState.coverPosition == GridPosition.ZERO) { // no cover found
 					mode = Mode.ROAMING;
-					roamingStart = Time.time;
+					roamingStart = Time.fixedTime;
 //					Debug.Log ("No cover found, Mode.ROAMING" );					
 				} else {
 					coverPosition = coverFindThreadState.coverPosition;
@@ -78,7 +76,7 @@ public class Bat : Enemy {
 						play.movement.AStarPath(aStarThreadState, currentGridPosition, coverPosition);
 					} else {
 						mode = Mode.ROAMING;
-						roamingStart = Time.time;
+						roamingStart = Time.fixedTime;
 						coverPosition = GridPosition.ZERO;
 //						Debug.Log ("We are already on cover pos : Mode.ROAMING" );					
 					}
@@ -95,7 +93,7 @@ public class Bat : Enemy {
 		}
 		if (mode == Mode.HIDING) {
 			if (isOnPath) {
-				play.movement.Chase(myRigidbody, currentGridPosition, targetPosition, movementForce, ref isOnPath);
+				play.movement.Chase(myRigidbody, currentGridPosition, targetPosition, movementForce*2f, ref isOnPath);
 //				Debug.Log ("chasing " + isOnPath);
 			} else {
 				if (aStarThreadState.roomPath.Count > 0) {
@@ -106,19 +104,19 @@ public class Bat : Enemy {
 //					Debug.Log ("setting new target position " + targetPosition);
 				} else {
 					mode = Mode.ROAMING;
-					roamingStart = Time.time;
+					roamingStart = Time.fixedTime;
 //					Debug.Log ("Mode.ROAMING" );
 				}
 			}
 		}
-		if (mode == Mode.ROAMING || mode == Mode.AIMING) {
+		if (mode == Mode.ROAMING) {
 			if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
 				aggressiveness = Enemy.AGGRESSIVENESS_ON;
 			}
 		}
 		
 		if (mode == Mode.ROAMING) {
-			if (Time.time > roamingStart + MAX_ROAMING_TIME && aggressiveness == Enemy.AGGRESSIVENESS_OFF) {
+			if (Time.fixedTime > roamingStart + MAX_ROAMING_TIME && aggressiveness == Enemy.AGGRESSIVENESS_OFF) {
 				mode = Mode.COVERFINDING;
 //				Debug.Log ("Mode.COVERFINDING 2" );
 				if (coverPosition == GridPosition.ZERO) {
@@ -138,7 +136,10 @@ public class Bat : Enemy {
 			play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceAiming, ref currentAngleUp,
 				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		}
+		
+		//clazz = "Bat " + mode;
 	}
+	
 
 }
 

@@ -579,6 +579,7 @@ public class Play : MonoBehaviour {
 	public void SokobanSolved() {
 		SwitchMode();
 		cave.OpenSecretChamberDoor();
+		ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 25);
 	}
 	
 	public void RetrySokoban() {

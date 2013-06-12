@@ -9,7 +9,7 @@ public class Shot : MonoBehaviour {
 	private Enemy enemy;
 	
 	public int damage;
-	private int source;
+	public int source;
 	
 	private Transform target;
 	
@@ -49,7 +49,6 @@ public class Shot : MonoBehaviour {
 	void FixedUpdate() {
 		if (type == MISSILE || type == GUIDED_MISSILE || type == CHARGED_MISSILE || type == DETONATOR_MISSILE) {
 			if (type == GUIDED_MISSILE && target != null) {
-	//			Vector3 pos = new Vector3(137f, 61f, 52f);
 				rigidbody.AddTorque(Vector3.Cross(transform.forward, (target.position - transform.position)).normalized * GUIDED_MISSILE_TORQUE_MAX);
 	//			Debug.Log ("correcting flight " + corrected.magnitude);
 			}
@@ -70,12 +69,6 @@ public class Shot : MonoBehaviour {
 				Destroy(gameObject);
 			}
 		} else if (type != LASER_BEAM) {
-/*			if (c.collider.tag == Ship.TAG) {
-				play.DisplayHit(c.contacts[0].point, play.ship.transform.rotation);
-				play.ship.Damage(damage);
-				play.DamageShip(source);
-			}
-		} else {*/
 			CancelInvoke("DestroySelf");
 			if (type == MISSILE || type == GUIDED_MISSILE || type == CHARGED_MISSILE || type == DETONATOR_MISSILE) {
 				play.DisplayExplosion(c.contacts[0].point, play.ship.transform.rotation);
@@ -135,17 +128,6 @@ public class Shot : MonoBehaviour {
 		ReleaseDetonatorBombShots();
 		Destroy(gameObject);
 	}
-	
-	// mine is not a rigidbody
-/*	private void OnTriggerEnter(Collider c) {
-		if (type == MINE_TOUCH) {
-			play.DisplayExplosion(transform.position, play.ship.transform.rotation);
-			c.rigidbody.AddExplosionForce(MINE_EXPLOSION_POWER, transform.position, MINE_EXPLOSION_RADIUS);
-			play.ship.Damage(damage);
-			play.DamageShip(source);
-		}
-		Destroy(gameObject);
-	}*/
 	
 	public void LockOn(Transform target_) {
 		target = target_;

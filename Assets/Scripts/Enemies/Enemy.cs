@@ -62,7 +62,7 @@ public abstract class Enemy : MonoBehaviour {
 	protected Cave cave;
 	protected Spawn spawn;
 	
-	public string clazz; // (A-L)
+	public string clazz; // name
 	public int clazzNum; // 0-7 
 	public int model; // 0-98 (1-99)
 	public int displayModel;
@@ -220,7 +220,6 @@ public abstract class Enemy : MonoBehaviour {
 				health = 0;
 				play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 				flaggedForDestruction = true; // this is necessary because the following Destroy does not get executed immediately which leads to problems with twin projectiles
-				AudioSourcePool.DecoupleAudioSource(GetComponentInChildren<AudioSource>());
 				Destroy(gameObject);
 			}
 		} else {
@@ -279,6 +278,10 @@ public abstract class Enemy : MonoBehaviour {
 			return 14;
 		}
 		return -1;
+	}
+	
+	void OnDisable() {
+		AudioSourcePool.DecoupleAudioSource(GetComponentInChildren<AudioSource>());
 	}
 
 }

@@ -22,8 +22,11 @@ public class Explosion : MonoBehaviour {
 	}
 
 	private void DestroySelf() {
-		AudioSourcePool.DecoupleAudioSource(GetComponentInChildren<AudioSource>());
 		Destroy(gameObject);
+	}
+
+	void OnDisable() {
+		AudioSourcePool.DecoupleAudioSource(GetComponentInChildren<AudioSource>());
 	}
 	
 }

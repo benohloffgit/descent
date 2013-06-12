@@ -2,6 +2,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+/*
+ * Normal Roaming/Aiming behaviour according to generated model values
+ * Chases ship
+ * 
+ */
 public class Gazelle : Enemy {
 	private RaycastHit hit;
 	private GridPosition targetPosition;
@@ -18,8 +23,6 @@ public class Gazelle : Enemy {
 		if (mount == Weapon.PRIMARY) {
 			primaryWeapons.Add(new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS,
 				WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss));
-//		} else {
-//			secondaryWeapons.Add(new Weapon(this, mount, transform, play, w, m, WEAPON_POSITIONS[1], Game.ENEMY, modelClazzAEquivalent + 1, spawn.isBoss));
 		}
 	}
 	
@@ -35,20 +38,17 @@ public class Gazelle : Enemy {
 			aggressiveness = Enemy.AGGRESSIVENESS_ON;
 		}
 		float distanceToShip = Vector3.Distance(transform.position, play.GetShipPosition());
-			
+		
 		if (mode == Mode.PATHFINDING) {
 			if (aStarThreadState.IsFinishedNow()) {
 				aStarThreadState.Complete();
 				mode = Mode.CHASING;
 				isOnPath = false;
-//				Debug.Log ("Pathfinding finished " + aStarThreadState.roomPath.Count);
 			}
 		}
 		if (mode == Mode.CHASING) {
-//			Debug.Log ("Chasing ..." + chasingRange + " " + shootingRange);
 			if (isOnPath) {
 				play.movement.Chase(myRigidbody, currentGridPosition, targetPosition, movementForce, ref isOnPath);
-//				Debug.Log ("chasing " + isOnPath + " "  + Time.frameCount);
 			} else {
 				if (distanceToShip > chasingRange) {
 					if (aStarThreadState.roomPath.Count > 0) {
@@ -56,21 +56,16 @@ public class Gazelle : Enemy {
 						targetPosition = n.Value.gridPos;
 						aStarThreadState.roomPath.RemoveFirst();
 						isOnPath = true;
-//						Debug.Log ("setting new target position " + targetPosition);
 					} else {
 						mode = Mode.ROAMING;
-//						Debug.Log ("back to ROAMING 01");
 					}
 				} else {
 					mode = Mode.ROAMING;
-//					Debug.Log ("back to ROAMING 02");
 				}
 			}					
 		}
 		if (mode == Mode.ROAMING) {
-//			Debug.Log ("Roaming ...");
 			if (distanceToShip > shootingRange) {
-//				Debug.Log ("PATHFINDING");
 				mode = Mode.PATHFINDING;
 				play.movement.AStarPath(aStarThreadState, currentGridPosition, play.GetShipGridPosition());
 			} else {
@@ -85,6 +80,7 @@ public class Gazelle : Enemy {
 				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		}
 		
+		//clazz = "Gaz " + mode;
 	}
 
 }

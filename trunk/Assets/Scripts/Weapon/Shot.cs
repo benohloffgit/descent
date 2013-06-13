@@ -15,14 +15,14 @@ public class Shot : MonoBehaviour {
 	
 	public static int BULLET = 0;
 	public static int LASER = 1;
-	public static int MISSILE = 2;
-	public static int GUIDED_MISSILE = 3;
-	public static int MINE_TOUCH = 4;
-	public static int LASER_BEAM = 5;
-	public static int PHASER = 6;
-	public static int GAUSS = 7;
-	public static int CHARGED_MISSILE = 8;
-	public static int DETONATOR_MISSILE = 9;
+	public static int PHASER = 2;
+	public static int GAUSS = 3;
+	public static int MISSILE = 4;
+	public static int GUIDED_MISSILE = 5;
+	public static int CHARGED_MISSILE = 6;
+	public static int DETONATOR_MISSILE = 7;
+	public static int MINE_TOUCH = 8;
+	public static int LASER_BEAM = 9;
 	public static int DETONATOR_BOMB = 10;
 	
 	private static float MISSILE_RADIUS = RoomMesh.MESH_SCALE * 2.5f;
@@ -62,7 +62,7 @@ public class Shot : MonoBehaviour {
 				play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 				c.rigidbody.AddExplosionForce(MINE_EXPLOSION_POWER, transform.position, MINE_EXPLOSION_RADIUS);
 				if (c.collider.tag == Ship.TAG) {
-					play.ship.Damage(damage, c.contacts[0].point);
+					play.ship.Damage(damage, c.contacts[0].point, type);
 					play.DamageShip(source);
 				}
 				((MineBuilder)enemy).MineDestroyed();
@@ -82,7 +82,7 @@ public class Shot : MonoBehaviour {
 			}
 			
 			if (c.collider.tag == Ship.TAG) {
-				play.ship.Damage(damage, c.contacts[0].point);
+				play.ship.Damage(damage, c.contacts[0].point, type);
 				play.DamageShip(source);
 			} else if (c.collider.tag == Enemy.TAG) {
 				c.collider.GetComponent<Enemy>().Damage(damage);
@@ -110,7 +110,7 @@ public class Shot : MonoBehaviour {
 			if (col.gameObject.tag == Enemy.TAG) {
 				col.GetComponent<Enemy>().Damage(Mathf.RoundToInt(damage/2.0f));
 			} else {
-				play.ship.Damage(Mathf.RoundToInt(damage/4.0f), col.transform.position);
+				play.ship.Damage(Mathf.RoundToInt(damage/4.0f), col.transform.position, type);
 			}
 			play.DisplayHit(col.transform.position, play.ship.transform.rotation);
 		}
@@ -118,7 +118,7 @@ public class Shot : MonoBehaviour {
 	
 	public void ExecuteLaserBeamDamage(Vector3 point) {
 		play.DisplayHit(point, play.ship.transform.rotation);
-		play.ship.Damage(damage, point);
+		play.ship.Damage(damage, point, type);
 		play.DamageShip(source);
 	}
 	

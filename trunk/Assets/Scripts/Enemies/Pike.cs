@@ -42,7 +42,7 @@ public class Pike : Enemy {
 	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
 		if (secondaryWeapons[currentSecondaryWeapon].ammunition > 0) {
 			if (!isReloaded && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
-				aimingStart = Time.time;
+				aimingStart = Time.fixedTime;
 				isReloaded = true;
 			}
 		}
@@ -96,7 +96,7 @@ public class Pike : Enemy {
 		if (aggressiveness > Enemy.AGGRESSIVENESS_OFF) {
 			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming,
 				ref currentAngleUp, ref dotProductLookAt, Movement.LookAtMode.None);
-			if (isShipVisible != Vector3.zero && dotProductLookAt > 0.95f && Time.time > aimingStart + AIMING_TIME) {
+			if (isShipVisible != Vector3.zero && dotProductLookAt > 0.95f && Time.fixedTime > aimingStart + AIMING_TIME) {
 				ShootSecondary();
 				isReloaded = false;
 			}			

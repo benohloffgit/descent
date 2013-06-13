@@ -22,8 +22,6 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_BULB = "Bulb";
 	public static string CLAZZ_WALLGUN = "Cricket";
 	
-//	public static string CLAZZ_K = "k";
-//	public static string CLAZZ_L = "l";
 	public static int CLAZZ_A0 = 0; // spider
 	public static int CLAZZ_B1 = 1; // bat
 	public static int CLAZZ_C2 = 2; // gazelle
@@ -66,17 +64,14 @@ public abstract class Enemy : MonoBehaviour {
 	public int clazzNum; // 0-7 
 	public int model; // 0-98 (1-99)
 	public int displayModel;
-//	public int modelNum; // 0 - 998
 	public int modelClazzAEquivalent;
 	public int health;
-//	public int shield;
 	public float firepowerPerSecond;
 	protected float size;
 	protected float aggressiveness; // between 0 (no at all) and 1.0 (attacks 100% of time)
 	protected float movementForce;
 	protected float turningForce;
 	protected int lookAtRange;
-//	protected float chaseRange;
 	protected float shootingRange;
 	protected float chasingRange;
 	protected int roamMinRange;

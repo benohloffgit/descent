@@ -127,6 +127,7 @@ public class Game : MonoBehaviour {
 	
 	public static Vector4 GUI_UV_NULL = new Vector4(0.0f,0.0f,0.0f,0.0f);
 	public static Vector4 GUI_UV_COLOR_BLACK = new Vector4(0.0f,0.0f,0.0625f,0.0625f);
+	public static Vector4 GUI_UV_TRANS = new Vector4(0.125f,0.0f,0.1875f,0.0625f);
 	public static Vector4 GUI_UV_DIM = new Vector4(0.0625f,0.0f,0.125f,0.0625f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);
@@ -149,6 +150,18 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_EXITHELPER = new Vector4(0.25f,0.625f,0.375f,0.75f);
 	public static Vector4 GUI_UV_DAMAGEINDICATOR = new Vector4(0.375f,0.625f,0.5f,0.75f);
 	public static Vector4 GUI_UV_SHIPBOOST = new Vector4(0.5f,0.625f,0.625f,0.75f);
+	public static Vector4 GUI_UV_GUN = new Vector4(0f,0.5f,0.125f,0.625f);
+	public static Vector4 GUI_UV_LASER = new Vector4(0.125f,0.5f,0.25f,0.625f);
+	public static Vector4 GUI_UV_PHASER = new Vector4(0.25f,0.5f,0.375f,0.625f);
+	public static Vector4 GUI_UV_GAUSS = new Vector4(0.375f,0.5f,0.5f,0.625f);
+	public static Vector4 GUI_UV_TWINGUN = new Vector4(0.5f,0.5f,0.625f,0.625f);
+	public static Vector4 GUI_UV_TWINLASER = new Vector4(0.625f,0.5f,0.75f,0.625f);
+	public static Vector4 GUI_UV_TWINPHASER = new Vector4(0.75f,0.5f,0.875f,0.625f);
+	public static Vector4 GUI_UV_TWINGAUSS = new Vector4(0.875f,0.5f,1f,0.625f);
+	public static Vector4 GUI_UV_MISSILE = new Vector4(0f,0.375f,0.125f,0.5f);
+	public static Vector4 GUI_UV_GUIDEDMISSILE = new Vector4(0.125f,0.375f,0.25f,0.5f);
+	public static Vector4 GUI_UV_CHARGEDMISSILE = new Vector4(0.25f,0.375f,0.375f,0.5f);
+	public static Vector4 GUI_UV_DETONATORMISSILE = new Vector4(0.375f,0.375f,0.5f,0.5f);
 	
 	private Menu menu;
 	private Play play;

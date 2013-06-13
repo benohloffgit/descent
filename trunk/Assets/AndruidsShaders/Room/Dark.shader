@@ -1,7 +1,16 @@
-// == TRIPLANAR TEXTURE PROJECTION SHADERS ==
-// Copyright(c) Broken Toy Games, 2011. Do not redistribute.
-// http://www.brokentoygames.com
 
+//    // after CGPROGRAM;
+//    #include "AutoLight.cginc"
+     
+    // in v2f struct;
+//    LIGHTING_COORDS(0,1) // replace 0 and 1 with the next available TEXCOORDs in your shader, don't put a semicolon at the end of this line.
+     
+    // in vert shader;
+//    TRANSFER_VERTEX_TO_FRAGMENT(o); // Calculates shadow and light attenuation and passes it to the frag shader.
+     
+    //in frag shader;
+//    float atten = LIGHT_ATTENUATION(i); // This is a float for your shadow/attenuation value, multiply your lighting value by this to get shadows. Replace i with whatever you've defined your input struct to be called (e.g. frag(v2f [b]i[/b]) : COLOR { ... ).
+    
 Shader "Andruids/Room/Dark" {
 
 	Properties {
@@ -83,4 +92,5 @@ Shader "Andruids/Room/Dark" {
 		}
 	}
 	//FallBack "Mobile/Diffuse"
+	Fallback "VertexLit"
 }

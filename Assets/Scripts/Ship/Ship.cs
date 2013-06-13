@@ -36,6 +36,7 @@ public class Ship : MonoBehaviour {
 	private Transform cameraTransform;
 	public Camera shipCamera;
 	
+	public bool isInvincible;
 	public bool isExitHelperLaunched;
 	public bool isHeadlightOn;
 	public bool isBoosterOn;
@@ -71,6 +72,9 @@ public class Ship : MonoBehaviour {
 
 	public static string[] HULL_TYPES = new string[] {"Armor", "Improved Armor", "Bla Armor", "Blubb Armor", "Keflar Armor", "Iridium Armor", "Nano Armor", "Bloob Armor"};
 	public static string[] SPECIAL_TYPES = new string[] {"Light", "Boost", "Cloak", "Invincible"};
+	
+	private static int BULLET_IMPACT_MIN = 28;
+	private static int BULLET_IMPACT_MAX = 30;
 	
 	private static int CAMERA_POSITION_COCKPIT = 0;
 	private static int CAMERA_POSITION_BEHIND = 1;
@@ -185,9 +189,6 @@ public class Ship : MonoBehaviour {
 		}
 	}
 	
-	void OnCollisionEnter(Collision c) {
-	}
-	
 	public void DispatchGameInput() {
 		shipSteering.DispatchGameInput();
 		shipControl.DispatchGameInput();
@@ -206,25 +207,32 @@ public class Ship : MonoBehaviour {
 		rigidbody.AddRelativeTorque(direction * FORCE_YAW);
 	}
 	
-	public void Damage(int damage, Vector3 worldPos) {
-		if (shield > 0) {
-			shield -= damage;
-			if (shield < 0) {
-				damage = Mathf.Abs(shield);
-				shield = 0;
+	public void Damage(int damage, Vector3 worldPos, int shotType) {
+		if (!isInvincible) {
+			if (shotType < 4) {
+				PlaySound(Game.SOUND_TYPE_VARIOUS, UnityEngine.Random.Range(BULLET_IMPACT_MIN, BULLET_IMPACT_MAX+1));
 			} else {
-				damage = 0;
+				PlaySound(Game.SOUND_TYPE_VARIOUS, 31);
 			}
+			if (shield > 0) {
+				shield -= damage;
+				if (shield < 0) {
+					damage = Mathf.Abs(shield);
+					shield = 0;
+				} else {
+					damage = 0;
+				}
+			}
+			play.playGUI.IndicateDamage(worldPos);
+			health = Mathf.Max (0, health-damage);
+			healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
+			shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
+			if (health == 0) {
+				// stop game
+				play.RepeatZone();
+			}
+			//Debug.Log (damage +" " + shield + " " +  maxShield+ " "+ health + " " + healthPercentage + " " +  shieldPercentage);
 		}
-		play.playGUI.IndicateDamage(worldPos);
-		health = Mathf.Max (0, health-damage);
-		healthPercentage = Mathf.CeilToInt( (health/(float)maxHealth) * 100f);
-		shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
-		if (health == 0) {
-			// stop game
-			play.RepeatZone();
-		}
-		//Debug.Log (damage +" " + shield + " " +  maxShield+ " "+ health + " " + healthPercentage + " " +  shieldPercentage);
 	}
 	
 	public void Heal(int amount) {
@@ -467,6 +475,7 @@ public class Ship : MonoBehaviour {
 	public void BoostShip() {
 		if (!isBoosterOn && Time.fixedTime > boostTimer + BOOST_INTERVAL) {
 			isBoosterOn = true;
+			PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
 			boostTimer = Time.fixedTime;
 			play.playGUI.SwitchShipBoost();
 		}

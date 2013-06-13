@@ -88,11 +88,11 @@ public class EnemyDistributor {
 						spawnMaxGenerated = SPAWN_MAX_GENERATED[0];
 					}
 					Room rR;
-					if (enemyClazz == 4) {
-						rR = play.cave.zone.roomList[0];
-					} else {
+//					if (enemyClazz == 4) {
+//						rR = play.cave.zone.roomList[0];
+//					} else {
 						rR = play.cave.zone.GetRandomRoom();
-					}
+//					}
 					CreateSpawn(enemyClazz, enemyModel, enemyEquivalentClazzAModel,
 						rR.GetRandomVoidGridPosition(),
 						UnityEngine.Random.Range(spawnMinFrequency, spawnMaxFrequency),

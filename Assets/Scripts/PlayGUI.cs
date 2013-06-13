@@ -19,6 +19,8 @@ public class PlayGUI {
 	private int toBeDisplayedShield;
 	private int primaryWeaponLabel;
 	private int secondaryWeaponLabel;
+	private Image primaryWeapon;
+	private Image secondaryWeapon;
 	private Image healthDigit0;
 	private Image healthDigit1;
 	private Image healthDigit2;
@@ -60,7 +62,10 @@ public class PlayGUI {
 	private static float TICK_DELTA = 0.05f;
 	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
 												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
-		
+	
+	private static Vector4[] PRIMARY_WEAPONS = new Vector4[] {Game.GUI_UV_GUN,Game.GUI_UV_LASER,Game.GUI_UV_TWINGUN,Game.GUI_UV_PHASER,Game.GUI_UV_TWINLASER,Game.GUI_UV_GAUSS,Game.GUI_UV_TWINPHASER,Game.GUI_UV_TWINGAUSS};
+	private static Vector4[] SECONDARY_WEAPONS = new Vector4[] {Game.GUI_UV_MISSILE,Game.GUI_UV_GUIDEDMISSILE,Game.GUI_UV_CHARGEDMISSILE,Game.GUI_UV_DETONATORMISSILE};
+	
 	public PlayGUI(Play p) {
 		play = p;
 //		Reset();
@@ -150,9 +155,15 @@ public class PlayGUI {
 
 		enemyLockMissileLabel = gui.AddLabel("", topContainer, new Vector3(0.03f,0.03f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
+		// weapons
+		int weaponsContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.03f);
+		imageId = gui.AddImage(weaponsContainer, MyGUI.GUIAlignment.Center, -0.5f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_TRANS, 0);
+		primaryWeapon = gui.images[imageId];
+		imageId = gui.AddImage(weaponsContainer, MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_TRANS, 0);
+		secondaryWeapon = gui.images[imageId];
 		gui.SetActiveTextMaterial(4);
-		primaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.15f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
-		secondaryWeaponLabel = gui.AddLabel("", topContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		primaryWeaponLabel = gui.AddLabel("", weaponsContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		secondaryWeaponLabel = gui.AddLabel("", weaponsContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		
 		
 //		ticks = 0;
@@ -184,6 +195,10 @@ public class PlayGUI {
 		isOneDamageIndicatorActive = false;
 		doorOpen.myRenderer.enabled = false;
 		doorClosed.myRenderer.enabled = true;
+		gui.labelsCC[primaryWeaponLabel].SetText("");
+		gui.labelsCC[secondaryWeaponLabel].SetText("");
+		primaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
+		secondaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
 		SwitchHeadlight();
 		SwitchExitHelper();
 		SwitchShipBoost();
@@ -461,11 +476,13 @@ public class PlayGUI {
 	}
 	
 	public void DisplayPrimaryWeapon(Weapon w) {
-		gui.labelsCC[primaryWeaponLabel].SetText("T: " + Weapon.PRIMARY_TYPES[w.type] + " FP: " + w.damage);
+		primaryWeapon.SetUVMapping(PRIMARY_WEAPONS[w.type]);
+		gui.labelsCC[primaryWeaponLabel].SetText(Weapon.PRIMARY_TYPES[w.type] + " FP: " + w.damage);
 	}
 	
 	public void DisplaySecondaryWeapon(Weapon w) {
-		gui.labelsCC[secondaryWeaponLabel].SetText("T: " + Weapon.SECONDARY_TYPES[w.type] + " ("+ w.ammunition +")");
+		secondaryWeapon.SetUVMapping(SECONDARY_WEAPONS[w.type]);
+		gui.labelsCC[secondaryWeaponLabel].SetText(Weapon.SECONDARY_TYPES[w.type] + " A: "+ w.ammunition);
 	}
 	
 	private void ToMenu() {

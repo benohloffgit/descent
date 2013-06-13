@@ -54,12 +54,13 @@
      <Compile Include="Assets\Editor\TextBox\Modifiers\CCTextRangeColorerInspector.cs" />
      <Compile Include="Assets\Editor\TextBox\Modifiers\CCTextTorusWrapperInspector.cs" />
      <Compile Include="Assets\Editor\TextBox\Modifiers\CCTextVerticalColorerInspector.cs" />
+     <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendOneOne.shader" />
-     <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpSingleAxis_Unlit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseEffectShaderRGB.shader" />
      <None Include="Assets\AndruidsShaders\rim.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\SeparableWeightedBlurDof34.shader" />
      <None Include="Assets\AndruidsShaders\ColorTest.shader" />
+     <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Multiply.shader" />
      <None Include="Assets\AndruidsShaders\uvpan.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ShowAlphaChannel.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\GlowConeTap.shader" />
@@ -77,8 +78,6 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ContrastComposite.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAAPreset3.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\FisheyeShader.shader" />
-     <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\HD\TpWorldBump.shader" />
-     <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpWorld_Unlit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Contrast Stretch\Apply.shader" />
      <None Include="Assets\AndruidsShaders\TriplanarNewLit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\frag_ao.cginc" />
@@ -89,6 +88,7 @@
      <None Include="Assets\AndruidsShaders\MobileBloom.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ColorCorrectionCurvesSimple.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseEffectShaderYUV.shader" />
+     <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Light.shader" />
      <None Include="Assets\AndruidsShaders\TriplanarNew.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\GlowEffectDownsample.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\CreaseApply.shader" />
@@ -122,7 +122,6 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\BlendModesOverlay.shader" />
      <None Include="Assets\AndruidsShaders\InverseFont.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\SimpleClear.shader" />
-     <None Include="Assets\Extensions\BTG_TriplanarProjection\Shaders\Basic (Mobile)\TpLocal_Unlit.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAA3Console.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\EdgeDetectX.shader" />
      <None Include="Assets\AndruidsShaders\Room\MovingSpotlights.shader" />

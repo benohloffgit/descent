@@ -5,7 +5,6 @@ public class Spawn : MonoBehaviour {
 	public static string TAG = "Spawn";
 	
 	public bool isBoss;
-//	private Game game;
 	private Play play;
 	private EnemyDistributor enemyDistributor;
 	
@@ -26,6 +25,12 @@ public class Spawn : MonoBehaviour {
 	private int numberGenerated;
 	private int currentlyLiving;
 	private Renderer myRenderer;
+	private float soundPlayedTime;
+	
+	private static float MAX_SOUND_DISTANCE = RoomMesh.MESH_SCALE * 5f;
+	private static float SOUND_PLAY_DELTA = 10f;
+	
+	private int myAudioSourceID = AudioSourcePool.NO_AUDIO_SOURCE;
 	
 	public const int INFINITY = -1;
 	
@@ -39,7 +44,6 @@ public class Spawn : MonoBehaviour {
 		enemyDistributor = enemyDistributor_;
 		play = play_;
 		isBoss = isBoss_;
-//		game = play.game;
 		gridPos = gridPos_;
 		worldPos = gridPos.GetWorldVector3();
 		enemyClazz = enemyClazz_;
@@ -52,7 +56,8 @@ public class Spawn : MonoBehaviour {
 	}
 	
 	void Start() {
-		lastTimeGenerated = Time.time;
+		lastTimeGenerated = Time.fixedTime;
+		soundPlayedTime = Time.fixedTime;
 		numberGenerated = 0;
 		currentlyLiving = 0;
 		isActive = true;
@@ -64,15 +69,19 @@ public class Spawn : MonoBehaviour {
 			Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
 			if (isShipVisible != Vector3.zero) {
 				transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
+				if (isShipVisible.magnitude < MAX_SOUND_DISTANCE && Time.fixedTime > soundPlayedTime + SOUND_PLAY_DELTA) {
+					soundPlayedTime = Time.fixedTime;
+					myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 26);
+				}
 			}
 	
 			if ( (maxGenerated == INFINITY || numberGenerated < maxGenerated) && currentlyLiving < maxLiving) { 
-				if (Time.time > lastTimeGenerated + frequency) {
+				if (Time.fixedTime > lastTimeGenerated + frequency) {
 					Enemy e = enemyDistributor.CreateEnemy(this, enemyClazz, enemyModel, enemyEquivalentClazzAModel);
 					e.transform.position = worldPos;
 					numberGenerated++;
 					currentlyLiving++;
-					lastTimeGenerated = Time.time;		
+					lastTimeGenerated = Time.fixedTime;		
 					if (numberGenerated == maxGenerated) {
 						Deactivate();
 					}
@@ -103,7 +112,7 @@ public class Spawn : MonoBehaviour {
 	public void Die(Enemy e) {
 		currentlyLiving--;
 		enemyDistributor.RemoveEnemy(e);
-		lastTimeGenerated = Time.time;
+		lastTimeGenerated = Time.fixedTime;
 		if (currentlyLiving == 0 && !isActive) {
 			Destroy(gameObject);
 		}
@@ -125,6 +134,10 @@ public class Spawn : MonoBehaviour {
 		isActive = false;
 		myRenderer.enabled = false;
 	}
-	
+
+	void OnDisable() {
+		AudioSourcePool.DecoupleAudioSource(GetComponentInChildren<AudioSource>());
+	}
+
 }
 

@@ -1,20 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemies\Manta.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\Ship.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="400" Column="14" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="93" Column="73" />
-      <File FileName="Assets\Scripts\Game.cs" Line="90" Column="33" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="241" Column="17" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="189" Column="50" />
+      <File FileName="Assets\Scripts\Play.cs" Line="179" Column="12" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="201" Column="49" />
+      <File FileName="Assets\Scripts\Game.cs" Line="130" Column="36" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="215" Column="42" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="75" Column="1" />
       <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="43" Column="88" />
       <File FileName="Assets\Scripts\Menu.cs" Line="163" Column="24" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="94" Column="12" />
-      <File FileName="Assets\Scripts\Enemies\Gazelle.cs" Line="52" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\Wombat.cs" Line="72" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\Manta.cs" Line="77" Column="10" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="95" Column="3" />
+      <File FileName="Assets\Scripts\Enemies\Manta.cs" Line="93" Column="5" />
       <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="19" Column="20" />
-      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="12" Column="19" />
+      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="26" Column="39" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -175,6 +175,9 @@ public class Play : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.Alpha6)) {	
 				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
 			}
+			if (Input.GetKeyDown(KeyCode.Alpha7)) {	
+				ship.isInvincible = ship.isInvincible ? false : true;
+			}
 		}
 	}
 	

@@ -7,7 +7,7 @@ public class AudioSourcePool {
 	private Game game;
 	//private Dictionary<int, PooledAudioSource> freeAudioSources;
 	//private Dictionary<int, PooledAudioSource> usedAudioSources;
-	private List<AudioSource> audioSources;
+	private List<PooledAudioSource> audioSources;
 	
 	private static int MAX_AUDIO_SOURCES = 8;
 	public static int NO_AUDIO_SOURCE = -1;
@@ -18,14 +18,14 @@ public class AudioSourcePool {
 		game = game_;
 		
 		nextAudioSource = 0;
-		audioSources = new List<AudioSource>();
+		audioSources = new List<PooledAudioSource>();
 		
 		//freeAudioSources = new Dictionary<int, PooledAudioSource>();
 		//usedAudioSources = new Dictionary<int, PooledAudioSource>();
 		
 		for (int i=0; i<MAX_AUDIO_SOURCES; i++) {	
-			AudioSource pAS = (GameObject.Instantiate(game.pooledAudioSource) as GameObject).GetComponent<AudioSource>();
-			//pAS.Initialize(this, i);
+			PooledAudioSource pAS = (GameObject.Instantiate(game.pooledAudioSource) as GameObject).GetComponent<PooledAudioSource>();
+			pAS.Initialize(i);
 			audioSources.Add(pAS);
 		}
 	}
@@ -52,13 +52,24 @@ public class AudioSourcePool {
 				nextAudioSource = 0;
 			}
 		}		
-		audioSources[usedAudioSource].PlayOneShot(clip);
+		audioSources[usedAudioSource].audioSource.PlayOneShot(clip);
+//		Debug.Log ("Using AudioSource " + audioSources[usedAudioSource].id);
 		return usedAudioSource;
 	}
 	
-	public static void DecoupleAudioSource(AudioSource aS) {
+	public static void DecoupleAudioSource(PooledAudioSource aS) {
 		if (aS != null) {
+//			Debug.Log ("AudioSource disabled " + aS.id + " " + aS.gameObject.GetInstanceID());
 			aS.transform.parent = null;
+		}
+	}
+	
+	public static void DecoupleAudioSource(PooledAudioSource[] audioSources) {
+		foreach (PooledAudioSource aS in audioSources) {
+			if (aS != null) {
+//				Debug.Log ("AudioSource disabled " + aS.id + " " + aS.gameObject.GetInstanceID());
+				aS.transform.parent = null;
+			}
 		}
 	}
 }

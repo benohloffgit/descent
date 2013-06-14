@@ -116,10 +116,11 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Activate() {
-		playGUI.Activate();
 		StartZone();
 		ship.CalculateHullClazz();
+		ship.AddSpecials();
 		ship.AddWeapons();
+		playGUI.Activate();
 		InvokeRepeating("UpdateStats", 0, 1.0f);
 	}
 	

@@ -276,7 +276,7 @@ public abstract class Enemy : MonoBehaviour {
 	}
 	
 	void OnDisable() {
-		AudioSourcePool.DecoupleAudioSource(GetComponentInChildren<AudioSource>());
+		AudioSourcePool.DecoupleAudioSource(GetComponentsInChildren<PooledAudioSource>());
 	}
 
 }

@@ -1,18 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\Ship.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\ShipControl.cs">
     <Files>
-      <File FileName="Assets\Scripts\Play.cs" Line="179" Column="12" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="201" Column="49" />
-      <File FileName="Assets\Scripts\Game.cs" Line="130" Column="36" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="215" Column="42" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="75" Column="1" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="43" Column="88" />
-      <File FileName="Assets\Scripts\Menu.cs" Line="163" Column="24" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="95" Column="3" />
-      <File FileName="Assets\Scripts\Enemies\Manta.cs" Line="93" Column="5" />
-      <File FileName="Assets\Scripts\Behaviour\Movement.cs" Line="19" Column="20" />
-      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="26" Column="39" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="265" Column="14" />
+      <File FileName="Assets\Scripts\AudioSourcePool.cs" Line="48" Column="1" />
+      <File FileName="Assets\Scripts\Play.cs" Line="582" Column="2" />
+      <File FileName="Assets\Scripts\Game.cs" Line="305" Column="13" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="457" Column="13" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="268" Column="39" />
+      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="206" Column="14" />
+      <File FileName="Assets\Scripts\Menu.cs" Line="163" Column="23" />
+      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="34" Column="65" />
+      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="150" Column="1" />
+      <File FileName="Assets\Scripts\Ship\ShipSteering.cs" Line="22" Column="34" />
+      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="88" Column="81" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

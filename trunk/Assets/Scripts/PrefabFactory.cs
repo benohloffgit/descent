@@ -240,6 +240,7 @@ public class PrefabFactory {
 		CollecteablePowerUp powerUpDrop = newPowerUpDrop.AddComponent<CollecteablePowerUp>();
 		SphereCollider col = newPowerUpDrop.AddComponent<SphereCollider>();
 		col.isTrigger = true;
+		col.radius *= 2;
 		powerUpDrop.Initialize(play, type, id);
 		powerUpDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		powerUpDrop.enabled = true;

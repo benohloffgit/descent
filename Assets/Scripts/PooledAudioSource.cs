@@ -6,15 +6,21 @@ using System.Collections.Generic;
 public class PooledAudioSource : MonoBehaviour {
 	public int id;
 	
-	private AudioSourcePool audioSourcePool;
-	private AudioSource audioSource;
+	public AudioSource audioSource;
 	
 	void Awake() {
 		audioSource = GetComponent<AudioSource>();
 	}
 	
-	public void Initialize(AudioSourcePool audioSourcePool_, int id_) {
-		audioSourcePool = audioSourcePool_;
+	public void Initialize(int id_) {
 		id = id_;
 	}
+	
+//	void OnDisable() {
+//		Debug.Log ("this is inadvertently disabled " + id + " " + gameObject.GetInstanceID() +  " " + GetComponentInChildren<Explosion>());
+//	}
+	
+//	void OnDestroy() {
+//		Debug.Log ("this is inadvertently destroyed "  + id + " " + gameObject.GetInstanceID());
+//	}
 }

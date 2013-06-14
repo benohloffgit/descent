@@ -1,9 +1,11 @@
 fileFormatVersion: 2
-guid: bebaae81a9c3f9546bcd54113cc99cdc
+guid: 9b338cfbb554092438230cdc73e1e3e1
 ModelImporter:
   fileIDToRecycleName:
-    4300000: Plane
-    4300002: Health
+    4300000: Curve.002
+    4300002: Curve.001
+    4300004: Curve
+    4300008: QuadN
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -41,25 +43,63 @@ ModelImporter:
     //RootNode:
       data:
         first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+    Curve:
+      data:
+        first: 1
         second: a6860100
       data:
         first: 4
         second: 861a0600
-    Camera:
+      data:
+        first: 23
+        second: 66182300
+      data:
+        first: 33
+        second: a65a3200
+    Curve.001:
       data:
         first: 1
-        second: aa860100
+        second: a2860100
       data:
         first: 4
-        second: 8a1a0600
-    Empty:
+        second: 821a0600
+      data:
+        first: 23
+        second: 62182300
+      data:
+        first: 33
+        second: a25a3200
+    Curve.002:
       data:
         first: 1
         second: a0860100
       data:
         first: 4
         second: 801a0600
-    Health:
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200
+    Quad:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+      data:
+        first: 23
+        second: 68182300
+      data:
+        first: 33
+        second: a85a3200
+    QuadN:
       data:
         first: 1
         second: a4860100
@@ -68,28 +108,7 @@ ModelImporter:
         second: 841a0600
       data:
         first: 23
-        second: 60182300
+        second: 64182300
       data:
         first: 33
-        second: a05a3200
-    Lamp:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-    Lamp.001:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-    Lamp.002:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
+        second: a45a3200

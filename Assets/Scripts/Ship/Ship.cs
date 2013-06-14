@@ -40,6 +40,7 @@ public class Ship : MonoBehaviour {
 	public bool isExitHelperLaunched;
 	public bool isHeadlightOn;
 	public bool isBoosterOn;
+	public bool[] hasSpecial;
 	private int cameraPosition;
 	public MissileLockMode missileLockMode;
 	public Enemy lockedEnemy;
@@ -57,6 +58,13 @@ public class Ship : MonoBehaviour {
 	private static float BOOST_DURATION = 5f;
 	private static float BOOST_INTERVAL = 60f;
 	
+	public static int SPECIAL_LIGHTS = 0;
+	public static int SPECIAL_BOOST = 1;
+	public static int SPECIAL_CLOAK = 2;
+	public static int SPECIAL_INDESTRUCTABLE = 3;
+	
+	private static int NO_HULL = -1;
+	
 	private static int CHARGED_MISSILE_SHIELD_MAX = 50;
 	private static float CHARGED_MISSILE_TIME_MAX = 2.5f; // seconds
 	private static float CHARGED_MISSILE_DEDUCTION = 20f; // deducted shield per second
@@ -70,8 +78,8 @@ public class Ship : MonoBehaviour {
 	public static int[] HULL_POWER_UP = new int[] {0,2,5,9,14,19,25,31}; // {0,5,12,20,29,39,50,62}
 	public static int[] SPECIAL_POWER_UP = new int[] {6,12,18,28};
 
-	public static string[] HULL_TYPES = new string[] {"Armor", "Improved Armor", "Bla Armor", "Blubb Armor", "Keflar Armor", "Iridium Armor", "Nano Armor", "Bloob Armor"};
-	public static string[] SPECIAL_TYPES = new string[] {"Light", "Boost", "Cloak", "Invincible"};
+	public static string[] HULL_TYPES = new string[] {"Armor", "Improved Armor", "Keflar Armor", "Magnetic Armor", "Plasma Armor", "Nano Armor", "? Armor", "Higgs Armor"};
+	public static string[] SPECIAL_NAMES = new string[] {"Light", "Boost", "Cloak", "Indestructable"};
 	
 	private static int BULLET_IMPACT_MIN = 28;
 	private static int BULLET_IMPACT_MAX = 30;
@@ -110,6 +118,7 @@ public class Ship : MonoBehaviour {
 		game = play.game;
 		gameInput = game.gameInput;
 		exitHelper = exitHelper_;
+		hasSpecial = new bool[SPECIAL_NAMES.Length];
 		
 		shipSteering.Initialize(this, play, gameInput);
 		shipControl.Initialize(this, game, play, gameInput);
@@ -368,11 +377,20 @@ public class Ship : MonoBehaviour {
 		}
 	}
 	
+	public void AddSpecials() {
+		for (int i=0; i<SPECIAL_NAMES.Length; i++) {
+			if (play.zoneID > SPECIAL_POWER_UP[i]) {
+				hasSpecial[i] = true;
+			}
+		}
+	}
+	
 	public void AddSpecial(int id) {
-		Debug.Log ("Adding special capability TODO " + id);
+		hasSpecial[id] = true;
 	}
 	
 	public void CalculateHullClazz() {
+		hullCLazz = NO_HULL;
 		for (int i=0; i<8; i++) {
 			if (play.zoneID > HULL_POWER_UP[i]) {
 				hullCLazz = i;
@@ -382,8 +400,13 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void SetHealthAndShield() {
-		maxHealth = HEALTH[hullCLazz];
-		maxShield = SHIELD[hullCLazz];
+		if (hullCLazz != NO_HULL) {
+			maxHealth = HEALTH[hullCLazz];
+			maxShield = SHIELD[hullCLazz];
+		} else {
+			maxHealth = 0;
+			maxShield = 0;
+		}
 		health = maxHealth;
 		shield = maxShield;
 		healthPercentage = 100;

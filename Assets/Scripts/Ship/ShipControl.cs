@@ -54,10 +54,10 @@ public class ShipControl {
 			if (Input.GetKeyDown(KeyCode.B)) {
 				play.CreateBreadcrumb();
 			}
-			if (Input.GetKeyDown(KeyCode.L)) {
+			if (ship.hasSpecial[Ship.SPECIAL_LIGHTS] && Input.GetKeyDown(KeyCode.L)) {
 				ship.SwitchHeadlight();
 			}
-			if (Input.GetKeyDown(KeyCode.V)) {
+			if (ship.hasSpecial[Ship.SPECIAL_BOOST] &&  Input.GetKeyDown(KeyCode.V)) {
 				ship.BoostShip();
 			}
 			if (Input.GetKeyDown(KeyCode.M)) {
@@ -79,13 +79,13 @@ public class ShipControl {
 				ship.LaunchExitHelper();
 			}
 			if (play.mode == Play.Mode.Sokoban) {
-				if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+				if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
 					play.sokoban.MovePlayer(IntDouble.LEFT);
-				} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+				} else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
 					play.sokoban.MovePlayer(IntDouble.RIGHT);
-				} else if (Input.GetKeyDown(KeyCode.UpArrow)) {
+				} else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
 					play.sokoban.MovePlayer(IntDouble.UP);
-				} else if (Input.GetKeyDown(KeyCode.DownArrow)) {
+				} else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
 					play.sokoban.MovePlayer(IntDouble.DOWN);
 				}
 			}

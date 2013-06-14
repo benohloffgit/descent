@@ -136,7 +136,7 @@ public class Spawn : MonoBehaviour {
 	}
 
 	void OnDisable() {
-		AudioSourcePool.DecoupleAudioSource(GetComponentInChildren<AudioSource>());
+		AudioSourcePool.DecoupleAudioSource(GetComponentInChildren<PooledAudioSource>());
 	}
 
 }

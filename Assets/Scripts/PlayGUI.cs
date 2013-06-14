@@ -34,9 +34,12 @@ public class PlayGUI {
 	private Image[] damageIndicators;
 	private Image doorClosed;
 	private Image doorOpen;
-	private Image lights;
-	private Image exitHelper;
-	private Image shipBoost;
+	private Image lightsOn;
+	private Image lightsOff;
+	private Image exitHelperOn;
+	private Image exitHelperOff;
+	private Image shipBoostOn;
+	private Image shipBoostOff;
 	private int[] healthCount;
 	private int[] shieldCount;
 	
@@ -91,12 +94,18 @@ public class PlayGUI {
 		
 		// power ups / special capabilities
 		int powerUpContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.02f, MyGUI.GUIAlignment.Top, 0.03f);
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_LIGHTS, 0);
-		lights = gui.images[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_EXITHELPER, 0);
-		exitHelper = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_EXITHELPER_OFF, 0);
+		exitHelperOff = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_EXITHELPER, 0);
+		exitHelperOn = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_LIGHTS_OFF, 0);
+		lightsOff = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_LIGHTS, 0);
+		lightsOn = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST_OFF, 0);
+		shipBoostOff = gui.images[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST, 0);
-		shipBoost = gui.images[imageId];
+		shipBoostOn = gui.images[imageId];
 		
 		// ship health
 		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Center, 0.25f, MyGUI.GUIAlignment.Top, 0.01f);
@@ -199,14 +208,14 @@ public class PlayGUI {
 		gui.labelsCC[secondaryWeaponLabel].SetText("");
 		primaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
 		secondaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
-		SwitchHeadlight();
-		SwitchExitHelper();
-		SwitchShipBoost();
 		DisplayZoneID();
 	}
 
 	public void Activate() {
 		gui.containers[container].gameObject.SetActiveRecursively(true);
+		SwitchHeadlight();
+		SwitchExitHelper();
+		SwitchShipBoost();
 	}
 	
 	public void Deactivate() {
@@ -214,15 +223,43 @@ public class PlayGUI {
 	}
 
 	public void SwitchHeadlight() {
-		lights.myRenderer.enabled = ship.isHeadlightOn;
+		if (ship.hasSpecial[Ship.SPECIAL_LIGHTS]) {
+			if (ship.isHeadlightOn) {
+				lightsOn.myRenderer.enabled = true;
+				lightsOff.myRenderer.enabled = false;
+			} else {
+				lightsOn.myRenderer.enabled = false;
+				lightsOff.myRenderer.enabled = true;
+			}
+		} else {
+			lightsOn.myRenderer.enabled = false;
+			lightsOff.myRenderer.enabled = false;
+		}
 	}
 
 	public void SwitchExitHelper() {
-		exitHelper.myRenderer.enabled = ship.isExitHelperLaunched;
+		if (ship.isExitHelperLaunched) {
+			exitHelperOn.myRenderer.enabled = true;
+			exitHelperOff.myRenderer.enabled = false;
+		} else {
+			exitHelperOn.myRenderer.enabled = false;
+			exitHelperOff.myRenderer.enabled = true;
+		}
 	}
 
 	public void SwitchShipBoost() {
-		shipBoost.myRenderer.enabled = ship.isBoosterOn;
+		if (ship.hasSpecial[Ship.SPECIAL_BOOST]) {
+			if (ship.isBoosterOn) {
+				shipBoostOn.myRenderer.enabled = true;
+				shipBoostOff.myRenderer.enabled = false;
+			} else {
+				shipBoostOn.myRenderer.enabled = false;
+				shipBoostOff.myRenderer.enabled = true;
+			}
+		} else {
+			shipBoostOn.myRenderer.enabled = false;
+			shipBoostOff.myRenderer.enabled = false;
+		}
 	}
 	
 	public void DisplayKey(int keyType) {

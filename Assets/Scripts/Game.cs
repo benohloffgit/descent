@@ -147,9 +147,12 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_HEALTH = new Vector4(0f,0.625f,0.125f,0.75f);
 	public static Vector4 GUI_UV_SHIELD = new Vector4(0.125f,0.625f,0.25f,0.75f);
 	public static Vector4 GUI_UV_LIGHTS = new Vector4(0.875f,0.75f,1f,0.875f);
+	public static Vector4 GUI_UV_LIGHTS_OFF = new Vector4(0.875f,0.625f,1f,0.75f);
 	public static Vector4 GUI_UV_EXITHELPER = new Vector4(0.25f,0.625f,0.375f,0.75f);
+	public static Vector4 GUI_UV_EXITHELPER_OFF = new Vector4(0.75f,0.625f,0.875f,0.75f);
 	public static Vector4 GUI_UV_DAMAGEINDICATOR = new Vector4(0.375f,0.625f,0.5f,0.75f);
 	public static Vector4 GUI_UV_SHIPBOOST = new Vector4(0.5f,0.625f,0.625f,0.75f);
+	public static Vector4 GUI_UV_SHIPBOOST_OFF = new Vector4(0.625f,0.625f,0.75f,0.75f);
 	public static Vector4 GUI_UV_GUN = new Vector4(0f,0.5f,0.125f,0.625f);
 	public static Vector4 GUI_UV_LASER = new Vector4(0.125f,0.5f,0.25f,0.625f);
 	public static Vector4 GUI_UV_PHASER = new Vector4(0.25f,0.5f,0.375f,0.625f);

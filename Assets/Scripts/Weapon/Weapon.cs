@@ -209,7 +209,7 @@ public class Weapon {
 		Vector3[] bulletPaths = new Vector3[2];
 		
 		if (mountedTo == Game.ENEMY) {
-			myAudioSourceID = play.game.PlaySound(myAudioSourceID, weaponTransform, mountAs, type);
+			myAudioSourceID = play.game.PlaySound(myAudioSourceID, enemy.transform, mountAs, type);
 		} else {
 			ship.PlaySound(mountAs, type);
 		}
@@ -366,8 +366,6 @@ public class Weapon {
 		}
 		isReloaded = true;
 	}
-	
-
-	
+		
 }
 

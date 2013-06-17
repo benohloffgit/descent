@@ -40,6 +40,10 @@ public class PlayGUI {
 	private Image exitHelperOff;
 	private Image shipBoostOn;
 	private Image shipBoostOff;
+	private Image shipCloakOn;
+	private Image shipCloakOff;
+	private Image shipInvincibleOn;
+	private Image shipInvincibleOff;
 	private int[] healthCount;
 	private int[] shieldCount;
 	
@@ -66,8 +70,9 @@ public class PlayGUI {
 	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
 												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
 	
-	private static Vector4[] PRIMARY_WEAPONS = new Vector4[] {Game.GUI_UV_GUN,Game.GUI_UV_LASER,Game.GUI_UV_TWINGUN,Game.GUI_UV_PHASER,Game.GUI_UV_TWINLASER,Game.GUI_UV_GAUSS,Game.GUI_UV_TWINPHASER,Game.GUI_UV_TWINGAUSS};
-	private static Vector4[] SECONDARY_WEAPONS = new Vector4[] {Game.GUI_UV_MISSILE,Game.GUI_UV_GUIDEDMISSILE,Game.GUI_UV_CHARGEDMISSILE,Game.GUI_UV_DETONATORMISSILE};
+	public static Vector4[] PRIMARY_WEAPONS = new Vector4[] {Game.GUI_UV_GUN,Game.GUI_UV_LASER,Game.GUI_UV_TWINGUN,Game.GUI_UV_PHASER,Game.GUI_UV_TWINLASER,Game.GUI_UV_GAUSS,Game.GUI_UV_TWINPHASER,Game.GUI_UV_TWINGAUSS};
+	public static Vector4[] SECONDARY_WEAPONS = new Vector4[] {Game.GUI_UV_MISSILE,Game.GUI_UV_GUIDEDMISSILE,Game.GUI_UV_CHARGEDMISSILE,Game.GUI_UV_DETONATORMISSILE};
+	public static Vector4[] SPECIALS = new Vector4[] {Game.GUI_UV_LIGHTS, Game.GUI_UV_SHIPBOOST, Game.GUI_UV_CLOAK_ON, Game.GUI_UV_INVINCIBLE_ON};
 	
 	public PlayGUI(Play p) {
 		play = p;
@@ -106,6 +111,14 @@ public class PlayGUI {
 		shipBoostOff = gui.images[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST, 0);
 		shipBoostOn = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_OFF, 0);
+		shipCloakOff = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_ON, 0);
+		shipCloakOn = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 8.8f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_INVINCIBLE_OFF, 0);
+		shipInvincibleOff = gui.images[imageId];
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 8.8f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_INVINCIBLE_ON, 0);
+		shipInvincibleOn = gui.images[imageId];
 		
 		// ship health
 		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Center, 0.25f, MyGUI.GUIAlignment.Top, 0.01f);
@@ -216,6 +229,8 @@ public class PlayGUI {
 		SwitchHeadlight();
 		SwitchExitHelper();
 		SwitchShipBoost();
+		SwitchShipCloak();
+		SwitchShipInvincible();
 	}
 	
 	public void Deactivate() {
@@ -259,6 +274,36 @@ public class PlayGUI {
 		} else {
 			shipBoostOn.myRenderer.enabled = false;
 			shipBoostOff.myRenderer.enabled = false;
+		}
+	}
+
+	public void SwitchShipCloak() {
+		if (ship.hasSpecial[Ship.SPECIAL_CLOAK]) {
+			if (ship.isCloakOn) {
+				shipCloakOn.myRenderer.enabled = true;
+				shipCloakOff.myRenderer.enabled = false;
+			} else {
+				shipCloakOn.myRenderer.enabled = false;
+				shipCloakOff.myRenderer.enabled = true;
+			}
+		} else {
+			shipCloakOn.myRenderer.enabled = false;
+			shipCloakOff.myRenderer.enabled = false;
+		}
+	}
+
+	public void SwitchShipInvincible() {
+		if (ship.hasSpecial[Ship.SPECIAL_INVINCIBLE]) {
+			if (ship.isInvincibleOn) {
+				shipInvincibleOn.myRenderer.enabled = true;
+				shipInvincibleOff.myRenderer.enabled = false;
+			} else {
+				shipInvincibleOn.myRenderer.enabled = false;
+				shipInvincibleOff.myRenderer.enabled = true;
+			}
+		} else {
+			shipInvincibleOn.myRenderer.enabled = false;
+			shipInvincibleOff.myRenderer.enabled = false;
 		}
 	}
 	
@@ -596,6 +641,26 @@ public class PlayGUI {
 			MyGUI.GUIAlignment.Center, 0.1f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_NULL, 0);
 	}
 
+	public void ToPowerUpFound(string headline, string description, Vector4 uvMap) {
+		gui.OpenDialog();
+		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
+		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+			//gui.AddDim(dialogContainer, closeDialog);
+		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
+
+		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
+		gui.AddLabel(headline, dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.2f, 
+			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		gui.AddImage(dialogBox, new Vector3(0.15f,0.15f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, uvMap, 0);
+		gui.AddLabel(description, dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, -0.2f, 
+			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+
+		TouchDelegate toGame = new TouchDelegate(ToGame);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(37), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, (gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_NULL, 0);
+	}
+
 	public void ToSokoban() {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
@@ -609,6 +674,27 @@ public class PlayGUI {
 		TouchDelegate toQuitSokoban = new TouchDelegate(ToQuitSokoban);
 		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toQuitSokoban, play.game.state.GetDialog(12), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, (gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_NULL, 0);
+	}
+
+	public void ToHelp() {
+		gui.OpenDialog();
+		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
+		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+			//gui.AddDim(dialogContainer, closeDialog);
+		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
+
+		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
+		gui.AddLabel(play.game.state.GetDialog(38), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.2f, 
+			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		gui.AddLabel(play.game.state.GetDialog(39), dialogBox, new Vector3(0.03f,0.03f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.4f, MyGUI.GUIAlignment.Center, 0f, 
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		gui.AddLabel(play.game.state.GetDialog(40), dialogBox, new Vector3(0.03f,0.03f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, 0.4f, MyGUI.GUIAlignment.Center, 0f, 
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		
+		TouchDelegate toGame = new TouchDelegate(ToGame);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(37), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, Game.GUI_UV_NULL, 0);
 	}
 	
 }

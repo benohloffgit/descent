@@ -18,6 +18,8 @@ public class Ship : MonoBehaviour {
 	private int maxShield;
 	public int currentPrimaryWeapon;
 	public int currentSecondaryWeapon;
+	private int highestPrimaryWeapon;
+	private int highestSecondaryWeapon;
 	
 	public float firepowerPerSecond;
 	public float lastMoveTime;
@@ -36,10 +38,12 @@ public class Ship : MonoBehaviour {
 	private Transform cameraTransform;
 	public Camera shipCamera;
 	
-	public bool isInvincible;
 	public bool isExitHelperLaunched;
 	public bool isHeadlightOn;
 	public bool isBoosterOn;
+	public bool isCloakOn;
+	public bool isInvincibleOn;
+	public bool hasBeenInvincibleInThisZone;
 	public bool[] hasSpecial;
 	private int cameraPosition;
 	public MissileLockMode missileLockMode;
@@ -49,6 +53,8 @@ public class Ship : MonoBehaviour {
 	private int chargedMissileShieldDeducted;
 	public bool isDetonatorMissileExploded;
 	private float boostTimer;
+	private float cloakTimer;
+	private float invincibleTimer;
 			
 	private static float FORCE_MOVE = 65.0f;
 	private static float FORCE_TURN = 24f; // 5.0f
@@ -57,11 +63,14 @@ public class Ship : MonoBehaviour {
 	
 	private static float BOOST_DURATION = 5f;
 	private static float BOOST_INTERVAL = 60f;
+	private static float CLOAK_DURATION = 30f;
+	private static float CLOAK_INTERVAL = 300f;
+	private static float INVINCIBLE_DURATION = 15f;
 	
 	public static int SPECIAL_LIGHTS = 0;
 	public static int SPECIAL_BOOST = 1;
 	public static int SPECIAL_CLOAK = 2;
-	public static int SPECIAL_INDESTRUCTABLE = 3;
+	public static int SPECIAL_INVINCIBLE = 3;
 	
 	private static int NO_HULL = -1;
 	
@@ -129,7 +138,11 @@ public class Ship : MonoBehaviour {
 		shipCamera.enabled = true;
 		isExitHelperLaunched = false;
 		isBoosterOn = false;
-		boostTimer = -65;
+		isCloakOn = false;
+		isInvincibleOn = false;
+		hasBeenInvincibleInThisZone = false;
+		boostTimer = -BOOST_INTERVAL;
+		cloakTimer = -CLOAK_INTERVAL;
 		lastMoveTime = Time.fixedTime;
 		chargedMissileTimer = -1f;
 		isDetonatorMissileExploded = true;
@@ -155,6 +168,17 @@ public class Ship : MonoBehaviour {
 				isBoosterOn = false;
 				boostTimer = Time.fixedTime;
 				play.playGUI.SwitchShipBoost();
+			}
+
+			if (isCloakOn && Time.time > cloakTimer + CLOAK_DURATION) {
+				isCloakOn = false;
+				cloakTimer = Time.fixedTime;
+				play.playGUI.SwitchShipCloak();
+			}
+
+			if (isInvincibleOn && Time.time > invincibleTimer + INVINCIBLE_DURATION) {
+				isInvincibleOn = false;
+				play.playGUI.SwitchShipInvincible();
 			}
 			
 			if (currentSecondaryWeapon != -1) {
@@ -217,7 +241,7 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void Damage(int damage, Vector3 worldPos, int shotType) {
-		if (!isInvincible) {
+		if (!isInvincibleOn) {
 			if (shotType < 4) {
 				PlaySound(Game.SOUND_TYPE_VARIOUS, UnityEngine.Random.Range(BULLET_IMPACT_MIN, BULLET_IMPACT_MAX+1));
 			} else {
@@ -316,6 +340,7 @@ public class Ship : MonoBehaviour {
 			WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.SHIP, false);
 		primaryWeapons[wType] = w;
 		currentPrimaryWeapon = wType;
+		highestPrimaryWeapon = currentPrimaryWeapon;
 		primaryWeapons[currentPrimaryWeapon].Mount();
 		firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
 		play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);		
@@ -331,6 +356,7 @@ public class Ship : MonoBehaviour {
 			WEAPON_ROTATIONS, Game.SHIP, false, ammunition);
 		secondaryWeapons[wType] = w;
 		currentSecondaryWeapon = wType;
+		highestSecondaryWeapon = currentSecondaryWeapon;
 		secondaryWeapons[currentSecondaryWeapon].Mount();
 		play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
 		Debug.Log ("adding secondary weapon type: " + wType);
@@ -444,33 +470,43 @@ public class Ship : MonoBehaviour {
 		}
 	}
 	
-	public void CyclePrimary() {
+	public void CyclePrimary(int dir) {
 		if (currentPrimaryWeapon != -1) {
-			primaryWeapons[currentPrimaryWeapon].Unmount();
-			currentPrimaryWeapon++;
-			if (currentSecondaryWeapon == 8 || primaryWeapons[currentPrimaryWeapon] == null) {
-				currentPrimaryWeapon = 0;
+			int newID = currentPrimaryWeapon+dir;
+			if (newID > highestPrimaryWeapon) {
+				newID = 0;
+			} else if (newID == -1 ) {
+				newID = highestPrimaryWeapon;
 			}
-			primaryWeapons[currentPrimaryWeapon].Mount();
-			firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
-			play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
-			PlaySound(Game.SOUND_TYPE_VARIOUS, 10);
+			if (newID != currentPrimaryWeapon) {
+				primaryWeapons[currentPrimaryWeapon].Unmount();
+				currentPrimaryWeapon = newID;
+				primaryWeapons[currentPrimaryWeapon].Mount();
+				firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
+				play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
+				PlaySound(Game.SOUND_TYPE_VARIOUS, 10);
+			}
 		}
 	}
 
-	public void CycleSecondary() {
+	public void CycleSecondary(int dir) {
 		if (currentSecondaryWeapon != -1) {
-			secondaryWeapons[currentSecondaryWeapon].Unmount();
-			currentSecondaryWeapon++;
-			if (currentSecondaryWeapon == 4 || secondaryWeapons[currentSecondaryWeapon] == null) {
-				currentSecondaryWeapon = 0;
+			int newID = currentSecondaryWeapon+dir;
+			if (newID > highestSecondaryWeapon) {
+				newID = 0;
+			} else if (newID == -1 ) {
+				newID = highestSecondaryWeapon;
 			}
-			secondaryWeapons[currentSecondaryWeapon].Mount();
-			play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
-			if (secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_GUIDED_MISSILE && secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_DETONATOR_MISSILE) {
-				missileLockMode = MissileLockMode.None;
+			if (newID != currentSecondaryWeapon) {
+				secondaryWeapons[currentSecondaryWeapon].Unmount();
+				currentSecondaryWeapon = newID;
+				secondaryWeapons[currentSecondaryWeapon].Mount();
+				play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
+				if (secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_GUIDED_MISSILE && secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_DETONATOR_MISSILE) {
+					missileLockMode = MissileLockMode.None;
+				}
+				PlaySound(Game.SOUND_TYPE_VARIOUS, 11);
 			}
-			PlaySound(Game.SOUND_TYPE_VARIOUS, 11);
 		}
 	}
 	public void RemoveEnemy(Enemy e) {
@@ -503,7 +539,26 @@ public class Ship : MonoBehaviour {
 			play.playGUI.SwitchShipBoost();
 		}
 	}
-	
+
+	public void CloakShip() {
+		if (!isCloakOn && Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
+			isCloakOn = true;
+			//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
+			cloakTimer = Time.fixedTime;
+			play.playGUI.SwitchShipCloak();
+		}
+	}
+
+	public void InvincibleShip() {
+		if (!hasBeenInvincibleInThisZone) {
+			isInvincibleOn = true;
+			hasBeenInvincibleInThisZone = true;
+			invincibleTimer = Time.fixedTime;
+			//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
+			play.playGUI.SwitchShipInvincible();
+		}
+	}
+
 	public void LaunchExitHelper(bool toLaunch) {
 		if (toLaunch) {
 			Vector3 pos = transform.position + transform.TransformDirection(EXIT_HELPER_LAUNCH_POSITION);

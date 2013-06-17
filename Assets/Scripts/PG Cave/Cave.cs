@@ -286,9 +286,12 @@ public class Cave {
 			textureSet.SetFactor(UnityEngine.Random.Range(0,3), TEXTURES_NORMAL[UnityEngine.Random.Range(0,TEXTURES_NORMAL.Length)]);
 		}
 			
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureSet.x]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[8]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[10]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[11]);
+/*		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureSet.x]);
 		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureSet.y]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureSet.z]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureSet.z]);*/
 	}
 	
 	private IntTriple GetOppositeCell(Cell cell, IntTriple alignment) {

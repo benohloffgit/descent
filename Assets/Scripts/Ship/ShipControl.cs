@@ -26,17 +26,17 @@ public class ShipControl {
 	public void DispatchGameInput() {
 		if (gameInput.isMobile) {
 		} else {
-			if (Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.LeftControl)) {
+			if (!ship.isCloakOn && (Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.LeftControl))) {
 				ship.ShootPrimary();
 			}
-			if (Input.GetKeyDown("mouse 1") || Input.GetKeyDown(KeyCode.RightControl)) {
+			if (!ship.isCloakOn && (Input.GetKeyDown("mouse 1") || Input.GetKeyDown(KeyCode.RightControl))) {
 				if (ship.currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
 					ship.StartChargedMissileTimer();
 				} else {
 					ship.ShootSecondary();
 				}
 			}
-			if (Input.GetKeyUp("mouse 1") || Input.GetKeyUp(KeyCode.RightControl)) {
+			if (!ship.isCloakOn && (Input.GetKeyUp("mouse 1") || Input.GetKeyUp(KeyCode.RightControl))) {
 				if (ship.currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
 					ship.ShootSecondary();
 				}
@@ -51,6 +51,12 @@ public class ShipControl {
 					play.playGUI.ToQuit();
 				}
 			}
+			if (Input.GetKeyDown(KeyCode.F5)) {
+				if (!play.isPaused) {
+					play.SetPaused(true);
+					play.playGUI.ToHelp();
+				}
+			}
 			if (Input.GetKeyDown(KeyCode.B)) {
 				play.CreateBreadcrumb();
 			}
@@ -60,22 +66,30 @@ public class ShipControl {
 			if (ship.hasSpecial[Ship.SPECIAL_BOOST] &&  Input.GetKeyDown(KeyCode.V)) {
 				ship.BoostShip();
 			}
+			if (ship.hasSpecial[Ship.SPECIAL_CLOAK] &&  Input.GetKeyDown(KeyCode.C)) {
+				ship.CloakShip();
+			}
+			if (ship.hasSpecial[Ship.SPECIAL_INVINCIBLE] &&  Input.GetKeyDown(KeyCode.I)) {
+				ship.InvincibleShip();
+			}
 			if (Input.GetKeyDown(KeyCode.M)) {
 				play.SwitchMiniMap();
 			}
 			if (Input.GetKeyDown(KeyCode.F)) {
 				play.SwitchMiniMapFollow();
 			}
-			if (Input.GetKeyDown(KeyCode.F1)) {
+			if (Input.GetKeyDown(KeyCode.F10)) {
 				ship.CycleCamera();
 			}
 			if (Input.GetKeyDown(KeyCode.PageUp)) {
-				ship.CyclePrimary();
+				ship.CycleSecondary(1);
+			} else if (Input.GetKeyDown(KeyCode.PageDown)) {
+				ship.CycleSecondary(-1);
 			}
-			if (Input.GetKeyDown(KeyCode.PageDown)) {
-				ship.CycleSecondary();
+			if (!Input.GetKey(KeyCode.LeftAlt) && Input.GetAxis("Mouse ScrollWheel") != 0) {
+				ship.CyclePrimary(Mathf.FloorToInt(Mathf.Sign(Input.GetAxis("Mouse ScrollWheel"))));
 			}
-			if (Input.GetKeyDown(KeyCode.F2)) {
+			if (Input.GetKeyDown(KeyCode.T)) {
 				ship.LaunchExitHelper();
 			}
 			if (play.mode == Play.Mode.Sokoban) {

@@ -177,7 +177,11 @@ public class Play : MonoBehaviour {
 				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
 			}
 			if (Input.GetKeyDown(KeyCode.Alpha7)) {	
-				ship.isInvincible = ship.isInvincible ? false : true;
+				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
+				SokobanSolved();
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha8)) {	
+				ship.isInvincibleOn = ship.isInvincibleOn ? false : true;
 			}
 		}
 	}
@@ -199,8 +203,8 @@ public class Play : MonoBehaviour {
 		cave.AddZone(zoneID);
 		UnityEngine.Random.seed = botSeed;
 		isKeyCollected = new bool[] {false, false};
-		collecteablesDistributor.DropKeys();
-		collecteablesDistributor.DropPowerUps();
+//		collecteablesDistributor.DropKeys();
+//		collecteablesDistributor.DropPowerUps();
 		if (zoneID > 0) {
 			enemyDistributor.Distribute();
 		}
@@ -497,14 +501,19 @@ public class Play : MonoBehaviour {
 	}
 
 	public void CollectPowerUp(int type, int id) {
+		SetPaused(true);
 		if (type == Game.POWERUP_PRIMARY_WEAPON) {
 			ship.AddPrimaryWeapon(id);
+			playGUI.ToPowerUpFound(state.GetDialog(17), state.GetDialog(21+id), PlayGUI.PRIMARY_WEAPONS[id]); 
 		} else if (type == Game.POWERUP_SECONDARY_WEAPON) {
 			ship.AddSecondaryWeapon(id);
+			playGUI.ToPowerUpFound(state.GetDialog(18), state.GetDialog(28+id), PlayGUI.SECONDARY_WEAPONS[id]);
 		} else if (type == Game.POWERUP_HULL) {
 			ship.SetHull(id);
+			playGUI.ToPowerUpFound(state.GetDialog(19), state.GetDialog(32), Game.GUI_UV_SHIELD);
 		} else if (type == Game.POWERUP_SPECIAL) {
 			ship.AddSpecial(id);
+			playGUI.ToPowerUpFound(state.GetDialog(20), state.GetDialog(33+id), PlayGUI.SPECIALS[id]);
 		}
 	}
 	

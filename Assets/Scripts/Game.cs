@@ -62,7 +62,6 @@ public class Game : MonoBehaviour {
 	public Texture2D[] caveTextures;
 	public Texture2D[] keyTextures;
 	public Material sokobanMaterial;
-//	public Material 
 	
 	public State state;
 	public GameInput gameInput;
@@ -76,10 +75,9 @@ public class Game : MonoBehaviour {
 	public static int SHIP = 0;
 	public static int ENEMY = 1;
 	
-	public static int MAX_BREADCRUMBS = 10;
+	public static int MAX_BREADCRUMBS = 20;
 	public static int MAX_MISSILE_AMMO = 10;
 	
-//	public static int HEALTH_MODIFIER = 5;
 	public static int BEGINNER_ZONES = 4;
 	
 	public static int SOUND_TYPE_VARIOUS = 2; // 0 and 1 stand for Weapon.Primary/Secondary
@@ -96,7 +94,7 @@ public class Game : MonoBehaviour {
 	public static int LAYER_COLLECTEABLES = 17;
 	public static int LAYER_MINES = 18;
 	public static int LAYER_SOKOBAN = 19;
-	public static int DOOR_TRIGGER = 20;
+	public static int LAYER_DOOR_TRIGGER = 20;
 	
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ZONE_SQUARED = DIMENSION_ZONE * DIMENSION_ZONE;
@@ -126,6 +124,7 @@ public class Game : MonoBehaviour {
 	public static int POWERUP_SPECIAL = 3;	
 	
 	public static Vector4 GUI_UV_NULL = new Vector4(0.0f,0.0f,0.0f,0.0f);
+	public static Vector4 GUI_UV_FULL = new Vector4(0.0f,0.0f,1.0f,1.0f);
 	public static Vector4 GUI_UV_COLOR_BLACK = new Vector4(0.0f,0.0f,0.0625f,0.0625f);
 	public static Vector4 GUI_UV_TRANS = new Vector4(0.125f,0.0f,0.1875f,0.0625f);
 	public static Vector4 GUI_UV_DIM = new Vector4(0.0625f,0.0f,0.125f,0.0625f);
@@ -165,6 +164,10 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_GUIDEDMISSILE = new Vector4(0.125f,0.375f,0.25f,0.5f);
 	public static Vector4 GUI_UV_CHARGEDMISSILE = new Vector4(0.25f,0.375f,0.375f,0.5f);
 	public static Vector4 GUI_UV_DETONATORMISSILE = new Vector4(0.375f,0.375f,0.5f,0.5f);
+	public static Vector4 GUI_UV_CLOAK_OFF = new Vector4(0.5f,0.375f,0.625f,0.5f);
+	public static Vector4 GUI_UV_CLOAK_ON = new Vector4(0.625f,0.375f,0.75f,0.5f);
+	public static Vector4 GUI_UV_INVINCIBLE_OFF = new Vector4(0.75f,0.375f,0.875f,0.5f);
+	public static Vector4 GUI_UV_INVINCIBLE_ON = new Vector4(0.875f,0.375f,1f,0.5f);
 	
 	private Menu menu;
 	private Play play;
@@ -267,12 +270,12 @@ public class Game : MonoBehaviour {
 		if (id == 0) {
 			state.HideAd();
 			if (state.gameMode == Game.Mode.Menu) {
-				menu.RemovePaygate();
+				//menu.RemovePaygate();
 			}
 		} else {
 			state.ShowAd();
 			if (state.gameMode == Game.Mode.Menu) {
-				menu.ShowPaygate();
+				//menu.ShowPaygate();
 			}
 		}
 	}

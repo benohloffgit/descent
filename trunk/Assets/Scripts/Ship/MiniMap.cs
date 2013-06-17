@@ -182,8 +182,8 @@ public class MiniMap : MonoBehaviour {
 		if (mode == Mode.On) {
 			if (gameInput.isMobile) {
 			} else {
-				Zoom();
 				if (Input.GetKey(KeyCode.LeftAlt)) {
+					Zoom();
 					Rotate();
 					if (follow == Follow.On) {
 						play.SwitchMiniMapFollow();

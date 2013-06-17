@@ -216,6 +216,18 @@ public class MyGUI : MonoBehaviour {
 		return l.gameObject.GetInstanceID();
 	}
 
+	// Label with scale and absolute position and image background and seperate alignment for text
+	public int AddLabel(string text, int containerID, Vector3 scale, GUIAlignment alignLeftRightCenterText, GUIAlignment alignLeftRightCenter, float borderLeftRight,
+					GUIAlignment alignTopBottomCenter, float borderTopBottom, float textMargin, float size, int textureIDText, GUIBackground background,
+					Vector4 uvMap, int textureIDBackground) {
+		LabelCC l;
+		l = (GameObject.Instantiate(labelBitmapPrefab) as GameObject).GetComponent<LabelCC>();
+		l.Initialize(this, text, containerID, CreateBackground(background, textureIDBackground, uvMap), textMargin, size, alignLeftRightCenterText, scale, textureIDText);
+		labelsCC.Add(l.gameObject.GetInstanceID(), l);
+		containers[containerID].AddElement(l.transform, l.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
+		return l.gameObject.GetInstanceID();
+	}
+
 	// add floating
 /*	public int AddImageLabel(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, Vector4 textMargin,
 					float size, int textureIDText, int textureIDBackground, Vector4 uvMap, int textureIDImage, Vector4 uvMapImage, float scaleImage) {

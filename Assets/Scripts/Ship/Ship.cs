@@ -41,7 +41,9 @@ public class Ship : MonoBehaviour {
 	public bool isExitHelperLaunched;
 	public bool isHeadlightOn;
 	public bool isBoosterOn;
+	public bool isBoosterLoading;
 	public bool isCloakOn;
+	public bool isCloakLoading;
 	public bool isInvincibleOn;
 	public bool hasBeenInvincibleInThisZone;
 	public bool[] hasSpecial;
@@ -138,7 +140,9 @@ public class Ship : MonoBehaviour {
 		shipCamera.enabled = true;
 		isExitHelperLaunched = false;
 		isBoosterOn = false;
+		isBoosterLoading = false;
 		isCloakOn = false;
+		isCloakLoading = false;
 		isInvincibleOn = false;
 		hasBeenInvincibleInThisZone = false;
 		boostTimer = -BOOST_INTERVAL;
@@ -164,19 +168,27 @@ public class Ship : MonoBehaviour {
 				PositionCamera();
 			}
 			
-			if (isBoosterOn && Time.time > boostTimer + BOOST_DURATION) {
+			if (isBoosterOn && Time.fixedTime > boostTimer + BOOST_DURATION) {
 				isBoosterOn = false;
+				isBoosterLoading = true;
 				boostTimer = Time.fixedTime;
+				play.playGUI.SwitchShipBoost();
+			} else if (isBoosterLoading && Time.fixedTime > boostTimer + BOOST_INTERVAL) {
+				isBoosterLoading = false;
 				play.playGUI.SwitchShipBoost();
 			}
 
-			if (isCloakOn && Time.time > cloakTimer + CLOAK_DURATION) {
+			if (isCloakOn && Time.fixedTime > cloakTimer + CLOAK_DURATION) {
 				isCloakOn = false;
+				isCloakLoading = true;
 				cloakTimer = Time.fixedTime;
 				play.playGUI.SwitchShipCloak();
+			} else if (isCloakLoading && Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
+				isCloakLoading = false;
+				play.playGUI.SwitchShipBoost();
 			}
 
-			if (isInvincibleOn && Time.time > invincibleTimer + INVINCIBLE_DURATION) {
+			if (isInvincibleOn && Time.fixedTime > invincibleTimer + INVINCIBLE_DURATION) {
 				isInvincibleOn = false;
 				play.playGUI.SwitchShipInvincible();
 			}
@@ -184,7 +196,7 @@ public class Ship : MonoBehaviour {
 			if (currentSecondaryWeapon != -1) {
 				secondaryWeapons[currentSecondaryWeapon].IsReloaded();
 				if (chargedMissileTimer != -1f && shield > 0) {
-					float timeDelta = Time.time - chargedMissileTimer;
+					float timeDelta = Time.fixedTime - chargedMissileTimer;
 					int fullDeduction = Mathf.Min(CHARGED_MISSILE_SHIELD_MAX, Mathf.FloorToInt(Mathf.Min(timeDelta, CHARGED_MISSILE_TIME_MAX) * CHARGED_MISSILE_DEDUCTION));
 					int newDeduction = Mathf.Min(fullDeduction - chargedMissileShieldDeducted, shield);
 	//				Debug.Log (newDeduction);
@@ -205,10 +217,10 @@ public class Ship : MonoBehaviour {
 						if (missileLockMode == MissileLockMode.None || lockedEnemy != e) {
 	//						Debug.Log ("Aiming at enemy");
 							lockedEnemy = e;
-							missileLockTime = Time.time;
+							missileLockTime = Time.fixedTime;
 							missileLockMode = MissileLockMode.Aiming;
 						} else {
-							if (missileLockMode == MissileLockMode.Aiming && Time.time > missileLockTime + MISSILE_LOCK_DURATION) {
+							if (missileLockMode == MissileLockMode.Aiming && Time.fixedTime > missileLockTime + MISSILE_LOCK_DURATION) {
 	//							Debug.Log ("Enemy locked after 3 seconds");
 								missileLockMode = MissileLockMode.Locked;
 							}
@@ -229,7 +241,7 @@ public class Ship : MonoBehaviour {
 	
 	public void Move(Vector3 direction) {
 		rigidbody.AddRelativeForce(direction * (FORCE_MOVE + (isBoosterOn ? FORCE_BOOST : 0)));
-		lastMoveTime = Time.time;
+		lastMoveTime = Time.fixedTime;
 	}
 	
 	public void Turn(Vector3 direction) {
@@ -336,6 +348,9 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void AddPrimaryWeapon(int wType) {
+		if (currentPrimaryWeapon != -1) {
+			primaryWeapons[currentPrimaryWeapon].Unmount();
+		}
 		Weapon w = new Weapon(null, Weapon.PRIMARY, transform, play, wType,
 			WEAPON_POSITIONS, WEAPON_ROTATIONS, Game.SHIP, false);
 		primaryWeapons[wType] = w;
@@ -348,6 +363,9 @@ public class Ship : MonoBehaviour {
 	}
 
 	public void AddSecondaryWeapon(int wType) {
+		if (currentSecondaryWeapon != -1) {
+			secondaryWeapons[currentSecondaryWeapon].Unmount();
+		}
 		int ammunition = 2;
 		if (secondaryWeapons[wType] != null) {
 			ammunition += secondaryWeapons[wType].ammunition;
@@ -518,7 +536,7 @@ public class Ship : MonoBehaviour {
 	
 	public void StartChargedMissileTimer() {
 		if (secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
-			chargedMissileTimer = Time.time;
+			chargedMissileTimer = Time.fixedTime;
 			chargedMissileShieldDeducted = 0;
 		}
 	}
@@ -532,7 +550,7 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void BoostShip() {
-		if (!isBoosterOn && Time.fixedTime > boostTimer + BOOST_INTERVAL) {
+		if (!isBoosterOn && !isBoosterLoading) {
 			isBoosterOn = true;
 			PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
 			boostTimer = Time.fixedTime;
@@ -541,7 +559,7 @@ public class Ship : MonoBehaviour {
 	}
 
 	public void CloakShip() {
-		if (!isCloakOn && Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
+		if (!isCloakOn && !isCloakLoading) {
 			isCloakOn = true;
 			//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
 			cloakTimer = Time.fixedTime;

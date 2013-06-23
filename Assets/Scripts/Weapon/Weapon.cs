@@ -55,10 +55,12 @@ public class Weapon {
 		new Vector3(0.114f,0f,-0.1f), new Vector3(-0.114f,0f,-0.1f)};
 	public static Vector3[] DETONATOR_EXPL_DIRECTIONS = new Vector3[] {new Vector3(0f,-0.114f,-0.1f), new Vector3(0f,0.114f,-0.1f),
 		new Vector3(-0.114f,0f,-0.1f), new Vector3(0.114f,0f,-0.1f)};
+	private static Vector3[] PRIMARY_WEAPON_CENTER_OFFSET = new Vector3[] { new Vector3(0f,0.026f,0f),new Vector3(0f,0.085f,0f),new Vector3(0f,0.057f,0f), new Vector3(0f,0.031f,0f) };
 	
 	public float lastShotTime;
 	public Transform weaponTransform;
 	public Transform[] subWeaponTransforms;
+//	public Vector3[] bulletPositions;
 	
 	public int type;
 //	public int model;
@@ -318,25 +320,25 @@ public class Weapon {
 	public void Reload() {
 		if (mountAs == PRIMARY) {
 			if (type == TYPE_GUN) {
-				loadedShots[0] = game.CreateFromPrefab().CreateGunShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+				loadedShots[0] = game.CreateFromPrefab().CreateGunShot(weaponTransform.position+weaponTransform.TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[TYPE_GUN]), weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_TWIN_GUN) {
-				loadedShots[0] = game.CreateFromPrefab().CreateGunShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
-				loadedShots[1] = game.CreateFromPrefab().CreateGunShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[0] = game.CreateFromPrefab().CreateGunShot(subWeaponTransforms[0].position+subWeaponTransforms[0].TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[TYPE_GUN]), subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[1] = game.CreateFromPrefab().CreateGunShot(subWeaponTransforms[1].position+subWeaponTransforms[1].TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[TYPE_GUN]), subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 			} else if (type == Weapon.TYPE_LASER) {
-				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(weaponTransform.position+weaponTransform.TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[TYPE_LASER]), weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_TWIN_LASER) {
-				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
-				loadedShots[1] = game.CreateFromPrefab().CreateLaserShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[0] = game.CreateFromPrefab().CreateLaserShot(subWeaponTransforms[0].position+subWeaponTransforms[0].TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[TYPE_LASER]), subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[1] = game.CreateFromPrefab().CreateLaserShot(subWeaponTransforms[1].position+subWeaponTransforms[1].TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[TYPE_LASER]), subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 			} else if (type == Weapon.TYPE_PHASER) {
-				loadedShots[0] = game.CreateFromPrefab().CreatePhaserShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+				loadedShots[0] = game.CreateFromPrefab().CreatePhaserShot(weaponTransform.position+weaponTransform.TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[2]), weaponTransform.rotation, damage, mountedTo);
 			} else if (type == Weapon.TYPE_TWIN_PHASER) {
-				loadedShots[0] = game.CreateFromPrefab().CreatePhaserShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
-				loadedShots[1] = game.CreateFromPrefab().CreatePhaserShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[0] = game.CreateFromPrefab().CreatePhaserShot(subWeaponTransforms[0].position+subWeaponTransforms[0].TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[2]), subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[1] = game.CreateFromPrefab().CreatePhaserShot(subWeaponTransforms[1].position+subWeaponTransforms[1].TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[2]), subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 			} else if (type == Weapon.TYPE_GAUSS) {
-				loadedShots[0] = game.CreateFromPrefab().CreateGaussShot(weaponTransform.position, weaponTransform.rotation, damage, mountedTo);
+				loadedShots[0] = game.CreateFromPrefab().CreateGaussShot(weaponTransform.position+weaponTransform.TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[3]), weaponTransform.rotation, damage, mountedTo);
 			} else { //type == Weapon.TYPE_TWIN_GAUSS)
-				loadedShots[0] = game.CreateFromPrefab().CreateGaussShot(subWeaponTransforms[0].position, subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
-				loadedShots[1] = game.CreateFromPrefab().CreateGaussShot(subWeaponTransforms[1].position, subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[0] = game.CreateFromPrefab().CreateGaussShot(subWeaponTransforms[0].position+subWeaponTransforms[0].TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[3]), subWeaponTransforms[0].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
+				loadedShots[1] = game.CreateFromPrefab().CreateGaussShot(subWeaponTransforms[1].position+subWeaponTransforms[1].TransformDirection(PRIMARY_WEAPON_CENTER_OFFSET[3]), subWeaponTransforms[1].rotation, (int)(damage*TWIN_WEAPON_DAMAGE_MODIFIER), mountedTo);
 			}			
 		} else {
 			if (type == TYPE_MISSILE) {

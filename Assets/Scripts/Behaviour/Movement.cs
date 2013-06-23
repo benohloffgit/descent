@@ -31,7 +31,7 @@ public class Movement {
 			isOnPath = false;
 		} else {
 //			Vector3 avoidance = Vector3.zero;	
-			RaycastHit hit;
+//			RaycastHit hit;
 /*			for (int i=0; i<RoomMesh.DIRECTIONS.Length; i++) {
 				if (Physics.Raycast(position, RoomMesh.DIRECTIONS[i], out hit, RAYCAST_DISTANCE, Game.LAYER_MASK_ALL)) {
 					avoidance += hit.normal * (RAYCAST_DISTANCE/hit.distance);

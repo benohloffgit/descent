@@ -9,13 +9,13 @@ public class Container : MonoBehaviour {
 	private ArrayList elements;
 	private TouchDelegate touchDelegate;
 	private MyGUI myGUI;
-//	private int containerID;
 	private bool isScrollableContainer;
 	public SelectionMode mode;
 	private Vector3 scrollStartPos;
 	private Vector3 scrollEndPos;
 	private int scrollFinger;
 	private float realignTimer;
+	private float touchOffTime;
 	private bool isFixedSize;
 	private Transform blendTop;
 	private Transform blendBottom;
@@ -31,7 +31,6 @@ public class Container : MonoBehaviour {
 		elements = new ArrayList();
 		isScrollableContainer = false;
 		mode = SelectionMode.Off;
-//		sizeY = 0;
 	}
 	
 	void Start() {
@@ -67,21 +66,28 @@ public class Container : MonoBehaviour {
 			}
 			if (myGUI.gameInput.isTouchUp[scrollFinger]) {
 				mode = SelectionMode.Off;
+				touchOffTime = Time.realtimeSinceStartup;
 			}
 		}
 		if (isScrollableContainer) {
-			// if beyond start or end pos, slow down
+			// if beyond start or end pos, lerp back
 			if (transform.position.y < scrollStartPos.y) {
-				realignTimer += Time.fixedDeltaTime;
+				if (mode == SelectionMode.On) {
+					touchOffTime = Time.realtimeSinceStartup - Mathf.Min((scrollStartPos.y-transform.position.y)/1f, 1f) * 1f;
+				}
+				realignTimer = Time.realtimeSinceStartup - touchOffTime;
 				transform.position = Vector3.Lerp(transform.position, scrollStartPos, realignTimer);
 				blendTop.renderer.enabled = false;
 			} else if (transform.position.y > scrollEndPos.y) {
-				realignTimer += Time.fixedDeltaTime;
+				if (mode == SelectionMode.On) {
+					touchOffTime = Time.realtimeSinceStartup - Mathf.Min((transform.position.y-scrollEndPos.y)/1f, 1f) * 1f;
+				}
+				realignTimer = Time.realtimeSinceStartup - touchOffTime;
 				transform.position = Vector3.Lerp(transform.position, scrollEndPos, realignTimer);
 				blendBottom.renderer.enabled = false;
 			} else {
 				realignTimer = 0;
-				if (transform.position.y > scrollStartPos.y && transform.position.y < scrollEndPos.y) {
+				if (transform.position.y >= scrollStartPos.y && transform.position.y <= scrollEndPos.y) {
 					blendTop.renderer.enabled = true;
 					blendBottom.renderer.enabled = true;
 				} else if (transform.position.y == scrollStartPos.y) {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class CoverFindThreadState {
 	public GridPosition coverPosition;
 	
-	private float startTime;
+//	private float startTime;
 	private bool isProcessing = false;
 	private bool isFinished = true;
 	
@@ -13,7 +13,7 @@ public class CoverFindThreadState {
 	}
 	
 	public void Start() {
-		startTime = Time.realtimeSinceStartup;
+//		startTime = Time.realtimeSinceStartup;
 		isProcessing = true;
 		isFinished = false;
 	}

@@ -11,8 +11,8 @@ public class Manta : Enemy {
 	private RaycastHit hit;
 	private GridPosition targetPosition;
 	private Mode mode;
-	private AStarThreadState aStarThreadState = new AStarThreadState();
-	private bool isOnPath;
+//	private AStarThreadState aStarThreadState = new AStarThreadState();
+//	private bool isOnPath;
 	private List<Shot> detectedShots;
 	private Shot[,] evasionGrid;
 //	private IntDouble evasionGridPos;
@@ -42,7 +42,7 @@ public class Manta : Enemy {
 		InitializeEvasionGrid();
 		targetPosition = cave.GetGridFromPosition(transform.position);
 		mode = Mode.ROAMING;
-		isOnPath = false;
+//		isOnPath = false;
 		canBeDeactivated = false;
 	}
 	

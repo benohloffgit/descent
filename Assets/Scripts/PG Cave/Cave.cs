@@ -25,7 +25,7 @@ public class Cave {
 	private GameObject decorationParent;
 	private int digCount;
 	private int quitOnPercentThreshold;
-	private int maxDig = Game.DIMENSION_ROOM_CUBED;
+//	private int maxDig = Game.DIMENSION_ROOM_CUBED;
 
 	public static int DENSITY_FILLED = 0;
 	public static int DENSITY_EMPTY = 1;
@@ -137,7 +137,7 @@ public class Cave {
 				}
 				if (room.id > 1) { // all rooms other than entry or exit room
 					if (neighbours.Count == 1) { // dead end room with just one exit, we have to add a second miner
-						int quitOnConnRandom = UnityEngine.Random.Range(0,7);
+//						int quitOnConnRandom = UnityEngine.Random.Range(0,7);
 						roomMiners.Add(new RoomMiner(this, startingCell, -1*alignment, room, roomMiners.Count, RoomMiner.Type.WalkRandom, MINER_MIDDLEROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_MIDDLEROOMS_DIG_AMOUNT.Length)]));
 						startingCell = SetEntryExit(alignment, 2, Game.DIMENSION_ROOM-2, 2);
 						// dead end miner
@@ -286,12 +286,12 @@ public class Cave {
 			textureSet.SetFactor(UnityEngine.Random.Range(0,3), TEXTURES_NORMAL[UnityEngine.Random.Range(0,TEXTURES_NORMAL.Length)]);
 		}
 			
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[8]);
+/*		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[8]);
 		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[10]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[11]);
-/*		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureSet.x]);
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[11]); */
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureSet.x]);
 		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureSet.y]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureSet.z]);*/
+		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureSet.z]);
 	}
 	
 	private IntTriple GetOppositeCell(Cell cell, IntTriple alignment) {

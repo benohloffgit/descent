@@ -5,7 +5,7 @@ public class Field {
 	public IntDouble pos;
 	public int type;
 	
-	private Sokoban sokoban;
+//	private Sokoban sokoban;
 	public Bulb bulb;
 	
 	public static int EMPTY = 0;
@@ -13,7 +13,7 @@ public class Field {
 	public static int GOAL = 2;
 		
 	public Field(Sokoban sokoban_, int type_, IntDouble pos_) {
-		sokoban_ = sokoban_;
+//		sokoban = sokoban_;
 		type = type_;
 		pos = pos_;
 	}

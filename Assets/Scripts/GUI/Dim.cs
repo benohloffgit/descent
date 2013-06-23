@@ -6,7 +6,7 @@ public class Dim : MonoBehaviour {
 	private TouchDelegate touchDelegate;		
 	private Mesh mesh;
 	public Renderer myRenderer;
-	private MyGUI myGUI;
+//	private MyGUI myGUI;
 	
 	void Awake() {
 		mesh = GetComponent<MeshFilter>().mesh;
@@ -19,7 +19,7 @@ public class Dim : MonoBehaviour {
 	}
 
 	public void Initialize(MyGUI mG, TouchDelegate tD, int textureID, Vector4 uvMap, Vector3 scale) {
-		myGUI = mG;
+//		myGUI = mG;
 		touchDelegate = tD;
 		transform.localScale = scale;
 		myRenderer.material = mG.textureAtlas[textureID];

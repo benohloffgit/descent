@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class ExitHelper : MonoBehaviour {
 	private Play play;
-	private Ship ship;
-	private Game game;
+//	private Ship ship;
+//	private Game game;
 	private Cave cave;
 	private Rigidbody myRigidbody;
 	private float currentAngleUp;
@@ -39,8 +39,8 @@ public class ExitHelper : MonoBehaviour {
 	
 	public void Initialize(Play play_) {
 		play = play_;
-		ship = play.ship;
-		game = play.game;
+//		ship = play.ship;
+//		game = play.game;
 		cave = play.cave;
 		mode = Mode.Deactive;
 	}

@@ -63,10 +63,10 @@ public class TextCC : MonoBehaviour {
 		}
 		Vector3 containerPos = myGUI.containers[containerID].transform.position;
 		if (alignLeftRightCenter == MyGUI.GUIAlignment.Left) {
-			transform.position = new Vector3(containerPos.x - (myGUI.containers[containerID].GetSize().x/2.0f - GetSize().x/2.0f) + textMargin.x, transform.position.y, transform.position.z);
 			textMesh.Alignment = CCText.AlignmentMode.Left;
+			//transform.position = new Vector3(containerPos.x - (myGUI.containers[containerID].GetSize().x/2.0f - GetSize().x/2.0f) + textMargin.x, transform.position.y, transform.position.z);
 		} else if (alignLeftRightCenter == MyGUI.GUIAlignment.Right) {
-			transform.position = new Vector3(containerPos.x + (myGUI.containers[containerID].GetSize().x/2.0f - GetSize().x/2.0f) - textMargin.y, transform.position.y, transform.position.z);
+			//transform.position = new Vector3(containerPos.x + (myGUI.containers[containerID].GetSize().x/2.0f - GetSize().x/2.0f) - textMargin.y, transform.position.y, transform.position.z);
 			textMesh.Alignment = CCText.AlignmentMode.Right;
 		}
 //		Debug.Log (t +" " + textMesh.LineCount + " " + textWidth + " " +textMesh.Width);

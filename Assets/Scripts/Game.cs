@@ -127,6 +127,8 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_FULL = new Vector4(0.0f,0.0f,1.0f,1.0f);
 	public static Vector4 GUI_UV_COLOR_BLACK = new Vector4(0.0f,0.0f,0.0625f,0.0625f);
 	public static Vector4 GUI_UV_TRANS = new Vector4(0.125f,0.0f,0.1875f,0.0625f);
+	public static Vector4 GUI_UV_PROGRESS_FORE = new Vector4(0.1875f,0.0f,0.25f,0.0625f);
+	public static Vector4 GUI_UV_PROGRESS_BACK = new Vector4(0.25f,0.0f,0.3125f,0.0625f);
 	public static Vector4 GUI_UV_DIM = new Vector4(0.0625f,0.0f,0.125f,0.0625f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);

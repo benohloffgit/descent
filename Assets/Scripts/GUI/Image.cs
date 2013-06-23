@@ -7,8 +7,8 @@ public class Image : MonoBehaviour {
 		
 	private Mesh mesh;
 	public Renderer myRenderer;
-	private Game g;
-	private MyGUI myGUI;
+//	private Game g;
+//	private MyGUI myGUI;
 		
 	void Awake() {
 		mesh = GetComponent<MeshFilter>().mesh;
@@ -17,8 +17,8 @@ public class Image : MonoBehaviour {
 	}
 		
 	public void Initialize(MyGUI mG, int textureID, Vector4 uvMap, Vector3 scale) {
-		myGUI = mG;
-		g = myGUI.game;
+//		myGUI = mG;
+//		g = myGUI.game;
 		transform.localScale = scale;
 		myRenderer.material = mG.textureAtlas[textureID];
 		SetUVMapping(uvMap);

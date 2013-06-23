@@ -51,10 +51,15 @@ public class PlayGUI {
 	private float lastShieldCountTime;
 	private float[] damageIndicatorTimers;
 	private bool isOneDamageIndicatorActive;
+	private Vector3 exitHelperScale;
+	private Vector3 boosterScale;
+	private Vector3 cloakScale;
+	private Vector3 lightsScale;
+	private Vector3 invincibleScale;
 	
 	private List<Enemy> enemyHUDInfo;
 	private int topContainer;
-	private Transform shipTransform;
+//	private Transform shipTransform;
 	private Camera shipCamera;
 	private int[] enemyHUDInfoLabels;
 	private int enemyLockMissileLabel;
@@ -62,6 +67,9 @@ public class PlayGUI {
 	private static int MAX_ENEMY_HUD_INFOS = 5;
 	private static float ENEMY_HUD_INFO_MAX_TIME = 5.0f;
 	private static float DAMAGE_INDICATOR_DURATION = 1.0f;
+	
+	private static float POWER_UP_ANIM_SCALE = 0.10f;
+	private static float POWER_UP_ANIM_SPEED = 4f;
 	
 	private static Vector3 ENEMY_HUD_OFFSET_GLOBAL = new Vector3(0.5f, 0.5f, 0f);
 	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(-3.0f, -3.0f, 0f);
@@ -103,22 +111,27 @@ public class PlayGUI {
 		exitHelperOff = gui.images[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_EXITHELPER, 0);
 		exitHelperOn = gui.images[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_LIGHTS_OFF, 0);
+		exitHelperScale = exitHelperOn.transform.localScale;
+		imageId = gui.AddImage(powerUpContainer, new Vector3(0.12f, 0.12f, 1.0f), MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, -0.13f, Game.GUI_UV_LIGHTS_OFF, 0);
 		lightsOff = gui.images[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_LIGHTS, 0);
+		imageId = gui.AddImage(powerUpContainer, new Vector3(0.12f, 0.12f, 1.0f), MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, -0.13f, Game.GUI_UV_LIGHTS, 0);
 		lightsOn = gui.images[imageId];
+		lightsScale = lightsOn.transform.localScale;
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST_OFF, 0);
 		shipBoostOff = gui.images[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST, 0);
 		shipBoostOn = gui.images[imageId];
+		boosterScale = shipBoostOn.transform.localScale;
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_OFF, 0);
 		shipCloakOff = gui.images[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_ON, 0);
 		shipCloakOn = gui.images[imageId];
+		cloakScale = shipCloakOn.transform.localScale;
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 8.8f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_INVINCIBLE_OFF, 0);
 		shipInvincibleOff = gui.images[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 8.8f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_INVINCIBLE_ON, 0);
 		shipInvincibleOn = gui.images[imageId];
+		invincibleScale = shipInvincibleOn.transform.localScale;
 		
 		// ship health
 		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Center, 0.25f, MyGUI.GUIAlignment.Top, 0.01f);
@@ -201,7 +214,7 @@ public class PlayGUI {
 		toBeDisplayedShield = displayedShield;
 		DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.health), MyGUI.GetDigitOfNumber(1, ship.health), MyGUI.GetDigitOfNumber(2, ship.health)});
 		DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, ship.shield), MyGUI.GetDigitOfNumber(1, ship.shield), MyGUI.GetDigitOfNumber(2, ship.shield)});
-		shipTransform = ship.transform;
+//		shipTransform = ship.transform;
 		shipCamera = ship.shipCamera;
 	}
 	
@@ -245,6 +258,7 @@ public class PlayGUI {
 			} else {
 				lightsOn.myRenderer.enabled = false;
 				lightsOff.myRenderer.enabled = true;
+				lightsOn.transform.localScale = lightsScale;
 			}
 		} else {
 			lightsOn.myRenderer.enabled = false;
@@ -253,23 +267,27 @@ public class PlayGUI {
 	}
 
 	public void SwitchExitHelper() {
-		if (ship.isExitHelperLaunched) {
+//		if (ship.isExitHelperLaunched) {
 			exitHelperOn.myRenderer.enabled = true;
 			exitHelperOff.myRenderer.enabled = false;
-		} else {
-			exitHelperOn.myRenderer.enabled = false;
-			exitHelperOff.myRenderer.enabled = true;
-		}
+//		} else {
+//			exitHelperOn.myRenderer.enabled = false;
+//			exitHelperOff.myRenderer.enabled = true;
+//			exitHelperOn.transform.localScale = exitHelperScale;
+//		}
 	}
 
 	public void SwitchShipBoost() {
 		if (ship.hasSpecial[Ship.SPECIAL_BOOST]) {
-			if (ship.isBoosterOn) {
-				shipBoostOn.myRenderer.enabled = true;
-				shipBoostOff.myRenderer.enabled = false;
-			} else {
-				shipBoostOn.myRenderer.enabled = false;
-				shipBoostOff.myRenderer.enabled = true;
+			if (!ship.isBoosterOn) {
+				shipBoostOn.transform.localScale = boosterScale;
+				if (ship.isBoosterLoading) {
+					shipBoostOn.myRenderer.enabled = false;
+					shipBoostOff.myRenderer.enabled = true;
+				} else {
+					shipBoostOn.myRenderer.enabled = true;
+					shipBoostOff.myRenderer.enabled = false;
+				}
 			}
 		} else {
 			shipBoostOn.myRenderer.enabled = false;
@@ -285,6 +303,7 @@ public class PlayGUI {
 			} else {
 				shipCloakOn.myRenderer.enabled = false;
 				shipCloakOff.myRenderer.enabled = true;
+				shipCloakOn.transform.localScale = cloakScale;
 			}
 		} else {
 			shipCloakOn.myRenderer.enabled = false;
@@ -300,6 +319,7 @@ public class PlayGUI {
 			} else {
 				shipInvincibleOn.myRenderer.enabled = false;
 				shipInvincibleOff.myRenderer.enabled = true;
+				shipInvincibleOn.transform.localScale = invincibleScale;
 			}
 		} else {
 			shipInvincibleOn.myRenderer.enabled = false;
@@ -429,6 +449,22 @@ public class PlayGUI {
 					}
 				}
 			}
+		}
+		
+		if (ship.isExitHelperLaunched) {
+			exitHelperOn.transform.localScale = exitHelperScale * (1f - POWER_UP_ANIM_SCALE * Mathf.Sin(Time.fixedTime*POWER_UP_ANIM_SPEED));
+		}
+		if (ship.isBoosterOn) {
+			shipBoostOn.transform.localScale = boosterScale * (1f - POWER_UP_ANIM_SCALE * Mathf.Sin(Time.fixedTime*POWER_UP_ANIM_SPEED));
+		}
+		if (ship.isCloakOn) {
+			shipCloakOn.transform.localScale = cloakScale * (1f - POWER_UP_ANIM_SCALE * Mathf.Sin(Time.fixedTime*POWER_UP_ANIM_SPEED));
+		}
+		if (ship.isInvincibleOn) {
+			shipInvincibleOn.transform.localScale = invincibleScale * (1f - POWER_UP_ANIM_SCALE * Mathf.Sin(Time.fixedTime*POWER_UP_ANIM_SPEED));
+		}
+		if (ship.isHeadlightOn) {
+			lightsOn.transform.localScale = lightsScale * (1f - POWER_UP_ANIM_SCALE * Mathf.Sin(Time.fixedTime*POWER_UP_ANIM_SPEED));
 		}
 	}
 	
@@ -577,10 +613,10 @@ public class PlayGUI {
 		play.SetPaused(false);
 	}
 
-	private void ToNextZone() {
+/*	private void ToNextZone() {
 		CloseDialog();
-		play.NextZone();
-	}
+//		play.NextZone();
+	}*/
 	
 	private void ToRetrySokoban() {
 		play.RetrySokoban();
@@ -594,32 +630,37 @@ public class PlayGUI {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
 		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
-		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0); 
+		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 
 		int dialogBox = gui.AddContainer(dialogContainer, gui.GetSize(),
 			new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-1f), true);
-		int scrollableContainer = gui.AddContainerScrollable(dialogBox, new Vector3(gui.GetSize().x, gui.GetSize().y * 0.4f,1f),
+		gui.AddImage(dialogBox, new Vector3(gui.GetSize().x/2f, gui.GetSize().y, gui.GetSize().z),
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		gui.containers[dialogBox].AddZLevel(1f);
+		int scrollableContainer = gui.AddContainerScrollable(dialogBox, new Vector3(gui.GetSize().x/2f, gui.GetSize().y * 0.3f,1f),
 			new Vector2(gui.GetCenter().x, gui.GetCenter().y + gui.GetSize().y/2f * 0.5f), MyGUI.GUIBackground.QuadWithCollider,
-//			new Vector2(gui.GetCenter().x, gui.GetCenter().y + gui.GetSize().y/2f * 0.5f), MyGUI.GUIBackground.QuadWithCollider,
 			0, Game.GUI_UV_COLOR_BLACK, 0, Game.GUI_UV_NULL, 0, Game.GUI_UV_NULL);
-		gui.AddLabel("How the hell did I end up in this situation? I tried to ignore the fact that I knew the answer as I armed and charged the pulsar lasers on the only ship on the planet. You see I had graduated from the cybernautics and neural networking division of the university with barely a pass. My compatriots were all off to Starship headquarters, or the prestigious planets, Veluma and Tratoria. Whilst I had been commissioned to join the prison company, Illicitus. Not the worst assignment for a third-rate robotic neural scientist I thought at the time. But the last few days on this hell-hole had changed my opinion somewhat. The hum of the charging lasers stopped, signaling it was time to die ...",
-			scrollableContainer, MyGUI.GUIAlignment.Center, 0f, 0f, 0.3f, 3);
-		
+//		gui.AddLabel(play.storyChapter,	scrollableContainer, MyGUI.GUIAlignment.Center, 0f, 0.2f, 0.3f, 3);
+		gui.AddLabel(play.storyChapter,	scrollableContainer, MyGUI.GUIAlignment.Center, MyGUI.GUIBackground.Quad, 0.1f, 0.1f,
+					0.3f, 3, 0, Game.GUI_UV_COLOR_BLACK);
+
+/* GUIBackground background, float border, float textMargin,
+					float size, int textureIDText, int textureIDBackground, Vector4 uvMap		*/
 		gui.containers[dialogBox].AddZLevel(2f);
-		gui.AddImage(dialogBox, new Vector3(gui.GetSize().x, gui.GetSize().y*0.2f, gui.GetSize().z),
-			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_COLOR_BLACK, 0);
-		gui.AddImage(dialogBox, new Vector3(gui.GetSize().x, gui.GetSize().y*0.2f, gui.GetSize().z),
-			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		gui.AddImage(dialogBox, new Vector3(gui.GetSize().x/2f, gui.GetSize().y*0.2f, gui.GetSize().z),
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.01f, Game.GUI_UV_COLOR_BLACK, 0);
+		gui.AddImage(dialogBox, new Vector3(gui.GetSize().x/2f, gui.GetSize().y*0.2f, gui.GetSize().z),
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, -0.1f, Game.GUI_UV_COLOR_BLACK, 0);
 		gui.AddLabel(play.game.state.GetDialog(8) + (play.zoneID+1), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center,
 			0f, MyGUI.GUIAlignment.Top, 0.1f, 
 			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_COLOR_BLACK, 0);
 		TouchDelegate toMenu = new TouchDelegate(ToMenu);
 		gui.AddLabelButton(dialogBox, new Vector3(0.05f,0.05f,1f), toMenu, play.game.state.GetDialog(9), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, -0.1f, MyGUI.GUIAlignment.Bottom, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);
-		TouchDelegate toNextZone = new TouchDelegate(ToNextZone);
-		gui.AddLabelButton(dialogBox, new Vector3(0.05f,0.05f,1f), toNextZone, play.game.state.GetDialog(10), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0.1f, MyGUI.GUIAlignment.Bottom, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);
+			MyGUI.GUIAlignment.Center, -(gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		TouchDelegate toGame = new TouchDelegate(ToGame);
+		gui.AddLabelButton(dialogBox, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(10), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, (gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
 	}
 	
 	public void ToQuit() {
@@ -631,14 +672,14 @@ public class PlayGUI {
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 
 		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
-		gui.AddLabel(play.game.state.GetDialog(5), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, 
+		gui.AddLabel(play.game.state.GetDialog(5), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, 
 			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
 		TouchDelegate toMenu = new TouchDelegate(ToMenu);
 		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toMenu, play.game.state.GetDialog(6), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, -0.1f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_NULL, 0);
+			MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, -0.2f, Game.GUI_UV_NULL, 0);
 		TouchDelegate toGame = new TouchDelegate(ToGame);
 		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(7), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0.1f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_NULL, 0);
+			MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, -0.2f, Game.GUI_UV_NULL, 0);
 	}
 
 	public void ToPowerUpFound(string headline, string description, Vector4 uvMap) {
@@ -688,9 +729,9 @@ public class PlayGUI {
 		gui.AddLabel(play.game.state.GetDialog(38), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.2f, 
 			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
 		gui.AddLabel(play.game.state.GetDialog(39), dialogBox, new Vector3(0.03f,0.03f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.4f, MyGUI.GUIAlignment.Center, 0f, 
-			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_COLOR_BLACK, 0);
 		gui.AddLabel(play.game.state.GetDialog(40), dialogBox, new Vector3(0.03f,0.03f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, 0.4f, MyGUI.GUIAlignment.Center, 0f, 
-			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_COLOR_BLACK, 0);
 		
 		TouchDelegate toGame = new TouchDelegate(ToGame);
 		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(37), 1.0f, 1.0f, 3, 

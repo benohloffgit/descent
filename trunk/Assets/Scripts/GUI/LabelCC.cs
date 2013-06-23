@@ -24,7 +24,7 @@ public class LabelCC : MonoBehaviour {
 	
 	public Vector3 GetSize() {
 		return new Vector3(myRenderer.bounds.size.x, myRenderer.bounds.size.y, 1.0f);
-//		return background.renderer.bounds.size;
+//		return text.GetSize();
 	}
 	
 	public void Initialize(MyGUI mG, string t, int cID, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
@@ -39,9 +39,12 @@ public class LabelCC : MonoBehaviour {
 		background = backgr;
 		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
 		text.transform.localScale = scale;
-		background.transform.localScale = text.GetSize();
-		background.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-		background.transform.parent = transform;	
+//		Vector3 textSize = text.GetSize();
+//		background.parent = null;
+//		background.localScale = new Vector3(textSize.x + textMargin*2, textSize.y + textMargin*2, 1.0f);
+		background.localScale = text.GetSize();
+		background.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+		background.parent = transform;
 	}
 	
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgr, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter,
@@ -51,9 +54,9 @@ public class LabelCC : MonoBehaviour {
 		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, textureID);
 
 		Vector3 textSize = text.GetSize();
-		background.transform.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin*2, 1.0f);
-		background.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-		background.transform.parent = transform;
+		background.localScale = new Vector3(myGUI.containers[cID].GetSize().x, textSize.y + textMargin*2, 1.0f);
+		background.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+		background.parent = transform;
 	}
 	
 	// initialize as image label

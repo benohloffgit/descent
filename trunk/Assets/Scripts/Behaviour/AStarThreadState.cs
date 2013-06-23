@@ -6,7 +6,7 @@ public class AStarThreadState {
 	public LinkedList<AStarNode> roomPath;
 	public LinkedList<AStarNode> zonePath;
 	
-	private float startTime;
+//	private float startTime;
 	private bool isProcessing = false;
 	private bool isFinished = true;
 
@@ -17,7 +17,7 @@ public class AStarThreadState {
 	}
 	
 	public void Start() {
-		startTime = Time.realtimeSinceStartup;
+//		startTime = Time.realtimeSinceStartup;
 		isProcessing = true;
 		isFinished = false;
 		roomPath = new LinkedList<AStarNode>();

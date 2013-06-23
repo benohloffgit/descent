@@ -9,7 +9,7 @@ public class Player {
 	public Vector3 currentPos;
 	
 	private Transform playerTransform;
-	private IntTriple pointingTo;
+//	private IntTriple pointingTo;
 	
 	private static float Z_POS = -5f;
 		
@@ -20,7 +20,7 @@ public class Player {
 		playerTransform.renderer.material = board.play.game.sokobanMaterial;
 		playerTransform.gameObject.layer = Game.LAYER_SOKOBAN;
 		playerTransform.position = new Vector3(0,0,-5f);
-		pointingTo = IntTriple.RIGHT;
+//		pointingTo = IntTriple.RIGHT;
 		Mesh3D.SetUVMapping(playerTransform.GetComponent<MeshFilter>().mesh, Sokoban.UV_IMAGE_PLAYER);
 	}
 	

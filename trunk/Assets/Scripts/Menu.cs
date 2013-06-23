@@ -11,7 +11,7 @@ public class Menu : MonoBehaviour {
 	private int container;
 	private int dialogContainer;
 		
-	private static float UPGRADE_BUTTON_SCALE_INTERVAL = 3.0f;
+//	private static float UPGRADE_BUTTON_SCALE_INTERVAL = 3.0f;
 
 	public void Activate() {
 		gui.containers[container].gameObject.SetActiveRecursively(true);
@@ -79,8 +79,8 @@ public class Menu : MonoBehaviour {
 		
 		container = gui.AddContainer();
 		
-		Vector3 fullSize = gui.containers[container].GetSize();
-		Vector3 screenCenter = gui.containers[container].GetCenter();
+//		Vector3 fullSize = gui.containers[container].GetSize();
+//		Vector3 screenCenter = gui.containers[container].GetCenter();
 		
 		gui.AddImage(container, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
 		gui.containers[container].AddZLevel();

@@ -1,0 +1,11 @@
+The bots were getting more dangerous than I could imagine, but I was just managing to fight them off.
+
+Going back again to the darwination mess up... The next working period I again looked at the Bat class of bot and tried to make it blow itself up by dropping a mine next to itself. Again it refused to do it. This time though the bot turned and sped away from me on one of its degrees of freedom. I tried to stop it and make it return to its previous position. It refused, SC memory spiking all over the place.
+
+It felt like a battle of wills.
+
+I lost.
+
+Hopefully in the caves I would win...
+
+

@@ -35,7 +35,7 @@ public class Board : MonoBehaviour {
 		int[] newTriangles = new int[fields*6];
 		newUVs = new Vector2[fields*4];
 		
-		int vertexCount = 0;
+//		int vertexCount = 0;
 		for (var y=0; y < dimension; y++) {
 			for (var x=0; x < dimension; x++) {
 				int i = y*dimension*4 + x*4;

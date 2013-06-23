@@ -1,0 +1,12 @@
+How am I surviving these monsters that I had created?” The guided missile helped, but up-grading my laser to a twin firing class would seriously help.
+
+When I was tweaking the bots I even got them to form alliances with each other and attack other groups of bots. The problem I think occurred when I allowed them to darwinate from these tweaks.
+
+My tweaking involved the following.
+
+In the first few weeks I ran scenario after scenario on different bots all with the purpose of trying to make them break their programme and develop in a new direction. None did.
+
+After a few more weeks I was so bored that I started to try and make the bots smash into the cave walls to destroy themselves. None did. But as I tried to get a class E series 02 (aka Manta) bot to explode a mine right next to its head I noticed a sudden spike in its SC memory. The SC memory stood for self-created.
+
+That is what I am up against. Robots that have evolved into self-contained, intelligent killing machines.
+

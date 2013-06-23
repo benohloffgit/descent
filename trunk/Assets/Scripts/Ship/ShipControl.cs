@@ -6,7 +6,7 @@ public class ShipControl {
 	private GameInput gameInput;
 	
 	private Ship ship;
-	private Game game;
+//	private Game game;
 //	private RaycastHit hit;
 	private Play play;
 //	private Shot shotTemplate;
@@ -16,7 +16,7 @@ public class ShipControl {
 	
 	public void Initialize(Ship s, Game g, Play p, GameInput gI) {
 		ship = s;
-		game = g;
+//		game = g;
 		play = p;
 		gameInput = gI;
 		

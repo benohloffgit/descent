@@ -27,6 +27,7 @@ public class Play : MonoBehaviour {
 	private int botSeed;
 	private Transform lightsHolder;
 	private bool[] isKeyCollected;
+	public string storyChapter;
 	
 	public GridPosition placeShipBeforeExitDoor;
 	public GridPosition placeShipBeforeSecretChamberDoor;
@@ -36,7 +37,7 @@ public class Play : MonoBehaviour {
 	private EnemyDistributor enemyDistributor;
 	private CollecteablesDistributor collecteablesDistributor;
 	private RaycastHit hit;
-	private AStarThreadState aStarThreadState = new AStarThreadState();
+//	private AStarThreadState aStarThreadState = new AStarThreadState();
 //	private int currentGravitiyDirection;
 //	private float lastGravitiyChange;
 	
@@ -48,10 +49,10 @@ public class Play : MonoBehaviour {
 	private List<ShotStats> enemyShotStats = new List<ShotStats>();
 	private float shipHitRatio;
 	private float enemyHitRatio;
-	private float shipToEnemyHitRatio;
-	private float activeEnemiesHealthToShipFPSRatio;
-	private float shipHealthToActiveEnemiesFPSRatio;
-	private float enemiesToShipFPSRatio;
+//	private float shipToEnemyHitRatio;
+//	private float activeEnemiesHealthToShipFPSRatio;
+//	private float shipHealthToActiveEnemiesFPSRatio;
+//	private float enemiesToShipFPSRatio;
 	
 	private GridPosition testPathStart;
 	private GridPosition testPathEnd;
@@ -196,15 +197,15 @@ public class Play : MonoBehaviour {
 		zoneID = state.level;
 		shipHitRatio = 0;
 		enemyHitRatio = 0;
-		shipToEnemyHitRatio = 1.0f;
+//		shipToEnemyHitRatio = 1.0f;
 		isShipInPlayableArea = false;
 		Debug.Log (" ------------------------------- Cave Seed: " + caveSeed);
 		UnityEngine.Random.seed = caveSeed;
 		cave.AddZone(zoneID);
 		UnityEngine.Random.seed = botSeed;
 		isKeyCollected = new bool[] {false, false};
-//		collecteablesDistributor.DropKeys();
-//		collecteablesDistributor.DropPowerUps();
+		collecteablesDistributor.DropKeys();
+		collecteablesDistributor.DropPowerUps();
 		if (zoneID > 0) {
 			enemyDistributor.Distribute();
 		}
@@ -213,12 +214,12 @@ public class Play : MonoBehaviour {
 		ConfigureLighting();
 		playGUI.Reset();
 		ship.transform.position = cave.GetCaveEntryPosition();
-		SetPaused(false);
+		storyChapter = (Resources.Load("Story/EN/" + zoneID, typeof(TextAsset)) as TextAsset).text;
+		playGUI.ToStory();
 	}
 	
 	public void ZoneCompleted() {
 		EndZone();
-		playGUI.ToStory();
 	}
 	
 	public void NextZone() {
@@ -322,6 +323,7 @@ public class Play : MonoBehaviour {
 				isShipInPlayableArea = false;
 			}
 		} catch (IndexOutOfRangeException e) {
+			Game.DefNull(e);
 			isShipInPlayableArea = false;
 		}
 	}
@@ -361,10 +363,10 @@ public class Play : MonoBehaviour {
 	private void UpdateStats() {
 		shipHitRatio = Mathf.Max(GetShotStats(ref shipShotStats, shipHitRatio), STATS_MIN);
 		enemyHitRatio = Mathf.Max(GetShotStats(ref enemyShotStats, enemyHitRatio), STATS_MIN);
-		shipToEnemyHitRatio = shipHitRatio / enemyHitRatio;
-		activeEnemiesHealthToShipFPSRatio = enemyDistributor.enemiesHealthActive/ship.firepowerPerSecond;
-		shipHealthToActiveEnemiesFPSRatio = ship.health/enemyDistributor.enemiesFirepowerPerSecondActive;
-		enemiesToShipFPSRatio = enemyDistributor.enemiesFirepowerPerSecondActive/ship.firepowerPerSecond;
+//		shipToEnemyHitRatio = shipHitRatio / enemyHitRatio;
+//		activeEnemiesHealthToShipFPSRatio = enemyDistributor.enemiesHealthActive/ship.firepowerPerSecond;
+//		shipHealthToActiveEnemiesFPSRatio = ship.health/enemyDistributor.enemiesFirepowerPerSecondActive;
+//		enemiesToShipFPSRatio = enemyDistributor.enemiesFirepowerPerSecondActive/ship.firepowerPerSecond;
 	}
 
 	private float GetShotStats(ref List<ShotStats> shotStats, float startValue) {

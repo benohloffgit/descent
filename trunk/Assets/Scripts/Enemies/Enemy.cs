@@ -66,6 +66,7 @@ public abstract class Enemy : MonoBehaviour {
 	public int displayModel;
 	public int modelClazzAEquivalent;
 	public int health;
+	public int maxHealth;
 	public float firepowerPerSecond;
 	protected float size;
 	protected float aggressiveness; // between 0 (no at all) and 1.0 (attacks 100% of time)
@@ -120,6 +121,7 @@ public abstract class Enemy : MonoBehaviour {
 		displayModel = model + 1;
 		modelClazzAEquivalent = enemyEquivalentClazzAModel_;
 		health = spawn.isBoss ? health_ * 2 : health_;
+		maxHealth = health;
 		size = spawn.isBoss ? 2.5f : size_;
 		aggressiveness = 0;//aggressiveness_;
 		movementForce = movementForce_;

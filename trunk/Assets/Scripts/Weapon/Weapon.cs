@@ -109,7 +109,7 @@ public class Weapon {
 		ammunition = ammunition_;
 		positions = positions_;
 		rotations = rotations_;
-		lastShotTime = Time.time;
+		lastShotTime = Time.fixedTime;
 		mountedTo = mountedTo_;
 		if (mountedTo == Game.ENEMY) {
 			enemy = parentEnemy_;
@@ -239,7 +239,7 @@ public class Weapon {
 
 		if (accuracy != 0) {
 			// improve accurcy the longer the ship stands still - 4seconds
-			accuracy = Mathf.Max(1.0f, accuracy - (accuracy/240.0f) * (Time.time-ship.lastMoveTime) * 60.0f);
+			accuracy = Mathf.Max(1.0f, accuracy - (accuracy/240.0f) * (Time.fixedTime-ship.lastMoveTime) * 60.0f);
 			
 			Vector3.OrthoNormalize(ref bulletPaths[0], ref tangent, ref binormal);
 			Quaternion deviation1 = Quaternion.AngleAxis(UnityEngine.Random.Range(0, accuracy) * Mathf.Sign(UnityEngine.Random.value-0.5f), tangent);
@@ -266,7 +266,7 @@ public class Weapon {
 			Physics.IgnoreCollision(parent.collider, loadedShots[0].collider);
 		}
 		
-		lastShotTime = Time.time;
+		lastShotTime = Time.fixedTime;
 		isReloaded = false;
 		if (ammunition > 0) {
 			ammunition--;
@@ -309,7 +309,7 @@ public class Weapon {
 		if (isReloaded) {
 			return true;
 		} else {
-			if (Time.time > lastShotTime + frequency && (ammunition == -1 || ammunition > 0)) {
+			if (Time.fixedTime > lastShotTime + frequency && (ammunition == -1 || ammunition > 0)) {
 				Reload();
 				return true;
 			}

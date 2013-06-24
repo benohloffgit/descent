@@ -1,20 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GUI\Image.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayGUI.cs">
     <Files>
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="217" Column="3" />
-      <File FileName="Assets\Scripts\Play.cs" Line="369" Column="3" />
-      <File FileName="Assets\Scripts\Game.cs" Line="131" Column="1" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="189" Column="1" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="268" Column="39" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="341" Column="166" />
-      <File FileName="Assets\Scripts\Menu.cs" Line="14" Column="3" />
+      <File FileName="Assets\Scripts\PlayGUI.cs" Line="684" Column="5" />
+      <File FileName="Assets\Scripts\Play.cs" Line="459" Column="35" />
+      <File FileName="Assets\Scripts\Game.cs" Line="182" Column="39" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="390" Column="39" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="124" Column="22" />
+      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="312" Column="37" />
+      <File FileName="Assets\Scripts\Menu.cs" Line="152" Column="24" />
       <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="34" Column="65" />
-      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="19" Column="3" />
       <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="28" Column="3" />
-      <File FileName="Assets\Scripts\GUI\MyGUI.cs" Line="213" Column="15" />
-      <File FileName="Assets\Scripts\State.cs" Line="24" Column="1" />
-      <File FileName="Assets\Scripts\GUI\Image.cs" Line="20" Column="3" />
+      <File FileName="Assets\Scripts\GUI\MyGUI.cs" Line="185" Column="1" />
+      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="33" Column="36" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

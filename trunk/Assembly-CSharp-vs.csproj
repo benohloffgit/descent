@@ -94,6 +94,7 @@
      <Compile Include="Assets\Scripts\GUI\MyGUI.cs" />
      <Compile Include="Assets\Scripts\GUI\NinePatch.cs" />
      <Compile Include="Assets\Scripts\GUI\Panel.cs" />
+     <Compile Include="Assets\Scripts\GUI\ProgressBar.cs" />
      <Compile Include="Assets\Scripts\GUI\Quad.cs" />
      <Compile Include="Assets\Scripts\GUI\Radio.cs" />
      <Compile Include="Assets\Scripts\GUI\RadioBox.cs" />

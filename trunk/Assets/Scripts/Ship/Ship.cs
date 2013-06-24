@@ -164,6 +164,9 @@ public class Ship : MonoBehaviour {
 		if (!play.isPaused) {
 			play.CachePositionalDataOfShip(transform.position);
 			
+			play.playGUI.shipHealthProgressBar.SetBar(health/(float)maxHealth);
+			play.playGUI.shipShieldProgressBar.SetBar(shield/(float)maxShield);
+			
 			if (cameraPosition != CAMERA_POSITION_COCKPIT) {
 				PositionCamera();
 			}
@@ -173,9 +176,13 @@ public class Ship : MonoBehaviour {
 				isBoosterLoading = true;
 				boostTimer = Time.fixedTime;
 				play.playGUI.SwitchShipBoost();
-			} else if (isBoosterLoading && Time.fixedTime > boostTimer + BOOST_INTERVAL) {
-				isBoosterLoading = false;
-				play.playGUI.SwitchShipBoost();
+			} else if (isBoosterLoading) {
+				if (Time.fixedTime > boostTimer + BOOST_INTERVAL) {
+					isBoosterLoading = false;
+					play.playGUI.SwitchShipBoost();
+				} else {
+					play.playGUI.boosterProgressBar.SetBar((Time.fixedTime-boostTimer)/BOOST_INTERVAL);
+				}
 			}
 
 			if (isCloakOn && Time.fixedTime > cloakTimer + CLOAK_DURATION) {
@@ -183,9 +190,13 @@ public class Ship : MonoBehaviour {
 				isCloakLoading = true;
 				cloakTimer = Time.fixedTime;
 				play.playGUI.SwitchShipCloak();
-			} else if (isCloakLoading && Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
-				isCloakLoading = false;
-				play.playGUI.SwitchShipBoost();
+			} else if (isCloakLoading) {
+				if (Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
+					isCloakLoading = false;
+					play.playGUI.SwitchShipBoost();
+				} else {
+					play.playGUI.cloakProgressBar.SetBar((Time.fixedTime-cloakTimer)/CLOAK_INTERVAL);
+				}
 			}
 
 			if (isInvincibleOn && Time.fixedTime > invincibleTimer + INVINCIBLE_DURATION) {
@@ -376,7 +387,7 @@ public class Ship : MonoBehaviour {
 		currentSecondaryWeapon = wType;
 		highestSecondaryWeapon = currentSecondaryWeapon;
 		secondaryWeapons[currentSecondaryWeapon].Mount();
-		play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
+		play.playGUI.DisplaySecondaryWeapon();
 		Debug.Log ("adding secondary weapon type: " + wType);
 	}
 	
@@ -479,7 +490,7 @@ public class Ship : MonoBehaviour {
 					isDetonatorMissileExploded = false;
 				}
 				secondaryWeapons[currentSecondaryWeapon].Shoot();
-				play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
+				play.playGUI.DisplaySecondaryWeapon();
 			}
 			chargedMissileTimer = -1f;
 		} else {
@@ -519,7 +530,7 @@ public class Ship : MonoBehaviour {
 				secondaryWeapons[currentSecondaryWeapon].Unmount();
 				currentSecondaryWeapon = newID;
 				secondaryWeapons[currentSecondaryWeapon].Mount();
-				play.playGUI.DisplaySecondaryWeapon(secondaryWeapons[currentSecondaryWeapon]);
+				play.playGUI.DisplaySecondaryWeapon();
 				if (secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_GUIDED_MISSILE && secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_DETONATOR_MISSILE) {
 					missileLockMode = MissileLockMode.None;
 				}

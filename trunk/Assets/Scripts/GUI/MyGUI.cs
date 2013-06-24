@@ -20,6 +20,7 @@ public class MyGUI : MonoBehaviour {
 	public GameObject dimPrefab;
 	public GameObject radioPrefab;
 	public GameObject textInputPrefab;
+	public GameObject progressBarPrefab;
 	
 	public Texture2D[] fontTextures;
 	public CCFont[] bitmapFonts;
@@ -41,6 +42,7 @@ public class MyGUI : MonoBehaviour {
 	public Dictionary<int, ImageButton> imageButtons;
 	public Dictionary<int, LabelButton> labelButtons;
 	public Dictionary<int, Image> images;
+	public Dictionary<int, ProgressBar> progressBars;
 	
 	public enum Focus { NoFocus=0, Focus=1 }	
 	public enum GUIAlignment { Left=0, Right=1, Center=2, Top=3, Bottom=4 }
@@ -66,6 +68,7 @@ public class MyGUI : MonoBehaviour {
 		imageButtons = new Dictionary<int, ImageButton>();
 		labelButtons = new Dictionary<int, LabelButton>();
 		images = new Dictionary<int, Image>();
+		progressBars = new Dictionary<int, ProgressBar>();
 		
 //		background = GetComponent<NinePatch>();
 		
@@ -180,7 +183,19 @@ public class MyGUI : MonoBehaviour {
 		containers[containerID].AddElement(i.transform, i.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 		return i.gameObject.GetInstanceID();
 	}	
-	
+
+	//  Progress Bar with floating position and fixed size
+	public int AddProgressBar(int containerID, Vector3 size,
+				GUIAlignment alignLeftRightCenter, float borderLeftRight, GUIAlignment alignTopBottomCenter, float borderTopBottom,
+				GUIBackground back, Vector4 uvMapBack, int textureIDBack, GUIBackground fore, Vector4 uvMapFore, int textureIDFore) {
+			ProgressBar p;
+			p = (GameObject.Instantiate(progressBarPrefab) as GameObject).GetComponent<ProgressBar>();
+			p.Initialize(this, size, CreateBackground(back, textureIDBack, uvMapBack), CreateBackground(fore, textureIDFore, uvMapFore));
+			progressBars.Add(p.gameObject.GetInstanceID(), p);
+			containers[containerID].AddElement(p.transform, containers[containerID].GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
+			return p.gameObject.GetInstanceID();
+	}
+
 	//  Label with left/right alignment and floating position and image background
 	public int AddLabel(string text, int containerID, GUIAlignment alignLeftRightCenter, GUIBackground background, float border, float textMargin,
 					float size, int textureIDText, int textureIDBackground, Vector4 uvMap) {

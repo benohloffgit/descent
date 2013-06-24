@@ -44,6 +44,13 @@ public class PlayGUI {
 	private Image shipCloakOff;
 	private Image shipInvincibleOn;
 	private Image shipInvincibleOff;
+	private Image missileLockOn;
+	private Image missileLockOff;
+	public ProgressBar boosterProgressBar;
+	public ProgressBar cloakProgressBar;
+	public ProgressBar shipHealthProgressBar;
+	public ProgressBar shipShieldProgressBar;
+	public ProgressBar shipMissileLoadingProgressBar;
 	private int[] healthCount;
 	private int[] shieldCount;
 	
@@ -62,7 +69,10 @@ public class PlayGUI {
 //	private Transform shipTransform;
 	private Camera shipCamera;
 	private int[] enemyHUDInfoLabels;
+	private ProgressBar[] enemyHealthBars;
 	private int enemyLockMissileLabel;
+	private int shipSecondaryWeaponDisplayed;
+	private bool shipSecondaryWeaponLoadState;
 	
 	private static int MAX_ENEMY_HUD_INFOS = 5;
 	private static float ENEMY_HUD_INFO_MAX_TIME = 5.0f;
@@ -72,7 +82,8 @@ public class PlayGUI {
 	private static float POWER_UP_ANIM_SPEED = 4f;
 	
 	private static Vector3 ENEMY_HUD_OFFSET_GLOBAL = new Vector3(0.5f, 0.5f, 0f);
-	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(-3.0f, -3.0f, 0f);
+	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(-3.0f, 3.0f, 0f);
+	private static Vector3 ENEMY_HEALTH_BAR_OFFSET_LOCAL = new Vector3(3.0f, -3.0f, 0f);
 	private static Vector3 ENEMY_LOCK_OFFSET_LOCAL = new Vector3(3.0f, 3.0f, 0f);
 	private static float TICK_DELTA = 0.05f;
 	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
@@ -80,6 +91,7 @@ public class PlayGUI {
 	
 	public static Vector4[] PRIMARY_WEAPONS = new Vector4[] {Game.GUI_UV_GUN,Game.GUI_UV_LASER,Game.GUI_UV_TWINGUN,Game.GUI_UV_PHASER,Game.GUI_UV_TWINLASER,Game.GUI_UV_GAUSS,Game.GUI_UV_TWINPHASER,Game.GUI_UV_TWINGAUSS};
 	public static Vector4[] SECONDARY_WEAPONS = new Vector4[] {Game.GUI_UV_MISSILE,Game.GUI_UV_GUIDEDMISSILE,Game.GUI_UV_CHARGEDMISSILE,Game.GUI_UV_DETONATORMISSILE};
+	public static Vector4[] SECONDARY_WEAPONS_LOADING = new Vector4[] {Game.GUI_UV_MISSILE_LOADING,Game.GUI_UV_GUIDED_MISSILE_LOADING,Game.GUI_UV_CHARGED_MISSILE_LOADING,Game.GUI_UV_DETONATOR_MISSILE_LOADING};
 	public static Vector4[] SPECIALS = new Vector4[] {Game.GUI_UV_LIGHTS, Game.GUI_UV_SHIPBOOST, Game.GUI_UV_CLOAK_ON, Game.GUI_UV_INVINCIBLE_ON};
 	
 	public PlayGUI(Play p) {
@@ -122,36 +134,45 @@ public class PlayGUI {
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST, 0);
 		shipBoostOn = gui.images[imageId];
 		boosterScale = shipBoostOn.transform.localScale;
+		imageId = gui.AddProgressBar(powerUpContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 1.4f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_PROGRESS_FORE, 0);
+		boosterProgressBar = gui.progressBars[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_OFF, 0);
 		shipCloakOff = gui.images[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_ON, 0);
 		shipCloakOn = gui.images[imageId];
 		cloakScale = shipCloakOn.transform.localScale;
+		imageId = gui.AddProgressBar(powerUpContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 1.4f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_PROGRESS_FORE, 0);
+		cloakProgressBar = gui.progressBars[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 8.8f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_INVINCIBLE_OFF, 0);
 		shipInvincibleOff = gui.images[imageId];
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 8.8f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_INVINCIBLE_ON, 0);
 		shipInvincibleOn = gui.images[imageId];
 		invincibleScale = shipInvincibleOn.transform.localScale;
 		
+		
 		// ship health
-		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Center, 0.25f, MyGUI.GUIAlignment.Top, 0.01f);
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, -1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 2);
+		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.04f, 0.04f, 1.0f), true, MyGUI.GUIAlignment.Center, 0.235f, MyGUI.GUIAlignment.Top, 0.07f);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 6.5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 2);
 		healthDigit0 = gui.images[imageId];
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 2);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 2);
 		healthDigit1 = gui.images[imageId];
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Right, 1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 2);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 3.5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 2);
 		healthDigit2 = gui.images[imageId];
-		gui.AddImage(healthContainer, new Vector3(0.05f, 0.05f, 1f), MyGUI.GUIAlignment.Center, -0.1f, MyGUI.GUIAlignment.Top, 0.1f, Game.GUI_UV_HEALTH, 0);
+		gui.AddImage(healthContainer, new Vector3(0.04f, 0.04f, 1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_HEALTH, 0);
+		imageId = gui.AddProgressBar(healthContainer, new Vector3(0.3f, 0.0375f, 1f), MyGUI.GUIAlignment.Left, 0.25f, MyGUI.GUIAlignment.Top, -1f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_HEALTH_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_HEALTH_PROGRESS_FORE, 0);
+		shipHealthProgressBar = gui.progressBars[imageId];
 		
 		// ship shield
-		int shieldContainer = gui.AddContainer(topContainer, new Vector3(0.06f, 0.06f, 1.0f), true, MyGUI.GUIAlignment.Center, -0.25f, MyGUI.GUIAlignment.Top, 0.01f);
-		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, -1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
+		int shieldContainer = gui.AddContainer(topContainer, new Vector3(0.04f, 0.04f, 1.0f), true, MyGUI.GUIAlignment.Center, -0.235f, MyGUI.GUIAlignment.Top, 0.07f);
+		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 3.5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit0 = gui.images[imageId];
-		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
+		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit1 = gui.images[imageId];
-		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 1.5f, MyGUI.GUIAlignment.Top, 0.0f, Game.GUI_UV_NUMBER_0, 1);
+		imageId = gui.AddImage(shieldContainer, MyGUI.GUIAlignment.Right, 6.5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 1);
 		shieldDigit2 = gui.images[imageId];
-		gui.AddImage(shieldContainer, new Vector3(0.05f, 0.05f, 1f), MyGUI.GUIAlignment.Center, 0.1f, MyGUI.GUIAlignment.Top, 0.1f, Game.GUI_UV_SHIELD, 0);
+		gui.AddImage(shieldContainer, new Vector3(0.04f, 0.04f, 1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_SHIELD, 0);
+		imageId = gui.AddProgressBar(shieldContainer, new Vector3(0.3f, 0.0375f, 1f), MyGUI.GUIAlignment.Right, 0.25f, MyGUI.GUIAlignment.Top, -1f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_SHIELD_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_SHIELD_PROGRESS_FORE, 0);
+		shipShieldProgressBar = gui.progressBars[imageId];
 		
 		// keys and door
 		int keyAndDoorContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Left, 0.02f, MyGUI.GUIAlignment.Top, 0.03f);
@@ -183,12 +204,21 @@ public class PlayGUI {
 		damageIndicators[3].transform.Rotate(Vector3.forward, 180f);
 		
 		enemyHUDInfoLabels = new int[MAX_ENEMY_HUD_INFOS];
+		enemyHealthBars = new ProgressBar[MAX_ENEMY_HUD_INFOS];
 		gui.SetActiveTextMaterial(5);
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
 			enemyHUDInfoLabels[i] = gui.AddLabel("", topContainer, new Vector3(0.03f,0.03f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+			imageId = gui.AddProgressBar(topContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_HEALTH_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_HEALTH_PROGRESS_FORE, 0);
+			enemyHealthBars[i] = gui.progressBars[imageId];
 		}
 
 		enemyLockMissileLabel = gui.AddLabel("", topContainer, new Vector3(0.03f,0.03f,1.0f),MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, 0f, 0.2f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		imageId = gui.AddImage(container, MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, Game.GUI_UV_MISSILE_LOCK_OFF, 0);
+		missileLockOff = gui.images[imageId];
+		missileLockOff.transform.localScale *= 0.05f;
+		imageId = gui.AddImage(container, MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Top, 0.5f, Game.GUI_UV_MISSILE_LOCK_ON, 0);
+		missileLockOn = gui.images[imageId];
+		missileLockOn.transform.localScale *= 0.05f;
 		
 		// weapons
 		int weaponsContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.03f);
@@ -199,11 +229,14 @@ public class PlayGUI {
 		gui.SetActiveTextMaterial(4);
 		primaryWeaponLabel = gui.AddLabel("", weaponsContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		secondaryWeaponLabel = gui.AddLabel("", weaponsContainer, new Vector3(0.04f,0.04f,0.1f), MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, 0f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
-		
+		imageId = gui.AddProgressBar(weaponsContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Center, -0.05f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_PROGRESS_FORE, 0);
+		shipMissileLoadingProgressBar = gui.progressBars[imageId];
 		
 //		ticks = 0;
 		healthCount = new int[3];
 		shieldCount = new int[3];
+		shipSecondaryWeaponDisplayed = -1;
+		shipSecondaryWeaponLoadState = false;
 	}
 	
 	public void Initialize() {
@@ -284,36 +317,44 @@ public class PlayGUI {
 				if (ship.isBoosterLoading) {
 					shipBoostOn.myRenderer.enabled = false;
 					shipBoostOff.myRenderer.enabled = true;
+					boosterProgressBar.EnableRenderer();
 				} else {
 					shipBoostOn.myRenderer.enabled = true;
 					shipBoostOff.myRenderer.enabled = false;
+					boosterProgressBar.DisableRenderer();
 				}
 			}
 		} else {
 			shipBoostOn.myRenderer.enabled = false;
 			shipBoostOff.myRenderer.enabled = false;
+			boosterProgressBar.DisableRenderer();
 		}
 	}
 
 	public void SwitchShipCloak() {
 		if (ship.hasSpecial[Ship.SPECIAL_CLOAK]) {
-			if (ship.isCloakOn) {
-				shipCloakOn.myRenderer.enabled = true;
-				shipCloakOff.myRenderer.enabled = false;
-			} else {
-				shipCloakOn.myRenderer.enabled = false;
-				shipCloakOff.myRenderer.enabled = true;
+			if (!ship.isCloakOn) {
 				shipCloakOn.transform.localScale = cloakScale;
+				if (ship.isCloakLoading) {
+					shipCloakOn.myRenderer.enabled = false;
+					shipCloakOff.myRenderer.enabled = true;
+					cloakProgressBar.EnableRenderer();
+				} else {
+					shipCloakOn.myRenderer.enabled = true;
+					shipCloakOff.myRenderer.enabled = false;
+					cloakProgressBar.DisableRenderer();
+				}
 			}
 		} else {
 			shipCloakOn.myRenderer.enabled = false;
 			shipCloakOff.myRenderer.enabled = false;
+			cloakProgressBar.DisableRenderer();
 		}
 	}
 
 	public void SwitchShipInvincible() {
 		if (ship.hasSpecial[Ship.SPECIAL_INVINCIBLE]) {
-			if (ship.isInvincibleOn) {
+			if (!ship.hasBeenInvincibleInThisZone || ship.isInvincibleOn) {
 				shipInvincibleOn.myRenderer.enabled = true;
 				shipInvincibleOff.myRenderer.enabled = false;
 			} else {
@@ -339,12 +380,12 @@ public class PlayGUI {
 	
 	public void SetHealthCount(int v) {
 		healthCount = new int[] { MyGUI.GetDigitOfNumber(0, v), MyGUI.GetDigitOfNumber(1, v), MyGUI.GetDigitOfNumber(2, v)}; // right to left
-//		lastHealthCountTime = Time.time;
+//		lastHealthCountTime = Time.fixedTime;
 	}
 
 	public void SetShieldCount(int v) {
 		shieldCount = new int[] { MyGUI.GetDigitOfNumber(0, v), MyGUI.GetDigitOfNumber(1, v), MyGUI.GetDigitOfNumber(2, v)}; // right to left
-//		lastShieldCountTime = Time.time;
+//		lastShieldCountTime = Time.fixedTime;
 	}
 	
 	public void DisplayHealth(int[] digits) {
@@ -389,24 +430,24 @@ public class PlayGUI {
 			toBeDisplayedHealth = ship.health;
 		}
 			
-		if (displayedShield > toBeDisplayedShield && Time.time > lastShieldCountTime + TICK_DELTA) {
+		if (displayedShield > toBeDisplayedShield && Time.fixedTime > lastShieldCountTime + TICK_DELTA) {
 			LowerCount(ref shieldCount);
-			lastShieldCountTime = Time.time;
+			lastShieldCountTime = Time.fixedTime;
 			displayedShield--;
 			DisplayShield();
-		} else if (displayedShield < toBeDisplayedShield && Time.time > lastShieldCountTime + TICK_DELTA) {
+		} else if (displayedShield < toBeDisplayedShield && Time.fixedTime > lastShieldCountTime + TICK_DELTA) {
 			RaiseCount(ref shieldCount);
-			lastShieldCountTime = Time.time;
+			lastShieldCountTime = Time.fixedTime;
 			displayedShield++;
 			DisplayShield();
-		} else if (displayedHealth > toBeDisplayedHealth && Time.time > lastHealthCountTime + TICK_DELTA) {
+		} else if (displayedHealth > toBeDisplayedHealth && Time.fixedTime > lastHealthCountTime + TICK_DELTA) {
 			LowerCount(ref healthCount);
-			lastHealthCountTime = Time.time;
+			lastHealthCountTime = Time.fixedTime;
 			displayedHealth--;
 			DisplayHealth();
-		} else if (displayedHealth < toBeDisplayedHealth && Time.time > lastHealthCountTime + TICK_DELTA) {
+		} else if (displayedHealth < toBeDisplayedHealth && Time.fixedTime > lastHealthCountTime + TICK_DELTA) {
 			RaiseCount(ref healthCount);
-			lastHealthCountTime = Time.time;
+			lastHealthCountTime = Time.fixedTime;
 			displayedHealth++;
 			DisplayHealth();
 		}
@@ -416,9 +457,9 @@ public class PlayGUI {
 		int removed = 0;
 		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
 			if (enemyHUDInfo.Count > i) {
-				if (enemyHUDInfo[i-removed] != null && enemyHUDInfo[i-removed].lastTimeHUDInfoRequested + ENEMY_HUD_INFO_MAX_TIME > Time.time ) {					
+				if (enemyHUDInfo[i-removed] != null && enemyHUDInfo[i-removed].lastTimeHUDInfoRequested + ENEMY_HUD_INFO_MAX_TIME > Time.fixedTime ) {					
 /*					if (enemyHUDInfo[i-removed] == null) {
-						Debug.Log ("enemy is null " + enemyHUDInfo[i-removed] + " " + Time.time);
+						Debug.Log ("enemy is null " + enemyHUDInfo[i-removed] + " " + Time.fixedTime);
 						Debug.Log ("enemy is null " + enemyHUDInfo[i-removed].lastTimeHUDInfoRequested);
 					}*/
 					ShowEnemyHUDInfo(i, enemyHUDInfo[i-removed]);
@@ -426,16 +467,20 @@ public class PlayGUI {
 					enemyHUDInfo.RemoveAt(i-removed);
 					removed++;
 					gui.labelsCC[enemyHUDInfoLabels[i]].myRenderer.enabled = false;
+					enemyHealthBars[i].DisableRenderer();
 				}
 			} else {
 				gui.labelsCC[enemyHUDInfoLabels[i]].myRenderer.enabled = false;
+				enemyHealthBars[i].DisableRenderer();
 			}
 		}
 		
 		if (ship.missileLockMode != Ship.MissileLockMode.None) {
 			ShowEnemyMissileLockInfo();
-		} else {
+		} else if (missileLockOn.myRenderer.enabled == true || missileLockOff.myRenderer.enabled == true) {
 			gui.labelsCC[enemyLockMissileLabel].SetText("");
+			missileLockOn.myRenderer.enabled = false;
+			missileLockOff.myRenderer.enabled = false;
 		}
 		
 		if (isOneDamageIndicatorActive) {
@@ -466,10 +511,18 @@ public class PlayGUI {
 		if (ship.isHeadlightOn) {
 			lightsOn.transform.localScale = lightsScale * (1f - POWER_UP_ANIM_SCALE * Mathf.Sin(Time.fixedTime*POWER_UP_ANIM_SPEED));
 		}
+		if (ship.currentSecondaryWeapon != -1) {
+			if (!ship.secondaryWeapons[ship.currentSecondaryWeapon].IsReloaded() && ship.secondaryWeapons[ship.currentSecondaryWeapon].ammunition > 0) {
+				shipMissileLoadingProgressBar.SetBar((Time.fixedTime-ship.secondaryWeapons[ship.currentSecondaryWeapon].lastShotTime)/ship.secondaryWeapons[ship.currentSecondaryWeapon].frequency);
+			}
+			if (ship.secondaryWeapons[ship.currentSecondaryWeapon].IsReloaded() != shipSecondaryWeaponLoadState) {
+				SetLoadStateOfShipSecondaryWeapon();
+			}
+		}
 	}
 	
 	public void EnemyInSight(Enemy e) {
-		e.lastTimeHUDInfoRequested = Time.time;
+		e.lastTimeHUDInfoRequested = Time.fixedTime;
 		if (!enemyHUDInfo.Contains(e)) {
 			enemyHUDInfo.Add(e);
 			if (enemyHUDInfo.Count > MAX_ENEMY_HUD_INFOS) {
@@ -483,21 +536,37 @@ public class PlayGUI {
 //		Debug.Log (e.transform.TransformDirection(e.transform.localScale));
 		gui.labelsCC[enemyHUDInfoLabels[index]].SetText(
 			e.clazz + " " + e.displayModel.ToString("00")
-				+ " [H:" + e.health + "]"
-				+ " (F:"+ Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
+//				+ " [H:" + e.health + "]"
+//				+ " (F:"+ Mathf.RoundToInt(e.firepowerPerSecond) + ")" 
 		);
 		gui.labelsCC[enemyHUDInfoLabels[index]].transform.localPosition =
 			Calculate2DHUDPosition(e.transform.position, ship.transform.TransformDirection(ENEMY_HUD_OFFSET_LOCAL) * e.radius * 0.5f, e);
-		gui.labelsCC[enemyHUDInfoLabels[index]].myRenderer.enabled = true;
+		enemyHealthBars[index].SetBar(e.health/(float)e.maxHealth);
+		enemyHealthBars[index].transform.localPosition =
+			Calculate2DHUDPosition(e.transform.position, ship.transform.TransformDirection(ENEMY_HEALTH_BAR_OFFSET_LOCAL) * e.radius * 0.5f, e);
+		if (gui.labelsCC[enemyHUDInfoLabels[index]].myRenderer.enabled == false) {
+			gui.labelsCC[enemyHUDInfoLabels[index]].myRenderer.enabled = true;
+			enemyHealthBars[index].EnableRenderer();
+		}
 	}
 	
 	private void ShowEnemyMissileLockInfo() {
 		Enemy e = ship.lockedEnemy;
 		if (e != null) {
+			float t = Time.fixedTime-ship.missileLockTime;
 			gui.labelsCC[enemyLockMissileLabel].SetText("L: " 
-				+ (Ship.MISSILE_LOCK_DURATION - Mathf.Clamp(Mathf.FloorToInt(Time.time-ship.missileLockTime),0,Ship.MISSILE_LOCK_DURATION)));
+				+ (Ship.MISSILE_LOCK_DURATION - Mathf.Clamp(Mathf.FloorToInt(t),0,Ship.MISSILE_LOCK_DURATION)));
 			gui.labelsCC[enemyLockMissileLabel].transform.localPosition =
 				Calculate2DHUDPosition(e.transform.position, ship.transform.TransformDirection(ENEMY_LOCK_OFFSET_LOCAL) * e.radius * 0.5f, e);
+			if (t > Ship.MISSILE_LOCK_DURATION) {
+				missileLockOn.myRenderer.enabled = true;
+				missileLockOff.myRenderer.enabled = false;
+				missileLockOn.transform.localPosition = gui.labelsCC[enemyLockMissileLabel].transform.localPosition;
+			} else {
+				missileLockOn.myRenderer.enabled = false;
+				missileLockOff.myRenderer.enabled = true;
+				missileLockOff.transform.localPosition = gui.labelsCC[enemyLockMissileLabel].transform.localPosition;
+			}
 		}
 	}
 	
@@ -598,9 +667,23 @@ public class PlayGUI {
 		gui.labelsCC[primaryWeaponLabel].SetText(Weapon.PRIMARY_TYPES[w.type] + " FP: " + w.damage);
 	}
 	
-	public void DisplaySecondaryWeapon(Weapon w) {
-		secondaryWeapon.SetUVMapping(SECONDARY_WEAPONS[w.type]);
-		gui.labelsCC[secondaryWeaponLabel].SetText(Weapon.SECONDARY_TYPES[w.type] + " A: "+ w.ammunition);
+	public void DisplaySecondaryWeapon() {
+		gui.labelsCC[secondaryWeaponLabel].SetText(Weapon.SECONDARY_TYPES[ship.currentSecondaryWeapon] + " A: "+ ship.secondaryWeapons[ship.currentSecondaryWeapon].ammunition);
+		SetLoadStateOfShipSecondaryWeapon();
+	}
+	
+	private void SetLoadStateOfShipSecondaryWeapon() {
+		if (ship.secondaryWeapons[ship.currentSecondaryWeapon].IsReloaded()) {
+			secondaryWeapon.SetUVMapping(SECONDARY_WEAPONS[ship.currentSecondaryWeapon]);
+			shipMissileLoadingProgressBar.DisableRenderer();
+			shipSecondaryWeaponLoadState = true;
+		} else {
+			secondaryWeapon.SetUVMapping(SECONDARY_WEAPONS_LOADING[ship.currentSecondaryWeapon]);
+			if (ship.secondaryWeapons[ship.currentSecondaryWeapon].ammunition > 0) {
+				shipMissileLoadingProgressBar.EnableRenderer();
+			}
+			shipSecondaryWeaponLoadState = false;
+		}
 	}
 	
 	private void ToMenu() {

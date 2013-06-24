@@ -232,7 +232,6 @@ public class Play : MonoBehaviour {
 		EndZone();
 		ship.SetHealthAndShield();
 		StartZone();
-		SetPaused(false);
 	}
 	
 	private void EndZone() {
@@ -457,7 +456,7 @@ public class Play : MonoBehaviour {
 		// order is highest first
 		if (ship.secondaryWeapons[type].ammunition < Game.MAX_MISSILE_AMMO) {
 			ship.secondaryWeapons[type].ammunition += amount;
-			playGUI.DisplaySecondaryWeapon(ship.secondaryWeapons[ship.currentSecondaryWeapon]);
+			playGUI.DisplaySecondaryWeapon();
 			return true;
 		} else {
 			// Todo diplay max ammo hint

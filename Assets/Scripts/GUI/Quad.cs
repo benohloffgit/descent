@@ -2,11 +2,9 @@ using UnityEngine;
 using System.Collections;
 
 public class Quad : MonoBehaviour {
-	private Mesh mesh;
 	private Renderer myRenderer;
 
 	void Awake() {
-		mesh = (GetComponent<MeshFilter>()).mesh;	
 		myRenderer = GetComponent<Renderer>();
 	}
 			

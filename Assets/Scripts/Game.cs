@@ -129,6 +129,10 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_TRANS = new Vector4(0.125f,0.0f,0.1875f,0.0625f);
 	public static Vector4 GUI_UV_PROGRESS_FORE = new Vector4(0.1875f,0.0f,0.25f,0.0625f);
 	public static Vector4 GUI_UV_PROGRESS_BACK = new Vector4(0.25f,0.0f,0.3125f,0.0625f);
+	public static Vector4 GUI_UV_HEALTH_PROGRESS_FORE = new Vector4(0.3125f,0.0f,0.375f,0.0625f);
+	public static Vector4 GUI_UV_HEALTH_PROGRESS_BACK = new Vector4(0.375f,0.0f,0.4375f,0.0625f);
+	public static Vector4 GUI_UV_SHIELD_PROGRESS_FORE = new Vector4(0.4375f,0.0f,0.5f,0.0625f);
+	public static Vector4 GUI_UV_SHIELD_PROGRESS_BACK = new Vector4(0.5f,0.0f,0.5625f,0.0625f);
 	public static Vector4 GUI_UV_DIM = new Vector4(0.0625f,0.0f,0.125f,0.0625f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);
@@ -170,6 +174,12 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_CLOAK_ON = new Vector4(0.625f,0.375f,0.75f,0.5f);
 	public static Vector4 GUI_UV_INVINCIBLE_OFF = new Vector4(0.75f,0.375f,0.875f,0.5f);
 	public static Vector4 GUI_UV_INVINCIBLE_ON = new Vector4(0.875f,0.375f,1f,0.5f);
+	public static Vector4 GUI_UV_MISSILE_LOCK_OFF = new Vector4(0f,0.25f,0.125f,0.375f);
+	public static Vector4 GUI_UV_MISSILE_LOCK_ON = new Vector4(0.125f,0.25f,0.25f,0.375f);
+	public static Vector4 GUI_UV_MISSILE_LOADING = new Vector4(0.25f,0.25f,0.375f,0.375f);
+	public static Vector4 GUI_UV_GUIDED_MISSILE_LOADING = new Vector4(0.375f,0.25f,0.5f,0.375f);
+	public static Vector4 GUI_UV_CHARGED_MISSILE_LOADING = new Vector4(0.5f,0.25f,0.625f,0.375f);
+	public static Vector4 GUI_UV_DETONATOR_MISSILE_LOADING = new Vector4(0.625f,0.25f,0.75f,0.375f);
 	
 	private Menu menu;
 	private Play play;

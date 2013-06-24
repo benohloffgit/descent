@@ -44,9 +44,9 @@ public class Game : MonoBehaviour {
 	public GameObject powerUpHullPrefab;
 	public GameObject powerUpSpecialPrefab;
 	public GameObject keyPrefab;
-	public GameObject manaPrefab;
 	public GameObject spawnPrefab;
 	public GameObject pooledAudioSource;
+	public GameObject bulletTrailRenderer;
 
 	// those are objects create while game is running (after cave generation)
 	public GameObject[] shotPrefabs;
@@ -62,6 +62,7 @@ public class Game : MonoBehaviour {
 	public Texture2D[] caveTextures;
 	public Texture2D[] keyTextures;
 	public Material sokobanMaterial;
+	public Material[] shotTrailMaterials;
 	
 	public State state;
 	public GameInput gameInput;

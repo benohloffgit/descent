@@ -22,7 +22,6 @@ public class ProgressBar : MonoBehaviour {
 		fore.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		fore.parent = transform;
 		transform.localScale = size;
-		Debug.Log ("fore " + fore.localPosition);
 	}
 	
 	public void SetScale(float scale) {

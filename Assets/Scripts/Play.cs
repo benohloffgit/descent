@@ -32,14 +32,10 @@ public class Play : MonoBehaviour {
 	public GridPosition placeShipBeforeExitDoor;
 	public GridPosition placeShipBeforeSecretChamberDoor;
 	
-//	private GameInput gI;
 	private State state;
 	private EnemyDistributor enemyDistributor;
 	private CollecteablesDistributor collecteablesDistributor;
 	private RaycastHit hit;
-//	private AStarThreadState aStarThreadState = new AStarThreadState();
-//	private int currentGravitiyDirection;
-//	private float lastGravitiyChange;
 	
 	private List<GameObject> breadcrumbs = new List<GameObject>();
 	
@@ -61,12 +57,13 @@ public class Play : MonoBehaviour {
 //	private Vector3 shipPosition;
 	private GridPosition shipGridPosition;
 
-	//private static float MAX_RAYCAST_DISTANCE = 100.0f;
-//	private static float GRAVITY_INTERVAL = 10.0f;
-//	private static float STATS_INTERVAL = 10.0f;
 	private static float STATS_MIN = 0.01f;
+	
+	private GameObject[] shotTrailRenderers;
+	private int nextShotTrailRenderer;
 
 	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);
+	private static int MAX_SHOT_TRAIL_RENDERERS = 20;
 
 	public enum Mode { Normal=0, Sokoban=1 }
 
@@ -112,6 +109,13 @@ public class Play : MonoBehaviour {
 		movement = new Movement(this);
 		
 		exitHelper.Initialize(this);
+		
+		shotTrailRenderers = new GameObject[MAX_SHOT_TRAIL_RENDERERS];
+		for (int i=0; i<MAX_SHOT_TRAIL_RENDERERS; i++) {
+			shotTrailRenderers[i] =  GameObject.Instantiate(game.bulletTrailRenderer, Vector3.zero, Quaternion.identity) as GameObject;
+			shotTrailRenderers[i].renderer.enabled = false;
+		}
+		nextShotTrailRenderer = 0;
 
 		SetPaused(true);
 	}
@@ -598,6 +602,15 @@ public class Play : MonoBehaviour {
 	
 	public void RetrySokoban() {
 		sokoban.Retry();
+	}
+	
+	public GameObject GetNextShotTrailRenderer() {
+		int n = nextShotTrailRenderer;
+		nextShotTrailRenderer++;
+		if (nextShotTrailRenderer == MAX_SHOT_TRAIL_RENDERERS) {
+			nextShotTrailRenderer = 0;
+		}
+		return shotTrailRenderers[n];
 	}
 	
 }

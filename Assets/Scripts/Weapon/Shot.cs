@@ -12,6 +12,7 @@ public class Shot : MonoBehaviour {
 	public int source;
 	
 	private Transform target;
+	private GameObject trailRenderer;
 	
 	public static int BULLET = 0;
 	public static int LASER = 1;
@@ -39,8 +40,13 @@ public class Shot : MonoBehaviour {
 	}
 	
 	void Start() {
-		if (type == BULLET) {
+		if (type < 4) {
 			Invoke ("DestroySelf", 15.0f);
+			trailRenderer = play.GetNextShotTrailRenderer();
+			trailRenderer.transform.parent = transform;
+			trailRenderer.transform.localPosition = Vector3.zero;
+			trailRenderer.renderer.material = play.game.shotTrailMaterials[type];
+			trailRenderer.renderer.enabled = true;
 		} else if (type == DETONATOR_BOMB) {
 			Invoke ("DestroySelf", 2.5f);
 		}
@@ -138,7 +144,7 @@ public class Shot : MonoBehaviour {
 	}
 	
 	private void DestroySelf() {
-		if (type == BULLET) {
+		if (type < 4) {
 			play.DamageNothing(source);
 		} else if (type == DETONATOR_BOMB) {
 			play.DisplayExplosion(transform.position, play.ship.transform.rotation);
@@ -146,5 +152,12 @@ public class Shot : MonoBehaviour {
 		}
 		Destroy(gameObject);
 	}
-
+	
+	void OnDisable() {
+		if (type < 4 && trailRenderer != null) {
+//			trailRenderer.particleEmitter.emit = false;
+			trailRenderer.renderer.enabled = false;
+			trailRenderer.transform.parent = null;
+		}
+	}
 }

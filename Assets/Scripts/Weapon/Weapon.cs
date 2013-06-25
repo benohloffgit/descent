@@ -25,8 +25,8 @@ public class Weapon {
 	
 	public const int TYPE_MINE_TOUCH = 4;
 	public const int TYPE_MINE_SUICIDAL = 5;
-	public const int TYPE_MINE_INFRARED = 6;
-	public const int TYPE_MINE_TIMED = 7;
+//	public const int TYPE_MINE_INFRARED = 6;
+//	public const int TYPE_MINE_TIMED = 7;
 	public const int TYPE_LASER_BEAM = 8;
 
 /*	public static int MISSILE_START = 2;

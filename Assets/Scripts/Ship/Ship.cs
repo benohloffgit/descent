@@ -601,6 +601,9 @@ public class Ship : MonoBehaviour {
 		} else {
 			exitHelper.transform.position = new Vector3(9000f, 9000f, 9000f);
 			exitHelper.Deactivate();
+			if (isExitHelperLaunched) {
+				PlaySound(Game.SOUND_TYPE_VARIOUS, 36);
+			}
 			isExitHelperLaunched = false;
 		}
 		play.playGUI.SwitchExitHelper();

@@ -51,8 +51,14 @@ public class PrefabFactory {
 		breadcrumbTemplate.GetComponent<Breadcrumb>().enabled = false;
 		explosionTemplate = GameObject.Instantiate(game.explosionPrefab) as GameObject;
 		explosionTemplate.GetComponent<Explosion>().enabled = false;
+		HTSpriteSheet expl = explosionTemplate.GetComponent<HTSpriteSheet>();
+		expl.enabled = false;
+		expl.CreateParticle();
 		hitTemplate = GameObject.Instantiate(game.hitPrefab) as GameObject;
 		hitTemplate.GetComponent<Hit>().enabled = false;
+		expl = hitTemplate.GetComponent<HTSpriteSheet>();
+		expl.enabled = false;
+		expl.CreateParticle();
 		healthDropTemplate = GameObject.Instantiate(game.healthDropPrefab) as GameObject;
 		healthDropTemplate.GetComponent<CollecteableHealth>().enabled = false;
 		healthDropTemplate.tag = ""; // so it is not removed at the end of zone
@@ -251,6 +257,9 @@ public class PrefabFactory {
 		GameObject newExplosion = GameObject.Instantiate(explosionTemplate, pos, rot) as GameObject;
 		Explosion explosion = newExplosion.GetComponent<Explosion>();
 		explosion.enabled = true;
+		HTSpriteSheet spriteSheet = explosion.GetComponent<HTSpriteSheet>();
+		spriteSheet.SetMaterial(game.explosionMaterials[UnityEngine.Random.Range(0,2)]);
+		spriteSheet.enabled = true;
 		explosion.Initialize(play);
 		explosion.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		return newExplosion;
@@ -259,8 +268,11 @@ public class PrefabFactory {
 	public GameObject CreateHit(Vector3 pos, Quaternion rot) {
 		GameObject newHit = GameObject.Instantiate(hitTemplate, pos, rot) as GameObject;
 		Hit hit = newHit.GetComponent<Hit>();
+		HTSpriteSheet spriteSheet = hit.GetComponent<HTSpriteSheet>();
+		spriteSheet.SetMaterial(game.explosionMaterials[UnityEngine.Random.Range(0,2)]);
+		spriteSheet.enabled = true;
 		hit.enabled = true;
-		hit.Initialize(play);
+//		hit.Initialize(play);
 		hit.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		return newHit;
 	}

@@ -47,6 +47,13 @@ public class Shot : MonoBehaviour {
 			trailRenderer.transform.localPosition = Vector3.zero;
 			trailRenderer.renderer.material = play.game.shotTrailMaterials[type];
 			trailRenderer.renderer.enabled = true;
+		} else if (type < 8) {
+			trailRenderer = play.GetNextMissileExhaustRenderer();
+			trailRenderer.transform.parent = transform;
+			trailRenderer.transform.localPosition = new Vector3(0,0,-2f);
+			trailRenderer.transform.localRotation = Quaternion.identity;
+			//trailRenderer.renderer.material = play.game.shotTrailMaterials[type];
+			trailRenderer.transform.particleSystem.Play();
 		} else if (type == DETONATOR_BOMB) {
 			Invoke ("DestroySelf", 2.5f);
 		}
@@ -154,9 +161,13 @@ public class Shot : MonoBehaviour {
 	}
 	
 	void OnDisable() {
-		if (type < 4 && trailRenderer != null) {
-//			trailRenderer.particleEmitter.emit = false;
-			trailRenderer.renderer.enabled = false;
+		if (trailRenderer != null) {
+			if (type < 4) {
+	//			trailRenderer.particleEmitter.emit = false;
+				trailRenderer.renderer.enabled = false;
+			} else if (type < 8) {
+				trailRenderer.transform.particleSystem.Stop();
+			}
 			trailRenderer.transform.parent = null;
 		}
 	}

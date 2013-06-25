@@ -61,9 +61,12 @@ public class Play : MonoBehaviour {
 	
 	private GameObject[] shotTrailRenderers;
 	private int nextShotTrailRenderer;
-
+	private GameObject[] missileExhaustRenderers;
+	private int nextMissileExhaustRenderer;
+	
 	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);
 	private static int MAX_SHOT_TRAIL_RENDERERS = 20;
+	private static int MAX_MISSILE_EXHAUST_RENDERERS = 5;
 
 	public enum Mode { Normal=0, Sokoban=1 }
 
@@ -116,6 +119,13 @@ public class Play : MonoBehaviour {
 			shotTrailRenderers[i].renderer.enabled = false;
 		}
 		nextShotTrailRenderer = 0;
+
+		missileExhaustRenderers = new GameObject[MAX_MISSILE_EXHAUST_RENDERERS];
+		for (int i=0; i<MAX_MISSILE_EXHAUST_RENDERERS; i++) {
+			missileExhaustRenderers[i] =  GameObject.Instantiate(game.missileExhaustRenderer, Vector3.zero, Quaternion.identity) as GameObject;
+			//missileExhaustRenderers[i].particleEmitter.emit = false;
+		}
+		nextMissileExhaustRenderer = 0;
 
 		SetPaused(true);
 	}
@@ -435,11 +445,12 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void DisplayExplosion(Vector3 pos, Quaternion rot) {
-		game.CreateFromPrefab().CreateExplosion(pos, rot);
+		// move a bit in direction of ship to avoid being culled by walls etc.
+		game.CreateFromPrefab().CreateExplosion(pos + (GetShipPosition()-pos).normalized * (RoomMesh.MESH_SCALE/3f), rot);
 	}
 
 	public void DisplayHit(Vector3 pos, Quaternion rot) {
-		game.CreateFromPrefab().CreateHit(pos, rot);
+		game.CreateFromPrefab().CreateHit(pos + (GetShipPosition()-pos).normalized * (RoomMesh.MESH_SCALE/5f), rot);
 	}
 	
 	public void RemoveEnemy(Enemy e) {
@@ -461,6 +472,7 @@ public class Play : MonoBehaviour {
 		if (ship.secondaryWeapons[type].ammunition < Game.MAX_MISSILE_AMMO) {
 			ship.secondaryWeapons[type].ammunition += amount;
 			playGUI.DisplaySecondaryWeapon();
+			ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 37);
 			return true;
 		} else {
 			// Todo diplay max ammo hint
@@ -612,6 +624,15 @@ public class Play : MonoBehaviour {
 		}
 		return shotTrailRenderers[n];
 	}
-	
+
+	public GameObject GetNextMissileExhaustRenderer() {
+		int n = nextMissileExhaustRenderer;
+		nextMissileExhaustRenderer++;
+		if (nextMissileExhaustRenderer == MAX_MISSILE_EXHAUST_RENDERERS) {
+			nextMissileExhaustRenderer = 0;
+		}
+		return missileExhaustRenderers[n];
+	}
+
 }
 

@@ -127,6 +127,9 @@ public class Sokoban {
 						}
 						if (FieldEquals(newBulbPos, Field.GOAL)) {
 							bulbsInGoal++;
+							play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 32);
+						} else {
+							play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 34);
 						}
 						movingBulb.MoveTo(newBulbPos);
 						fields[newBulbPos.x,newBulbPos.y].AddBulb(movingBulb);
@@ -137,6 +140,7 @@ public class Sokoban {
 				} else {
 					StartAnimation();
 					player.MoveTo(newPos);
+					play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 33);
 				}
 			}
 		}

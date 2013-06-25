@@ -1,17 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Weapon\Shot.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PrefabFactory.cs">
     <Files>
       <File FileName="Assets\Scripts\PlayGUI.cs" Line="684" Column="5" />
-      <File FileName="Assets\Scripts\Play.cs" Line="113" Column="63" />
-      <File FileName="Assets\Scripts\Game.cs" Line="207" Column="45" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="390" Column="39" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="124" Column="22" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="317" Column="16" />
+      <File FileName="Assets\Scripts\Play.cs" Line="639" Column="1" />
+      <File FileName="Assets\Scripts\Game.cs" Line="67" Column="39" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="607" Column="1" />
+      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="241" Column="50" />
+      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="214" Column="41" />
       <File FileName="Assets\Scripts\Menu.cs" Line="152" Column="24" />
       <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="34" Column="65" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="35" Column="49" />
-      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="48" Column="73" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="261" Column="83" />
+      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="82" Column="16" />
+      <File FileName="Assets\Scripts\Weapon\Explosion.cs" Line="12" Column="1" />
+      <File FileName="Assets\Scripts\Weapon\Hit.cs" Line="13" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -1,0 +1,48 @@
+Explosion Volume 2 : Package description
+============================================
+
+In Explosion Volume 2 you will find 30 high quality types of sprite sheets (with 512x512 frames size, 4096x4096) animations, with various 
+explosions and fire effects! Perfect for creating mobile or tablet lightwork effects and work with pseudo 2D and 3D games (think to resize images).
+
+This product comes with a sequencer to manage spritesheet, and help you to create your own explosions.
+
+Package content:
+- 1 candle animation (looped)
+- 10 Full explosions
+- 2 Fireballs (looped)
+- 3 Furnaces firewall (looped)
+- 2 Muzzle shoot effects (crossed, normmal)
+- 1 Torch (looped)
+- 1 Smoke wall (looped)
+
+10 Decomposed explosions anims sprite sheet, compose your hown with the sequencer!
+- 1 Debris
+- 2 Fires
+- 1 Flash lens
+- 2 Flash glow
+- 1 Shockwave
+- 1 Smoke ball
+- 2 Sparks
+
+Easy and ready to use. 
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

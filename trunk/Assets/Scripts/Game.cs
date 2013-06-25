@@ -47,6 +47,7 @@ public class Game : MonoBehaviour {
 	public GameObject spawnPrefab;
 	public GameObject pooledAudioSource;
 	public GameObject bulletTrailRenderer;
+	public GameObject missileExhaustRenderer;
 
 	// those are objects create while game is running (after cave generation)
 	public GameObject[] shotPrefabs;
@@ -63,6 +64,7 @@ public class Game : MonoBehaviour {
 	public Texture2D[] keyTextures;
 	public Material sokobanMaterial;
 	public Material[] shotTrailMaterials;
+	public Material[] explosionMaterials;
 	
 	public State state;
 	public GameInput gameInput;
@@ -96,6 +98,7 @@ public class Game : MonoBehaviour {
 	public static int LAYER_MINES = 18;
 	public static int LAYER_SOKOBAN = 19;
 	public static int LAYER_DOOR_TRIGGER = 20;
+	public static int LAYER_EXPLOSION_EFFECT = 21;
 	
 	public static int DIMENSION_ZONE = 3; // BxB rooms
 	public static int DIMENSION_ZONE_SQUARED = DIMENSION_ZONE * DIMENSION_ZONE;
@@ -322,7 +325,11 @@ public class Game : MonoBehaviour {
 		if (soundType == Weapon.PRIMARY) {
 			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
 		} else if (soundType == Weapon.SECONDARY) {
-			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[8]);
+			if (type < 4) {
+				audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[8]);
+			} else if (type == 4) {
+				audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[35]);
+			}
 		} else if (soundType == SOUND_TYPE_VARIOUS) {
 			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
 		}

@@ -89,6 +89,32 @@ public class ShipControl {
 				if (Input.GetKeyDown(KeyCode.T)) {
 					ship.LaunchExitHelper();
 				}
+				if (Input.GetKeyDown(KeyCode.Alpha1)) {
+					ship.SetPrimary(Weapon.TYPE_GUN);
+				} else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+					ship.SetPrimary(Weapon.TYPE_LASER);
+				} else if (Input.GetKeyDown(KeyCode.Alpha3)) {
+					ship.SetPrimary(Weapon.TYPE_TWIN_GUN);
+				} else if (Input.GetKeyDown(KeyCode.Alpha4)) {
+					ship.SetPrimary(Weapon.TYPE_PHASER);
+				} else if (Input.GetKeyDown(KeyCode.Alpha5)) {
+					ship.SetPrimary(Weapon.TYPE_TWIN_LASER);
+				} else if (Input.GetKeyDown(KeyCode.Alpha6)) {
+					ship.SetPrimary(Weapon.TYPE_GAUSS);
+				} else if (Input.GetKeyDown(KeyCode.Alpha7)) {
+					ship.SetPrimary(Weapon.TYPE_TWIN_PHASER);
+				} else if (Input.GetKeyDown(KeyCode.Alpha8)) {
+					ship.SetPrimary(Weapon.TYPE_TWIN_GAUSS);
+				}
+				if (Input.GetKeyDown(KeyCode.F1)) {
+					ship.SetSecondary(Weapon.TYPE_MISSILE);
+				} else if (Input.GetKeyDown(KeyCode.F2)) {
+					ship.SetSecondary(Weapon.TYPE_GUIDED_MISSILE);
+				} else if (Input.GetKeyDown(KeyCode.F3)) {
+					ship.SetSecondary(Weapon.TYPE_CHARGED_MISSILE);
+				} else if (Input.GetKeyDown(KeyCode.F4)) {
+					ship.SetSecondary(Weapon.TYPE_DETONATOR_MISSILE);
+				}
 			} else {
 				if (play.mode == Play.Mode.Sokoban) {
 					if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {

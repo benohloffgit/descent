@@ -131,11 +131,11 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void Activate() {
+		playGUI.Activate();
 		StartZone();
 		ship.CalculateHullClazz();
 		ship.AddSpecials();
 		ship.AddWeapons();
-		playGUI.Activate();
 		InvokeRepeating("UpdateStats", 0, 1.0f);
 	}
 	
@@ -183,19 +183,19 @@ public class Play : MonoBehaviour {
 			/*if (Input.GetKeyDown(KeyCode.F6)) {
 				SwitchMode();
 			}*/
-			if (Input.GetKeyDown(KeyCode.Alpha5)) {	
+			if (Input.GetKeyDown(KeyCode.F6)) {	
+				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
+			}
+			if (Input.GetKeyDown(KeyCode.F7)) {	
+				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
+				SokobanSolved();
+			}
+			if (Input.GetKeyDown(KeyCode.F8)) {	
 				KeyFound(CollecteableKey.TYPE_SILVER);
 				KeyFound(CollecteableKey.TYPE_GOLD);
 				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeExitDoor);
 			}
-			if (Input.GetKeyDown(KeyCode.Alpha6)) {	
-				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
-			}
-			if (Input.GetKeyDown(KeyCode.Alpha7)) {	
-				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
-				SokobanSolved();
-			}
-			if (Input.GetKeyDown(KeyCode.Alpha8)) {	
+			if (Input.GetKeyDown(KeyCode.F9)) {	
 				ship.isInvincibleOn = ship.isInvincibleOn ? false : true;
 			}
 		}

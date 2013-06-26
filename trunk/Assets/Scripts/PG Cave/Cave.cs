@@ -99,8 +99,6 @@ public class Cave {
 			GameObject.Destroy(gO);
 		}
 		GameObject.Destroy(zoneEntry);
-//		GameObject.Destroy(doors[Door.TYPE_LAST_EXIT].gameObject);
-//		GameObject.Destroy(doors[Door.TYPE_ENTRY].gameObject);
 		zone = null;
 		RemoveDecoration();
 	}
@@ -599,6 +597,7 @@ public class Cave {
 	
 	private void RemoveDecoration() {
 		UnityEngine.GameObject.Destroy(decorationParent);
+		decorationParent = null;
 	}
 	
 	public void OpenExitDoor() {

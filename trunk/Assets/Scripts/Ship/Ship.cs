@@ -122,6 +122,8 @@ public class Ship : MonoBehaviour {
 		cameraTransform = transform.FindChild("Camera");
 		shipCamera = cameraTransform.GetComponent<Camera>();
 		audioSource = GetComponent<AudioSource>();
+		currentPrimaryWeapon = -1;
+		currentSecondaryWeapon = -1;
 	}
 	
 	public void Initialize(Play play_, ExitHelper exitHelper_) {
@@ -507,14 +509,18 @@ public class Ship : MonoBehaviour {
 			} else if (newID == -1 ) {
 				newID = highestPrimaryWeapon;
 			}
-			if (newID != currentPrimaryWeapon) {
-				primaryWeapons[currentPrimaryWeapon].Unmount();
-				currentPrimaryWeapon = newID;
-				primaryWeapons[currentPrimaryWeapon].Mount();
-				firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
-				play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
-				PlaySound(Game.SOUND_TYPE_VARIOUS, 10);
-			}
+			SetPrimary (newID);
+		}
+	}
+	
+	public void SetPrimary(int id) {
+		if (currentPrimaryWeapon != -1 && id <= highestPrimaryWeapon && id != currentPrimaryWeapon) {
+			primaryWeapons[currentPrimaryWeapon].Unmount();
+			currentPrimaryWeapon = id;
+			primaryWeapons[currentPrimaryWeapon].Mount();
+			firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
+			play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);
+			PlaySound(Game.SOUND_TYPE_VARIOUS, 10);
 		}
 	}
 
@@ -526,18 +532,23 @@ public class Ship : MonoBehaviour {
 			} else if (newID == -1 ) {
 				newID = highestSecondaryWeapon;
 			}
-			if (newID != currentSecondaryWeapon) {
-				secondaryWeapons[currentSecondaryWeapon].Unmount();
-				currentSecondaryWeapon = newID;
-				secondaryWeapons[currentSecondaryWeapon].Mount();
-				play.playGUI.DisplaySecondaryWeapon();
-				if (secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_GUIDED_MISSILE && secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_DETONATOR_MISSILE) {
-					missileLockMode = MissileLockMode.None;
-				}
-				PlaySound(Game.SOUND_TYPE_VARIOUS, 11);
-			}
+			SetSecondary(newID);
 		}
 	}
+
+	public void SetSecondary(int id) {
+		if (currentSecondaryWeapon != -1 && id <= highestSecondaryWeapon && id != currentSecondaryWeapon) {
+			secondaryWeapons[currentSecondaryWeapon].Unmount();
+			currentSecondaryWeapon = id;
+			secondaryWeapons[currentSecondaryWeapon].Mount();
+			play.playGUI.DisplaySecondaryWeapon();
+			if (secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_GUIDED_MISSILE && secondaryWeapons[currentSecondaryWeapon].type != Weapon.TYPE_DETONATOR_MISSILE) {
+				missileLockMode = MissileLockMode.None;
+			}
+			PlaySound(Game.SOUND_TYPE_VARIOUS, 11);
+		}
+	}
+
 	public void RemoveEnemy(Enemy e) {
 		if (missileLockMode != MissileLockMode.None && lockedEnemy == e) {
 			lockedEnemy = null;

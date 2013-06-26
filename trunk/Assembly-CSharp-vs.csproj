@@ -84,6 +84,7 @@
      <Compile Include="Assets\Scripts\Enemies\Wombat.cs" />
      <Compile Include="Assets\Scripts\FPSCounter.cs" />
      <Compile Include="Assets\Scripts\GUI\Center.cs" />
+     <Compile Include="Assets\Scripts\GUI\Checkbox.cs" />
      <Compile Include="Assets\Scripts\GUI\Container.cs" />
      <Compile Include="Assets\Scripts\GUI\CustomAnimation.cs" />
      <Compile Include="Assets\Scripts\GUI\Dim.cs" />

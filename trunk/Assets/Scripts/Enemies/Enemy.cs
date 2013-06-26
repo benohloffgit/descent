@@ -103,8 +103,6 @@ public abstract class Enemy : MonoBehaviour {
 	void Awake() {
 		myRigidbody = GetComponent<Rigidbody>();
 		isActive = false;
-		radius = collider.bounds.extents.magnitude;
-//		Debug.Log (radius);
 	}
 
 	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int enemyEquivalentClazzAModel_, int health_,
@@ -167,6 +165,7 @@ public abstract class Enemy : MonoBehaviour {
 		lookAtToleranceRoaming = 20.0f;
 		
 		transform.localScale *= size;
+		radius = collider.bounds.extents.magnitude;
 	}
 	
 	public void Initialize(Play play_, Spawn spawn_, string clazz_, int model_, int enemyEquivalentClazzAModel_, int health_,

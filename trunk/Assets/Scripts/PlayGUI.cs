@@ -71,7 +71,7 @@ public class PlayGUI {
 	private int[] enemyHUDInfoLabels;
 	private ProgressBar[] enemyHealthBars;
 	private int enemyLockMissileLabel;
-	private int shipSecondaryWeaponDisplayed;
+//	private int shipSecondaryWeaponDisplayed;
 	private bool shipSecondaryWeaponLoadState;
 	
 	private static int MAX_ENEMY_HUD_INFOS = 5;
@@ -235,7 +235,7 @@ public class PlayGUI {
 //		ticks = 0;
 		healthCount = new int[3];
 		shieldCount = new int[3];
-		shipSecondaryWeaponDisplayed = -1;
+//		shipSecondaryWeaponDisplayed = -1;
 		shipSecondaryWeaponLoadState = false;
 	}
 	
@@ -260,9 +260,15 @@ public class PlayGUI {
 		for (int i=0; i<4; i++) {
 			damageIndicators[i].myRenderer.enabled = false;
 		}
+		for (int i=0; i<MAX_ENEMY_HUD_INFOS; i++) {
+			enemyHealthBars[i].DisableRenderer();
+		}
 		isOneDamageIndicatorActive = false;
 		doorOpen.myRenderer.enabled = false;
 		doorClosed.myRenderer.enabled = true;
+		missileLockOff.myRenderer.enabled = false;
+		missileLockOn.myRenderer.enabled = false;
+		shipMissileLoadingProgressBar.DisableRenderer();
 		gui.labelsCC[primaryWeaponLabel].SetText("");
 		gui.labelsCC[secondaryWeaponLabel].SetText("");
 		primaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);

@@ -156,10 +156,7 @@ public class GameInput : MonoBehaviour {
 					myGUI.SendTouchDown(hit.collider.transform.parent.gameObject, finger);
 					result = true;
 				} else if (hit.collider.tag == "Select") {
-//					myGUI.SendTouchDown(hit.collider.gameObject, finger);
-					result = true;
-				} else if (hit.collider.tag == "Knob") {
-					hit.collider.gameObject.SendMessage("Select", finger);
+					myGUI.SendTouchDown(hit.collider.gameObject, finger);
 					result = true;
 				}
 			}

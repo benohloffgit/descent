@@ -224,9 +224,9 @@ public class PrefabFactory {
 	public GameObject CreateKeyDrop(Vector3 pos, Quaternion rot, int keyType) {
 		GameObject newKeyDrop = GameObject.Instantiate(game.keyPrefab, pos, rot) as GameObject;
 		CollecteableKey keyDrop = newKeyDrop.GetComponent<CollecteableKey>();
-		keyDrop.Initialize(play, keyType);
+		keyDrop.Initialize(play, keyType, play.game.keyTextures[keyType]);
 		keyDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
-		keyDrop.renderer.material.mainTexture = play.game.keyTextures[keyType];
+//		keyDrop.renderer.material.mainTexture = play.game.keyTextures[keyType];
 		keyDrop.enabled = true;
 		return newKeyDrop;
 	}
@@ -265,14 +265,17 @@ public class PrefabFactory {
 		return newExplosion;
 	}
 
-	public GameObject CreateHit(Vector3 pos, Quaternion rot) {
+	public GameObject CreateHit(Vector3 pos, Quaternion rot, string tag) {
 		GameObject newHit = GameObject.Instantiate(hitTemplate, pos, rot) as GameObject;
 		Hit hit = newHit.GetComponent<Hit>();
 		HTSpriteSheet spriteSheet = hit.GetComponent<HTSpriteSheet>();
-		spriteSheet.SetMaterial(game.explosionMaterials[UnityEngine.Random.Range(0,2)]);
+		if (tag == Enemy.TAG || tag == Ship.TAG) {
+			spriteSheet.SetMaterial(game.explosionMaterials[UnityEngine.Random.Range(0,2)]);
+		} else {
+			spriteSheet.SetMaterial(game.explosionMaterials[2]); // smoke
+		}
 		spriteSheet.enabled = true;
 		hit.enabled = true;
-//		hit.Initialize(play);
 		hit.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		return newHit;
 	}

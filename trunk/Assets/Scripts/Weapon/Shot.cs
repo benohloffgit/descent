@@ -91,7 +91,7 @@ public class Shot : MonoBehaviour {
 					ApplyCollateralDamage(c.contacts[0].point);
 				}
 			} else {
-				play.DisplayHit(c.contacts[0].point, play.ship.transform.rotation);
+				play.DisplayHit(c.contacts[0].point, play.ship.transform.rotation, c.collider.tag, source);
 			}
 			
 			if (c.collider.tag == Ship.TAG) {
@@ -125,12 +125,12 @@ public class Shot : MonoBehaviour {
 			} else {
 				play.ship.Damage(Mathf.RoundToInt(damage/4.0f), col.transform.position, type);
 			}
-			play.DisplayHit(col.transform.position, play.ship.transform.rotation);
+			play.DisplayHit(col.transform.position, play.ship.transform.rotation, col.tag, source);
 		}
 	}
 	
 	public void ExecuteLaserBeamDamage(Vector3 point) {
-		play.DisplayHit(point, play.ship.transform.rotation);
+		play.DisplayHit(point, play.ship.transform.rotation, Ship.TAG, source);
 		play.ship.Damage(damage, point, type);
 		play.DamageShip(source);
 	}

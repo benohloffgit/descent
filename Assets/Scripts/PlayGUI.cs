@@ -269,10 +269,20 @@ public class PlayGUI {
 		missileLockOff.myRenderer.enabled = false;
 		missileLockOn.myRenderer.enabled = false;
 		shipMissileLoadingProgressBar.DisableRenderer();
-		gui.labelsCC[primaryWeaponLabel].SetText("");
-		gui.labelsCC[secondaryWeaponLabel].SetText("");
-		primaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
-		secondaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
+		
+		if (ship.currentPrimaryWeapon != -1) {
+			DisplayPrimaryWeapon(ship.primaryWeapons[ship.currentPrimaryWeapon]);
+		} else {
+			gui.labelsCC[primaryWeaponLabel].SetText("");
+			primaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
+		}
+		if (ship.currentPrimaryWeapon != -1) {
+			DisplaySecondaryWeapon();
+		} else {
+			gui.labelsCC[secondaryWeaponLabel].SetText("");
+			secondaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
+		}
+		
 		DisplayZoneID();
 	}
 
@@ -669,6 +679,7 @@ public class PlayGUI {
 	}
 	
 	public void DisplayPrimaryWeapon(Weapon w) {
+		Debug.Log (primaryWeapon + " " + w + " " + PRIMARY_WEAPONS);
 		primaryWeapon.SetUVMapping(PRIMARY_WEAPONS[w.type]);
 		gui.labelsCC[primaryWeaponLabel].SetText(Weapon.PRIMARY_TYPES[w.type] + " FP: " + w.damage);
 	}

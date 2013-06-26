@@ -6,7 +6,7 @@ public class ShipSteering : MonoBehaviour {
 	
 	private GameInput gameInput;
 	private Ship ship;
-//	private Play play;
+	private State state;
 	
 //	private Rigidbody myRigidbody;
 	private FlyingMode flyingMode;
@@ -45,15 +45,11 @@ public class ShipSteering : MonoBehaviour {
 
 	public enum DirectionMode { Stopped=0, Forward=1, Backward=2 }
 	public enum FlyingMode { None=0, ShiftLeft=5, ShiftRight=6, ShiftUp=7, ShiftDown=8, BankLeft=9, BankRight=10 }
-	
-	void Awake() {
-//		myRigidbody = GetComponent<Rigidbody>();
-	}
-	
+		
 	public void Initialize(Ship s, Play p, GameInput gI) {
 		ship = s;
 		gameInput = gI;
-//		play = p;
+		state = p.game.state;
 		
 		flyingBitwise = 0;
 		directionBitwise = 0;
@@ -331,7 +327,7 @@ public class ShipSteering : MonoBehaviour {
 			
 			if (!Input.GetKey(KeyCode.LeftAlt) && usesMouse) {
 				ship.Turn(Vector3.up * Input.GetAxis ("Mouse X"));
-				ship.Turn(Vector3.right * Input.GetAxis ("Mouse Y"));
+				ship.Turn(Vector3.right * Input.GetAxis("Mouse Y") * state.GetPreferenceMouseYAxisInverted());
 			}
 		}
 		

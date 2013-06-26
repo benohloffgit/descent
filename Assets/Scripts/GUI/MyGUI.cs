@@ -21,6 +21,7 @@ public class MyGUI : MonoBehaviour {
 	public GameObject radioPrefab;
 	public GameObject textInputPrefab;
 	public GameObject progressBarPrefab;
+	public GameObject checkboxPrefab;
 	
 	public Texture2D[] fontTextures;
 	public CCFont[] bitmapFonts;
@@ -43,6 +44,7 @@ public class MyGUI : MonoBehaviour {
 	public Dictionary<int, LabelButton> labelButtons;
 	public Dictionary<int, Image> images;
 	public Dictionary<int, ProgressBar> progressBars;
+	public Dictionary<int, Checkbox> checkboxes;
 	
 	public enum Focus { NoFocus=0, Focus=1 }	
 	public enum GUIAlignment { Left=0, Right=1, Center=2, Top=3, Bottom=4 }
@@ -69,6 +71,7 @@ public class MyGUI : MonoBehaviour {
 		labelButtons = new Dictionary<int, LabelButton>();
 		images = new Dictionary<int, Image>();
 		progressBars = new Dictionary<int, ProgressBar>();
+		checkboxes = new Dictionary<int, Checkbox>();
 		
 //		background = GetComponent<NinePatch>();
 		
@@ -159,8 +162,7 @@ public class MyGUI : MonoBehaviour {
 		LabelButton b = (GameObject.Instantiate(labelButtonPrefab) as GameObject).GetComponent<LabelButton>();
 		b.Initialize(this, tD, containerID, text, textMargin, size, alignLeftRightCenter, textureIDText, textureIDBackground, uvMapBackground, scale);
 		labelButtons.Add(b.gameObject.GetInstanceID(), b);
-		containers[containerID].AddElement(b.transform, b.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
-		
+		containers[containerID].AddElement(b.transform, b.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);		
 		return b.gameObject.GetInstanceID();
 	}	
 	
@@ -182,6 +184,19 @@ public class MyGUI : MonoBehaviour {
 		images.Add(i.gameObject.GetInstanceID(), i);
 		containers[containerID].AddElement(i.transform, i.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);
 		return i.gameObject.GetInstanceID();
+	}	
+
+	// Button clickeable with image background and floating position
+	public int AddCheckbox(
+					int containerID, Vector3 size, CheckboxDelegate cD, MyGUI.GUIState selectState,
+					GUIAlignment alignLeftRightCenter, float borderLeftRight, GUIAlignment alignTopBottomCenter, float borderTopBottom,
+					Vector4 textureBackgroundScaleOffset, int textureIDBackground, Vector4 textureCheckMarkScaleOffset, int textureIDCheckMark
+			) {
+		Checkbox c = (GameObject.Instantiate(checkboxPrefab) as GameObject).GetComponent<Checkbox>();
+		c.Initialize(this, cD, size, selectState, textureBackgroundScaleOffset, textureIDBackground, textureCheckMarkScaleOffset, textureIDCheckMark);
+		checkboxes.Add(c.gameObject.GetInstanceID(), c);
+		containers[containerID].AddElement(c.transform, containers[containerID].GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);		
+		return c.gameObject.GetInstanceID();
 	}	
 
 	//  Progress Bar with floating position and fixed size

@@ -65,7 +65,7 @@ public class RadioButton : MonoBehaviour, Focussable {
 		}
 		myGUI.SetGUIInFocus(this);
 		animation.Play("RadioOn");
-		g.state.PlaySound(7);	
+		//g.state.PlaySound(7);	
 	}
 		
 	public bool IsBlocking() {
@@ -80,37 +80,4 @@ public class RadioButton : MonoBehaviour, Focussable {
 			meshOn.renderer.enabled = true;
 		}
 	}
-	
-/*	public int id = -1; // set for id based event handling
-		
-	public Vector2 uv0;
-	public Vector2 uv1;
-	
-	private Transform mesh;
-	private Game g;
-	private MyGUI myGUI;
-	
-	public TouchDelegate touchDelegate;
-	
-	void Awake() {
-		mesh = transform.Find("Mesh");
-		id = gameObject.GetInstanceID();
-	}
-	
-	void Start() {
-		g = GameObject.Find("/Game(Clone)").GetComponent<Game>();
-		if (uv0 != new Vector2(-1,-1) && uv1 != new Vector2(-1,-1)) {
-			Mesh3D.SetUVMapping((mesh.GetComponent<MeshFilter>()).mesh, uv0, uv1);
-		}
-	}
-	
-	public void Initialize(MyGUI mG, TouchDelegate tD) {
-		myGUI = mG;
-		touchDelegate = tD;
-	}
-
-	public void Select() {
-		touchDelegate();
-	}
-		*/
 }

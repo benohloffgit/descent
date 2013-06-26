@@ -56,7 +56,18 @@ public class AudioSourcePool {
 //		Debug.Log ("Using AudioSource " + audioSources[usedAudioSource].id);
 		return usedAudioSource;
 	}
-	
+
+	public void PlaySound(Vector3 pos, AudioClip clip) {
+		audioSources[nextAudioSource].transform.position = pos;
+		//audioSources[nextAudioSource].transform.localPosition = Vector3.zero;
+		audioSources[nextAudioSource].audioSource.PlayOneShot(clip);
+		nextAudioSource++;
+		if (nextAudioSource == MAX_AUDIO_SOURCES) {
+			nextAudioSource = 0;
+		}
+//		Debug.Log ("Using AudioSource " + audioSources[usedAudioSource].id);
+	}
+
 	public static void DecoupleAudioSource(PooledAudioSource aS) {
 		if (aS != null) {
 //			Debug.Log ("AudioSource disabled " + aS.id + " " + aS.gameObject.GetInstanceID());

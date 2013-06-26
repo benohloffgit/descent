@@ -184,6 +184,9 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_GUIDED_MISSILE_LOADING = new Vector4(0.375f,0.25f,0.5f,0.375f);
 	public static Vector4 GUI_UV_CHARGED_MISSILE_LOADING = new Vector4(0.5f,0.25f,0.625f,0.375f);
 	public static Vector4 GUI_UV_DETONATOR_MISSILE_LOADING = new Vector4(0.625f,0.25f,0.75f,0.375f);
+	// !!! the follwing are 2 Vector2 (offset and scale) !!!
+	public static Vector4 GUI_UV_CHECKBOX_BACKGROUND = new Vector4(0.75f,0.25f,0.125f,0.125f); 
+	public static Vector4 GUI_UV_CHECKBOX_CHECKMARK = new Vector4(0.875f,0.25f,0.125f,0.125f); 
 	
 	private Menu menu;
 	private Play play;
@@ -334,6 +337,11 @@ public class Game : MonoBehaviour {
 			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
 		}
 		return audioSourceID;
+	}
+
+	// From AudioSourcePool at pos without parenting AudioSource, always SOUND_TYPE_VARIOUS
+	public void PlaySound(Vector3 pos, int type) {
+		audioSourcePool.PlaySound(pos, audioClips[type]);
 	}
 }
 	

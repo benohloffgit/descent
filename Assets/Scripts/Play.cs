@@ -449,8 +449,14 @@ public class Play : MonoBehaviour {
 		game.CreateFromPrefab().CreateExplosion(pos + (GetShipPosition()-pos).normalized * (RoomMesh.MESH_SCALE/3f), rot);
 	}
 
-	public void DisplayHit(Vector3 pos, Quaternion rot) {
-		game.CreateFromPrefab().CreateHit(pos + (GetShipPosition()-pos).normalized * (RoomMesh.MESH_SCALE/5f), rot);
+	public void DisplayHit(Vector3 pos, Quaternion rot, string tag, int source) {
+		Vector3 newPos = pos + (GetShipPosition()-pos).normalized * (RoomMesh.MESH_SCALE/5f);
+		if (tag == Enemy.TAG) {
+			game.PlaySound(newPos, UnityEngine.Random.Range(41,44));
+		} else if (source == Game.SHIP) {
+			game.PlaySound(newPos, UnityEngine.Random.Range(38,41));
+		}
+		game.CreateFromPrefab().CreateHit(newPos, rot, tag);
 	}
 	
 	public void RemoveEnemy(Enemy e) {

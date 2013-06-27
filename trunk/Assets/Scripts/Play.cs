@@ -198,6 +198,7 @@ public class Play : MonoBehaviour {
 
 	public void Activate() {
 		hasDied = false;
+		state.SetPreferenceSokobanSolved(false);
 		zoneID = state.level;
 		playGUI.Activate();
 		ship.CalculateHullClazz();
@@ -559,7 +560,7 @@ public class Play : MonoBehaviour {
 			playGUI.ToPowerUpFound(state.GetDialog(17), state.GetDialog(21+id), PlayGUI.PRIMARY_WEAPONS[id]); 
 		} else if (type == Game.POWERUP_SECONDARY_WEAPON) {
 			ship.AddSecondaryWeapon(id);
-			playGUI.ToPowerUpFound(state.GetDialog(18), state.GetDialog(28+id), PlayGUI.SECONDARY_WEAPONS[id]);
+			playGUI.ToPowerUpFound(state.GetDialog(18), state.GetDialog(48+id), PlayGUI.SECONDARY_WEAPONS[id]);
 		} else if (type == Game.POWERUP_HULL) {
 			ship.SetHull(id);
 			playGUI.ToPowerUpFound(state.GetDialog(19), state.GetDialog(32), Game.GUI_UV_SHIELD);

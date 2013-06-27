@@ -15,7 +15,9 @@ public class Dim : MonoBehaviour {
 	}
 		
 	public void Select() {
-		touchDelegate();
+		if (touchDelegate != null) {
+			touchDelegate();
+		}
 	}
 
 	public void Initialize(MyGUI mG, TouchDelegate tD, int textureID, Vector4 uvMap, Vector3 scale) {

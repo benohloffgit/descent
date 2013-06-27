@@ -26,7 +26,29 @@ public class ShipControl {
 	public void DispatchGameInput() {
 		if (gameInput.isMobile) {
 		} else {
-			if (!play.isPaused) {
+			if (play.isPaused) {
+				if (play.mode == Play.Mode.Sokoban) {
+					if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
+						play.sokoban.MovePlayer(IntDouble.LEFT);
+					} else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
+						play.sokoban.MovePlayer(IntDouble.RIGHT);
+					} else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
+						play.sokoban.MovePlayer(IntDouble.UP);
+					} else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
+						play.sokoban.MovePlayer(IntDouble.DOWN);
+					}
+					if (Input.GetKeyDown(KeyCode.Escape)) {
+						play.playGUI.ToQuitSokoban();
+					}
+				} else {
+					if (Input.GetKeyDown(KeyCode.Escape)) {
+						if (play.game.gui.isInDialogMode) {
+							play.SetPaused(false);
+							play.playGUI.CloseDialog();
+						}
+					}
+				}
+			} else {
 				if (!ship.isCloakOn && (Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.LeftControl))) {
 					ship.ShootPrimary();
 				}
@@ -114,18 +136,6 @@ public class ShipControl {
 					ship.SetSecondary(Weapon.TYPE_CHARGED_MISSILE);
 				} else if (Input.GetKeyDown(KeyCode.F4)) {
 					ship.SetSecondary(Weapon.TYPE_DETONATOR_MISSILE);
-				}
-			} else {
-				if (play.mode == Play.Mode.Sokoban) {
-					if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
-						play.sokoban.MovePlayer(IntDouble.LEFT);
-					} else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
-						play.sokoban.MovePlayer(IntDouble.RIGHT);
-					} else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
-						play.sokoban.MovePlayer(IntDouble.UP);
-					} else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
-						play.sokoban.MovePlayer(IntDouble.DOWN);
-					}
 				}
 			}
 		}

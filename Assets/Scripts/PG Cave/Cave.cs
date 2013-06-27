@@ -190,7 +190,11 @@ public class Cave {
 				secretChamberDoor.transform.position = secretCave.transform.position;
 				secretChamberDoor.transform.forward = secretCave.transform.forward;
 				secretChamberDoor.transform.Rotate(Vector3.forward, 45f);
-				CloseSecretChamberDoor();
+				if (game.state.GetPreferenceSokobanSolved()) {
+					OpenSecretChamberDoor();
+				} else {
+					CloseSecretChamberDoor();
+				}
 				play.placeShipBeforeSecretChamberDoor = new GridPosition(startingCell, room.pos);
 //				Debug.Log ("startingCell "+ startingCell);
 			}

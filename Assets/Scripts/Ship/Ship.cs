@@ -138,7 +138,7 @@ public class Ship : MonoBehaviour {
 		
 	}
 	
-	public void Activate() {
+	public void Reset() {
 		shipCamera.enabled = true;
 		isExitHelperLaunched = false;
 		isBoosterOn = false;
@@ -156,6 +156,7 @@ public class Ship : MonoBehaviour {
 		isHeadlightOn = false;
 		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
 		missileLockMode = MissileLockMode.None;		
+		transform.position = play.cave.GetCaveEntryPosition();
 	}
 	
 	public void Deactivate() {

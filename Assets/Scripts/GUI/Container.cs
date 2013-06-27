@@ -197,6 +197,7 @@ public class Container : MonoBehaviour {
 	
 	public void Select(int finger) {
 		if (touchDelegate != null) {
+			Debug.Log ("here");
 			touchDelegate();
 		} else if (isScrollableContainer) {
 			mode = SelectionMode.On;

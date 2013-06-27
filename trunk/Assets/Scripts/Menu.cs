@@ -40,9 +40,6 @@ public class Menu : MonoBehaviour {
 		
 		container = gui.AddContainer();
 		
-//		Vector3 fullSize = gui.containers[container].GetSize();
-//		Vector3 screenCenter = gui.containers[container].GetCenter();
-		
 		gui.AddImage(container, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
 		gui.containers[container].AddZLevel();
 		gui.AddImage(container, new Vector3(1f,1f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_FULL, 6);
@@ -50,7 +47,7 @@ public class Menu : MonoBehaviour {
 		gui.AddImage(container, new Vector3(0.24f,0.24f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, 0.1f, Game.GUI_UV_FULL, 7);
 		gui.containers[container].AddZLevel();
 		TouchDelegate toZone01 = new TouchDelegate(ToZone01);
-		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone01, state.GetDialog(13), 1.0f, 1.0f, 3, 
+/*		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone01, state.GetDialog(13), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, -0.4f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
 		TouchDelegate toZone09 = new TouchDelegate(ToZone09);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone09, state.GetDialog(14), 1.0f, 1.0f, 3, 
@@ -67,7 +64,7 @@ public class Menu : MonoBehaviour {
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);
 		TouchDelegate toContinueGame = new TouchDelegate(ToContinueGame);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toContinueGame, state.GetDialog(1), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0); */
 		TouchDelegate toOptions = new TouchDelegate(ToOptions);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toOptions, state.GetDialog(3), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_COLOR_BLACK, 0);
@@ -77,6 +74,12 @@ public class Menu : MonoBehaviour {
 		TouchDelegate toQuit = new TouchDelegate(ToQuit);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toQuit, state.GetDialog(2), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, -0.3f, Game.GUI_UV_COLOR_BLACK, 0);
+		
+		// 1 level demo
+		TouchDelegate to1LevelDemo = new TouchDelegate(To1LevelDemo);
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), to1LevelDemo, state.GetDialog(45), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);
+
 	}
 	
 /*	public void RemovePaygate() {
@@ -114,6 +117,11 @@ public class Menu : MonoBehaviour {
 		game.SetGameMode(Game.Mode.Play);
 	}
 
+	public void To1LevelDemo() {
+		game.state.level = 9;
+		game.SetGameMode(Game.Mode.Play);
+	}
+
 	public void ToContinueGame() {
 		game.SetGameMode(Game.Mode.Play);
 	}
@@ -125,8 +133,8 @@ public class Menu : MonoBehaviour {
 	public void ToOptions() {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
-		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
-		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0); 
+//		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0); 
 			//gui.AddDim(dialogContainer, closeDialog);
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 
@@ -152,8 +160,8 @@ public class Menu : MonoBehaviour {
 	public void ToCredits() {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
-		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
-		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0); 
+//		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0); 
 			//gui.AddDim(dialogContainer, closeDialog);
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 

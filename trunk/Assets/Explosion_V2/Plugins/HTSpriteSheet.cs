@@ -16,6 +16,8 @@ using System.Collections;
 /// </summary>
 public class HTSpriteSheet : MonoBehaviour {
 	
+	private Play play;
+	
 	#region enumeration
 	/// <summary>
 	/// The rendering mode for particles..
@@ -220,107 +222,105 @@ public class HTSpriteSheet : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		// We search the main camera
-		mainCamTransform = Camera.main.transform;
+//		mainCamTransform = Camera.main.transform;
 	
 		InitSpriteSheet();
 		
 		renderer.enabled = false;
 	}
 	
-	/// <summary>
-	/// Update this instance.
-	/// </summary>
 	void FixedUpdate () {
-		
-		bool end=false;
-		
-		Camera_BillboardingMode();
-		
-		// Calculate index
-		
-    	float index = (Time.fixedTime-startTime) * framesPerSecond;
-		
-
-		if (!isOneShot && life>0 && (Time.fixedTime -lifeStart)> life){
-			effectEnd=true;
-		}
-		
-		if ((index<=spriteCount || !isOneShot ) && !effectEnd ){
-
-		   		
-			if (index >= spriteCount){
-				startTime = Time.fixedTime;	
-				index=0;
-				if (addColorEffect){
-					currentColor = colorStart;
-					meshRender.material.SetColor("_Color", currentColor);
+		if (!play.isPaused) {
+			bool end=false;
+			
+			Camera_BillboardingMode();
+			
+			// Calculate index
+			
+	    	float index = (Time.fixedTime-startTime) * framesPerSecond;
+			
+	
+			if (!isOneShot && life>0 && (Time.fixedTime -lifeStart)> life){
+				effectEnd=true;
+			}
+			
+			if ((index<=spriteCount || !isOneShot ) && !effectEnd ){
+	
+			   		
+				if (index >= spriteCount){
+					startTime = Time.fixedTime;	
+					index=0;
+					if (addColorEffect){
+						currentColor = colorStart;
+						meshRender.material.SetColor("_Color", currentColor);
+					}
+					currentSize = sizeStart;
+					myTransform.localScale = currentSize;
+					
+					if (randomRotation){
+						currentRotation = Random.Range(-180.0f,180.0f);
+					}
+					else{
+						currentRotation = rotationStart;
+					}
 				}
-				currentSize = sizeStart;
-				myTransform.localScale = currentSize;
+				// repeat when exhausting all frames
+			    index = index % (uvAnimationTileX * uvAnimationTileY);
 				
-				if (randomRotation){
-					currentRotation = Random.Range(-180.0f,180.0f);
-				}
-				else{
-					currentRotation = rotationStart;
-				}
-			}
-			// repeat when exhausting all frames
-		    index = index % (uvAnimationTileX * uvAnimationTileY);
+				
+			    // Size of every tile
+			    Vector2 size = new Vector2 (1.0f / uvAnimationTileX, 1.0f / uvAnimationTileY);
+			   
+			    // split into horizontal and vertical index
+			    float uIndex = Mathf.Floor(index % uvAnimationTileX);
+			    float vIndex = Mathf.Floor(index / uvAnimationTileX);
 			
-			
-		    // Size of every tile
-		    Vector2 size = new Vector2 (1.0f / uvAnimationTileX, 1.0f / uvAnimationTileY);
-		   
-		    // split into horizontal and vertical index
-		    float uIndex = Mathf.Floor(index % uvAnimationTileX);
-		    float vIndex = Mathf.Floor(index / uvAnimationTileX);
-		
-		    // build offset
-		    Vector2 offset = new Vector2 (uIndex * size.x , 1.0f - size.y - vIndex * size.y);
-			
-		   	renderer.material.SetTextureOffset ("_MainTex", offset);
-		   	renderer.material.SetTextureScale ("_MainTex", size);
-		    
-			renderer.enabled = true;
-		}			
-		else{
-	 		effectEnd = true;
-			renderer.enabled = false;
-			end = true;		
-
-			if (soundEffect){
-				if (soundEffect.isPlaying){
-					end = false;
+			    // build offset
+			    Vector2 offset = new Vector2 (uIndex * size.x , 1.0f - size.y - vIndex * size.y);
+				
+			   	renderer.material.SetTextureOffset ("_MainTex", offset);
+			   	renderer.material.SetTextureScale ("_MainTex", size);
+			    
+				renderer.enabled = true;
+			}			
+			else{
+		 		effectEnd = true;
+				renderer.enabled = false;
+				end = true;		
+	
+				if (soundEffect){
+					if (soundEffect.isPlaying){
+						end = false;
+					}
 				}
-			}
-		
-			if (addLightEffect && end){
-				if (gameObject.light.intensity>0){
-					end = false;
+			
+				if (addLightEffect && end){
+					if (gameObject.light.intensity>0){
+						end = false;
+					}
 				}
+				
+				if (end){
+					Destroy(gameObject);	
+	 			}
 			}
 			
-			if (end){
-				Destroy(gameObject);	
- 			}
-		}
-		
-		// Size
-		if (sizeStart != sizeEnd){
-	    	myTransform.localScale += sizeStep * Time.deltaTime ;
-		}
-		   
-		
-		// Light effect
-	 	if (addLightEffect && lightFadeSpeed!=0){
-			gameObject.light.intensity -= lightFadeSpeed*Time.deltaTime;
-		}
-		
-		// Color Effect
-		if (addColorEffect){
-			currentColor = new Color(currentColor.r + colorStep.r * Time.deltaTime,currentColor.g + colorStep.g* Time.deltaTime,currentColor.b + colorStep.b* Time.deltaTime , currentColor.a + colorStep. a*Time.deltaTime);
-			meshRender.material.SetColor("_TintColor", currentColor);
+			// Size
+			if (sizeStart != sizeEnd){
+		    	myTransform.localScale += sizeStep * Time.deltaTime ;
+			}
+			   
+			
+			// Light effect
+		 	if (addLightEffect && lightFadeSpeed!=0){
+				gameObject.light.intensity -= lightFadeSpeed*Time.deltaTime;
+			}
+			
+			// Color Effect
+			if (addColorEffect){
+				currentColor = new Color(currentColor.r + colorStep.r * Time.deltaTime,currentColor.g + colorStep.g* Time.deltaTime,currentColor.b + colorStep.b* Time.deltaTime , currentColor.a + colorStep. a*Time.deltaTime);
+				meshRender.material.SetColor("_TintColor", currentColor);
+			}
 		}
 	}
 	
@@ -347,8 +347,10 @@ public class HTSpriteSheet : MonoBehaviour {
 		//renderer.material = spriteSheetMaterial;
 	}
 	
-	public void SetMaterial(Material m) {
+	public void Initialize(Play play_, Transform shipCameraTransform, Material m) {
+		play = play_;
 		renderer.material = m;
+		mainCamTransform = shipCameraTransform;
 	}
 	
 	/// <summary>

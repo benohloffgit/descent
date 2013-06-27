@@ -28,6 +28,7 @@ public class Play : MonoBehaviour {
 	private Transform lightsHolder;
 	private bool[] isKeyCollected;
 	public string storyChapter;
+	private bool hasDied;
 	
 	public GridPosition placeShipBeforeExitDoor;
 	public GridPosition placeShipBeforeSecretChamberDoor;
@@ -130,23 +131,8 @@ public class Play : MonoBehaviour {
 		SetPaused(true);
 	}
 	
-	public void Activate() {
-		playGUI.Activate();
-		StartZone();
-		ship.CalculateHullClazz();
-		ship.AddSpecials();
-		ship.AddWeapons();
-		InvokeRepeating("UpdateStats", 0, 1.0f);
-	}
-	
-	public void Deactivate() {
-		playGUI.Deactivate();
-		ship.RemoveWeapons();
-		CancelInvoke();
-	}
-
 	void OnGUI() {
-		if (!isPaused) {
+//		if (!isPaused) {
 /*			GUI.Label(new Rect (20,Screen.height-90,500,80),
 					"Active-Living-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +"--"+ enemyDistributor.enemiesAll +
 					"\nHealth E: " + enemyDistributor.enemiesHealthActive +"--"+ enemyDistributor.enemiesHealthActiveAvg.ToString("F2") +
@@ -155,7 +141,7 @@ public class Play : MonoBehaviour {
 					"\nHit/Miss S-E-S/E: " + shipHitRatio.ToString("F2") +"--"+enemyHitRatio.ToString("F2") + "--" + shipToEnemyHitRatio.ToString("F2")
 				);*/
 			
-			Event e = Event.current;
+/*			Event e = Event.current;
 	        if (e.isKey && e.type == EventType.KeyDown) { // keydown and characters can come as seperate events!!!
 	//			Debug.Log("> " + keyCommand + " "  + e.type + " " +  e.keyCode);
 				if (e.keyCode == KeyCode.Backslash) {
@@ -171,7 +157,7 @@ public class Play : MonoBehaviour {
 				}
 				e.Use();
 			}
-		}
+		}*/
    	}
 	
 	void Update() {
@@ -179,7 +165,7 @@ public class Play : MonoBehaviour {
 			sokoban.DispatchUpdate();
 		}
 		// editor commands
-		if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer) {
+		if (Application.platform == RuntimePlatform.WindowsEditor) { //  || Application.platform == RuntimePlatform.WindowsPlayer
 			/*if (Input.GetKeyDown(KeyCode.F6)) {
 				SwitchMode();
 			}*/
@@ -198,6 +184,9 @@ public class Play : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.F9)) {	
 				ship.isInvincibleOn = ship.isInvincibleOn ? false : true;
 			}
+			if (Input.GetKeyDown(KeyCode.F11)) {	
+				ship.Damage(100, Vector3.zero, Shot.BULLET);
+			}
 		}
 	}
 	
@@ -206,12 +195,27 @@ public class Play : MonoBehaviour {
 			playGUI.DispatchFixedUpdate();
 		}
 	}
-	
-	private void StartZone() {
+
+	public void Activate() {
+		hasDied = false;
 		zoneID = state.level;
+		playGUI.Activate();
+		ship.CalculateHullClazz();
+		ship.AddSpecials();
+		ship.AddWeapons();
+		StartZone();
+		InvokeRepeating("UpdateStats", 0, 1.0f);
+	}
+	
+	public void Deactivate() {
+		playGUI.Deactivate();
+		ship.RemoveWeapons();
+		CancelInvoke();
+	}
+
+	private void StartZone() {
 		shipHitRatio = 0;
 		enemyHitRatio = 0;
-//		shipToEnemyHitRatio = 1.0f;
 		isShipInPlayableArea = false;
 		Debug.Log (" ------------------------------- Cave Seed: " + caveSeed);
 		UnityEngine.Random.seed = caveSeed;
@@ -219,33 +223,45 @@ public class Play : MonoBehaviour {
 		UnityEngine.Random.seed = botSeed;
 		isKeyCollected = new bool[] {false, false};
 		collecteablesDistributor.DropKeys();
-		collecteablesDistributor.DropPowerUps();
+		if (!state.GetPreferenceSokobanSolved()) {
+			collecteablesDistributor.DropPowerUps();
+		}
 		if (zoneID > 0) {
 			enemyDistributor.Distribute();
 		}
-		ship.Activate();
+		ship.Reset();
 		sokoban.RenderLevel(zoneID);
 		ConfigureLighting();
+
 		playGUI.Reset();
-		ship.transform.position = cave.GetCaveEntryPosition();
-		storyChapter = (Resources.Load("Story/EN/" + zoneID, typeof(TextAsset)) as TextAsset).text;
-		playGUI.ToStory();
+		if (hasDied) {
+			playGUI.ToHasDied();
+		} else {
+			storyChapter = (Resources.Load("Story/EN/" + zoneID, typeof(TextAsset)) as TextAsset).text;
+			playGUI.ToStory();
+		}
 	}
 	
 	public void ZoneCompleted() {
+		hasDied = false;
+		state.SetPreferenceSokobanSolved(false);
 		EndZone();
+		// 1 Level Demo
+		playGUI.To1LevelDemoEnd();
+		//NextZone();
+		//StartCoroutine(DelayedStartZone());
 	}
 	
-	public void NextZone() {
-		state.SetLevel(zoneID+1);
-		StartZone();
+	private void NextZone() {
+		zoneID++;
+		state.SetLevel(zoneID);
 	}
 	
 	public void RepeatZone() {
-		SetPaused(true);
+		hasDied = true;
 		EndZone();
 		ship.SetHealthAndShield();
-		StartZone();
+		StartCoroutine(DelayedStartZone());
 	}
 	
 	private void EndZone() {
@@ -255,10 +271,23 @@ public class Play : MonoBehaviour {
 		cave.RemoveZone();
 		botSeed = UnityEngine.Random.Range(0,9999999);
 		UnityEngine.Random.seed = caveSeed;
-		caveSeed = UnityEngine.Random.Range(1000000,9999999);
+		if (!hasDied) {
+			caveSeed = UnityEngine.Random.Range(1000000,9999999);
+		}
 		ship.Deactivate();
 		ship.LaunchExitHelper(false);
 		SetPaused(true);
+	}
+	
+	IEnumerator DelayedStartZone() {
+//		Debug.Log ("DelayedStartZone");
+		float start = Time.realtimeSinceStartup;
+		while (Time.realtimeSinceStartup < start + 0.5f) {
+//			Debug.Log ("returning null");
+			yield return null;
+		}
+//		Debug.Log ("DelayedStartZone end");
+		StartZone();
 	}
 		
 	void onDisable() {
@@ -616,6 +645,7 @@ public class Play : MonoBehaviour {
 		SwitchMode();
 		cave.OpenSecretChamberDoor();
 		ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 25);
+		state.SetPreferenceSokobanSolved(true);
 	}
 	
 	public void RetrySokoban() {

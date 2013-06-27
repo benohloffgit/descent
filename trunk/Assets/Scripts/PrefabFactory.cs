@@ -258,7 +258,7 @@ public class PrefabFactory {
 		Explosion explosion = newExplosion.GetComponent<Explosion>();
 		explosion.enabled = true;
 		HTSpriteSheet spriteSheet = explosion.GetComponent<HTSpriteSheet>();
-		spriteSheet.SetMaterial(game.explosionMaterials[UnityEngine.Random.Range(0,2)]);
+		spriteSheet.Initialize(play, play.ship.shipCamera.transform, game.explosionMaterials[UnityEngine.Random.Range(0,2)]);
 		spriteSheet.enabled = true;
 		explosion.Initialize(play);
 		explosion.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
@@ -270,9 +270,9 @@ public class PrefabFactory {
 		Hit hit = newHit.GetComponent<Hit>();
 		HTSpriteSheet spriteSheet = hit.GetComponent<HTSpriteSheet>();
 		if (tag == Enemy.TAG || tag == Ship.TAG) {
-			spriteSheet.SetMaterial(game.explosionMaterials[UnityEngine.Random.Range(0,2)]);
+			spriteSheet.Initialize(play, play.ship.shipCamera.transform, game.explosionMaterials[UnityEngine.Random.Range(0,2)]);
 		} else {
-			spriteSheet.SetMaterial(game.explosionMaterials[2]); // smoke
+			spriteSheet.Initialize(play, play.ship.shipCamera.transform, game.explosionMaterials[2]); // smoke
 		}
 		spriteSheet.enabled = true;
 		hit.enabled = true;

@@ -80,18 +80,20 @@ public class MiniMap : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
-		if (play.isShipInPlayableArea) {
-			if (play.GetRoomOfShip().pos != currentRoomPos) {
-				ReadRoomData();
-				currentRoomPos = play.GetRoomOfShip().pos;
+		if (!play.isPaused) {
+			if (play.isShipInPlayableArea) {
+				if (play.GetRoomOfShip().pos != currentRoomPos) {
+					ReadRoomData();
+					currentRoomPos = play.GetRoomOfShip().pos;
+				}
+			} else if (mode == Mode.On) {
+				play.SwitchMiniMap();
 			}
-		} else if (mode == Mode.On) {
-			play.SwitchMiniMap();
-		}
-		
-		if (mode == Mode.On) {
-			UpdatePosition();
-			UpdateRotation();
+			
+			if (mode == Mode.On) {
+				UpdatePosition();
+				UpdateRotation();
+			}
 		}
 	}
 	

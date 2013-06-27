@@ -276,7 +276,7 @@ public class PlayGUI {
 			gui.labelsCC[primaryWeaponLabel].SetText("");
 			primaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
 		}
-		if (ship.currentPrimaryWeapon != -1) {
+		if (ship.currentSecondaryWeapon != -1) {
 			DisplaySecondaryWeapon();
 		} else {
 			gui.labelsCC[secondaryWeaponLabel].SetText("");
@@ -284,15 +284,15 @@ public class PlayGUI {
 		}
 		
 		DisplayZoneID();
-	}
-
-	public void Activate() {
-		gui.containers[container].gameObject.SetActiveRecursively(true);
 		SwitchHeadlight();
 		SwitchExitHelper();
 		SwitchShipBoost();
 		SwitchShipCloak();
 		SwitchShipInvincible();
+	}
+
+	public void Activate() {
+		gui.containers[container].gameObject.SetActiveRecursively(true);
 	}
 	
 	public void Deactivate() {
@@ -679,7 +679,7 @@ public class PlayGUI {
 	}
 	
 	public void DisplayPrimaryWeapon(Weapon w) {
-		Debug.Log (primaryWeapon + " " + w + " " + PRIMARY_WEAPONS);
+//		Debug.Log (primaryWeapon + " " + w + " " + PRIMARY_WEAPONS);
 		primaryWeapon.SetUVMapping(PRIMARY_WEAPONS[w.type]);
 		gui.labelsCC[primaryWeaponLabel].SetText(Weapon.PRIMARY_TYPES[w.type] + " FP: " + w.damage);
 	}
@@ -722,15 +722,33 @@ public class PlayGUI {
 		play.RetrySokoban();
 	}
 	
-	private void ToQuitSokoban() {
+	public void ToQuitSokoban() {
 		play.SwitchMode();
 	}
-	
+
+	public void ToHasDied() {
+		gui.OpenDialog();
+		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
+//		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+			//gui.AddDim(dialogContainer, closeDialog);
+		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
+
+		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
+		gui.AddLabel(play.game.state.GetDialog(8) + (play.zoneID+1), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.2f, 
+			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		gui.AddLabel(play.game.state.GetDialog(44), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Center, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, 
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		TouchDelegate toGame = new TouchDelegate(ToGame);
+		gui.AddLabelButton(dialogBox, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(37), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, Game.GUI_UV_NULL, 0);
+	}
+
 	public void ToStory() {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
-		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
-		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+		//TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 
 		int dialogBox = gui.AddContainer(dialogContainer, gui.GetSize(),
@@ -766,9 +784,8 @@ public class PlayGUI {
 	public void ToQuit() {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
-		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
-		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
-			//gui.AddDim(dialogContainer, closeDialog);
+//		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 
 		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
@@ -785,9 +802,8 @@ public class PlayGUI {
 	public void ToPowerUpFound(string headline, string description, Vector4 uvMap) {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
-		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
-		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
-			//gui.AddDim(dialogContainer, closeDialog);
+//		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 
 		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
@@ -813,15 +829,15 @@ public class PlayGUI {
 		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toRetrySokoban, play.game.state.GetDialog(11), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, -(gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_NULL, 0);
 		TouchDelegate toQuitSokoban = new TouchDelegate(ToQuitSokoban);
-		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toQuitSokoban, play.game.state.GetDialog(12), 1.0f, 1.0f, 3, 
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toQuitSokoban, play.game.state.GetDialog(47), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, (gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_NULL, 0);
 	}
 
 	public void ToHelp() {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
-		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
-		int dim = gui.AddDim(dialogContainer, closeDialog, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+//		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
 			//gui.AddDim(dialogContainer, closeDialog);
 		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
 
@@ -837,5 +853,23 @@ public class PlayGUI {
 		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(37), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, Game.GUI_UV_NULL, 0);
 	}
-	
+
+	public void To1LevelDemoEnd() {
+		gui.OpenDialog();
+		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
+//		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_DIM, 0); 
+			//gui.AddDim(dialogContainer, closeDialog);
+		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
+
+		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
+		gui.AddLabel(play.game.state.GetDialog(45), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.2f, 
+			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		gui.AddLabel(play.game.state.GetDialog(46), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, 
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_COLOR_BLACK, 0);
+		
+		TouchDelegate toMenu = new TouchDelegate(ToMenu);
+		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toMenu, play.game.state.GetDialog(9), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, Game.GUI_UV_NULL, 0);
+	}
 }

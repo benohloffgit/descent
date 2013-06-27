@@ -31,7 +31,7 @@ public class CollecteablePowerUp : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		if (!play.isShipInPlayableArea || play.GetRoomOfShip().id == play.cave.secretCaveRoomID) {
+		if (!play.isPaused && (!play.isShipInPlayableArea || play.GetRoomOfShip().id == play.cave.secretCaveRoomID)) {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			angle += 0.05f;
 			transform.RotateAround(transform.up, angle);

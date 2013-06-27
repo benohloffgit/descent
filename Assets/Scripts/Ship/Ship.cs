@@ -155,8 +155,11 @@ public class Ship : MonoBehaviour {
 		cameraPosition = CAMERA_POSITION_COCKPIT;
 		isHeadlightOn = false;
 		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
-		missileLockMode = MissileLockMode.None;		
+		missileLockMode = MissileLockMode.None;
+//		rigidbody.isKinematic = true;
 		transform.position = play.cave.GetCaveEntryPosition();
+		transform.rotation = Quaternion.identity;
+//		rigidbody.isKinematic = false;
 	}
 	
 	public void Deactivate() {

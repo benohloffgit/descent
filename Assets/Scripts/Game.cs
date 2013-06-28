@@ -48,6 +48,7 @@ public class Game : MonoBehaviour {
 	public GameObject pooledAudioSource;
 	public GameObject bulletTrailRenderer;
 	public GameObject missileExhaustRenderer;
+	public GameObject cloakParticleEffectPrefab;
 
 	// those are objects create while game is running (after cave generation)
 	public GameObject[] shotPrefabs;
@@ -65,6 +66,7 @@ public class Game : MonoBehaviour {
 	public Material sokobanMaterial;
 	public Material[] shotTrailMaterials;
 	public Material[] explosionMaterials;
+	public Material[] powerUpParticleMaterials;
 	
 	public State state;
 	public GameInput gameInput;
@@ -126,6 +128,10 @@ public class Game : MonoBehaviour {
 	public static int POWERUP_SECONDARY_WEAPON = 1;
 	public static int POWERUP_HULL = 2;
 	public static int POWERUP_SPECIAL = 3;	
+
+	public static int POWERUP_PARTICLE_MATERIAL_CLOAK = 0;
+	public static int POWERUP_PARTICLE_MATERIAL_BOOST = 1;
+	public static int POWERUP_PARTICLE_MATERIAL_INVINCIBLE = 2;
 	
 	public static Vector4 GUI_UV_NULL = new Vector4(0.0f,0.0f,0.0f,0.0f);
 	public static Vector4 GUI_UV_FULL = new Vector4(0.0f,0.0f,1.0f,1.0f);

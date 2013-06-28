@@ -46,8 +46,9 @@ public class Menu : MonoBehaviour {
 		gui.containers[container].AddZLevel();
 		gui.AddImage(container, new Vector3(0.24f,0.24f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, 0.1f, Game.GUI_UV_FULL, 7);
 		gui.containers[container].AddZLevel();
+		
 		TouchDelegate toZone01 = new TouchDelegate(ToZone01);
-/*		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone01, state.GetDialog(13), 1.0f, 1.0f, 3, 
+		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone01, state.GetDialog(13), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, -0.4f, MyGUI.GUIAlignment.Center, 0.2f, Game.GUI_UV_COLOR_BLACK, 0);
 		TouchDelegate toZone09 = new TouchDelegate(ToZone09);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toZone09, state.GetDialog(14), 1.0f, 1.0f, 3, 
@@ -64,7 +65,9 @@ public class Menu : MonoBehaviour {
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);
 		TouchDelegate toContinueGame = new TouchDelegate(ToContinueGame);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toContinueGame, state.GetDialog(1), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0); */
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		
+		
 		TouchDelegate toOptions = new TouchDelegate(ToOptions);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), toOptions, state.GetDialog(3), 1.0f, 1.0f, 3, 
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, -0.1f, Game.GUI_UV_COLOR_BLACK, 0);
@@ -76,9 +79,9 @@ public class Menu : MonoBehaviour {
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, -0.3f, Game.GUI_UV_COLOR_BLACK, 0);
 		
 		// 1 level demo
-		TouchDelegate to1LevelDemo = new TouchDelegate(To1LevelDemo);
+/*		TouchDelegate to1LevelDemo = new TouchDelegate(To1LevelDemo);
 		gui.AddLabelButton(container, new Vector3(0.05f,0.05f,1f), to1LevelDemo, state.GetDialog(45), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, Game.GUI_UV_COLOR_BLACK, 0);*/
 
 	}
 	

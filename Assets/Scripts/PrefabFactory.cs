@@ -235,6 +235,7 @@ public class PrefabFactory {
 		GameObject newPowerUpDrop;
 		if (type == Game.POWERUP_PRIMARY_WEAPON) {
 			newPowerUpDrop = GameObject.Instantiate(game.primaryWeaponPrefabs[id], pos, rot) as GameObject;
+			newPowerUpDrop.tag = CollecteablePowerUp.TAG;
 		} else if (type == Game.POWERUP_SECONDARY_WEAPON) {
 			newPowerUpDrop = GameObject.Instantiate(game.powerUpSecondaryPrefabs[id], pos, rot) as GameObject;
 		} else if (type == Game.POWERUP_HULL) {

@@ -57,6 +57,7 @@ public class Ship : MonoBehaviour {
 	private float boostTimer;
 	private float cloakTimer;
 	private float invincibleTimer;
+	private ParticleSystem powerUpParticleSystem;
 			
 	private static float FORCE_MOVE = 65.0f;
 	private static float FORCE_TURN = 24f; // 5.0f
@@ -102,7 +103,7 @@ public class Ship : MonoBehaviour {
 		
 	public Weapon[] primaryWeapons = new Weapon[8];
 	public Weapon[] secondaryWeapons = new Weapon[4];
-	
+		
 	public enum MissileLockMode { None=0, Aiming=1, Locked=2 }
 	
 	public static int MISSILE_LOCK_DURATION = 2;
@@ -124,6 +125,9 @@ public class Ship : MonoBehaviour {
 		audioSource = GetComponent<AudioSource>();
 		currentPrimaryWeapon = -1;
 		currentSecondaryWeapon = -1;
+//		GameObject cloak = GameObject.Instantiate(game.cloakParticleEffectPrefab) as GameObject;
+		Transform powerUpParticleEffect = transform.FindChild("Camera/PowerUpParticleEffect");
+		powerUpParticleSystem = powerUpParticleEffect.particleSystem;
 	}
 	
 	public void Initialize(Play play_, ExitHelper exitHelper_) {
@@ -182,6 +186,7 @@ public class Ship : MonoBehaviour {
 				isBoosterLoading = true;
 				boostTimer = Time.fixedTime;
 				play.playGUI.SwitchShipBoost();
+				powerUpParticleSystem.Stop();
 			} else if (isBoosterLoading) {
 				if (Time.fixedTime > boostTimer + BOOST_INTERVAL) {
 					isBoosterLoading = false;
@@ -196,6 +201,7 @@ public class Ship : MonoBehaviour {
 				isCloakLoading = true;
 				cloakTimer = Time.fixedTime;
 				play.playGUI.SwitchShipCloak();
+				powerUpParticleSystem.Stop();
 			} else if (isCloakLoading) {
 				if (Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
 					isCloakLoading = false;
@@ -581,6 +587,8 @@ public class Ship : MonoBehaviour {
 			PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
 			boostTimer = Time.fixedTime;
 			play.playGUI.SwitchShipBoost();
+			powerUpParticleSystem.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_BOOST];
+			powerUpParticleSystem.Play();
 		}
 	}
 
@@ -590,6 +598,8 @@ public class Ship : MonoBehaviour {
 			//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
 			cloakTimer = Time.fixedTime;
 			play.playGUI.SwitchShipCloak();
+			powerUpParticleSystem.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_CLOAK];
+			powerUpParticleSystem.Play();
 		}
 	}
 

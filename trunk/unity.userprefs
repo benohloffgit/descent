@@ -2,18 +2,14 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Ship\Ship.cs">
     <Files>
-      <File FileName="Assets\Scripts\GUI\MyGUI.cs" Line="57" Column="14" />
-      <File FileName="Assets\Scripts\Game.cs" Line="267" Column="17" />
-      <File FileName="Assets\Scripts\Menu.cs" Line="122" Column="1" />
-      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="275" Column="65" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="161" Column="44" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="100" Column="23" />
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="207" Column="14" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="802" Column="28" />
-      <File FileName="Assets\Scripts\Play.cs" Line="233" Column="13" />
-      <File FileName="Assets\Scripts\Ship\ShipControl.cs" Line="41" Column="36" />
-      <File FileName="Assets\Scripts\State.cs" Line="327" Column="59" />
-      <File FileName="Assets\Scripts\Weapon\Weapon.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Menu.cs" Line="84" Column="98" />
+      <File FileName="Assets\Scripts\Play.cs" Line="272" Column="37" />
+      <File FileName="Assets\Scripts\Ship\CollecteablesDistributor.cs" Line="112" Column="44" />
+      <File FileName="Assets\Scripts\Ship\CollecteablePowerUp.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PrefabFactory.cs" Line="225" Column="90" />
+      <File FileName="Assets\Scripts\Weapon\Shot.cs" Line="121" Column="96" />
+      <File FileName="Assets\Scripts\Game.cs" Line="69" Column="44" />
+      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="591" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

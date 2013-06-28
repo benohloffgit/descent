@@ -247,11 +247,12 @@ public class Play : MonoBehaviour {
 		hasDied = false;
 		state.SetPreferenceSokobanSolved(false);
 		EndZone();
+		NextZone();
+		StartCoroutine(DelayedStartZone());
+
 		// 1 Level Demo
-		playGUI.To1LevelDemoEnd();
-		//NextZone();
-		//StartCoroutine(DelayedStartZone());
-	}
+//		playGUI.To1LevelDemoEnd();
+}
 	
 	private void NextZone() {
 		zoneID++;

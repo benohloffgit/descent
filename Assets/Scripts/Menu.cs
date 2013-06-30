@@ -116,7 +116,7 @@ public class Menu : MonoBehaviour {
 	}
 	
 	public void ToNewGame() {
-		game.state.level = 5;
+		game.state.level = 31;
 		game.SetGameMode(Game.Mode.Play);
 	}
 

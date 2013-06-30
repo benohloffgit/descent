@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
 
-public class CollecteableKey : MonoBehaviour {		
+public class CollecteableKey : MonoBehaviour {
+	public static string TAG = "Key";
+	
 	private Play play;
 	
 	private float angle;

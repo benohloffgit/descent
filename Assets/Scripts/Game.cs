@@ -48,7 +48,6 @@ public class Game : MonoBehaviour {
 	public GameObject pooledAudioSource;
 	public GameObject bulletTrailRenderer;
 	public GameObject missileExhaustRenderer;
-	public GameObject cloakParticleEffectPrefab;
 
 	// those are objects create while game is running (after cave generation)
 	public GameObject[] shotPrefabs;

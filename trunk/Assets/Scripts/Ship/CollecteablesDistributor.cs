@@ -185,8 +185,14 @@ public class CollecteablesDistributor {
 			+ play.cave.secretCave.transform.InverseTransformDirection(offset)*RoomMesh.MESH_SCALE;
 	}
 	
-	public void RemoveAll() {
+	public void RemoveAllPowerUps() {
 		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(CollecteablePowerUp.TAG)) {
+			GameObject.Destroy(gO);
+		}
+	}
+
+	public void RemoveAllKeys() {
+		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(CollecteableKey.TAG)) {
 			GameObject.Destroy(gO);
 		}
 	}

@@ -58,13 +58,15 @@ public class Ship : MonoBehaviour {
 	private float cloakTimer;
 	private float invincibleTimer;
 	private ParticleSystem powerUpParticleSystem;
+	private ParticleSystem powerUpParticleSystemOneParticle;
+	//private PowerUpBoostParticle powerUpBoostParticle;
 			
 	private static float FORCE_MOVE = 65.0f;
 	private static float FORCE_TURN = 24f; // 5.0f
 	private static float FORCE_YAW = 16f; // 3.5f
 	private static float FORCE_BOOST = 40f;
 	
-	private static float BOOST_DURATION = 5f;
+	private static float BOOST_DURATION = 10f;
 	private static float BOOST_INTERVAL = 60f;
 	private static float CLOAK_DURATION = 30f;
 	private static float CLOAK_INTERVAL = 300f;
@@ -112,10 +114,8 @@ public class Ship : MonoBehaviour {
 //	private Vector3 collisionNormal = Vector3.zero;
 	
 	void Awake() {
-//		Screen.sleepTimeout = SleepTimeout.NeverSleep;
-		
+//		Screen.sleepTimeout = SleepTimeout.NeverSleep;	
 //		Debug.Log (Screen.dpi);
-		
 		InstantiateShipHUD();
 		shipSteering = transform.GetComponent<ShipSteering>();
 		shipControl = new ShipControl(); //transform.GetComponent<ShipControl>();
@@ -125,9 +125,11 @@ public class Ship : MonoBehaviour {
 		audioSource = GetComponent<AudioSource>();
 		currentPrimaryWeapon = -1;
 		currentSecondaryWeapon = -1;
-//		GameObject cloak = GameObject.Instantiate(game.cloakParticleEffectPrefab) as GameObject;
-		Transform powerUpParticleEffect = transform.FindChild("Camera/PowerUpParticleEffect");
-		powerUpParticleSystem = powerUpParticleEffect.particleSystem;
+		powerUpParticleSystem = transform.FindChild("Camera/PowerUpParticleEffect").particleSystem;
+		powerUpParticleSystemOneParticle = transform.FindChild("Camera/PowerUpParticleEffectOneParticle").particleSystem;
+//		powerUpBoostParticle = transform.FindChild("Camera/PowerUpBoostParticle").GetComponent<PowerUpBoostParticle>();
+//		powerUpBoostParticle.Initialize(this);
+		
 	}
 	
 	public void Initialize(Play play_, ExitHelper exitHelper_) {
@@ -160,14 +162,13 @@ public class Ship : MonoBehaviour {
 		isHeadlightOn = false;
 		headlight.gameObject.SetActiveRecursively(isHeadlightOn);
 		missileLockMode = MissileLockMode.None;
-//		rigidbody.isKinematic = true;
 		transform.position = play.cave.GetCaveEntryPosition();
 		transform.rotation = Quaternion.identity;
-//		rigidbody.isKinematic = false;
 	}
 	
 	public void Deactivate() {
 		shipCamera.enabled = false;
+		SwitchOffPowerUps();
 	}
 	
 	void FixedUpdate() {
@@ -182,11 +183,7 @@ public class Ship : MonoBehaviour {
 			}
 			
 			if (isBoosterOn && Time.fixedTime > boostTimer + BOOST_DURATION) {
-				isBoosterOn = false;
-				isBoosterLoading = true;
-				boostTimer = Time.fixedTime;
-				play.playGUI.SwitchShipBoost();
-				powerUpParticleSystem.Stop();
+				BoostOff();
 			} else if (isBoosterLoading) {
 				if (Time.fixedTime > boostTimer + BOOST_INTERVAL) {
 					isBoosterLoading = false;
@@ -197,11 +194,7 @@ public class Ship : MonoBehaviour {
 			}
 
 			if (isCloakOn && Time.fixedTime > cloakTimer + CLOAK_DURATION) {
-				isCloakOn = false;
-				isCloakLoading = true;
-				cloakTimer = Time.fixedTime;
-				play.playGUI.SwitchShipCloak();
-				powerUpParticleSystem.Stop();
+				CloakOff();
 			} else if (isCloakLoading) {
 				if (Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
 					isCloakLoading = false;
@@ -212,8 +205,7 @@ public class Ship : MonoBehaviour {
 			}
 
 			if (isInvincibleOn && Time.fixedTime > invincibleTimer + INVINCIBLE_DURATION) {
-				isInvincibleOn = false;
-				play.playGUI.SwitchShipInvincible();
+				InvincibleOff();
 			}
 			
 			if (currentSecondaryWeapon != -1) {
@@ -316,7 +308,7 @@ public class Ship : MonoBehaviour {
 	
 	public Vector3 IsVisibleFrom(Vector3 fromPos) {
 		Vector3 result = Vector3.zero;
-		if (!play.isShipInPlayableArea) {
+		if (!play.isShipInPlayableArea || isCloakOn) {
 			return result;
 		}
 		Vector3 direction = (play.GetShipPosition()-fromPos).normalized;
@@ -582,18 +574,32 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void BoostShip() {
-		if (!isBoosterOn && !isBoosterLoading) {
+		if (!isBoosterOn && !isBoosterLoading && !isCloakOn && !isInvincibleOn) {
 			isBoosterOn = true;
 			PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
 			boostTimer = Time.fixedTime;
 			play.playGUI.SwitchShipBoost();
-			powerUpParticleSystem.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_BOOST];
-			powerUpParticleSystem.Play();
+//			powerUpBoostParticle.enabled = true;
+//			powerUpBoostParticle.renderer.enabled = true;
+			powerUpParticleSystemOneParticle.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_BOOST];
+			powerUpParticleSystemOneParticle.Play();
 		}
 	}
+	
+	private void BoostOff() {
+		if (isBoosterOn) {
+			isBoosterOn = false;
+			isBoosterLoading = true;
+			boostTimer = Time.fixedTime;
+			play.playGUI.SwitchShipBoost();
+			powerUpParticleSystemOneParticle.Stop();
+//			powerUpBoostParticle.renderer.enabled = false;
+//			powerUpBoostParticle.enabled = false;
+		}
+	}		
 
 	public void CloakShip() {
-		if (!isCloakOn && !isCloakLoading) {
+		if (!isCloakOn && !isCloakLoading && !isBoosterOn && !isInvincibleOn) {
 			isCloakOn = true;
 			//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
 			cloakTimer = Time.fixedTime;
@@ -602,15 +608,41 @@ public class Ship : MonoBehaviour {
 			powerUpParticleSystem.Play();
 		}
 	}
+	
+	private void CloakOff() {
+		if (isCloakOn) {
+			isCloakOn = false;
+			isCloakLoading = true;
+			cloakTimer = Time.fixedTime;
+			play.playGUI.SwitchShipCloak();
+			powerUpParticleSystem.Stop();
+		}
+	}
 
 	public void InvincibleShip() {
-		if (!hasBeenInvincibleInThisZone) {
+		if (!hasBeenInvincibleInThisZone && !isBoosterOn && !isCloakOn) {
 			isInvincibleOn = true;
 			hasBeenInvincibleInThisZone = true;
 			invincibleTimer = Time.fixedTime;
 			//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
 			play.playGUI.SwitchShipInvincible();
+			powerUpParticleSystemOneParticle.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_INVINCIBLE];
+			powerUpParticleSystemOneParticle.Play();
 		}
+	}
+	
+	private void InvincibleOff() {
+		if (isInvincibleOn) {
+			isInvincibleOn = false;
+			play.playGUI.SwitchShipInvincible();
+			powerUpParticleSystemOneParticle.Stop();
+		}
+	}
+	
+	private void SwitchOffPowerUps() {
+		BoostOff();
+		CloakOff();
+		InvincibleOff();
 	}
 
 	public void LaunchExitHelper(bool toLaunch) {

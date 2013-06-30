@@ -26,7 +26,7 @@ public class Play : MonoBehaviour {
 	private int caveSeed;
 	private int botSeed;
 	private Transform lightsHolder;
-	private bool[] isKeyCollected;
+	public bool[] isKeyCollected;
 	public string storyChapter;
 	private bool hasDied;
 	
@@ -222,8 +222,10 @@ public class Play : MonoBehaviour {
 		UnityEngine.Random.seed = caveSeed;
 		cave.AddZone(zoneID);
 		UnityEngine.Random.seed = botSeed;
-		isKeyCollected = new bool[] {false, false};
-		collecteablesDistributor.DropKeys();
+		if (!hasDied) {
+			isKeyCollected = new bool[] {false, false};
+			collecteablesDistributor.DropKeys();
+		}
 		if (!state.GetPreferenceSokobanSolved()) {
 			collecteablesDistributor.DropPowerUps();
 		}
@@ -232,10 +234,18 @@ public class Play : MonoBehaviour {
 		}
 		ship.Reset();
 		sokoban.RenderLevel(zoneID);
-		ConfigureLighting();
+		if (!hasDied) {
+			ConfigureLighting();
+		}
 
 		playGUI.Reset();
 		if (hasDied) {
+			if (isKeyCollected[CollecteableKey.TYPE_SILVER]) {
+				KeyFound(CollecteableKey.TYPE_SILVER);
+			}
+			if (isKeyCollected[CollecteableKey.TYPE_GOLD]) {
+				KeyFound(CollecteableKey.TYPE_GOLD);
+			}
 			playGUI.ToHasDied();
 		} else {
 			storyChapter = (Resources.Load("Story/EN/" + zoneID, typeof(TextAsset)) as TextAsset).text;
@@ -269,7 +279,10 @@ public class Play : MonoBehaviour {
 	private void EndZone() {
 		DestroyAllBreadcrumbs();
 		enemyDistributor.RemoveAll();
-		collecteablesDistributor.RemoveAll();
+		collecteablesDistributor.RemoveAllPowerUps();
+		if (!hasDied) {
+			collecteablesDistributor.RemoveAllKeys();
+		}
 		cave.RemoveZone();
 		botSeed = UnityEngine.Random.Range(0,9999999);
 		UnityEngine.Random.seed = caveSeed;

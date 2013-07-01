@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 494649126e15b5d468a708baf66eca12
+guid: ac9824b7e9bb4064ca081604eb9c3514
 TextureImporter:
   serializedVersion: 2
   mipmaps:
@@ -30,8 +30,4 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   textureType: 5
-  buildTargetSettings:
-  - buildTarget: Android
-    maxTextureSize: 64
-    textureFormat: 2
-    compressionQuality: 50
+  buildTargetSettings: []

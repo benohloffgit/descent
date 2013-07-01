@@ -1,9 +1,9 @@
 fileFormatVersion: 2
-guid: 0893424f8e8731b469915a86926f745d
+guid: c8c03c6c1996c3e4997586b34fc4d746
 ModelImporter:
   fileIDToRecycleName:
-    4300000: Plane
-    4300002: Breadcrumb
+    4300000: Cone
+    4300002: BreadcrumbNew
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -45,7 +45,7 @@ ModelImporter:
       data:
         first: 4
         second: 821a0600
-    Breadcrumb:
+    BreadcrumbNew:
       data:
         first: 1
         second: a0860100

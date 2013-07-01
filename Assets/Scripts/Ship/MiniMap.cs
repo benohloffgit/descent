@@ -15,7 +15,15 @@ public class MiniMap : MonoBehaviour {
 	private float cameraFollowDistance;
 	private IntTriple currentRoomPos;
 	
-	private Transform[] roomConnectors = new Transform[4];
+	private Transform[] roomConnectors = new Transform[MAX_EXITS];
+	private List<GameObject> breadcrumbs = new List<GameObject>();
+	
+	private static int MATERIAL_MINI_MAP = 0;
+	private static int MATERIAL_MINI_MAP_SHIP = 1;
+	private static int MATERIAL_MINI_MAP_ROOM_NOT_ENTERED = 2;
+	private static int MATERIAL_MINI_MAP_ROOM_ENTERED = 3;
+	private static int MATERIAL_MINI_MAP_BREADCRUMB = 4;
+	private static int MATERIAL_MINI_MAP_ENTRYEXIT = 5;
 		
 	private Mode mode;
 	private Follow follow;
@@ -38,6 +46,8 @@ public class MiniMap : MonoBehaviour {
 	private Vector3 touchDelta1;
 	private Vector3 touchDelta2;*/
 //	private bool usesMouse;
+	
+	private static int MAX_EXITS = 5;
 	
 	private static float MINI_MAP_SCALE = 0.2f;
 	private static float ZOOM_MODIFIER = 1.0f;
@@ -71,7 +81,7 @@ public class MiniMap : MonoBehaviour {
 		follow = Follow.Off;
 		mouseSensitivity = play.game.state.GetPreferenceMiniMapMouseSensitivity();
 
-		for (int i=0; i<4; i++) {
+		for (int i=0; i<MAX_EXITS; i++) {
 			roomConnectors[i] = (GameObject.Instantiate(play.game.miniMapRoomConnectorPrefab, Vector3.zero, Quaternion.identity) as GameObject).transform;
 			roomConnectors[i].parent = transform;
 		}
@@ -87,6 +97,7 @@ public class MiniMap : MonoBehaviour {
 					currentRoomPos = play.GetRoomOfShip().pos;
 				}
 			} else if (mode == Mode.On) {
+				Reset();
 				play.SwitchMiniMap();
 			}
 			
@@ -95,6 +106,10 @@ public class MiniMap : MonoBehaviour {
 				UpdateRotation();
 			}
 		}
+	}
+	
+	public void Reset() {
+		currentRoomPos = IntTriple.MINUSONE;
 	}
 	
 	public void SwitchOn() {
@@ -164,15 +179,36 @@ public class MiniMap : MonoBehaviour {
 		m.triangles = r.roomMesh.mesh.triangles;
 		m.uv = r.roomMesh.mesh.uv;
 		GetComponent<MeshFilter>().mesh = m;
-		
+		Debug.Log ("MiniMap ReadRoomData room " + r.id);
 		System.Collections.Generic.Dictionary<IntTriple, Cell>.Enumerator en = r.exits.GetEnumerator();
 		en.MoveNext();
-		for (int i=0; i<4; i++) {
+		for (int i=0; i<MAX_EXITS; i++) {
 			if (r.exits.Count > i) {
 				roomConnectors[i].position = (r.pos.GetVector3() * Game.DIMENSION_ROOM + en.Current.Value.pos.GetVector3()) * MINI_MAP_SCALE;
 				roomConnectors[i].rotation = Quaternion.identity;
 				play.cave.Align(roomConnectors[i], en.Current.Key);
 				roomConnectors[i].renderer.enabled = true;
+				if (en.Current.Value.hasTransitionedBetweenRooms) {
+					Debug.Log ("case 0 " + en.Current.Key + " " + en.Current.Value + " " + currentRoomPos);
+					roomConnectors[i].renderer.material = play.game.miniMapRoomConnectorMaterials[MATERIAL_MINI_MAP_ROOM_ENTERED];
+				} else {
+					if ( 	currentRoomPos == IntTriple.MINUSONE && en.Current.Key == IntTriple.BACKWARD //entry door
+						|| 	currentRoomPos == IntTriple.MINUSONE && en.Current.Key == play.cave.secretCaveRoomPos-r.pos // secret chamber door
+						) {
+//						Debug.Log ("case 1 " + en.Current.Key + " " + en.Current.Value + " " + currentRoomPos);
+						roomConnectors[i].renderer.material = play.game.miniMapRoomConnectorMaterials[MATERIAL_MINI_MAP_ROOM_ENTERED];
+						en.Current.Value.hasTransitionedBetweenRooms = true;
+					} else if (currentRoomPos != IntTriple.MINUSONE && en.Current.Key == currentRoomPos-r.pos) {
+//						Debug.Log ("case 2 " + en.Current.Key + " " + en.Current.Value + " " + currentRoomPos);
+						roomConnectors[i].renderer.material = play.game.miniMapRoomConnectorMaterials[MATERIAL_MINI_MAP_ROOM_ENTERED];
+						en.Current.Value.hasTransitionedBetweenRooms = true;
+						// set opposite cell also to true
+						play.cave.zone.rooms[currentRoomPos.x, currentRoomPos.y, currentRoomPos.z].exits[r.pos-currentRoomPos].hasTransitionedBetweenRooms = true;
+					} else {
+//						Debug.Log ("case 3 " + en.Current.Key + " " + en.Current.Value + " " + currentRoomPos);
+						roomConnectors[i].renderer.material = play.game.miniMapRoomConnectorMaterials[MATERIAL_MINI_MAP_ROOM_NOT_ENTERED];
+					}
+				}
 				en.MoveNext();
 			} else {
 				roomConnectors[i].renderer.enabled = false;
@@ -180,6 +216,25 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 	
+	public void SetBreadcrumb(Vector3 pos) {
+		GameObject b = play.game.CreateFromPrefab().CreateMiniMapBreadcrumb((pos/RoomMesh.MESH_SCALE) * MINI_MAP_SCALE, Quaternion.identity);
+		b.transform.parent = transform;
+		b.transform.localScale *= MINI_MAP_SCALE;
+		breadcrumbs.Add(b);
+	}
+	
+	public void RemoveBreadcrumb() {
+		Destroy(breadcrumbs[0]);
+		breadcrumbs.RemoveAt(0);
+	}
+	
+	public void DestroyAllBreadcrumbs() {
+		foreach (GameObject gO in breadcrumbs) {
+			Destroy(gO);
+		}
+		breadcrumbs.Clear();
+	}
+
 	public void DispatchGameInput() {
 		if (mode == Mode.On) {
 			if (gameInput.isMobile) {

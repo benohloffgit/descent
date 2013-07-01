@@ -28,7 +28,7 @@ public class Play : MonoBehaviour {
 	private Transform lightsHolder;
 	public bool[] isKeyCollected;
 	public string storyChapter;
-	private bool hasDied;
+	public bool hasDied;
 	
 	public GridPosition placeShipBeforeExitDoor;
 	public GridPosition placeShipBeforeSecretChamberDoor;
@@ -219,38 +219,39 @@ public class Play : MonoBehaviour {
 		enemyHitRatio = 0;
 		isShipInPlayableArea = false;
 		Debug.Log (" ------------------------------- Cave Seed: " + caveSeed);
-		UnityEngine.Random.seed = caveSeed;
-		cave.AddZone(zoneID);
-		UnityEngine.Random.seed = botSeed;
-		if (!hasDied) {
-			isKeyCollected = new bool[] {false, false};
-			collecteablesDistributor.DropKeys();
-		}
-		if (!state.GetPreferenceSokobanSolved()) {
-			collecteablesDistributor.DropPowerUps();
-		}
-		if (zoneID > 0) {
-			enemyDistributor.Distribute();
-		}
-		ship.Reset();
-		sokoban.RenderLevel(zoneID);
-		if (!hasDied) {
-			ConfigureLighting();
-		}
-
-		playGUI.Reset();
 		if (hasDied) {
+			cave.ResetDoors();
+			playGUI.Reset();
 			if (isKeyCollected[CollecteableKey.TYPE_SILVER]) {
 				KeyFound(CollecteableKey.TYPE_SILVER);
 			}
 			if (isKeyCollected[CollecteableKey.TYPE_GOLD]) {
 				KeyFound(CollecteableKey.TYPE_GOLD);
 			}
+			ship.Reset();
+			miniMap.Reset();
 			playGUI.ToHasDied();
 		} else {
+			UnityEngine.Random.seed = caveSeed;
+			cave.AddZone(zoneID);
+			UnityEngine.Random.seed = botSeed;
+			isKeyCollected = new bool[] {false, false};
+			collecteablesDistributor.DropKeys();
+			if (zoneID > 0) {
+				enemyDistributor.Distribute();
+			}
+			sokoban.RenderLevel(zoneID);
+			if (!state.GetPreferenceSokobanSolved()) {
+				collecteablesDistributor.DropPowerUps();
+			}
+			playGUI.Reset();
 			storyChapter = (Resources.Load("Story/EN/" + zoneID, typeof(TextAsset)) as TextAsset).text;
 			playGUI.ToStory();
+			ConfigureLighting();
+			ship.Reset();
+			miniMap.Reset();
 		}
+		hasDied = false;
 	}
 	
 	public void ZoneCompleted() {
@@ -277,16 +278,15 @@ public class Play : MonoBehaviour {
 	}
 	
 	private void EndZone() {
-		DestroyAllBreadcrumbs();
-		enemyDistributor.RemoveAll();
-		collecteablesDistributor.RemoveAllPowerUps();
 		if (!hasDied) {
+			DestroyAllBreadcrumbs();
+			miniMap.DestroyAllBreadcrumbs();
 			collecteablesDistributor.RemoveAllKeys();
-		}
-		cave.RemoveZone();
-		botSeed = UnityEngine.Random.Range(0,9999999);
-		UnityEngine.Random.seed = caveSeed;
-		if (!hasDied) {
+			enemyDistributor.RemoveAll();
+			collecteablesDistributor.RemoveAllPowerUps();
+			cave.RemoveZone();
+			botSeed = UnityEngine.Random.Range(0,9999999);
+			UnityEngine.Random.seed = caveSeed;
 			caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		}
 		ship.Deactivate();
@@ -537,9 +537,11 @@ public class Play : MonoBehaviour {
 			pos = hit.point;
 		}
 		breadcrumbs.Add(game.CreateFromPrefab().CreateBreadcrumb(pos, Quaternion.identity));
+		miniMap.SetBreadcrumb(pos);
 		if (breadcrumbs.Count > Game.MAX_BREADCRUMBS) {
 			Destroy(breadcrumbs[0]);
 			breadcrumbs.RemoveAt(0);
+			miniMap.RemoveBreadcrumb();
 		}
 	}
 	

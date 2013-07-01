@@ -25,7 +25,7 @@ public class Cave {
 	private GameObject decorationParent;
 	private int digCount;
 	private int quitOnPercentThreshold;
-//	private int maxDig = Game.DIMENSION_ROOM_CUBED;
+	public IntTriple secretCaveRoomPos;
 
 	public static int DENSITY_FILLED = 0;
 	public static int DENSITY_EMPTY = 1;
@@ -172,13 +172,12 @@ public class Cave {
 				doors[Door.TYPE_EXIT].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,1), room.pos));
 				exitSigns[1].parent = doors[Door.TYPE_EXIT].doorL;
 				exitSigns[1].localPosition = EXIT_SIGN_POSITION;//;new Vector3(EXIT_SIGN_POSITION.x, EXIT_SIGN_POSITION.y, -EXIT_SIGN_POSITION.z);
-				//exitSigns[1].Rotate(new Vector3(0f, 180f, 0f));
 				doors[Door.TYPE_NEXT_ENTRY].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,7), room.pos));
 				play.placeShipBeforeExitDoor = new GridPosition(startingCell, room.pos);
 //				Debug.Log ("Exit Room: " + startingCell);				
 			} else if (room.id == secretCaveRoomID) {
 				List<IntTriple> filledNeighbourPositions = zone.GetFilledNeighboursOfRoom(room.pos);
-				IntTriple secretCaveRoomPos = filledNeighbourPositions[UnityEngine.Random.Range(0, filledNeighbourPositions.Count)];
+				secretCaveRoomPos = filledNeighbourPositions[UnityEngine.Random.Range(0, filledNeighbourPositions.Count)];
 				startingCell = SetEntryExit(secretCaveRoomPos - room.pos, 0, Game.DIMENSION_ROOM, 2);
 				roomMiners.Add(new RoomMiner(this, startingCell, secretCaveRoomPos - room.pos, room, roomMiners.Count, RoomMiner.Type.WalkRandom, MINER_ENTRYEXITROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_ENTRYEXITROOMS_DIG_AMOUNT.Length)]));
 				if (secretCave == null) {
@@ -272,9 +271,7 @@ public class Cave {
 			CreateRoomMesh(room);
 		}
 		roomMiners.Clear();
-		foreach (Door d in doors) {
-			d.Reset();
-		}
+		ResetDoors();
 		IntTriple textureSet;
 		if (play.zoneID < 8) {	
 			textureSet = textureCombinationsNormal[UnityEngine.Random.Range(0,textureCombinationsNormal.Length)];
@@ -294,6 +291,12 @@ public class Cave {
 		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureSet.x]);
 		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureSet.y]);
 		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureSet.z]);
+	}
+
+	public void ResetDoors() {
+		foreach (Door d in doors) {
+			d.Reset();
+		}
 	}
 	
 	private IntTriple GetOppositeCell(Cell cell, IntTriple alignment) {

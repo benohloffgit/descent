@@ -14,6 +14,7 @@ public class Game : MonoBehaviour {
 	public GameObject secretCavePrefab;
 	public GameObject miniMapPrefab;
 	public GameObject miniMapRoomConnectorPrefab;
+	public GameObject miniMapBreadcrumbPrefab;
 	public GameObject doorPrefab;
 	public GameObject exitSignPrefab;
 	public GameObject secretChamberDoorPrefab;
@@ -66,6 +67,7 @@ public class Game : MonoBehaviour {
 	public Material[] shotTrailMaterials;
 	public Material[] explosionMaterials;
 	public Material[] powerUpParticleMaterials;
+	public Material[] miniMapRoomConnectorMaterials;
 	
 	public State state;
 	public GameInput gameInput;

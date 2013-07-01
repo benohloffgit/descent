@@ -16,6 +16,7 @@ public class PrefabFactory {
 	private GameObject detonatorMissileShotTemplate;
 	private GameObject detonatorBombShotTemplate;
 	private GameObject breadcrumbTemplate;
+	private GameObject miniMapBreadcrumbTemplate;
 	private GameObject explosionTemplate;
 	private GameObject hitTemplate;
 	private GameObject healthDropTemplate;
@@ -49,6 +50,7 @@ public class PrefabFactory {
 		detonatorBombShotTemplate.GetComponent<Shot>().enabled = false;
 		breadcrumbTemplate = GameObject.Instantiate(game.breadcrumbPrefab) as GameObject;
 		breadcrumbTemplate.GetComponent<Breadcrumb>().enabled = false;
+		miniMapBreadcrumbTemplate = GameObject.Instantiate(game.miniMapBreadcrumbPrefab) as GameObject;
 		explosionTemplate = GameObject.Instantiate(game.explosionPrefab) as GameObject;
 		explosionTemplate.GetComponent<Explosion>().enabled = false;
 		HTSpriteSheet expl = explosionTemplate.GetComponent<HTSpriteSheet>();
@@ -188,6 +190,11 @@ public class PrefabFactory {
 		breadcrumb.Initialize(play);
 		breadcrumb.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		breadcrumb.enabled = true;
+		return newBreadcrumb;
+	}
+
+	public GameObject CreateMiniMapBreadcrumb(Vector3 pos, Quaternion rot) {
+		GameObject newBreadcrumb = GameObject.Instantiate(miniMapBreadcrumbTemplate, pos, rot) as GameObject;
 		return newBreadcrumb;
 	}
 

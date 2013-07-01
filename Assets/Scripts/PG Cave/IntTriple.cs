@@ -12,6 +12,7 @@ public struct IntTriple {
 	public static IntTriple DOWN = new IntTriple(0,-1,0);
 	public static IntTriple LEFT = new IntTriple(-1,0,0);
 	public static IntTriple RIGHT = new IntTriple(1,0,0);
+	public static IntTriple MINUSONE = new IntTriple(-1,-1,-1);
 	
 	public IntTriple(int a, int b, int c) {
 		x=a;

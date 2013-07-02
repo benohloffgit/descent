@@ -96,9 +96,11 @@ public class MiniMap : MonoBehaviour {
 					ReadRoomData();
 					currentRoomPos = play.GetRoomOfShip().pos;
 				}
-			} else if (mode == Mode.On) {
+			} else {
 				Reset();
-				play.SwitchMiniMap();
+				if (mode == Mode.On) {
+					play.SwitchMiniMap();
+				}
 			}
 			
 			if (mode == Mode.On) {
@@ -179,7 +181,7 @@ public class MiniMap : MonoBehaviour {
 		m.triangles = r.roomMesh.mesh.triangles;
 		m.uv = r.roomMesh.mesh.uv;
 		GetComponent<MeshFilter>().mesh = m;
-		Debug.Log ("MiniMap ReadRoomData room " + r.id);
+//		Debug.Log ("MiniMap ReadRoomData room " + r.id);
 		System.Collections.Generic.Dictionary<IntTriple, Cell>.Enumerator en = r.exits.GetEnumerator();
 		en.MoveNext();
 		for (int i=0; i<MAX_EXITS; i++) {
@@ -189,7 +191,7 @@ public class MiniMap : MonoBehaviour {
 				play.cave.Align(roomConnectors[i], en.Current.Key);
 				roomConnectors[i].renderer.enabled = true;
 				if (en.Current.Value.hasTransitionedBetweenRooms) {
-					Debug.Log ("case 0 " + en.Current.Key + " " + en.Current.Value + " " + currentRoomPos);
+//					Debug.Log ("case 0 " + en.Current.Key + " " + en.Current.Value + " " + currentRoomPos);
 					roomConnectors[i].renderer.material = play.game.miniMapRoomConnectorMaterials[MATERIAL_MINI_MAP_ROOM_ENTERED];
 				} else {
 					if ( 	currentRoomPos == IntTriple.MINUSONE && en.Current.Key == IntTriple.BACKWARD //entry door
@@ -213,6 +215,15 @@ public class MiniMap : MonoBehaviour {
 			} else {
 				roomConnectors[i].renderer.enabled = false;
 			}
+		}
+		int j=0;
+		foreach (Breadcrumb b in play.breadcrumbs) {
+			if (b.roomID == r.id) {
+				breadcrumbs[j].renderer.enabled = true;
+			} else {
+				breadcrumbs[j].renderer.enabled = false;
+			}
+			j++;
 		}
 	}
 	

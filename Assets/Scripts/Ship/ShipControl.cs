@@ -49,17 +49,25 @@ public class ShipControl {
 					}
 				}
 			} else {
-				if (!ship.isCloakOn && (Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.LeftControl))) {
-					ship.ShootPrimary();
-				}
-				if (!ship.isCloakOn && (Input.GetKeyDown("mouse 1") || Input.GetKeyDown(KeyCode.RightControl))) {
-					if (ship.currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
-						ship.StartChargedMissileTimer();
+				if ((Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.LeftControl))) {
+					if (ship.isCloakOn) {
+						play.playGUI.DisplayNotification(play.game.state.GetDialog(56));
 					} else {
-						ship.ShootSecondary();
+						ship.ShootPrimary();
 					}
 				}
-				if (!ship.isCloakOn && (Input.GetKeyUp("mouse 1") || Input.GetKeyUp(KeyCode.RightControl))) {
+				if (Input.GetKeyDown("mouse 1") || Input.GetKeyDown(KeyCode.RightControl)) {
+					if (ship.isCloakOn) {
+						play.playGUI.DisplayNotification(play.game.state.GetDialog(56));
+					} else {
+						if (ship.currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
+							ship.StartChargedMissileTimer();
+						} else {
+							ship.ShootSecondary();
+						}
+					}
+				}
+				if (Input.GetKeyUp("mouse 1") || Input.GetKeyUp(KeyCode.RightControl)) {
 					if (ship.currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
 						ship.ShootSecondary();
 					}

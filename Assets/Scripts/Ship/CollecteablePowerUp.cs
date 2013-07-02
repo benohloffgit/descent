@@ -11,8 +11,8 @@ public class CollecteablePowerUp : MonoBehaviour {
 	private int id;
 	
 	private float tiltAngle;
+	private Renderer myRenderer;
 	
-//	private Mesh mesh;
 	void Awake() {
 		gameObject.layer = Game.LAYER_COLLECTEABLES;
 	}
@@ -21,22 +21,22 @@ public class CollecteablePowerUp : MonoBehaviour {
 		play = play_;
 		type = type_;
 		id = id_;
-//		mesh = Resources.Load("Gun", typeof(Mesh)) as Mesh;
 		angle = 0f;
 		if (type == Game.POWERUP_SPECIAL) {
 			tiltAngle = 0;
 		} else {
 			tiltAngle = 55f;
 		}
+		myRenderer = GetComponentInChildren<Renderer>();
 	}
 
 	void FixedUpdate() {
-		if (!play.isPaused && (!play.isShipInPlayableArea || play.GetRoomOfShip().id == play.cave.secretCaveRoomID)) {
+		if (myRenderer.isVisible) {
+//		if (!play.isPaused && (!play.isShipInPlayableArea || play.GetRoomOfShip().id == play.cave.secretCaveRoomID)) {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			angle += 0.05f;
 			transform.RotateAround(transform.up, angle);
 			transform.Rotate(-Vector3.right, tiltAngle);
-			//transform.RotateAroundLocal(Vector3.right, 30.0f);
 			if (angle >= 360f) {
 				angle -= 360f;
 			}

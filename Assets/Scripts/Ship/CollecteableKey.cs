@@ -27,8 +27,8 @@ public class CollecteableKey : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
-		if (isShipVisible != Vector3.zero) {
+//		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
+		if (transform.renderer.isVisible) {
 			if (!transform.particleSystem.isPlaying) {
 				transform.particleSystem.Play();
 			}

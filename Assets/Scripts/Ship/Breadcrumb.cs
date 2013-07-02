@@ -4,6 +4,8 @@ using UnityEngine;
 public class Breadcrumb : MonoBehaviour {		
 	private Play play;
 	
+	public int roomID;
+	
 	private float angle;
 	private Vector3 startSize;
 	private Vector3 sizeFrom;
@@ -12,8 +14,9 @@ public class Breadcrumb : MonoBehaviour {
 	private static float SIZE_MIN = 1.0f;
 	private static float SIZE_MAX = 1.5f;
 
-	public void Initialize(Play play_) {
+	public void Initialize(Play play_, int roomID_) {
 		play = play_;
+		roomID = roomID_;
 		angle = 0f;
 	}
 	

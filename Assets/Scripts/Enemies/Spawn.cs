@@ -66,9 +66,9 @@ public class Spawn : MonoBehaviour {
 		
 	void FixedUpdate() {
 		if (isActive) {
-			Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
-			if (isShipVisible != Vector3.zero) {
+			if (myRenderer.isVisible) {
 				transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
+				Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
 				if (isShipVisible.magnitude < MAX_SOUND_DISTANCE && Time.fixedTime > soundPlayedTime + SOUND_PLAY_DELTA) {
 					soundPlayedTime = Time.fixedTime;
 					myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 26);

@@ -16,8 +16,8 @@ public class CollecteableMissile : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
-		if (isShipVisible != Vector3.zero) {
+//		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
+		if (transform.renderer.isVisible) {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 			angle += 0.05f;
 			transform.RotateAround(transform.up, angle);

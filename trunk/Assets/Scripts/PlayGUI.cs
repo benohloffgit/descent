@@ -19,6 +19,7 @@ public class PlayGUI {
 	private int toBeDisplayedShield;
 	private int primaryWeaponLabel;
 	private int secondaryWeaponLabel;
+	private LabelCC notifyLabel;
 	private Image primaryWeapon;
 	private Image secondaryWeapon;
 	private Image healthDigit0;
@@ -63,6 +64,7 @@ public class PlayGUI {
 	private Vector3 cloakScale;
 	private Vector3 lightsScale;
 	private Vector3 invincibleScale;
+	private float notifyTimer;
 	
 	private List<Enemy> enemyHUDInfo;
 	private int topContainer;
@@ -80,6 +82,12 @@ public class PlayGUI {
 	
 	private static float POWER_UP_ANIM_SCALE = 0.10f;
 	private static float POWER_UP_ANIM_SPEED = 4f;
+	
+	private static float NOTIFY_TIMER_BLEND_IN = 0.3f;
+	private static float NOTIFY_TIMER_SHOW = 1.0f;
+	
+	private NotificationMode notificationMode;
+	public enum NotificationMode { Off=0, BlendIn=2, Show=3, BlendOut=4 }
 	
 	private static Vector3 ENEMY_HUD_OFFSET_GLOBAL = new Vector3(0.5f, 0.5f, 0f);
 	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(-3.0f, 3.0f, 0f);
@@ -116,6 +124,10 @@ public class PlayGUI {
 		zoneIDDigit0 = gui.images[imageId];
 		imageId = gui.AddImage(topContainer, new Vector3(0.1f, 0.1f, 1f), MyGUI.GUIAlignment.Center, -0.04f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_NUMBER_0, 0);
 		zoneIDDigit1 = gui.images[imageId];
+		
+		// notify label
+		imageId = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.2f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		notifyLabel = gui.labelsCC[imageId];
 		
 		// power ups / special capabilities
 		int powerUpContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.02f, MyGUI.GUIAlignment.Top, 0.03f);
@@ -253,6 +265,10 @@ public class PlayGUI {
 	
 	public void Reset() {
 		enemyHUDInfo = new List<Enemy>();
+		notificationMode = NotificationMode.Off;
+		Color c = notifyLabel.myRenderer.material.color;
+		c.a = 0f;
+		notifyLabel.myRenderer.material.color = c;
 		keysFound[CollecteableKey.TYPE_SILVER].myRenderer.enabled = false;
 		keysFound[CollecteableKey.TYPE_GOLD].myRenderer.enabled = false;
 		keysEmpty[CollecteableKey.TYPE_SILVER].myRenderer.enabled = true;
@@ -298,7 +314,13 @@ public class PlayGUI {
 	public void Deactivate() {
 		gui.containers[container].gameObject.SetActiveRecursively(false);
 	}
-
+	
+	public void DisplayNotification(string text) {
+		notifyLabel.SetText(text);
+		notifyTimer = Time.fixedTime;
+		notificationMode = NotificationMode.BlendIn;
+	}
+		
 	public void SwitchHeadlight() {
 		if (ship.hasSpecial[Ship.SPECIAL_LIGHTS]) {
 			if (ship.isHeadlightOn) {
@@ -316,14 +338,8 @@ public class PlayGUI {
 	}
 
 	public void SwitchExitHelper() {
-//		if (ship.isExitHelperLaunched) {
-			exitHelperOn.myRenderer.enabled = true;
-			exitHelperOff.myRenderer.enabled = false;
-//		} else {
-//			exitHelperOn.myRenderer.enabled = false;
-//			exitHelperOff.myRenderer.enabled = true;
-//			exitHelperOn.transform.localScale = exitHelperScale;
-//		}
+		exitHelperOn.myRenderer.enabled = true;
+		exitHelperOff.myRenderer.enabled = false;
 	}
 
 	public void SwitchShipBoost() {
@@ -533,6 +549,32 @@ public class PlayGUI {
 			}
 			if (ship.secondaryWeapons[ship.currentSecondaryWeapon].IsReloaded() != shipSecondaryWeaponLoadState) {
 				SetLoadStateOfShipSecondaryWeapon();
+			}
+		}
+		
+		if (notificationMode != NotificationMode.Off) {
+			Color c = notifyLabel.myRenderer.material.color;
+			if (notificationMode == NotificationMode.BlendIn) {
+				if (Time.fixedTime > notifyTimer + NOTIFY_TIMER_BLEND_IN) {
+					notificationMode = NotificationMode.Show;
+					notifyTimer = Time.fixedTime;
+				} else {
+					c.a = Mathf.Lerp(0f, 1f, (Time.fixedTime-notifyTimer)/NOTIFY_TIMER_BLEND_IN);
+					notifyLabel.myRenderer.material.color = c;
+				}
+			} else if (notificationMode == NotificationMode.Show) {
+				if (Time.fixedTime > notifyTimer + NOTIFY_TIMER_SHOW) {
+					notificationMode = NotificationMode.BlendOut;
+					notifyTimer = Time.fixedTime;
+				}
+			} else if (notificationMode == NotificationMode.BlendOut) {
+				if (Time.fixedTime > notifyTimer + NOTIFY_TIMER_BLEND_IN) {
+					notificationMode = NotificationMode.Off;
+					notifyLabel.myRenderer.enabled = false;
+				} else {
+					c.a = Mathf.Lerp(1f, 0f, (Time.fixedTime-notifyTimer)/NOTIFY_TIMER_BLEND_IN);
+					notifyLabel.myRenderer.material.color = c;
+				}	
 			}
 		}
 	}
@@ -846,7 +888,12 @@ public class PlayGUI {
 			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
 		gui.AddLabel(play.game.state.GetDialog(39), dialogBox, new Vector3(0.03f,0.03f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.4f, MyGUI.GUIAlignment.Center, 0f, 
 			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_COLOR_BLACK, 0);
-		gui.AddLabel(play.game.state.GetDialog(40), dialogBox, new Vector3(0.03f,0.03f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, 0.4f, MyGUI.GUIAlignment.Center, 0f, 
+		string helpString = play.game.state.GetDialog(40) +
+			(ship.hasSpecial[Ship.SPECIAL_BOOST] ? play.game.state.GetDialog(58) : "") +
+			(ship.hasSpecial[Ship.SPECIAL_CLOAK] ? play.game.state.GetDialog(59) : "") +
+			(ship.hasSpecial[Ship.SPECIAL_INVINCIBLE] ? play.game.state.GetDialog(60) : "")
+			+ "\n";
+		gui.AddLabel(helpString, dialogBox, new Vector3(0.03f,0.03f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, 0.4f, MyGUI.GUIAlignment.Center, 0f, 
 			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_COLOR_BLACK, 0);
 		
 		TouchDelegate toGame = new TouchDelegate(ToGame);

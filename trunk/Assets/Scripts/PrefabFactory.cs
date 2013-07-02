@@ -184,13 +184,13 @@ public class PrefabFactory {
 		return shot;
 	}
 	
-	public GameObject CreateBreadcrumb(Vector3 pos, Quaternion rot) {
+	public Breadcrumb CreateBreadcrumb(Vector3 pos, Quaternion rot, int roomID) {
 		GameObject newBreadcrumb = GameObject.Instantiate(breadcrumbTemplate, pos, rot) as GameObject;
 		Breadcrumb breadcrumb = newBreadcrumb.GetComponent<Breadcrumb>();
-		breadcrumb.Initialize(play);
+		breadcrumb.Initialize(play, roomID);
 		breadcrumb.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		breadcrumb.enabled = true;
-		return newBreadcrumb;
+		return breadcrumb;
 	}
 
 	public GameObject CreateMiniMapBreadcrumb(Vector3 pos, Quaternion rot) {

@@ -17,6 +17,7 @@ public class Game : MonoBehaviour {
 	public GameObject miniMapBreadcrumbPrefab;
 	public GameObject doorPrefab;
 	public GameObject exitSignPrefab;
+	public GameObject noEntrySignPrefab;
 	public GameObject secretChamberDoorPrefab;
 	public GameObject crystalPrefab;
 	public GameObject flowerPrefab;

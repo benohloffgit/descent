@@ -37,8 +37,9 @@ public class Play : MonoBehaviour {
 	private EnemyDistributor enemyDistributor;
 	private CollecteablesDistributor collecteablesDistributor;
 	private RaycastHit hit;
+	private List<int> trianglesUsedForWallPlacement;
 	
-	private List<GameObject> breadcrumbs = new List<GameObject>();
+	public List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
 	
 	private Light[] caveLights;
 	
@@ -232,6 +233,7 @@ public class Play : MonoBehaviour {
 			miniMap.Reset();
 			playGUI.ToHasDied();
 		} else {
+			trianglesUsedForWallPlacement = new List<int>();
 			UnityEngine.Random.seed = caveSeed;
 			cave.AddZone(zoneID);
 			UnityEngine.Random.seed = botSeed;
@@ -525,7 +527,7 @@ public class Play : MonoBehaviour {
 			ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 37);
 			return true;
 		} else {
-			// Todo diplay max ammo hint
+			playGUI.DisplayNotification(state.GetDialog(55));
 			return false;
 		}
 	}
@@ -536,18 +538,18 @@ public class Play : MonoBehaviour {
 				ship.transform.TransformDirection(BREADCRUMB_POSITION).magnitude, 1 << Game.LAYER_CAVE)) {
 			pos = hit.point;
 		}
-		breadcrumbs.Add(game.CreateFromPrefab().CreateBreadcrumb(pos, Quaternion.identity));
+		breadcrumbs.Add(game.CreateFromPrefab().CreateBreadcrumb(pos, Quaternion.identity, GetRoomOfShip().id));
 		miniMap.SetBreadcrumb(pos);
 		if (breadcrumbs.Count > Game.MAX_BREADCRUMBS) {
-			Destroy(breadcrumbs[0]);
+			Destroy(breadcrumbs[0].gameObject);
 			breadcrumbs.RemoveAt(0);
 			miniMap.RemoveBreadcrumb();
 		}
 	}
 	
 	private void DestroyAllBreadcrumbs() {
-		foreach (GameObject gO in breadcrumbs) {
-			Destroy(gO);
+		foreach (Breadcrumb b in breadcrumbs) {
+			Destroy(b.gameObject);
 		}
 		breadcrumbs.Clear();
 	}
@@ -587,19 +589,23 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void PlaceOnWall(Vector3 worldPos, Room r, Transform t) {
-		Vector3 rayPath = Play.RandomVector();
 		int triangleIndex = -1;
-		if (Physics.Raycast(worldPos, rayPath, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {
-			if (hit.transform.gameObject.GetInstanceID() == r.roomMesh.transform.gameObject.GetInstanceID()) {
-				triangleIndex = hit.triangleIndex;
-			} else {
-				Debug.Log ("Hit DIFFERENT room while placing object on wall " + hit.transform.name + " " + r.roomMesh.transform.name);
+		Vector3 rayPath;
+		while (triangleIndex == -1) {
+			rayPath = Play.RandomVector();
+			if (Physics.Raycast(worldPos, rayPath, out hit, Game.MAX_VISIBILITY_DISTANCE, 1 << Game.LAYER_CAVE)) {
+				if (hit.transform.gameObject.GetInstanceID() == r.roomMesh.transform.gameObject.GetInstanceID()) {
+					if (!trianglesUsedForWallPlacement.Contains(hit.triangleIndex)) {
+						triangleIndex = hit.triangleIndex;
+						trianglesUsedForWallPlacement.Add(triangleIndex);
+					}
+				}
 			}
 		}
 		Mesh mesh = r.roomMesh.mesh;
-		if (triangleIndex == -1) {
+/*		if (triangleIndex == -1) {
 			triangleIndex = UnityEngine.Random.Range(0, mesh.triangles.Length/3);
-		}
+		}*/
 		Vector3 v1 = mesh.vertices[mesh.triangles[triangleIndex * 3 + 0]];
 		Vector3 v2 = mesh.vertices[mesh.triangles[triangleIndex * 3 + 1]];
 		Vector3 v3 = mesh.vertices[mesh.triangles[triangleIndex * 3 + 2]];

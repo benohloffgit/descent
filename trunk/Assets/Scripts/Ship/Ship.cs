@@ -574,15 +574,19 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void BoostShip() {
-		if (!isBoosterOn && !isBoosterLoading && !isCloakOn && !isInvincibleOn) {
-			isBoosterOn = true;
-			PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
-			boostTimer = Time.fixedTime;
-			play.playGUI.SwitchShipBoost();
-//			powerUpBoostParticle.enabled = true;
-//			powerUpBoostParticle.renderer.enabled = true;
-			powerUpParticleSystemOneParticle.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_BOOST];
-			powerUpParticleSystemOneParticle.Play();
+		if (!isCloakOn && !isInvincibleOn && !isBoosterOn) {
+			if (!isBoosterLoading) {
+				isBoosterOn = true;
+				PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
+				boostTimer = Time.fixedTime;
+				play.playGUI.SwitchShipBoost();
+				powerUpParticleSystemOneParticle.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_BOOST];
+				powerUpParticleSystemOneParticle.Play();
+			} else {
+				play.playGUI.DisplayNotification(game.state.GetDialog(53));
+			}
+		} else {
+			play.playGUI.DisplayNotification(game.state.GetDialog(52));
 		}
 	}
 	
@@ -599,13 +603,19 @@ public class Ship : MonoBehaviour {
 	}		
 
 	public void CloakShip() {
-		if (!isCloakOn && !isCloakLoading && !isBoosterOn && !isInvincibleOn) {
-			isCloakOn = true;
-			//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
-			cloakTimer = Time.fixedTime;
-			play.playGUI.SwitchShipCloak();
-			powerUpParticleSystem.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_CLOAK];
-			powerUpParticleSystem.Play();
+		if (!isCloakOn && !isBoosterOn && !isInvincibleOn) {
+			if (!isCloakLoading) {
+				isCloakOn = true;
+				//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
+				cloakTimer = Time.fixedTime;
+				play.playGUI.SwitchShipCloak();
+				powerUpParticleSystem.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_CLOAK];
+				powerUpParticleSystem.Play();
+			} else {
+				play.playGUI.DisplayNotification(game.state.GetDialog(53));
+			}
+		} else {
+			play.playGUI.DisplayNotification(game.state.GetDialog(52));
 		}
 	}
 	
@@ -620,14 +630,20 @@ public class Ship : MonoBehaviour {
 	}
 
 	public void InvincibleShip() {
-		if (!hasBeenInvincibleInThisZone && !isBoosterOn && !isCloakOn) {
-			isInvincibleOn = true;
-			hasBeenInvincibleInThisZone = true;
-			invincibleTimer = Time.fixedTime;
-			//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
-			play.playGUI.SwitchShipInvincible();
-			powerUpParticleSystemOneParticle.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_INVINCIBLE];
-			powerUpParticleSystemOneParticle.Play();
+		if (!isBoosterOn && !isCloakOn) {
+			if (!hasBeenInvincibleInThisZone) {
+				isInvincibleOn = true;
+				hasBeenInvincibleInThisZone = true;
+				invincibleTimer = Time.fixedTime;
+				//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
+				play.playGUI.SwitchShipInvincible();
+				powerUpParticleSystemOneParticle.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_INVINCIBLE];
+				powerUpParticleSystemOneParticle.Play();
+			} else {
+				play.playGUI.DisplayNotification(game.state.GetDialog(54));
+			}
+		} else {
+			play.playGUI.DisplayNotification(game.state.GetDialog(52));
 		}
 	}
 	

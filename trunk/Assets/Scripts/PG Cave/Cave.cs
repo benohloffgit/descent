@@ -16,6 +16,7 @@ public class Cave {
 	private List<RoomMiner> roomMiners;
 	private Door[] doors;
 	private Transform[] exitSigns;
+	private Transform noEntrySign;
 	private SecretChamberDoor secretChamberDoor;
 	public int secretCaveRoomID;
 	private int exitDoorIndex;
@@ -37,6 +38,7 @@ public class Cave {
 	public static IntTriple[] ROOM_DIRECTIONS = new IntTriple[] { IntTriple.FORWARD, IntTriple.BACKWARD, IntTriple.UP, IntTriple.DOWN, IntTriple.LEFT, IntTriple.RIGHT };
 	
 	private static Vector3 EXIT_SIGN_POSITION = new Vector3(-0.19f, 0f, -0.07f);
+	private static Vector3 NOENTRY_SIGN_POSITION = new Vector3(-0.19f, 0f, 0.07f);
 	
 //	public static int[] MINER_QUIT_ON_PERCENT_TYPES = new int[] { 100, 200, 300, 400, 500, 600, 700, 800 };
 //	public static float[] MINER_QUIT_ON_PERCENT_TYPES = new float[] { 0.025f, 0.05f, 0.075f, 0.1f, 0.125f, 0.15f, 0.175f, 0.2f };
@@ -165,13 +167,15 @@ public class Cave {
 				doors[Door.TYPE_ENTRY].transform.position = GetPositionFromGrid(new GridPosition(startingCell-new IntTriple(0,0,1), room.pos));
 				exitSigns[0].parent = doors[Door.TYPE_ENTRY].doorL;
 				exitSigns[0].localPosition = EXIT_SIGN_POSITION;
+				noEntrySign.parent = doors[Door.TYPE_ENTRY].doorL;
+				noEntrySign.localPosition = NOENTRY_SIGN_POSITION;
 			} else if (room.id == 1) { // exit room
 				startingCell = SetEntryExit(IntTriple.FORWARD, 0, Game.DIMENSION_ROOM, 2);
 				roomMiners.Add(new RoomMiner(this, startingCell, IntTriple.FORWARD, room, roomMiners.Count, RoomMiner.Type.WalkRandom, MINER_ENTRYEXITROOMS_DIG_AMOUNT[UnityEngine.Random.Range(0, MINER_ENTRYEXITROOMS_DIG_AMOUNT.Length)]));
 				zoneExit = AddZoneEntryExit(new GridPosition(startingCell, room.pos), 180.0f);
 				doors[Door.TYPE_EXIT].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,1), room.pos));
 				exitSigns[1].parent = doors[Door.TYPE_EXIT].doorL;
-				exitSigns[1].localPosition = EXIT_SIGN_POSITION;//;new Vector3(EXIT_SIGN_POSITION.x, EXIT_SIGN_POSITION.y, -EXIT_SIGN_POSITION.z);
+				exitSigns[1].localPosition = EXIT_SIGN_POSITION;
 				doors[Door.TYPE_NEXT_ENTRY].transform.position = GetPositionFromGrid(new GridPosition(startingCell+new IntTriple(0,0,7), room.pos));
 				play.placeShipBeforeExitDoor = new GridPosition(startingCell, room.pos);
 //				Debug.Log ("Exit Room: " + startingCell);				
@@ -538,6 +542,8 @@ public class Cave {
 		exitSigns[0].transform.localScale *= RoomMesh.MESH_SCALE;
 		exitSigns[1] = (GameObject.Instantiate(game.exitSignPrefab) as GameObject).transform;
 		exitSigns[1].transform.localScale *= RoomMesh.MESH_SCALE;
+		noEntrySign = (GameObject.Instantiate(game.noEntrySignPrefab) as GameObject).transform;
+		noEntrySign.transform.localScale *= RoomMesh.MESH_SCALE;
 	}
 	
 	public GridPosition GetGridFromPosition(Vector3 position) {

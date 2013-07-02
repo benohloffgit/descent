@@ -92,6 +92,8 @@ public abstract class Enemy : MonoBehaviour {
 	protected bool canBeDeactivated;
 	public GridPosition currentGridPosition;
 	
+	private Renderer myRenderer;
+	
 	public List<Weapon> primaryWeapons = new List<Weapon>();
 	public List<Weapon> secondaryWeapons = new List<Weapon>();
 
@@ -103,6 +105,10 @@ public abstract class Enemy : MonoBehaviour {
 	void Awake() {
 		myRigidbody = GetComponent<Rigidbody>();
 		isActive = false;
+	}
+	
+	void OnEnable() {
+		myRenderer = GetComponentInChildren<Renderer>();
 	}
 
 	public void Initialize(Play play_, Spawn spawn_, int clazzNum_, int model_, int enemyEquivalentClazzAModel_, int health_,
@@ -181,17 +187,16 @@ public abstract class Enemy : MonoBehaviour {
 	
 	void FixedUpdate() {
 		currentGridPosition = cave.GetGridFromPosition(transform.position);
-//		ShootSecondary();
 		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
-		if (isShipVisible != Vector3.zero || play.GetShipGridPosition().roomPosition == currentGridPosition.roomPosition) {
+		if (myRenderer.isVisible || play.GetShipGridPosition().roomPosition == currentGridPosition.roomPosition) {
 			if (!isActive) {
-				lastTimeShipVisible = Time.time;
+				lastTimeShipVisible = Time.fixedTime;
 				spawn.ActivateEnemy(this);
 			}
 			DispatchFixedUpdate(isShipVisible);
 		} else if (isActive) {
 			if (canBeDeactivated) {
-				if (Time.time > lastTimeShipVisible + DEACTIVATION_TIME && play.GetShipGridPosition().roomPosition != currentGridPosition.roomPosition) {
+				if (Time.fixedTime > lastTimeShipVisible + DEACTIVATION_TIME && play.GetShipGridPosition().roomPosition != currentGridPosition.roomPosition) {
 					spawn.DeactivateEnemy(this);
 				}
 			} else {

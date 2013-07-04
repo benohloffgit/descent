@@ -151,8 +151,8 @@ public class EnemyDistributor {
 			// 1-4 per zone
 			number = Mathf.FloorToInt(play.zoneID / 8f) + 1;
 			CreateSpawn(Enemy.CLAZZ_MINEBUILDER10, enemyModel, enemyEquivalentClazzAModel,
-						play.cave.zone.roomList[1].GetRandomNonExitGridPosition(),
-						1.0f, number, number, false, Spawn.DistributionMode.AllOverCave);
+						play.cave.zone.roomList[0].GetRandomNonExitGridPosition(),
+						1.0f, number, number, false, Spawn.DistributionMode.RandomInRoom);
 			enemiesAll += number;
 		}
 		if (CLAZZ_A_EQUIVALENT_MODEL[Enemy.CLAZZ_WALLLASER11] <= play.zoneID) {

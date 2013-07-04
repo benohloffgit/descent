@@ -116,6 +116,7 @@
      <Compile Include="Assets\Scripts\PG Cave\Cave.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Cell.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Door.cs" />
+     <Compile Include="Assets\Scripts\PG Cave\Geysir.cs" />
      <Compile Include="Assets\Scripts\PG Cave\GridPosition.cs" />
      <Compile Include="Assets\Scripts\PG Cave\IntDouble.cs" />
      <Compile Include="Assets\Scripts\PG Cave\IntTriple.cs" />
@@ -166,7 +167,7 @@
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Assets\Resources\Story\EN\26.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseEffectShaderRGB.shader" />
-     <None Include="Assets\AndruidsShaders\rim.shader" />
+     <None Include="Assets\AndruidsShaders\RimShader.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\SeparableWeightedBlurDof34.shader" />
      <None Include="Assets\AndruidsShaders\ColorTest.shader" />
      <None Include="Assets\Assets\Resources\Story\EN\3.txt" />
@@ -252,6 +253,7 @@
      <None Include="Assets\Explosion_V2\Documentation\02 - How to create an effect.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseAndGrain.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\VignettingShader.shader" />
+     <None Include="Assets\AndruidsShaders\RimShaderDiffuse.shader" />
      <None Include="Assets\Assets\Resources\Story\EN\8.txt" />
      <None Include="Assets\Assets\Resources\Story\EN\19.txt" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Tonemapper.shader" />

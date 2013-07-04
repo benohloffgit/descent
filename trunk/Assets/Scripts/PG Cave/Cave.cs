@@ -584,6 +584,11 @@ public class Cave {
 				PutDecorationOnWall(r, gO);
 				gO.transform.parent = decorationParent.transform;
 			}
+			if (true) {//UnityEngine.Random.Range(0,3) == 0) {
+				GameObject gO = UnityEngine.GameObject.Instantiate(game.geysirPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject;
+				gO.GetComponent<Geysir>().Initialize(play);
+				PutDecorationOnWall(r, gO);
+			}
 		}
 		MeshFilter[] meshFilters = decorationParent.GetComponentsInChildren<MeshFilter>();
 		CombineInstance[] combine = new CombineInstance[meshFilters.Length];
@@ -603,7 +608,11 @@ public class Cave {
 	
 	private void PutDecorationOnWall(Room r, UnityEngine.GameObject c) {
 		Vector3 pos = r.GetRandomNonExitGridPosition().GetWorldVector3();
-		c.transform.localScale *= (RoomMesh.MESH_SCALE/5f) * (2.0f * UnityEngine.Random.Range(0.5f,2.0f));
+		if (c.tag == Geysir.TAG) {
+			c.transform.localScale *= (RoomMesh.MESH_SCALE/5f) * 2.0f;
+		} else {
+			c.transform.localScale *= (RoomMesh.MESH_SCALE/5f) * (2.0f * UnityEngine.Random.Range(0.5f,2.0f));
+		}
 		c.transform.RotateAroundLocal(Vector3.forward, UnityEngine.Random.Range(0f, 360f));
 		play.PlaceOnWall(pos, r, c.transform);
 	}
@@ -611,6 +620,9 @@ public class Cave {
 	private void RemoveDecoration() {
 		UnityEngine.GameObject.Destroy(decorationParent);
 		decorationParent = null;
+		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Geysir.TAG)) {
+			GameObject.Destroy(gO);
+		}
 	}
 	
 	public void OpenExitDoor() {

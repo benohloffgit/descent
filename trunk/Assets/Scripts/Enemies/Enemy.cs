@@ -188,7 +188,7 @@ public abstract class Enemy : MonoBehaviour {
 	void FixedUpdate() {
 		currentGridPosition = cave.GetGridFromPosition(transform.position);
 		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
-		if (myRenderer.isVisible || play.GetShipGridPosition().roomPosition == currentGridPosition.roomPosition) {
+		if (myRenderer.isVisible || isShipVisible != Vector3.zero || play.GetShipGridPosition().roomPosition == currentGridPosition.roomPosition) {
 			if (!isActive) {
 				lastTimeShipVisible = Time.fixedTime;
 				spawn.ActivateEnemy(this);
@@ -244,6 +244,14 @@ public abstract class Enemy : MonoBehaviour {
 		if (secondaryWeapons.Count > 0 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
 			secondaryWeapons[currentSecondaryWeapon].Shoot();
 		}
+	}
+	
+	public void RenderWithGlow() {
+		myRenderer.material = game.enemyMaterials[Game.MATERIAL_GLOW];
+	}
+	
+	public void RenderNormal() {
+		myRenderer.material = game.enemyMaterials[Game.MATERIAL_NO_GLOW];
 	}
 	
 	public static int CLAZZ_NUM(string clazz_) {

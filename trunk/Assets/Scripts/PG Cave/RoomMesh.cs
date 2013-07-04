@@ -135,6 +135,10 @@ public class RoomMesh : MonoBehaviour {
 		MeshCollider mC = GetComponent<MeshCollider>() as MeshCollider;
 		mC.sharedMesh = mesh;
 //		Debug.Log ("roomTrianglesCount: " + roomTrianglesCount);
+		
+		OcclusionArea oA = GetComponent<OcclusionArea>();
+		oA.size = new Vector3(Game.DIMENSION_ROOM, Game.DIMENSION_ROOM, Game.DIMENSION_ROOM);
+		oA.center = room.pos.GetVector3() * Game.DIMENSION_ROOM + oA.size/2f;
 	}
 /*	
 	private int CountTriangles(Mesh mesh, int vertexIndex) {

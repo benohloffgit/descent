@@ -21,6 +21,8 @@ public class Game : MonoBehaviour {
 	public GameObject secretChamberDoorPrefab;
 	public GameObject crystalPrefab;
 	public GameObject flowerPrefab;
+	public GameObject geysirPrefab;
+	public GameObject geysirParticleSystemPrefab;
 	
 	public GameObject testCubePrefab;
 	public GameObject shipPrefab;
@@ -69,6 +71,7 @@ public class Game : MonoBehaviour {
 	public Material[] explosionMaterials;
 	public Material[] powerUpParticleMaterials;
 	public Material[] miniMapRoomConnectorMaterials;
+	public Material[] enemyMaterials;
 	
 	public State state;
 	public GameInput gameInput;
@@ -81,6 +84,9 @@ public class Game : MonoBehaviour {
 	
 	public static int SHIP = 0;
 	public static int ENEMY = 1;
+	
+	public static int MATERIAL_NO_GLOW = 0;
+	public static int MATERIAL_GLOW = 1;
 	
 	public static int MAX_BREADCRUMBS = 20;
 	public static int MAX_MISSILE_AMMO = 10;

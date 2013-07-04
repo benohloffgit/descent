@@ -65,8 +65,11 @@ public class Play : MonoBehaviour {
 	private int nextShotTrailRenderer;
 	private GameObject[] missileExhaustRenderers;
 	private int nextMissileExhaustRenderer;
+	private ParticleSystem geysirParticleSystem;
+	private Transform geysirTransformWithParticleSystem;
 	
 	private static Vector3 BREADCRUMB_POSITION = new Vector3(0f, 0f, 2.0f);
+	private static Vector3 GEYSIR_POSITION = new Vector3(0f, 0f, 0.25f);
 	private static int MAX_SHOT_TRAIL_RENDERERS = 20;
 	private static int MAX_MISSILE_EXHAUST_RENDERERS = 5;
 
@@ -125,10 +128,12 @@ public class Play : MonoBehaviour {
 		missileExhaustRenderers = new GameObject[MAX_MISSILE_EXHAUST_RENDERERS];
 		for (int i=0; i<MAX_MISSILE_EXHAUST_RENDERERS; i++) {
 			missileExhaustRenderers[i] =  GameObject.Instantiate(game.missileExhaustRenderer, Vector3.zero, Quaternion.identity) as GameObject;
-			//missileExhaustRenderers[i].particleEmitter.emit = false;
 		}
 		nextMissileExhaustRenderer = 0;
-
+		
+		geysirParticleSystem = (GameObject.Instantiate(game.geysirParticleSystemPrefab, Vector3.zero, Quaternion.identity) as GameObject).GetComponent<ParticleSystem>();
+		geysirTransformWithParticleSystem = null;
+		
 		SetPaused(true);
 	}
 	
@@ -691,6 +696,25 @@ public class Play : MonoBehaviour {
 			nextMissileExhaustRenderer = 0;
 		}
 		return missileExhaustRenderers[n];
+	}
+	
+	public void SetGeysirParticleSystem(Transform geysir) {
+		if (geysirTransformWithParticleSystem == null) {
+			geysirParticleSystem.transform.parent = geysir;
+			geysirParticleSystem.transform.localPosition = GEYSIR_POSITION;
+			geysirParticleSystem.transform.localRotation = Quaternion.identity;
+			geysirParticleSystem.transform.localScale = Vector3.one;
+			geysirTransformWithParticleSystem = geysir;
+			geysirParticleSystem.Play();
+		}
+	}
+
+	public void LetGeysirParticleSystem() {
+		if (geysirParticleSystem != null) {
+			geysirParticleSystem.transform.parent = null;
+			geysirTransformWithParticleSystem = null;
+			geysirParticleSystem.Stop();
+		}
 	}
 
 }

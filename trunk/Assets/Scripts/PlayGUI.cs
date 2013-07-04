@@ -496,6 +496,9 @@ public class PlayGUI {
 					}*/
 					ShowEnemyHUDInfo(i, enemyHUDInfo[i-removed]);
 				} else {
+					if (enemyHUDInfo[i-removed] != null) {
+						enemyHUDInfo[i-removed].RenderNormal();
+					}
 					enemyHUDInfo.RemoveAt(i-removed);
 					removed++;
 					gui.labelsCC[enemyHUDInfoLabels[i]].myRenderer.enabled = false;
@@ -583,8 +586,12 @@ public class PlayGUI {
 		e.lastTimeHUDInfoRequested = Time.fixedTime;
 		if (!enemyHUDInfo.Contains(e)) {
 			enemyHUDInfo.Add(e);
+			e.RenderWithGlow();
 			if (enemyHUDInfo.Count > MAX_ENEMY_HUD_INFOS) {
+				enemyHUDInfo[0].RenderNormal();
 				enemyHUDInfo.RemoveAt(0);
+				gui.labelsCC[enemyHUDInfoLabels[0]].myRenderer.enabled = false;
+				enemyHealthBars[0].DisableRenderer();
 			}
 		}
 	}
@@ -648,6 +655,7 @@ public class PlayGUI {
 	}
 	
 	public void RemoveEnemy(Enemy e) {
+		e.RenderNormal();
 		if (enemyHUDInfo.Contains(e)) {
 //			Debug.Log ("removed " + e);
 			enemyHUDInfo.Remove(e);

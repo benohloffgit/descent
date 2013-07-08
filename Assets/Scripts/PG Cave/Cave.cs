@@ -584,7 +584,7 @@ public class Cave {
 				PutDecorationOnWall(r, gO);
 				gO.transform.parent = decorationParent.transform;
 			}
-			if (true) {//UnityEngine.Random.Range(0,3) == 0) {
+			if (UnityEngine.Random.Range(0,3) == 0) {
 				GameObject gO = UnityEngine.GameObject.Instantiate(game.geysirPrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject;
 				gO.GetComponent<Geysir>().Initialize(play);
 				PutDecorationOnWall(r, gO);

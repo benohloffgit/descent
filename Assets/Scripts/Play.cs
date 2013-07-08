@@ -139,9 +139,9 @@ public class Play : MonoBehaviour {
 	
 	void OnGUI() {
 //		if (!isPaused) {
-/*			GUI.Label(new Rect (20,Screen.height-90,500,80),
-					"Active-Living-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +"--"+ enemyDistributor.enemiesAll +
-					"\nHealth E: " + enemyDistributor.enemiesHealthActive +"--"+ enemyDistributor.enemiesHealthActiveAvg.ToString("F2") +
+			GUI.Label(new Rect (20,Screen.height-90,500,80),
+					"Active-Living-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +"--"+ enemyDistributor.enemiesAll);
+/*					"\nHealth E: " + enemyDistributor.enemiesHealthActive +"--"+ enemyDistributor.enemiesHealthActiveAvg.ToString("F2") +
 					"\nFPS S-E-S/E: " + ship.firepowerPerSecond.ToString("F2") +"--"+ enemyDistributor.enemiesFirepowerPerSecondActive.ToString("F2") +"--"+enemiesToShipFPSRatio.ToString("F2")+
 					"\nHealth/FPS S-E: " + activeEnemiesHealthToShipFPSRatio.ToString("F2") +"--"+ shipHealthToActiveEnemiesFPSRatio.ToString("F2") +
 					"\nHit/Miss S-E-S/E: " + shipHitRatio.ToString("F2") +"--"+enemyHitRatio.ToString("F2") + "--" + shipToEnemyHitRatio.ToString("F2")
@@ -296,6 +296,7 @@ public class Play : MonoBehaviour {
 			UnityEngine.Random.seed = caveSeed;
 			caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		}
+		miniMap.SwitchOff();
 		ship.Deactivate();
 		ship.LaunchExitHelper(false);
 		SetPaused(true);

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 public class Ship : MonoBehaviour {
 	public static string TAG = "Ship";
 	
-	public GameObject shipHUDPrefab;
 	public Game game;
 	
 	public int hullCLazz;
@@ -30,7 +29,6 @@ public class Ship : MonoBehaviour {
 	private AudioSource audioSource;
 	
 	// ship components
-	private GameObject shipHUD;
 	private ShipSteering shipSteering;
 	private ShipControl shipControl;
 	private Transform headlight;
@@ -79,7 +77,7 @@ public class Ship : MonoBehaviour {
 	
 	private static int NO_HULL = -1;
 	
-	private static int CHARGED_MISSILE_SHIELD_MAX = 50;
+	private static float CHARGED_MISSILE_SHIELD_MAX = 50f;
 	private static float CHARGED_MISSILE_TIME_MAX = 2.5f; // seconds
 	private static float CHARGED_MISSILE_DEDUCTION = 20f; // deducted shield per second
 	
@@ -116,7 +114,7 @@ public class Ship : MonoBehaviour {
 	void Awake() {
 //		Screen.sleepTimeout = SleepTimeout.NeverSleep;	
 //		Debug.Log (Screen.dpi);
-		InstantiateShipHUD();
+//		InstantiateShipHUD();
 		shipSteering = transform.GetComponent<ShipSteering>();
 		shipControl = new ShipControl(); //transform.GetComponent<ShipControl>();
 		headlight = transform.FindChild("Headlight");
@@ -212,12 +210,13 @@ public class Ship : MonoBehaviour {
 				secondaryWeapons[currentSecondaryWeapon].IsReloaded();
 				if (chargedMissileTimer != -1f && shield > 0) {
 					float timeDelta = Time.fixedTime - chargedMissileTimer;
-					int fullDeduction = Mathf.Min(CHARGED_MISSILE_SHIELD_MAX, Mathf.FloorToInt(Mathf.Min(timeDelta, CHARGED_MISSILE_TIME_MAX) * CHARGED_MISSILE_DEDUCTION));
-					int newDeduction = Mathf.Min(fullDeduction - chargedMissileShieldDeducted, shield);
+					float fullDeduction = Mathf.Min(CHARGED_MISSILE_SHIELD_MAX, Mathf.Min(timeDelta, CHARGED_MISSILE_TIME_MAX) * CHARGED_MISSILE_DEDUCTION);
+					int newDeduction = Mathf.Min(Mathf.FloorToInt(fullDeduction - chargedMissileShieldDeducted), shield);
 	//				Debug.Log (newDeduction);
 					shield -= newDeduction;
 					shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
-					chargedMissileShieldDeducted = fullDeduction;
+					chargedMissileShieldDeducted += newDeduction;
+					play.playGUI.chargedMissileProgressBar.SetBar(fullDeduction/CHARGED_MISSILE_SHIELD_MAX);
 				}
 			}
 			// Enemy target info
@@ -356,14 +355,16 @@ public class Ship : MonoBehaviour {
 		cameraTransform.position = pos;
 	}
 
-	private void InstantiateShipHUD() {
-		shipHUD = GameObject.Instantiate(shipHUDPrefab) as GameObject;
-		Transform crossHair = shipHUD.transform.Find("Cross Hair");
-		crossHair.localScale /= (crossHair.renderer.material.mainTexture.width/(float)Screen.width) / (32.0f/(float)Screen.width);
-	}
+//	private void InstantiateShipHUD() {
+//		shipHUD = GameObject.Instantiate(shipHUDPrefab) as GameObject;
+//		Transform crossHair = shipHUD.transform.Find("Cross Hair");
+//		crossHair.localScale /= (crossHair.renderer.material.mainTexture.width/(float)Screen.width) / (32.0f/(float)Screen.width);
+//	}
 	
 	public void AddPrimaryWeapon(int wType) {
-		if (currentPrimaryWeapon != -1) {
+		if (currentPrimaryWeapon == -1) {
+			play.playGUI.DisplayCrossHair();
+		} else {
 			primaryWeapons[currentPrimaryWeapon].Unmount();
 		}
 		Weapon w = new Weapon(null, Weapon.PRIMARY, transform, play, wType,
@@ -463,8 +464,8 @@ public class Ship : MonoBehaviour {
 			maxHealth = HEALTH[hullCLazz];
 			maxShield = SHIELD[hullCLazz];
 		} else {
-			maxHealth = 0;
-			maxShield = 0;
+			maxHealth = 1;
+			maxShield = 1;
 		}
 		health = maxHealth;
 		shield = maxShield;
@@ -486,10 +487,13 @@ public class Ship : MonoBehaviour {
 	public void ShootSecondary() {
 		if (isDetonatorMissileExploded) {
 			if (play.isShipInPlayableArea && currentSecondaryWeapon != -1 && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
-				if (currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE && chargedMissileShieldDeducted != 0) {
-					//Debug.Log(chargedMissileShieldDeducted);
-					secondaryWeapons[currentSecondaryWeapon].loadedShots[0].damage += chargedMissileShieldDeducted;
-					chargedMissileShieldDeducted = 0;
+				if (currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
+					play.playGUI.chargedMissileProgressBar.DisableRenderer();
+					if(chargedMissileShieldDeducted != 0) {
+						//Debug.Log(chargedMissileShieldDeducted);
+						secondaryWeapons[currentSecondaryWeapon].loadedShots[0].damage += chargedMissileShieldDeducted;
+						chargedMissileShieldDeducted = 0;
+					}
 				} else if (currentSecondaryWeapon == Weapon.TYPE_DETONATOR_MISSILE) {
 					isDetonatorMissileExploded = false;
 				}
@@ -560,8 +564,11 @@ public class Ship : MonoBehaviour {
 	
 	public void StartChargedMissileTimer() {
 		if (secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+			play.playGUI.DisplayNotification(game.state.GetDialog(61));
 			chargedMissileTimer = Time.fixedTime;
 			chargedMissileShieldDeducted = 0;
+			play.playGUI.chargedMissileProgressBar.EnableRenderer();
+			play.playGUI.chargedMissileProgressBar.SetBar(0);
 		}
 	}
 	
@@ -611,6 +618,7 @@ public class Ship : MonoBehaviour {
 				play.playGUI.SwitchShipCloak();
 				powerUpParticleSystem.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_CLOAK];
 				powerUpParticleSystem.Play();
+				play.playGUI.HideCrossHair();
 			} else {
 				play.playGUI.DisplayNotification(game.state.GetDialog(53));
 			}
@@ -626,6 +634,7 @@ public class Ship : MonoBehaviour {
 			cloakTimer = Time.fixedTime;
 			play.playGUI.SwitchShipCloak();
 			powerUpParticleSystem.Stop();
+			play.playGUI.DisplayCrossHair();
 		}
 	}
 

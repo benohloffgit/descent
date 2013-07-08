@@ -6,6 +6,6 @@ Which bots would I encounter here?
 
 When I was darwinating the bots I split the different developing bots into eight different classes. Each class of bot would evolve slightly differently.
 
-I gave the different classes the names of animals that somowhow resembled them; each one developing in its own way.
+I gave the different classes the names of animals they somehow resembled; each one developing in its own way.
 
 So let's see what comes next...

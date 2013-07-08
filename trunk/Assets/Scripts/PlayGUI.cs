@@ -47,11 +47,13 @@ public class PlayGUI {
 	private Image shipInvincibleOff;
 	private Image missileLockOn;
 	private Image missileLockOff;
+	private Image shipCroosHair;
 	public ProgressBar boosterProgressBar;
 	public ProgressBar cloakProgressBar;
 	public ProgressBar shipHealthProgressBar;
 	public ProgressBar shipShieldProgressBar;
 	public ProgressBar shipMissileLoadingProgressBar;
+	public ProgressBar chargedMissileProgressBar;
 	private int[] healthCount;
 	private int[] shieldCount;
 	
@@ -129,6 +131,10 @@ public class PlayGUI {
 		imageId = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.2f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		notifyLabel = gui.labelsCC[imageId];
 		
+		// Cross hair
+		imageId = gui.AddImage(topContainer, new Vector3(0.075f, 0.075f, 1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_CROSS_HAIR, 0);
+		shipCroosHair = gui.images[imageId];
+			
 		// power ups / special capabilities
 		int powerUpContainer = gui.AddContainer(topContainer, new Vector3(0.1f, 0.1f, 1.0f), true, MyGUI.GUIAlignment.Right, 0.02f, MyGUI.GUIAlignment.Top, 0.03f);
 		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_EXITHELPER_OFF, 0);
@@ -244,10 +250,12 @@ public class PlayGUI {
 		imageId = gui.AddProgressBar(weaponsContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Center, 0.5f, MyGUI.GUIAlignment.Center, -0.05f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_PROGRESS_FORE, 0);
 		shipMissileLoadingProgressBar = gui.progressBars[imageId];
 		
-//		ticks = 0;
+		// charged Missile Progress Bar
+		imageId = gui.AddProgressBar(topContainer, new Vector3(0.3f, 0.0375f, 1f), MyGUI.GUIAlignment.Center, 00f, MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_YELLOW_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_YELLOW_PROGRESS_FORE, 0);
+		chargedMissileProgressBar = gui.progressBars[imageId];
+
 		healthCount = new int[3];
 		shieldCount = new int[3];
-//		shipSecondaryWeaponDisplayed = -1;
 		shipSecondaryWeaponLoadState = false;
 	}
 	
@@ -285,12 +293,15 @@ public class PlayGUI {
 		missileLockOff.myRenderer.enabled = false;
 		missileLockOn.myRenderer.enabled = false;
 		shipMissileLoadingProgressBar.DisableRenderer();
-		
+		chargedMissileProgressBar.DisableRenderer();
+			
 		if (ship.currentPrimaryWeapon != -1) {
 			DisplayPrimaryWeapon(ship.primaryWeapons[ship.currentPrimaryWeapon]);
+			DisplayCrossHair();
 		} else {
 			gui.labelsCC[primaryWeaponLabel].SetText("");
 			primaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
+			HideCrossHair();
 		}
 		if (ship.currentSecondaryWeapon != -1) {
 			DisplaySecondaryWeapon();
@@ -319,6 +330,7 @@ public class PlayGUI {
 		notifyLabel.SetText(text);
 		notifyTimer = Time.fixedTime;
 		notificationMode = NotificationMode.BlendIn;
+		notifyLabel.myRenderer.enabled = true;
 	}
 		
 	public void SwitchHeadlight() {
@@ -561,6 +573,8 @@ public class PlayGUI {
 				if (Time.fixedTime > notifyTimer + NOTIFY_TIMER_BLEND_IN) {
 					notificationMode = NotificationMode.Show;
 					notifyTimer = Time.fixedTime;
+					c.a = 1f;
+					notifyLabel.myRenderer.material.color = c;
 				} else {
 					c.a = Mathf.Lerp(0f, 1f, (Time.fixedTime-notifyTimer)/NOTIFY_TIMER_BLEND_IN);
 					notifyLabel.myRenderer.material.color = c;
@@ -573,6 +587,8 @@ public class PlayGUI {
 			} else if (notificationMode == NotificationMode.BlendOut) {
 				if (Time.fixedTime > notifyTimer + NOTIFY_TIMER_BLEND_IN) {
 					notificationMode = NotificationMode.Off;
+					c.a = 0;
+					notifyLabel.myRenderer.material.color = c;
 					notifyLabel.myRenderer.enabled = false;
 				} else {
 					c.a = Mathf.Lerp(1f, 0f, (Time.fixedTime-notifyTimer)/NOTIFY_TIMER_BLEND_IN);
@@ -726,6 +742,14 @@ public class PlayGUI {
 		gui.CloseDialog(dialogContainer);
 		Screen.showCursor = false;
 		Screen.lockCursor = true;
+	}
+	
+	public void DisplayCrossHair() {
+		shipCroosHair.renderer.enabled = true;
+	}
+	
+	public void HideCrossHair() {
+		shipCroosHair.renderer.enabled = false;
 	}
 	
 	public void DisplayPrimaryWeapon(Weapon w) {

@@ -31,7 +31,7 @@ public class Sokoban {
 	
 	private static float ANIMATION_DURATION = 0.25f;
 	
-	public static Vector4 UV_IMAGE_BLANK = new Vector4(0.5f, 0.5f, 1.0f, 1.0f);
+	public static Vector4 UV_IMAGE_BLANK = new Vector4(0.51f, 0.51f, 1.0f, 1.0f);
 	public static Vector4 UV_IMAGE_WALL = new Vector4(0f, 0.5f, 0.5f, 1.0f);
 	public static Vector4 UV_IMAGE_GOAL = new Vector4(0f, 0f, 0.5f, 0.5f);
 	public static Vector4 UV_IMAGE_PLAYER = new Vector4(0f, 0.5f, 0.5f, 1.0f);

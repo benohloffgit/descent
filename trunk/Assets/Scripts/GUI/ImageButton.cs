@@ -44,7 +44,11 @@ public class ImageButton : MonoBehaviour, Focussable {
 	public bool IsBlocking() {
 		return true;
 	}
-	
+
+	public bool IsSameAs(GameObject gO) {
+		return gO == gameObject;
+	}
+
 	public void LostFocus() {
 		myGUI.DeleteGUIInFocus();
 	}

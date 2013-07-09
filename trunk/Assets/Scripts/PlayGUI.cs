@@ -96,8 +96,12 @@ public class PlayGUI {
 	private static Vector3 ENEMY_HEALTH_BAR_OFFSET_LOCAL = new Vector3(3.0f, -3.0f, 0f);
 	private static Vector3 ENEMY_LOCK_OFFSET_LOCAL = new Vector3(3.0f, 3.0f, 0f);
 	private static float TICK_DELTA = 0.05f;
-	private static Vector4[] DIGITS = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
+	private static Vector4[] DIGITS_WHITE = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
 												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
+	private static Vector4[] DIGITS_RED = new Vector4[] {Game.GUI_UV_NUMBER_0+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_1+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_2+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_3+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_4+Game.GUI_UV_NUMBERS_RED_OFFSET,
+												Game.GUI_UV_NUMBER_5+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_6+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_7+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_8+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_9+Game.GUI_UV_NUMBERS_RED_OFFSET};
+	private static Vector4[] DIGITS_BLUE = new Vector4[] {Game.GUI_UV_NUMBER_0+Game.GUI_UV_NUMBERS_BLUE_OFFSET, Game.GUI_UV_NUMBER_1+Game.GUI_UV_NUMBERS_BLUE_OFFSET, Game.GUI_UV_NUMBER_2+Game.GUI_UV_NUMBERS_BLUE_OFFSET, Game.GUI_UV_NUMBER_3+Game.GUI_UV_NUMBERS_BLUE_OFFSET, Game.GUI_UV_NUMBER_4+Game.GUI_UV_NUMBERS_BLUE_OFFSET,
+												Game.GUI_UV_NUMBER_5+Game.GUI_UV_NUMBERS_BLUE_OFFSET, Game.GUI_UV_NUMBER_6+Game.GUI_UV_NUMBERS_BLUE_OFFSET, Game.GUI_UV_NUMBER_7+Game.GUI_UV_NUMBERS_BLUE_OFFSET, Game.GUI_UV_NUMBER_8+Game.GUI_UV_NUMBERS_BLUE_OFFSET, Game.GUI_UV_NUMBER_9+Game.GUI_UV_NUMBERS_BLUE_OFFSET};
 	
 	public static Vector4[] PRIMARY_WEAPONS = new Vector4[] {Game.GUI_UV_GUN,Game.GUI_UV_LASER,Game.GUI_UV_TWINGUN,Game.GUI_UV_PHASER,Game.GUI_UV_TWINLASER,Game.GUI_UV_GAUSS,Game.GUI_UV_TWINPHASER,Game.GUI_UV_TWINGAUSS};
 	public static Vector4[] SECONDARY_WEAPONS = new Vector4[] {Game.GUI_UV_MISSILE,Game.GUI_UV_GUIDEDMISSILE,Game.GUI_UV_CHARGEDMISSILE,Game.GUI_UV_DETONATORMISSILE};
@@ -122,9 +126,9 @@ public class PlayGUI {
 		
 		int imageId;
 		// zone ID
-		imageId = gui.AddImage(topContainer, new Vector3(0.1f, 0.1f, 1f), MyGUI.GUIAlignment.Center, 0.04f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_NUMBER_0, 0);
+		imageId = gui.AddImage(topContainer, new Vector3(0.1f, 0.1f, 1f), MyGUI.GUIAlignment.Center, 0.04f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_NUMBER_0, 1);
 		zoneIDDigit0 = gui.images[imageId];
-		imageId = gui.AddImage(topContainer, new Vector3(0.1f, 0.1f, 1f), MyGUI.GUIAlignment.Center, -0.04f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_NUMBER_0, 0);
+		imageId = gui.AddImage(topContainer, new Vector3(0.1f, 0.1f, 1f), MyGUI.GUIAlignment.Center, -0.04f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_NUMBER_0, 1);
 		zoneIDDigit1 = gui.images[imageId];
 		
 		// notify label
@@ -170,11 +174,11 @@ public class PlayGUI {
 		
 		// ship health
 		int healthContainer = gui.AddContainer(topContainer, new Vector3(0.04f, 0.04f, 1.0f), true, MyGUI.GUIAlignment.Center, 0.235f, MyGUI.GUIAlignment.Top, 0.07f);
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 6.5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 2);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 6.5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 1);
 		healthDigit0 = gui.images[imageId];
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 2);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 1);
 		healthDigit1 = gui.images[imageId];
-		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 3.5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 2);
+		imageId = gui.AddImage(healthContainer, MyGUI.GUIAlignment.Left, 3.5f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_NUMBER_0, 1);
 		healthDigit2 = gui.images[imageId];
 		gui.AddImage(healthContainer, new Vector3(0.04f, 0.04f, 1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, 1.5f, Game.GUI_UV_HEALTH, 0);
 		imageId = gui.AddProgressBar(healthContainer, new Vector3(0.3f, 0.0375f, 1f), MyGUI.GUIAlignment.Left, 0.25f, MyGUI.GUIAlignment.Top, -1f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_HEALTH_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_HEALTH_PROGRESS_FORE, 0);
@@ -438,15 +442,15 @@ public class PlayGUI {
 	}
 	
 	private void DisplayZoneID() {
-		zoneIDDigit0.SetUVMapping(DIGITS[MyGUI.GetDigitOfNumber(0, play.zoneID+1)]);
-		zoneIDDigit1.SetUVMapping(DIGITS[MyGUI.GetDigitOfNumber(1, play.zoneID+1)]);
+		zoneIDDigit0.SetUVMapping(DIGITS_WHITE[MyGUI.GetDigitOfNumber(0, play.zoneID+1)]);
+		zoneIDDigit1.SetUVMapping(DIGITS_WHITE[MyGUI.GetDigitOfNumber(1, play.zoneID+1)]);
 	}
 	
 	private void DisplayHealth() {
 //		Debug.Log (count[2] +" " + count[1] +" " +count[0]);
-		healthDigit0.SetUVMapping(DIGITS[healthCount[0]]);
-		healthDigit1.SetUVMapping(DIGITS[healthCount[1]]);
-		healthDigit2.SetUVMapping(DIGITS[healthCount[2]]);
+		healthDigit0.SetUVMapping(DIGITS_RED[healthCount[0]]);
+		healthDigit1.SetUVMapping(DIGITS_RED[healthCount[1]]);
+		healthDigit2.SetUVMapping(DIGITS_RED[healthCount[2]]);
 	}
 	
 	public void DisplayShield(int[] digits) {
@@ -455,9 +459,9 @@ public class PlayGUI {
 	}
 	
 	private void DisplayShield() {
-		shieldDigit0.SetUVMapping(DIGITS[shieldCount[0]]);
-		shieldDigit1.SetUVMapping(DIGITS[shieldCount[1]]);
-		shieldDigit2.SetUVMapping(DIGITS[shieldCount[2]]);
+		shieldDigit0.SetUVMapping(DIGITS_BLUE[shieldCount[0]]);
+		shieldDigit1.SetUVMapping(DIGITS_BLUE[shieldCount[1]]);
+		shieldDigit2.SetUVMapping(DIGITS_BLUE[shieldCount[2]]);
 	}
 		
 //	public void DispatchUpdate() {

@@ -15,6 +15,7 @@ public class MyGUI : MonoBehaviour {
 	public GameObject quadPrefab;
 	public GameObject imageButtonPrefab;
 	public GameObject labelButtonPrefab;
+	public GameObject labelButtonPrefabF;
 	public GameObject imagePrefab;
 	public GameObject textPrefab;
 	public GameObject dimPrefab;
@@ -22,6 +23,7 @@ public class MyGUI : MonoBehaviour {
 	public GameObject textInputPrefab;
 	public GameObject progressBarPrefab;
 	public GameObject checkboxPrefab;
+	public GameObject hoverParticlesPrefab;
 	
 	public Texture2D[] fontTextures;
 	public CCFont[] bitmapFonts;
@@ -33,6 +35,7 @@ public class MyGUI : MonoBehaviour {
 	public Game game;
 	public GameInput gameInput;
 	public Camera guiCamera;
+	private ParticleSystem hoverParticles;
 	
 	public Dictionary<int, Container> containers;
 //	public Dictionary<int, Label> labels;
@@ -78,6 +81,8 @@ public class MyGUI : MonoBehaviour {
 		zLevel = transform.position.z;
 		
 		isGUIElementInFocus = false;
+		
+		hoverParticles = (GameObject.Instantiate(hoverParticlesPrefab) as GameObject).GetComponent<ParticleSystem>();
 	}
 	
 	public void Initialize(Game g, GameInput input) {
@@ -152,7 +157,7 @@ public class MyGUI : MonoBehaviour {
 		return b.gameObject.GetInstanceID();
 	}	
 
-	// Button clickeable with image background and floating position
+	// Button clickeable with image background (NinePatch) and floating position
 	public int AddLabelButton(
 					int containerID, Vector3 scale, TouchDelegate tD,
 					string text, float textMargin, float size, int textureIDText, 
@@ -165,7 +170,21 @@ public class MyGUI : MonoBehaviour {
 		containers[containerID].AddElement(b.transform, b.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);		
 		return b.gameObject.GetInstanceID();
 	}	
-	
+
+	// Button clickeable with image background (of fixed size) and floating position
+	public int AddLabelButtonF(float yScale,
+					int containerID, Vector3 scale, TouchDelegate tD,
+					string text, float textMargin, float size, int textureIDText, 
+					GUIAlignment alignLeftRightCenter, float borderLeftRight, GUIAlignment alignTopBottomCenter, float borderTopBottom,
+					Vector4 uvMapBackground, int textureIDBackground) {
+		
+		LabelButton b = (GameObject.Instantiate(labelButtonPrefabF) as GameObject).GetComponent<LabelButton>();
+		b.InitializeF(this, tD, containerID, yScale, text, textMargin, size, alignLeftRightCenter, textureIDText, textureIDBackground, uvMapBackground, scale);
+		labelButtons.Add(b.gameObject.GetInstanceID(), b);
+		containers[containerID].AddElement(b.transform, b.GetSize(), alignLeftRightCenter, borderLeftRight, alignTopBottomCenter, borderTopBottom);		
+		return b.gameObject.GetInstanceID();
+	}	
+
 	// Image with floating position and scaled by bounding container
 	public int AddImage(int containerID, GUIAlignment alignLeftRightCenter, float borderLeftRight,
 					GUIAlignment alignTopBottomCenter, float borderTopBottom, Vector4 uvMap, int textureID) {
@@ -357,8 +376,17 @@ public class MyGUI : MonoBehaviour {
 		isGUIElementInFocus = true;
 	}
 	
+	public void SetGUIInFocus(Focussable f, Vector3 pos, Vector3 scale) {
+		guiElementInFocus = f;
+		isGUIElementInFocus = true;
+		hoverParticles.transform.position = new Vector3(pos.x, pos.y, pos.z -2f);
+		hoverParticles.transform.localScale = scale;
+		hoverParticles.Play();
+	}
+	
 	public void DeleteGUIInFocus() {
 		isGUIElementInFocus = false;
+		hoverParticles.Stop();
 	}
 	
 	public void SendTouchDown(GameObject gO, int finger) {
@@ -369,13 +397,33 @@ public class MyGUI : MonoBehaviour {
 //				Debug.Log ("hereX " + guiElementInFocus);
 				guiElementInFocus.LostFocus();
 			}
-			if (gO == gameObject) {
-			} else {
+			if (gO != gameObject) {
 				gO.SendMessage("Select", finger);
 			}
 		}
 	}
-	
+
+	public void SendHover(GameObject gO, int finger) {
+		if (isGUIElementInFocus && guiElementInFocus.IsSameAs(gO)) {
+			// do nothing
+		} else {
+			if (isGUIElementInFocus) {
+//				Debug.Log ("hereX " + guiElementInFocus);
+				guiElementInFocus.LostFocus();
+			}
+			if (gO != gameObject) {
+				gO.SendMessage("Hover", finger, SendMessageOptions.DontRequireReceiver);
+			}
+		}
+	}
+
+	public void DeleteHover(int finger) {
+		if (isGUIElementInFocus) {
+			guiElementInFocus.LostFocus();
+			isGUIElementInFocus = false;
+		}
+	}
+
 	private Transform CreateBackground(GUIBackground background, int textureIx, Vector4 uvMap) {
 		if (background == GUIBackground.NinePatch || background == GUIBackground.NinePatchWithCollider || background == GUIBackground.None) {
 			NinePatch nP = (GameObject.Instantiate(ninePatchPrefab) as GameObject).GetComponent<NinePatch>();

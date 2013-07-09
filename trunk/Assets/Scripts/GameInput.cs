@@ -32,7 +32,7 @@ public class GameInput : MonoBehaviour {
 //	private float frameCount;
 //	private float frameTimer;
 	
-	private static int maxTouchFingers = 2;
+	private static int maxTouchFingers = 1;
 	
 	void Awake() {	
 		if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) {
@@ -122,11 +122,9 @@ public class GameInput : MonoBehaviour {
 	
 		// check for selection
 		for (int i=0; i< maxTouchFingers; i++) {
-			if (isTouchDown[i]) {
+//			if (isTouchDown[i]) {
 				isGUIClicked[i] = IsGUIClicked(i);
-//				if (!isGUIClicked[i]) {
-//				}
-			}
+//			}
 			
 			oldTouchPosition[i] = touchPosition[i];
 		}
@@ -151,16 +149,28 @@ public class GameInput : MonoBehaviour {
 		bool result = false;
 //		Debug.Log (guiRaycastLength);
 		if (isGUIRegistered && Physics.Raycast(myGUI.guiCamera.ScreenPointToRay(touchPosition[finger]), out hit, guiRaycastLength, 1 << Game.LAYER_GUI)) {
-			if (hit.collider != null) {
+			if (hit.collider == null) {
+				myGUI.DeleteHover(finger);
+			} else {
 				if (hit.collider.tag == "Select1Up") {
-					myGUI.SendTouchDown(hit.collider.transform.parent.gameObject, finger);
+					if (isTouchDown[finger]) {
+						myGUI.SendTouchDown(hit.collider.transform.parent.gameObject, finger);
+					} else {
+						myGUI.SendHover(hit.collider.transform.parent.gameObject, finger);
+					}
 					result = true;
 				} else if (hit.collider.tag == "Select") {
-					myGUI.SendTouchDown(hit.collider.gameObject, finger);
+					if (isTouchDown[finger]) {
+						myGUI.SendTouchDown(hit.collider.gameObject, finger);
+					} else {
+						myGUI.SendHover(hit.collider.gameObject, finger);
+					}
 					result = true;
 				}
 			}
-		}	
+		} else {
+			myGUI.DeleteHover(finger);
+		}
 		return result;
 	}
 	

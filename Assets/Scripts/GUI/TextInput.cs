@@ -233,7 +233,11 @@ public class TextInput : MonoBehaviour, Focussable {
 	public void LostFocus() {
 		Deselect();
 	}
-	
+
+	public bool IsSameAs(GameObject gO) {
+		return gO == gameObject;
+	}
+
 	public bool IsBlocking() {
 		return false;
 	}

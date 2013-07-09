@@ -89,6 +89,10 @@ public class Dropdown : MonoBehaviour, Focussable {
 		return false;
 	}
 	
+	public bool IsSameAs(GameObject gO) {
+		return gO == gameObject;
+	}
+	
 	public void DimTouch() {
 		LostFocus();
 	}

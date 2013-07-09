@@ -154,6 +154,9 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_YELLOW_PROGRESS_FORE = new Vector4(0.5625f,0.0f,0.625f,0.0625f);
 	public static Vector4 GUI_UV_YELLOW_PROGRESS_BACK = new Vector4(0.625f,0.0f,0.6875f,0.0625f);
 	public static Vector4 GUI_UV_DIM = new Vector4(0.0625f,0.0f,0.125f,0.0625f);
+	public static Vector4 GUI_UV_BUTTON_BACK_4T1 = new Vector4(0.5f,0.875f,1f,1f);
+//	public static Vector4 GUI_UV_BUTTON_BACK_4T1 = new Vector4(0f,0.875f,0.5f,1f);
+	public static Vector4 GUI_UV_BUTTON_BACK_2T1 = new Vector4(0f,0.75f,0.25f,0.875f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_2 = new Vector4(0.25f,0.875f,0.375f,1.0f);
@@ -164,6 +167,8 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_NUMBER_7 = new Vector4(0.875f,0.875f,1.0f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_8 = new Vector4(0.0f,0.75f,0.125f,0.875f);
 	public static Vector4 GUI_UV_NUMBER_9 = new Vector4(0.125f,0.75f,0.25f,0.875f);
+	public static Vector4 GUI_UV_NUMBERS_RED_OFFSET = new Vector4(0f,-0.25f,0f,-0.25f);
+	public static Vector4 GUI_UV_NUMBERS_BLUE_OFFSET = new Vector4(0f,-0.5f,0f,-0.5f);
 	public static Vector4 GUI_UV_KEY_SILVER = new Vector4(0.25f,0.75f,0.375f,0.875f);
 	public static Vector4 GUI_UV_KEY_GOLD = new Vector4(0.375f,0.75f,0.5f,0.875f);
 	public static Vector4 GUI_UV_KEY_EMPTY = new Vector4(0.5f,0.75f,0.625f,0.875f);

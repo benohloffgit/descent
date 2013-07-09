@@ -71,7 +71,11 @@ public class RadioButton : MonoBehaviour, Focussable {
 	public bool IsBlocking() {
 		return true;
 	}
-	
+
+	public bool IsSameAs(GameObject gO) {
+		return gO == gameObject;
+	}
+
 	public void SwitchState(MyGUI.GUIState s) {
 		state = s;
 		if (s == MyGUI.GUIState.Off) {

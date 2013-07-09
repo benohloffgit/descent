@@ -4,7 +4,8 @@ using UnityEngine;
 public class LabelButton : MonoBehaviour, Focussable {
 	
 	public int id = -1; // set for id based event handling
-		
+	
+	private NinePatch ninePatch;
 	private Transform mesh;
 	private Renderer backgroundRenderer;
 	private Renderer textRenderer;
@@ -14,9 +15,7 @@ public class LabelButton : MonoBehaviour, Focussable {
 	public TouchDelegate touchDelegate;
 	
 	void Awake() {
-		mesh = transform.Find("Mesh");
 		text = GetComponentInChildren<TextCC>();
-		backgroundRenderer = mesh.renderer;
 		textRenderer = text.renderer;
 		id = gameObject.GetInstanceID();
 	}
@@ -27,13 +26,35 @@ public class LabelButton : MonoBehaviour, Focussable {
 			Vector3 scale) {
 		myGUI = mG;
 		touchDelegate = tD;
+		
+		mesh = transform.Find("NinePatch");
+		ninePatch = mesh.GetComponent<NinePatch>();
+		ninePatch.Initialize(uvMapBackground);
+		backgroundRenderer = mesh.renderer;
 		backgroundRenderer.material = mG.textureAtlas[textureIDBackground];
-		Mesh3D.SetUVMapping((mesh.GetComponent<MeshFilter>()).mesh, new Vector2(uvMapBackground.x, uvMapBackground.y), new Vector2(uvMapBackground.z, uvMapBackground.w));
+//		Mesh3D.SetUVMapping((mesh.GetComponent<MeshFilter>()).mesh, new Vector2(uvMapBackground.x, uvMapBackground.y), new Vector2(uvMapBackground.z, uvMapBackground.w));
 
 		text.Initialize(mG, text_, size, containerID, textMargin, alignLeftRightCenter, textureIDText);
 		text.transform.localScale = scale;
 		mesh.localScale = text.GetSize();
 	}
+	
+	public void InitializeF(MyGUI mG, TouchDelegate tD, int containerID,
+			float yScale, string text_, float textMargin, float size, MyGUI.GUIAlignment alignLeftRightCenter, int textureIDText,
+			int textureIDBackground, Vector4 uvMapBackground,
+			Vector3 scale) {
+		myGUI = mG;
+		touchDelegate = tD;
+		mesh = transform.Find("Mesh");
+		backgroundRenderer = mesh.renderer;
+		backgroundRenderer.material = mG.textureAtlas[textureIDBackground];
+		Mesh3D.SetUVMapping((mesh.GetComponent<MeshFilter>()).mesh, new Vector2(uvMapBackground.x, uvMapBackground.y), new Vector2(uvMapBackground.z, uvMapBackground.w));
+
+		text.Initialize(mG, text_, size, containerID, textMargin, alignLeftRightCenter, textureIDText);
+		text.transform.localScale = scale;
+		mesh.localScale = new Vector3(text.GetSize().y*0.75f*(1f/yScale), text.GetSize().y*0.75f, 1f);
+	}
+	
 
 	public TextCC GetText() {
 		return text;
@@ -50,10 +71,16 @@ public class LabelButton : MonoBehaviour, Focussable {
 	}*/
 	
 	public void Select() {
-		myGUI.SetGUIInFocus(this);
+//		myGUI.SetGUIInFocus(this);
 		myGUI.game.state.PlaySound(7);
-		LostFocus();
+//		LostFocus();
 		touchDelegate();
+	}
+
+	public void Hover() {
+		myGUI.SetGUIInFocus(this, transform.position, mesh.localScale);
+//		Debug.Log (mesh.lossyScale.x + " " + mesh.lossyScale.y);
+//		Debug.Log (GetSize().x + " " +GetSize().y);
 	}
 
 	public Vector3 GetSize() {
@@ -61,9 +88,13 @@ public class LabelButton : MonoBehaviour, Focussable {
 	}
 	
 	public bool IsBlocking() {
-		return true;
+		return false;
 	}
-	
+
+	public bool IsSameAs(GameObject gO) {
+		return gO == gameObject;
+	}
+
 	public void LostFocus() {
 		myGUI.DeleteGUIInFocus();
 	}

@@ -1,10 +1,8 @@
 using System;
 using UnityEngine;
 
-public class CollecteableKey : MonoBehaviour {
+public class CollecteableKey : Collecteable {
 	public static string TAG = "Key";
-	
-	private Play play;
 	
 	private float angle;
 	
@@ -26,9 +24,9 @@ public class CollecteableKey : MonoBehaviour {
 		angle = 0f;
 	}
 
-	void FixedUpdate() {
+	public override void DispatchFixedUpdate() {
 //		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
-		if (transform.renderer.isVisible) {
+		if (keyMesh.renderer.isVisible) {
 			if (!transform.particleSystem.isPlaying) {
 				transform.particleSystem.Play();
 			}
@@ -48,6 +46,7 @@ public class CollecteableKey : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
+			play.RemoveCollecteable(this);
 			play.KeyFound(type);
 			play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 24);
 			Destroy(gameObject);

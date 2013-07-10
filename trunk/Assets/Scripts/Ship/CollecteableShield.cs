@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CollecteableShield : MonoBehaviour {		
-	private Play play;
+public class CollecteableShield : Collecteable {		
 	
 	private int amount;
 	private float angle;
@@ -13,7 +12,7 @@ public class CollecteableShield : MonoBehaviour {
 		angle = 0f;
 	}
 
-	void FixedUpdate() {
+	public override void DispatchFixedUpdate() {
 		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
 //		if (isShipVisible != Vector3.zero) {
 		if (transform.renderer.isVisible) {
@@ -29,6 +28,7 @@ public class CollecteableShield : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
+			play.RemoveCollecteable(this);
 			play.ShieldShip(amount);
 			play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 23);
 			Destroy(gameObject);

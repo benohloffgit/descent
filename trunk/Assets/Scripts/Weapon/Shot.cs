@@ -68,6 +68,16 @@ public class Shot : MonoBehaviour {
 			rigidbody.AddForce(transform.forward * MISSILE_SPEED);
 		}
 	}
+/*
+		if (play.isPaused) {
+			if (!rigidbody.isKinematic) {
+				rigidbody.isKinematic = true;
+			}
+		} else {
+			if (rigidbody.isKinematic) {
+				rigidbody.isKinematic = false;
+			}
+	 */
 	
 	void OnCollisionEnter(Collision c) {
 		if (type == MINE_TOUCH) {

@@ -157,6 +157,8 @@ public class Game : MonoBehaviour {
 	public static Vector4 GUI_UV_BUTTON_BACK_4T1 = new Vector4(0.5f,0.875f,1f,1f);
 //	public static Vector4 GUI_UV_BUTTON_BACK_4T1 = new Vector4(0f,0.875f,0.5f,1f);
 	public static Vector4 GUI_UV_BUTTON_BACK_2T1 = new Vector4(0f,0.75f,0.25f,0.875f);
+	public static Vector4 GUI_UV_BACK_NINEPATCH = new Vector4(0.75f,0.625f,0.875f,0.75f);
+	public static Vector4 GUI_UV_BACK_NINEPATCH_STORY = new Vector4(0.125f,0.125f,0.25f,0.25f);
 	public static Vector4 GUI_UV_NUMBER_0 = new Vector4(0.0f,0.875f,0.125f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_1 = new Vector4(0.125f,0.875f,0.25f,1.0f);
 	public static Vector4 GUI_UV_NUMBER_2 = new Vector4(0.25f,0.875f,0.375f,1.0f);
@@ -365,5 +367,6 @@ public class Game : MonoBehaviour {
 	public void PlaySound(Vector3 pos, int type) {
 		audioSourcePool.PlaySound(pos, audioClips[type]);
 	}
+	
 }
 	

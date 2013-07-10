@@ -1,10 +1,8 @@
 using System;
 using UnityEngine;
 
-public class CollecteablePowerUp : MonoBehaviour {
+public class CollecteablePowerUp : Collecteable {
 	public static string TAG = "PowerUp";
-	
-	private Play play;
 	
 	private float angle;
 	private int type;
@@ -30,7 +28,7 @@ public class CollecteablePowerUp : MonoBehaviour {
 		myRenderer = GetComponentInChildren<Renderer>();
 	}
 
-	void FixedUpdate() {
+	public override void DispatchFixedUpdate() {
 		if (myRenderer.isVisible) {
 //		if (!play.isPaused && (!play.isShipInPlayableArea || play.GetRoomOfShip().id == play.cave.secretCaveRoomID)) {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
@@ -45,6 +43,7 @@ public class CollecteablePowerUp : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
+			play.RemoveCollecteable(this);
 			play.CollectPowerUp(type, id);
 			play.ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 22);
 			Destroy(gameObject);

@@ -115,7 +115,7 @@ public class Ship : MonoBehaviour {
 //		Screen.sleepTimeout = SleepTimeout.NeverSleep;	
 //		Debug.Log (Screen.dpi);
 //		InstantiateShipHUD();
-		shipSteering = transform.GetComponent<ShipSteering>();
+		shipSteering = new ShipSteering();//transform.GetComponent<ShipSteering>();
 		shipControl = new ShipControl(); //transform.GetComponent<ShipControl>();
 		headlight = transform.FindChild("Headlight");
 		cameraTransform = transform.FindChild("Camera");
@@ -143,6 +143,7 @@ public class Ship : MonoBehaviour {
 	}
 	
 	public void Reset() {
+		enabled = true;
 		shipCamera.enabled = true;
 		isExitHelperLaunched = false;
 		isBoosterOn = false;
@@ -166,84 +167,85 @@ public class Ship : MonoBehaviour {
 	
 	public void Deactivate() {
 		shipCamera.enabled = false;
+		enabled = false;
 		SwitchOffPowerUps();
 	}
 	
-	void FixedUpdate() {
-		if (!play.isPaused) {
-			play.CachePositionalDataOfShip(transform.position);
-			
-			play.playGUI.shipHealthProgressBar.SetBar(health/(float)maxHealth);
-			play.playGUI.shipShieldProgressBar.SetBar(shield/(float)maxShield);
-			
-			if (cameraPosition != CAMERA_POSITION_COCKPIT) {
-				PositionCamera();
+	public void DispatchFixedUpdate() {
+		shipSteering.DispatchFixedUpdate();
+//		Debug.Log (Time.timeScale + " " + Time.fixedDeltaTime);
+		play.CachePositionalDataOfShip(transform.position);
+		
+		play.playGUI.shipHealthProgressBar.SetBar(health/(float)maxHealth);
+		play.playGUI.shipShieldProgressBar.SetBar(shield/(float)maxShield);
+		
+		if (cameraPosition != CAMERA_POSITION_COCKPIT) {
+			PositionCamera();
+		}
+		
+		if (isBoosterOn && Time.fixedTime > boostTimer + BOOST_DURATION) {
+			BoostOff();
+		} else if (isBoosterLoading) {
+			if (Time.fixedTime > boostTimer + BOOST_INTERVAL) {
+				isBoosterLoading = false;
+				play.playGUI.SwitchShipBoost();
+			} else {
+				play.playGUI.boosterProgressBar.SetBar((Time.fixedTime-boostTimer)/BOOST_INTERVAL);
 			}
-			
-			if (isBoosterOn && Time.fixedTime > boostTimer + BOOST_DURATION) {
-				BoostOff();
-			} else if (isBoosterLoading) {
-				if (Time.fixedTime > boostTimer + BOOST_INTERVAL) {
-					isBoosterLoading = false;
-					play.playGUI.SwitchShipBoost();
-				} else {
-					play.playGUI.boosterProgressBar.SetBar((Time.fixedTime-boostTimer)/BOOST_INTERVAL);
-				}
-			}
+		}
 
-			if (isCloakOn && Time.fixedTime > cloakTimer + CLOAK_DURATION) {
-				CloakOff();
-			} else if (isCloakLoading) {
-				if (Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
-					isCloakLoading = false;
-					play.playGUI.SwitchShipBoost();
-				} else {
-					play.playGUI.cloakProgressBar.SetBar((Time.fixedTime-cloakTimer)/CLOAK_INTERVAL);
-				}
+		if (isCloakOn && Time.fixedTime > cloakTimer + CLOAK_DURATION) {
+			CloakOff();
+		} else if (isCloakLoading) {
+			if (Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
+				isCloakLoading = false;
+				play.playGUI.SwitchShipBoost();
+			} else {
+				play.playGUI.cloakProgressBar.SetBar((Time.fixedTime-cloakTimer)/CLOAK_INTERVAL);
 			}
+		}
 
-			if (isInvincibleOn && Time.fixedTime > invincibleTimer + INVINCIBLE_DURATION) {
-				InvincibleOff();
+		if (isInvincibleOn && Time.fixedTime > invincibleTimer + INVINCIBLE_DURATION) {
+			InvincibleOff();
+		}
+		
+		if (currentSecondaryWeapon != -1) {
+			secondaryWeapons[currentSecondaryWeapon].IsReloaded();
+			if (chargedMissileTimer != -1f && shield > 0) {
+				float timeDelta = Time.fixedTime - chargedMissileTimer;
+				float fullDeduction = Mathf.Min(CHARGED_MISSILE_SHIELD_MAX, Mathf.Min(timeDelta, CHARGED_MISSILE_TIME_MAX) * CHARGED_MISSILE_DEDUCTION);
+				int newDeduction = Mathf.Min(Mathf.FloorToInt(fullDeduction - chargedMissileShieldDeducted), shield);
+//				Debug.Log (newDeduction);
+				shield -= newDeduction;
+				shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
+				chargedMissileShieldDeducted += newDeduction;
+				play.playGUI.chargedMissileProgressBar.SetBar(fullDeduction/CHARGED_MISSILE_SHIELD_MAX);
 			}
-			
-			if (currentSecondaryWeapon != -1) {
-				secondaryWeapons[currentSecondaryWeapon].IsReloaded();
-				if (chargedMissileTimer != -1f && shield > 0) {
-					float timeDelta = Time.fixedTime - chargedMissileTimer;
-					float fullDeduction = Mathf.Min(CHARGED_MISSILE_SHIELD_MAX, Mathf.Min(timeDelta, CHARGED_MISSILE_TIME_MAX) * CHARGED_MISSILE_DEDUCTION);
-					int newDeduction = Mathf.Min(Mathf.FloorToInt(fullDeduction - chargedMissileShieldDeducted), shield);
-	//				Debug.Log (newDeduction);
-					shield -= newDeduction;
-					shieldPercentage = Mathf.CeilToInt( (shield/(float)maxShield) * 100f);
-					chargedMissileShieldDeducted += newDeduction;
-					play.playGUI.chargedMissileProgressBar.SetBar(fullDeduction/CHARGED_MISSILE_SHIELD_MAX);
-				}
-			}
-			// Enemy target info
-			if (Physics.SphereCast(transform.position, SPHERE_CAST_RADIUS, transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
-				if (hit.collider.tag == Enemy.TAG) {
-					Enemy e = hit.transform.GetComponent<Enemy>();
-					play.playGUI.EnemyInSight(e);
-					if (	currentSecondaryWeapon != -1
-							&& secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_GUIDED_MISSILE
-							&& secondaryWeapons[currentSecondaryWeapon].ammunition > 0
-						) {
-						if (missileLockMode == MissileLockMode.None || lockedEnemy != e) {
-	//						Debug.Log ("Aiming at enemy");
-							lockedEnemy = e;
-							missileLockTime = Time.fixedTime;
-							missileLockMode = MissileLockMode.Aiming;
-						} else {
-							if (missileLockMode == MissileLockMode.Aiming && Time.fixedTime > missileLockTime + MISSILE_LOCK_DURATION) {
-	//							Debug.Log ("Enemy locked after 3 seconds");
-								missileLockMode = MissileLockMode.Locked;
-							}
+		}
+		// Enemy target info
+		if (Physics.SphereCast(transform.position, SPHERE_CAST_RADIUS, transform.forward, out hit, Game.MAX_VISIBILITY_DISTANCE, Game.LAYER_MASK_ENEMIES_CAVE)) {
+			if (hit.collider.tag == Enemy.TAG) {
+				Enemy e = hit.transform.GetComponent<Enemy>();
+				play.playGUI.EnemyInSight(e);
+				if (	currentSecondaryWeapon != -1
+						&& secondaryWeapons[currentSecondaryWeapon].type == Weapon.TYPE_GUIDED_MISSILE
+						&& secondaryWeapons[currentSecondaryWeapon].ammunition > 0
+					) {
+					if (missileLockMode == MissileLockMode.None || lockedEnemy != e) {
+//						Debug.Log ("Aiming at enemy");
+						lockedEnemy = e;
+						missileLockTime = Time.fixedTime;
+						missileLockMode = MissileLockMode.Aiming;
+					} else {
+						if (missileLockMode == MissileLockMode.Aiming && Time.fixedTime > missileLockTime + MISSILE_LOCK_DURATION) {
+//							Debug.Log ("Enemy locked after 3 seconds");
+							missileLockMode = MissileLockMode.Locked;
 						}
 					}
-				} else if (missileLockMode != MissileLockMode.None) {
-					missileLockMode = MissileLockMode.None;
-	//				Debug.Log ("Lock lost");
 				}
+			} else if (missileLockMode != MissileLockMode.None) {
+				missileLockMode = MissileLockMode.None;
+//				Debug.Log ("Lock lost");
 			}
 		}
 	}

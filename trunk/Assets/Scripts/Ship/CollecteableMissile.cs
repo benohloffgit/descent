@@ -1,9 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CollecteableMissile : MonoBehaviour {		
-	private Play play;
-	
+public class CollecteableMissile : Collecteable {		
 	private int type;
 	private int amount;
 	private float angle;
@@ -15,7 +13,7 @@ public class CollecteableMissile : MonoBehaviour {
 		angle = 0f;
 	}
 
-	void FixedUpdate() {
+	public override void DispatchFixedUpdate() {
 //		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
 		if (transform.renderer.isVisible) {
 			transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
@@ -31,6 +29,7 @@ public class CollecteableMissile : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == Ship.TAG) {
 			if (play.AddMissile(type, amount)) {
+				play.RemoveCollecteable(this);
 				Destroy(gameObject);
 			}
 		}

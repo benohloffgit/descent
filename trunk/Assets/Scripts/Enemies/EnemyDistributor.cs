@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyDistributor {
 	private Play play;
@@ -19,6 +20,8 @@ public class EnemyDistributor {
 	public float enemiesFirepowerPerSecondActive;
 	public float enemiesFirepowerPerSecondAvgActive;
 	public float enemiesHitRatio;
+	
+	private Dictionary<int, Enemy> enemies;
 	
 //	private static float MAX_RAYCAST_DISTANCE = 100.0f;
 	
@@ -52,6 +55,7 @@ public class EnemyDistributor {
 	
 	public void Distribute() {
 		enemiesAll = 0;
+		enemies = new Dictionary<int, Enemy>();
 		
 //		Debug.Log ("Distributing enemies based on zoneID: " + zoneID + ", enemyCoreModelNum: "+ enemyCoreModelNum +", enemyCoreClazz: " + enemyCoreClazz +", enemyCoreModel: " +enemyCoreModel);
 		
@@ -114,10 +118,6 @@ public class EnemyDistributor {
 		}
 		
 		DistributeOthers();
-//			}
-//		}
-		
-
 	}
 	
 	private void DistributeOthers() {
@@ -205,13 +205,44 @@ public class EnemyDistributor {
 	}
 	
 	public void RemoveAll() {
-		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Enemy.TAG)) {
-			GameObject.Destroy(gO);
+		System.Collections.Generic.Dictionary<int, Enemy>.Enumerator en = enemies.GetEnumerator();
+		while (en.MoveNext()) {
+			GameObject.Destroy(en.Current.Value);
 		}
+/*		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Enemy.TAG)) {
+			GameObject.Destroy(gO);
+		}*/
 		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Spawn.TAG)) {
 			GameObject.Destroy(gO);
 		}
 		ResetStats();
+	}
+	
+	public void DispatchFixedUpdate() {
+		System.Collections.Generic.Dictionary<int, Enemy>.Enumerator en = enemies.GetEnumerator();
+		while (en.MoveNext()) {
+			en.Current.Value.DispatchFixedUpdateGeneral();
+		}
+	}
+
+	public Enemy CreateEnemy(Spawn spawn, int clazz, int model, int enemyEquivalentClazzAModel) {
+		Enemy enemy = CreateEnemy(clazz);
+		enemy.Initialize(play, spawn, clazz, model, enemyEquivalentClazzAModel,
+				CalculateEnemyHealth(clazz, enemyEquivalentClazzAModel),
+				CalculateEnemySize(clazz, model),
+				CalculateEnemyAggressiveness(clazz, model),
+				CalculateEnemyMovementForce(clazz, model),
+				CalculateEnemyTurnForce(clazz, model),
+				CalculateEnemyLookRange(clazz, model),
+			    CalculateEnemyRoamMin(clazz, model),
+				CalculateEnemyRoamMax(clazz, model));
+		
+		enemiesFirepowerPerSecond += enemy.firepowerPerSecond;
+		enemiesFirepowerPerSecondAvg = enemiesFirepowerPerSecond / enemiesLiving;
+		enemiesHealth += enemy.health;
+		enemiesLiving++;
+		enemies.Add(enemy.gameObject.GetInstanceID(), enemy);
+		return enemy;
 	}
 	
 	public Enemy CreateEnemy(int clazz) {
@@ -297,7 +328,7 @@ public class EnemyDistributor {
 		}
 	}
 	
-	public void RemoveEnemy(Enemy e) {
+	public void RemoveEnemyFromStats(Enemy e) {
 		enemiesLiving--;
 		enemiesAll--;
 		play.RemoveEnemy(e);
@@ -307,31 +338,14 @@ public class EnemyDistributor {
 		enemiesFirepowerPerSecond -= e.firepowerPerSecond;
 		enemiesFirepowerPerSecondAvg = enemiesFirepowerPerSecond / enemiesLiving;
 	}
+	
+	public void RemoveEnemy(Enemy e) {
+		enemies.Remove(e.gameObject.GetInstanceID());
+	}
 
 	public Enemy CreateEnemy(Spawn spawn, int clazz, int model) {
 		return CreateEnemy(spawn, clazz, model, model + CLAZZ_A_EQUIVALENT_MODEL[clazz]);
 	}
-
-	public Enemy CreateEnemy(Spawn spawn, int clazz, int model, int enemyEquivalentClazzAModel) {
-		Enemy enemy = CreateEnemy(clazz);
-		enemy.Initialize(play, spawn, clazz, model, enemyEquivalentClazzAModel,
-				CalculateEnemyHealth(clazz, enemyEquivalentClazzAModel),
-				CalculateEnemySize(clazz, model),
-				CalculateEnemyAggressiveness(clazz, model),
-				CalculateEnemyMovementForce(clazz, model),
-				CalculateEnemyTurnForce(clazz, model),
-				CalculateEnemyLookRange(clazz, model),
-			    CalculateEnemyRoamMin(clazz, model),
-				CalculateEnemyRoamMax(clazz, model));
-		
-		enemiesFirepowerPerSecond += enemy.firepowerPerSecond;
-		enemiesFirepowerPerSecondAvg = enemiesFirepowerPerSecond / enemiesLiving;
-		enemiesHealth += enemy.health;
-		enemiesLiving++;
-		return enemy;
-	}
-	
-	// Super Formula stuff
 	
 	private int CalculateEnemyClazzVariety(int zoneID) {
 		int variety = 0;

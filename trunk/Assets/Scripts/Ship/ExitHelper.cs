@@ -46,7 +46,7 @@ public class ExitHelper : MonoBehaviour {
 	}
 	
 	void FixedUpdate() {
-		if (mode != Mode.Deactive && play.isShipInPlayableArea) {
+		if (!play.isPaused && mode != Mode.Deactive && play.isShipInPlayableArea) {
 			PlaySound();
 			currentGridPosition = cave.GetGridFromPosition(transform.position);
 //			float distanceToCaveExit = targetPositionV3-transform.position;

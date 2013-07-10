@@ -198,7 +198,13 @@ public class Play : MonoBehaviour {
 	
 	void FixedUpdate() {
 		if (!isPaused) {
+			enemyDistributor.DispatchFixedUpdate();
+			collecteablesDistributor.DispatchFixedUpdate();
+			ship.DispatchFixedUpdate();
 			playGUI.DispatchFixedUpdate();
+			foreach (Breadcrumb b in breadcrumbs) {
+				b.DispatchFixedUpdate();
+			}
 		}
 	}
 
@@ -243,6 +249,7 @@ public class Play : MonoBehaviour {
 			cave.AddZone(zoneID);
 			UnityEngine.Random.seed = botSeed;
 			isKeyCollected = new bool[] {false, false};
+			collecteablesDistributor.Reset();
 			collecteablesDistributor.DropKeys();
 			if (zoneID > 0) {
 				enemyDistributor.Distribute();
@@ -257,6 +264,7 @@ public class Play : MonoBehaviour {
 			ConfigureLighting();
 			ship.Reset();
 			miniMap.Reset();
+			SetPaused(true);
 		}
 		hasDied = false;
 	}
@@ -288,9 +296,8 @@ public class Play : MonoBehaviour {
 		if (!hasDied) {
 			DestroyAllBreadcrumbs();
 			miniMap.DestroyAllBreadcrumbs();
-			collecteablesDistributor.RemoveAllKeys();
+			collecteablesDistributor.RemoveAll();
 			enemyDistributor.RemoveAll();
-			collecteablesDistributor.RemoveAllPowerUps();
 			cave.RemoveZone();
 			botSeed = UnityEngine.Random.Range(0,9999999);
 			UnityEngine.Random.seed = caveSeed;
@@ -517,6 +524,14 @@ public class Play : MonoBehaviour {
 		ship.RemoveEnemy(e);
 	}
 	
+	public void RemoveCollecteable(Collecteable c) {
+		collecteablesDistributor.RemoveCollecteable(c);
+	}
+	
+	public void RemoveEnemyOnDeath(Enemy e) {
+		enemyDistributor.RemoveEnemy(e);
+	}
+	
 	public void HealShip(int amount) {
 		ship.Heal(amount);
 	}
@@ -642,14 +657,20 @@ public class Play : MonoBehaviour {
 	public void SetPaused(bool toPaused) {
 		if (toPaused) {
 			isPaused = true;
-			Time.timeScale = 0;
-			Time.fixedDeltaTime = 0;
 		} else {
 			isPaused = false;
-			Time.timeScale = 1f;
-			Time.fixedDeltaTime = 0.0166666f;
 		}
 	}
+
+/*	public void SetPause() {
+		Time.timeScale = 0f;//0.0001f;
+//		Time.fixedDeltaTime = 0f;
+	}
+	
+	public void SetPlay() {
+		Time.timeScale = 1f;
+		//Time.fixedDeltaTime = 0.0166666f;
+	}*/
 
 	public void BackToMenu() {
 		EndZone();

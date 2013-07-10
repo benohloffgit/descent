@@ -23,11 +23,11 @@ public class Geysir : MonoBehaviour {
 		if (!hasParticleSystem && play.ship.IsVisibleFrom(visibilityPosition) != Vector3.zero) {
 			play.SetGeysirParticleSystem(transform);
 			hasParticleSystem = true;
-			Debug.Log ("visible " + gameObject.GetInstanceID());
+			//Debug.Log ("visible " + gameObject.GetInstanceID());
 		} else if (hasParticleSystem && play.ship.IsVisibleFrom(visibilityPosition) == Vector3.zero) {
 			play.LetGeysirParticleSystem();
 			hasParticleSystem = false;
-			Debug.Log ("INvisible " + gameObject.GetInstanceID());
+			//Debug.Log ("INvisible " + gameObject.GetInstanceID());
 		}
 	}
 	

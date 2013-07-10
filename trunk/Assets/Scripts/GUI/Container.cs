@@ -17,8 +17,8 @@ public class Container : MonoBehaviour {
 	private float realignTimer;
 	private float touchOffTime;
 	private bool isFixedSize;
-	private Transform blendTop;
-	private Transform blendBottom;
+//	private Transform blendTop;
+//	private Transform blendBottom;
 	private Vector3 camZero;
 	
 	// virtual coords based on elements added
@@ -42,13 +42,13 @@ public class Container : MonoBehaviour {
 			float amountToScroll = GetSize().y - transform.lossyScale.y;
 			if (amountToScroll < 0) {
 				amountToScroll = 0;
-				blendBottom.renderer.enabled = false;
+//				blendBottom.renderer.enabled = false;
 			} else {
-				blendBottom.renderer.enabled = true;
+//				blendBottom.renderer.enabled = true;
 			}
 			// adapt background
 			SetBackgroundScrollable();
-			blendTop.renderer.enabled = false;
+//			blendTop.renderer.enabled = false;
 			scrollEndPos = scrollStartPos + new Vector3(0, amountToScroll, 0); 
 //			Debug.Log("scrollStartPos " +  scrollStartPos + " scrollEndPos " + scrollEndPos +  " amountToScroll " + amountToScroll);
 		}
@@ -77,24 +77,24 @@ public class Container : MonoBehaviour {
 				}
 				realignTimer = Time.realtimeSinceStartup - touchOffTime;
 				transform.position = Vector3.Lerp(transform.position, scrollStartPos, realignTimer);
-				blendTop.renderer.enabled = false;
+//				blendTop.renderer.enabled = false;
 			} else if (transform.position.y > scrollEndPos.y) {
 				if (mode == SelectionMode.On) {
 					touchOffTime = Time.realtimeSinceStartup - Mathf.Min((transform.position.y-scrollEndPos.y)/1f, 1f) * 1f;
 				}
 				realignTimer = Time.realtimeSinceStartup - touchOffTime;
 				transform.position = Vector3.Lerp(transform.position, scrollEndPos, realignTimer);
-				blendBottom.renderer.enabled = false;
+//				blendBottom.renderer.enabled = false;
 			} else {
 				realignTimer = 0;
-				if (transform.position.y >= scrollStartPos.y && transform.position.y <= scrollEndPos.y) {
+/*				if (transform.position.y >= scrollStartPos.y && transform.position.y <= scrollEndPos.y) {
 					blendTop.renderer.enabled = true;
 					blendBottom.renderer.enabled = true;
 				} else if (transform.position.y == scrollStartPos.y) {
 					blendTop.renderer.enabled = false;
 				} else if (transform.position.y == scrollEndPos.y) {
 					blendBottom.renderer.enabled = false;
-				}
+				}*/
 			}
 		}
 	}
@@ -122,7 +122,7 @@ public class Container : MonoBehaviour {
 		SetBackground(backgr);
 	}
 	
-	public void InitializeAsScrollable(MyGUI mG, Transform backgr, Transform blendT, Transform blendB) {
+	public void InitializeAsScrollable(MyGUI mG, Transform backgr) { // , Transform blendT, Transform blendB
 		myGUI = mG;
 		background = backgr;					
 		isScrollableContainer = true;
@@ -130,14 +130,14 @@ public class Container : MonoBehaviour {
 		scrollStartPos = transform.position;
 		realignTimer = 0;
 		
-		blendTop = blendT;
+/*		blendTop = blendT;
 		blendTop.localScale = new Vector3(transform.lossyScale.x, transform.lossyScale.y * 0.15f, transform.lossyScale.z);
 		blendTop.position = new Vector3(transform.position.x, transform.position.y - blendTop.lossyScale.y/2.0f, transform.position.z - 1.0f);
 		blendTop.parent = transform.parent;
 		blendBottom = blendB;
 		blendBottom.localScale = new Vector3(transform.lossyScale.x, transform.lossyScale.y * 0.15f, transform.lossyScale.z);
 		blendBottom.position = new Vector3(transform.position.x, transform.position.y - transform.lossyScale.y + blendTop.lossyScale.y/2.0f, transform.position.z - 1.0f);
-		blendBottom.parent = transform.parent;	
+		blendBottom.parent = transform.parent;	*/
 	}
 	
 	private void SetBackground(Transform backgr) {

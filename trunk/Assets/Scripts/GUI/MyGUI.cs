@@ -36,6 +36,7 @@ public class MyGUI : MonoBehaviour {
 	public GameInput gameInput;
 	public Camera guiCamera;
 	private ParticleSystem hoverParticles;
+	private float hoverParticleTime;
 	
 	public Dictionary<int, Container> containers;
 //	public Dictionary<int, Label> labels;
@@ -141,9 +142,10 @@ public class MyGUI : MonoBehaviour {
 	public int AddContainerScrollable(int containerID, Vector3 size, Vector2 pos, GUIBackground background, int textureIDBackground, Vector4 uvMap,
 			int textureIDBlendTop, Vector4 uvMapBlendTop, int textureIDBlendBottom, Vector4 uvMapBlendBottom) {
 		int cID = AddContainer(containerID, size, pos, false);
-		containers[cID].InitializeAsScrollable(this, CreateBackground(background, textureIDBackground, uvMap),
-			CreateBackground(GUIBackground.Quad, textureIDBlendTop, uvMapBlendTop),
-			CreateBackground(GUIBackground.Quad, textureIDBlendBottom, uvMapBlendBottom));
+		containers[cID].InitializeAsScrollable(this, CreateBackground(background, textureIDBackground, uvMap)
+			//CreateBackground(GUIBackground.Quad, textureIDBlendTop, uvMapBlendTop),
+			//CreateBackground(GUIBackground.Quad, textureIDBlendBottom, uvMapBlendBottom)
+			);
 		return cID;
 	}
 	
@@ -380,13 +382,16 @@ public class MyGUI : MonoBehaviour {
 		guiElementInFocus = f;
 		isGUIElementInFocus = true;
 		hoverParticles.transform.position = new Vector3(pos.x, pos.y, pos.z -2f);
-		hoverParticles.transform.localScale = scale;
+		hoverParticles.renderer.enabled = true;
 		hoverParticles.Play();
+//		Debug.Log (hoverParticles.IsAlive() + " " + hoverParticles.isPlaying + " " + Time.timeScale + " " + Time.fixedDeltaTime + " " + hoverParticles.playbackSpeed + " " + hoverParticles.loop + " " + hoverParticles.time);
+		game.state.PlaySound(44);
 	}
 	
 	public void DeleteGUIInFocus() {
 		isGUIElementInFocus = false;
-		hoverParticles.Stop();
+		hoverParticles.Pause();
+		hoverParticles.renderer.enabled = false;
 	}
 	
 	public void SendTouchDown(GameObject gO, int finger) {
@@ -394,18 +399,35 @@ public class MyGUI : MonoBehaviour {
 			// do nothing
 		} else {
 			if (isGUIElementInFocus) {
-//				Debug.Log ("hereX " + guiElementInFocus);
 				guiElementInFocus.LostFocus();
 			}
 			if (gO != gameObject) {
+				hoverParticles.Pause();
+				hoverParticles.renderer.enabled = false;
 				gO.SendMessage("Select", finger);
+				game.state.PlaySound(45);
 			}
 		}
 	}
 
 	public void SendHover(GameObject gO, int finger) {
 		if (isGUIElementInFocus && guiElementInFocus.IsSameAs(gO)) {
-			// do nothing
+//			hoverParticles.Emit(10);
+//			if (Time.timeScale == 0) {
+				//hoverParticles.time = Time.realtimeSinceStartup;
+				//Debug.Log (UnityEngine.Mathf.CeilToInt(30*(Time.realtimeSinceStartup-hoverParticleTime)));
+				//hoverParticles.Emit(UnityEngine.Mathf.CeilToInt(30*(Time.realtimeSinceStartup-hoverParticleTime)));
+				//hoverParticles.duration = 0.016f;
+				//float simulateTime = hoverParticles.time + 0.016f;
+				//if (simulateTime >= 3f) simulateTime = 3f - simulateTime;
+				//hoverParticles.Simulate(simulateTime); // SIMULATE will start always from 0 and go to the time mentioned
+				//hoverParticles.Simulate(0.016f);
+//				hoverParticleTime = simulateTime;
+			//	hoverParticles.time = simulateTime;
+				//hoverParticles.Emit(1);
+				//hoverParticles.Play();
+//				hoverParticleTime = Time.realtimeSinceStartup;
+//			}
 		} else {
 			if (isGUIElementInFocus) {
 //				Debug.Log ("hereX " + guiElementInFocus);

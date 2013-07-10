@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-public class PowerUpBoostParticle : MonoBehaviour {
+public class PowerUpBoostParticle  {
 	
-	private Ship ship;
+/*	private Ship ship;
 	
 	private static float ALPHA_MIN = 0.2f;
 	private static float ALPHA_MAX = 0.8f;
@@ -26,7 +26,7 @@ public class PowerUpBoostParticle : MonoBehaviour {
 	void FixedUpdate() {
 		transform.LookAt(ship.transform.position, ship.transform.up);
 		transform.localScale = Vector3.Lerp(sizeFrom, sizeTo, Math.Abs(Mathf.Sin(Time.fixedTime)));
-		Debug.Log (Mathf.Sin(Time.fixedTime));
-	}
+		//Debug.Log (Mathf.Sin(Time.fixedTime));
+	}*/
 
 }

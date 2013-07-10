@@ -65,7 +65,7 @@ public class Spawn : MonoBehaviour {
 	}
 		
 	void FixedUpdate() {
-		if (isActive) {
+		if (!play.isPaused && isActive) {
 			if (myRenderer.isVisible) {
 				transform.LookAt(play.GetShipPosition(), play.ship.transform.up);
 				Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
@@ -111,7 +111,7 @@ public class Spawn : MonoBehaviour {
 	
 	public void Die(Enemy e) {
 		currentlyLiving--;
-		enemyDistributor.RemoveEnemy(e);
+		enemyDistributor.RemoveEnemyFromStats(e);
 		lastTimeGenerated = Time.fixedTime;
 		if (currentlyLiving == 0 && !isActive) {
 			Destroy(gameObject);

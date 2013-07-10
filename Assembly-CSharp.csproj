@@ -132,6 +132,7 @@
      <Compile Include="Assets\Scripts\PrefabFactory.cs" />
      <Compile Include="Assets\Scripts\Seed.cs" />
      <Compile Include="Assets\Scripts\Ship\Breadcrumb.cs" />
+     <Compile Include="Assets\Scripts\Ship\Collecteable.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteableHealth.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteableKey.cs" />
      <Compile Include="Assets\Scripts\Ship\CollecteableMissile.cs" />

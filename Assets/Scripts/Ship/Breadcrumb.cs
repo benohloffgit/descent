@@ -26,7 +26,7 @@ public class Breadcrumb : MonoBehaviour {
 		sizeTo = SIZE_MAX * startSize;
 	}
 	
-	void FixedUpdate() {
+	public void DispatchFixedUpdate() {
 		if (transform.renderer.isVisible) {
 //		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
 //		if (isShipVisible != Vector3.zero) {

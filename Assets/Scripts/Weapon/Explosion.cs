@@ -17,10 +17,6 @@ public class Explosion : MonoBehaviour {
 		play.game.PlaySound(AudioSourcePool.NO_AUDIO_SOURCE, transform, Game.SOUND_TYPE_VARIOUS, UnityEngine.Random.Range(EXPLOSION_SOUND_MIN, EXPLOSION_SOUND_MAX+1));
 	}
 	
-/*	void FixedUpdate() {
-		transform.localScale *= 1.1f;
-	}*/
-
 	private void DestroySelf() {
 		Destroy(gameObject);
 	}

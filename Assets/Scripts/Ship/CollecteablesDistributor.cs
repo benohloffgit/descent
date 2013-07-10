@@ -8,6 +8,8 @@ public class CollecteablesDistributor {
 	private Game game;
 	private Ship ship;
 	
+	private Dictionary<int, Collecteable> collecteables;
+	
 	private static int AMOUNT_HEAL = 35;
 	private static int AMOUNT_SHIELD = 20;
 
@@ -20,6 +22,17 @@ public class CollecteablesDistributor {
 		ship = play.ship;
 	}
 	
+	public void Reset() {
+		collecteables = new Dictionary<int, Collecteable>();
+	}
+
+	public void DispatchFixedUpdate() {
+		System.Collections.Generic.Dictionary<int, Collecteable>.Enumerator en = collecteables.GetEnumerator();
+		while (en.MoveNext()) {
+			en.Current.Value.DispatchFixedUpdateGeneral();
+		}		
+	}
+
 	public void DistributeOnEnemyDeath(Enemy e) {
 		if (e.clazzNum == Enemy.CLAZZ_WALLLASER11 || e.clazzNum == Enemy.CLAZZ_WALLGUN14) {
 			return;
@@ -92,24 +105,31 @@ public class CollecteablesDistributor {
 		}
 	}
 	
-	public GameObject DropHealth(Vector3 pos) {
-		return game.CreateFromPrefab().CreateHealthDrop(pos, Quaternion.identity, AMOUNT_HEAL);
+	public CollecteableHealth DropHealth(Vector3 pos) {
+		CollecteableHealth cH = game.CreateFromPrefab().CreateHealthDrop(pos, Quaternion.identity, AMOUNT_HEAL);
+		collecteables.Add(cH.gameObject.GetInstanceID(), cH);
+		return cH;
 	}
 
-	public GameObject DropShield(Vector3 pos) {
-		return game.CreateFromPrefab().CreateShieldDrop(pos, Quaternion.identity, AMOUNT_SHIELD);
+	public CollecteableShield DropShield(Vector3 pos) {
+		CollecteableShield cS = game.CreateFromPrefab().CreateShieldDrop(pos, Quaternion.identity, AMOUNT_SHIELD);
+		collecteables.Add(cS.gameObject.GetInstanceID(), cS);
+		return cS;
 	}		
 	
 	private void DropMissile(Enemy e, int type, int amount) {
-		game.CreateFromPrefab().CreateMissileDrop(e.transform.position, Quaternion.identity, type, amount);
+		CollecteableMissile cM = game.CreateFromPrefab().CreateMissileDrop(e.transform.position, Quaternion.identity, type, amount);
+		collecteables.Add(cM.gameObject.GetInstanceID(), cM);
 	}
 	
 	public void DropKey(Vector3 pos, int keyType) {
-		game.CreateFromPrefab().CreateKeyDrop(pos, Quaternion.identity, keyType);
+		CollecteableKey cK = game.CreateFromPrefab().CreateKeyDrop(pos, Quaternion.identity, keyType);
+		collecteables.Add(cK.gameObject.GetInstanceID(), cK);
 	}
 
 	public void DropPowerUp(Vector3 pos, int type, int id) {
-		game.CreateFromPrefab().CreatePowerUpDrop(pos, Quaternion.identity, type, id);
+		CollecteablePowerUp cP = game.CreateFromPrefab().CreatePowerUpDrop(pos, Quaternion.identity, type, id);
+		collecteables.Add(cP.gameObject.GetInstanceID(), cP);
 	}
 	
 	public void DropKeys() {
@@ -157,11 +177,11 @@ public class CollecteablesDistributor {
 		if (powerUpPositionOffsetLast < 4) {
 			// 50 : 50
 			if (UnityEngine.Random.Range (0,2) == 0) {
-				GameObject gO = DropHealth(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
-				gO.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
+				CollecteableHealth cH = DropHealth(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
+				cH.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 			} else {
-				GameObject gO = DropShield(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
-				gO.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
+				CollecteableShield cS = DropShield(GetPositionInSecretChamber(POWER_UP_POS_OFFSETS[powerUpPositionOffsetLast]));
+				cS.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 			}
 		}
 		
@@ -185,15 +205,26 @@ public class CollecteablesDistributor {
 			+ play.cave.secretCave.transform.InverseTransformDirection(offset)*RoomMesh.MESH_SCALE;
 	}
 	
-	public void RemoveAllPowerUps() {
+	public void RemoveAll() {
+		System.Collections.Generic.Dictionary<int, Collecteable>.Enumerator en = collecteables.GetEnumerator();
+		while (en.MoveNext()) {
+			GameObject.Destroy(en.Current.Value);
+		}		
+	}
+	
+	public void RemoveCollecteable(Collecteable c) {
+		collecteables.Remove(c.gameObject.GetInstanceID());
+	}
+	
+/*	private void RemoveAllPowerUps() {
 		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(CollecteablePowerUp.TAG)) {
 			GameObject.Destroy(gO);
 		}
 	}
 
-	public void RemoveAllKeys() {
+	private void RemoveAllKeys() {
 		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(CollecteableKey.TAG)) {
 			GameObject.Destroy(gO);
 		}
-	}
+	}*/
 }

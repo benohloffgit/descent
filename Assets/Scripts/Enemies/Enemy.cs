@@ -185,7 +185,7 @@ public abstract class Enemy : MonoBehaviour {
 			roamMinRange_, roamMaxRange_);		
 	}
 	
-	void FixedUpdate() {
+	public void DispatchFixedUpdateGeneral() {
 		currentGridPosition = cave.GetGridFromPosition(transform.position);
 		Vector3 isShipVisible = play.ship.IsVisibleFrom(transform.position);
 		if (myRenderer.isVisible || isShipVisible != Vector3.zero || play.GetShipGridPosition().roomPosition == currentGridPosition.roomPosition) {
@@ -211,6 +211,12 @@ public abstract class Enemy : MonoBehaviour {
 		}
 	}
 	
+	public void SetPaused(bool toPause) {
+		if (toPause) {
+		} else {
+		}
+	}
+		
 	public void Damage(int damage) {
 		if (health-damage <= 0) {
 			if (!flaggedForDestruction) {
@@ -221,6 +227,7 @@ public abstract class Enemy : MonoBehaviour {
 				health = 0;
 				play.DisplayExplosion(transform.position, play.ship.transform.rotation);
 				flaggedForDestruction = true; // this is necessary because the following Destroy does not get executed immediately which leads to problems with twin projectiles
+				play.RemoveEnemyOnDeath(this);
 				Destroy(gameObject);
 			}
 		} else {

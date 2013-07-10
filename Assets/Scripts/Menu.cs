@@ -141,7 +141,7 @@ public class Menu : MonoBehaviour {
 
 		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
 		gui.AddLabel(game.state.GetDialog(12), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.2f, 
-			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+			1f, 1f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_BACK_NINEPATCH, 0);
 		gui.AddLabel(game.state.GetDialog(43), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, 0f, 
 			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
 		gui.containers[container].AddZLevel();
@@ -151,7 +151,7 @@ public class Menu : MonoBehaviour {
 		
 		TouchDelegate toGame = new TouchDelegate(ToGame);
 		gui.AddLabelButtonF(0.25f, dialogContainer, new Vector3(0.04f,0.04f,1f), toGame, game.state.GetDialog(37), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
 	}
 
 /*	public void ToUpgrade() {
@@ -168,7 +168,7 @@ public class Menu : MonoBehaviour {
 
 		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
 		gui.AddLabel(game.state.GetDialog(4), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.2f, 
-			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+			1f, 1f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_BACK_NINEPATCH, 0);
 		gui.AddLabel(game.state.GetDialog(41), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.4f, MyGUI.GUIAlignment.Center, 0f, 
 			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
 		gui.AddLabel(game.state.GetDialog(42), dialogBox, new Vector3(0.03f,0.03f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, 0.4f, MyGUI.GUIAlignment.Center, 0f, 
@@ -176,7 +176,7 @@ public class Menu : MonoBehaviour {
 		
 		TouchDelegate toGame = new TouchDelegate(ToGame);
 		gui.AddLabelButtonF(0.25f, dialogContainer, new Vector3(0.04f,0.04f,1f), toGame, game.state.GetDialog(37), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.1f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
 	}
 
 	private void CloseDialog() {

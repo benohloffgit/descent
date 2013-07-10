@@ -838,8 +838,8 @@ public class PlayGUI {
 			new Vector2(gui.GetCenter().x, gui.GetCenter().y + gui.GetSize().y/2f * 0.5f), MyGUI.GUIBackground.QuadWithCollider,
 			0, Game.GUI_UV_COLOR_BLACK, 0, Game.GUI_UV_NULL, 0, Game.GUI_UV_NULL);
 //		gui.AddLabel(play.storyChapter,	scrollableContainer, MyGUI.GUIAlignment.Center, 0f, 0.2f, 0.3f, 3);
-		gui.AddLabel(play.storyChapter,	scrollableContainer, MyGUI.GUIAlignment.Center, MyGUI.GUIBackground.Quad, 0.1f, 0.1f,
-					0.3f, 3, 0, Game.GUI_UV_COLOR_BLACK);
+		gui.AddLabel(play.storyChapter,	scrollableContainer, MyGUI.GUIAlignment.Center, MyGUI.GUIBackground.NinePatch, 0.1f, 0.1f,
+					0.3f, 3, 0, Game.GUI_UV_BACK_NINEPATCH_STORY);
 
 /* GUIBackground background, float border, float textMargin,
 					float size, int textureIDText, int textureIDBackground, Vector4 uvMap		*/
@@ -848,15 +848,17 @@ public class PlayGUI {
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.01f, Game.GUI_UV_COLOR_BLACK, 0);
 		gui.AddImage(dialogBox, new Vector3(gui.GetSize().x/2f, gui.GetSize().y*0.2f, gui.GetSize().z),
 			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, -0.1f, Game.GUI_UV_COLOR_BLACK, 0);
-		gui.AddLabel(play.game.state.GetDialog(8) + (play.zoneID+1), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center,
-			0f, MyGUI.GUIAlignment.Top, 0.1f, 
-			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_COLOR_BLACK, 0);
+		gui.containers[dialogBox].AddZLevel(1f);
+		gui.AddLabel("\n" + play.game.state.GetDialog(8) + (play.zoneID+1) + "\n\n", dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center,
+			0f, MyGUI.GUIAlignment.Top, 0.05f, 1f, 1f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_BACK_NINEPATCH, 0);
+		gui.AddLabel("\n...\n", dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center,
+			0f, MyGUI.GUIAlignment.Bottom, 0.05f, 1f, 1f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_BACK_NINEPATCH, 0);
 		TouchDelegate toMenu = new TouchDelegate(ToMenu);
-		gui.AddLabelButton(dialogBox, new Vector3(0.05f,0.05f,1f), toMenu, play.game.state.GetDialog(9), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, -(gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		gui.AddLabelButtonF(0.25f, dialogBox, new Vector3(0.04f,0.04f,1f), toMenu, play.game.state.GetDialog(9), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, -(gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
 		TouchDelegate toGame = new TouchDelegate(ToGame);
-		gui.AddLabelButton(dialogBox, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(10), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, (gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0);
+		gui.AddLabelButtonF(0.25f, dialogBox, new Vector3(0.04f,0.04f,1f), toGame, play.game.state.GetDialog(10), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, (gui.GetSize().x/2f) * 0.75f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
 	}
 	
 	public void ToQuit() {
@@ -868,13 +870,13 @@ public class PlayGUI {
 
 		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
 		gui.AddLabel(play.game.state.GetDialog(5), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, 
-			1f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+			1f, 1f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_BACK_NINEPATCH, 0);
 		TouchDelegate toMenu = new TouchDelegate(ToMenu);
-		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toMenu, play.game.state.GetDialog(6), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, -0.2f, Game.GUI_UV_NULL, 0);
+		gui.AddLabelButtonF(0.25f, dialogContainer, new Vector3(0.04f,0.04f,1f), toMenu, play.game.state.GetDialog(6), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, -0.2f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
 		TouchDelegate toGame = new TouchDelegate(ToGame);
-		gui.AddLabelButton(dialogContainer, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(7), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, -0.2f, Game.GUI_UV_NULL, 0);
+		gui.AddLabelButtonF(0.25f, dialogContainer, new Vector3(0.04f,0.04f,1f), toGame, play.game.state.GetDialog(7), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, -0.2f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
 	}
 
 	public void ToPowerUpFound(string headline, string description, Vector4 uvMap) {

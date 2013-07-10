@@ -198,47 +198,47 @@ public class PrefabFactory {
 		return newBreadcrumb;
 	}
 
-	public GameObject CreateHealthDrop(Vector3 pos, Quaternion rot, int amount) {
+	public CollecteableHealth CreateHealthDrop(Vector3 pos, Quaternion rot, int amount) {
 		GameObject newHealthDrop = GameObject.Instantiate(healthDropTemplate, pos, rot) as GameObject;
 		newHealthDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableHealth healthDrop = newHealthDrop.GetComponent<CollecteableHealth>();
 		healthDrop.Initialize(play, amount);
 //		healthDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		healthDrop.enabled = true;
-		return newHealthDrop;
+		return healthDrop;
 	}
 
-	public GameObject CreateShieldDrop(Vector3 pos, Quaternion rot, int amount) {
+	public CollecteableShield CreateShieldDrop(Vector3 pos, Quaternion rot, int amount) {
 		GameObject newShieldDrop = GameObject.Instantiate(shieldDropTemplate, pos, rot) as GameObject;
 		newShieldDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableShield shieldDrop = newShieldDrop.GetComponent<CollecteableShield>();
 		shieldDrop.Initialize(play, amount);
 //		shieldDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		shieldDrop.enabled = true;
-		return newShieldDrop;
+		return shieldDrop;
 	}
 
-	public GameObject CreateMissileDrop(Vector3 pos, Quaternion rot, int type, int amount) {
+	public CollecteableMissile CreateMissileDrop(Vector3 pos, Quaternion rot, int type, int amount) {
 		GameObject newMissileDrop = GameObject.Instantiate(missileDropTemplates[type], pos, rot) as GameObject;
 		newMissileDrop.tag = CollecteablePowerUp.TAG;
 		CollecteableMissile missileDrop = newMissileDrop.GetComponent<CollecteableMissile>();
 		missileDrop.Initialize(play, type, amount);
 //		missileDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		missileDrop.enabled = true;
-		return newMissileDrop;
+		return missileDrop;
 	}
 
-	public GameObject CreateKeyDrop(Vector3 pos, Quaternion rot, int keyType) {
+	public CollecteableKey CreateKeyDrop(Vector3 pos, Quaternion rot, int keyType) {
 		GameObject newKeyDrop = GameObject.Instantiate(game.keyPrefab, pos, rot) as GameObject;
 		CollecteableKey keyDrop = newKeyDrop.GetComponent<CollecteableKey>();
 		keyDrop.Initialize(play, keyType, play.game.keyTextures[keyType]);
 		keyDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 //		keyDrop.renderer.material.mainTexture = play.game.keyTextures[keyType];
 		keyDrop.enabled = true;
-		return newKeyDrop;
+		return keyDrop;
 	}
 
-	public GameObject CreatePowerUpDrop(Vector3 pos, Quaternion rot, int type, int id) {
+	public CollecteablePowerUp CreatePowerUpDrop(Vector3 pos, Quaternion rot, int type, int id) {
 		GameObject newPowerUpDrop;
 		if (type == Game.POWERUP_PRIMARY_WEAPON) {
 			newPowerUpDrop = GameObject.Instantiate(game.primaryWeaponPrefabs[id], pos, rot) as GameObject;
@@ -258,7 +258,7 @@ public class PrefabFactory {
 		powerUpDrop.Initialize(play, type, id);
 		powerUpDrop.transform.localScale *= (RoomMesh.MESH_SCALE/5f);
 		powerUpDrop.enabled = true;
-		return newPowerUpDrop;
+		return powerUpDrop;
 	}
 	
 	public GameObject CreateExplosion(Vector3 pos, Quaternion rot) {

@@ -606,6 +606,7 @@ public class Ship : MonoBehaviour {
 			boostTimer = Time.fixedTime;
 			play.playGUI.SwitchShipBoost();
 			powerUpParticleSystemOneParticle.Stop();
+			PlaySound(Game.SOUND_TYPE_VARIOUS, 46);
 //			powerUpBoostParticle.renderer.enabled = false;
 //			powerUpBoostParticle.enabled = false;
 		}
@@ -615,7 +616,7 @@ public class Ship : MonoBehaviour {
 		if (!isCloakOn && !isBoosterOn && !isInvincibleOn) {
 			if (!isCloakLoading) {
 				isCloakOn = true;
-				//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
+				PlaySound(Game.SOUND_TYPE_VARIOUS, 48);
 				cloakTimer = Time.fixedTime;
 				play.playGUI.SwitchShipCloak();
 				powerUpParticleSystem.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_CLOAK];
@@ -637,6 +638,7 @@ public class Ship : MonoBehaviour {
 			play.playGUI.SwitchShipCloak();
 			powerUpParticleSystem.Stop();
 			play.playGUI.DisplayCrossHair();
+			PlaySound(Game.SOUND_TYPE_VARIOUS, 46);
 		}
 	}
 
@@ -646,7 +648,7 @@ public class Ship : MonoBehaviour {
 				isInvincibleOn = true;
 				hasBeenInvincibleInThisZone = true;
 				invincibleTimer = Time.fixedTime;
-				//PlaySound(Game.SOUND_TYPE_VARIOUS, 27);
+				PlaySound(Game.SOUND_TYPE_VARIOUS, 47);
 				play.playGUI.SwitchShipInvincible();
 				powerUpParticleSystemOneParticle.renderer.material = game.powerUpParticleMaterials[Game.POWERUP_PARTICLE_MATERIAL_INVINCIBLE];
 				powerUpParticleSystemOneParticle.Play();
@@ -663,6 +665,7 @@ public class Ship : MonoBehaviour {
 			isInvincibleOn = false;
 			play.playGUI.SwitchShipInvincible();
 			powerUpParticleSystemOneParticle.Stop();
+			PlaySound(Game.SOUND_TYPE_VARIOUS, 46);
 		}
 	}
 	

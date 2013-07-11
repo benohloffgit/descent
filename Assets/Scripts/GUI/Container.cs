@@ -17,86 +17,105 @@ public class Container : MonoBehaviour {
 	private float realignTimer;
 	private float touchOffTime;
 	private bool isFixedSize;
-//	private Transform blendTop;
-//	private Transform blendBottom;
+	private Transform blendTop;
+	private Transform blendBottom;
 	private Vector3 camZero;
+	private Vector3 blendTopPos, blendBottomPos;
+	private float scrollAmountByButton;
 	
 	// virtual coords based on elements added
 	private Vector3 bottomLeft;
 	private Vector3 topRight;
 	
-	public enum SelectionMode { Off=0, On=1 }
+	public enum SelectionMode { Off=0, On=1, Top=2, Bottom=3 }
 		
 	void Awake() {
 		elements = new ArrayList();
 		isScrollableContainer = false;
 		mode = SelectionMode.Off;
+		scrollAmountByButton = (float)Screen.height/400f;
 	}
 	
 	void Start() {
 		camZero = myGUI.guiCamera.ScreenToWorldPoint(Vector3.zero);		
 		if (isScrollableContainer) {
+//			Debug.Log ("size of container scrollable " + GetSize() +  " " + transform.lossyScale + " " + GetCenter());
 			// even though the scrolleable container is not fixed size we use lossy scale here to get its real size
-//			Debug.Log ("isFixedSize " + isFixedSize + " " + topRight+ " " + bottomLeft);
+//			Debug.Log ("isFixedSize " + isFixedSize + " " + topRight+ " " + bottomLeft + " " + transform.position.y);
 //			Debug.Log (GetSize().y + " size " + transform.lossyScale.y);
 			float amountToScroll = GetSize().y - transform.lossyScale.y;
 			if (amountToScroll < 0) {
 				amountToScroll = 0;
-//				blendBottom.renderer.enabled = false;
+				blendBottom.renderer.enabled = false;
 			} else {
-//				blendBottom.renderer.enabled = true;
+				blendBottom.renderer.enabled = true;
 			}
 			// adapt background
 			SetBackgroundScrollable();
-//			blendTop.renderer.enabled = false;
+			blendTop.renderer.enabled = false;
 			scrollEndPos = scrollStartPos + new Vector3(0, amountToScroll, 0); 
 //			Debug.Log("scrollStartPos " +  scrollStartPos + " scrollEndPos " + scrollEndPos +  " amountToScroll " + amountToScroll);
+			blendTopPos = blendTop.position;
+			blendBottomPos = blendBottom.position;
 		}
 	}
 	
 	void LateUpdate() {
-		if (mode == SelectionMode.On) {
-			if (myGUI.gameInput.isTouchMoved[scrollFinger] || myGUI.gameInput.isTouchDown[scrollFinger] || myGUI.gameInput.isTouchUp[scrollFinger]) {
-				// delta in pixels
-				Vector3 delta = myGUI.gameInput.touchPositionDelta[scrollFinger]; //myGUI.gameInput.touchPosition[scrollFinger] - myGUI.gameInput.oldTouchPosition[scrollFinger];
-				Vector3 camDelta = myGUI.guiCamera.ScreenToWorldPoint(new Vector3(0, Mathf.Abs(delta.y), 0));
-				Vector3 camFinalDelta = camDelta - camZero;
-//				Debug.Log (delta + " " + camDelta + " " + camFinalDelta);
-				transform.position += new Vector3(0, camFinalDelta.y*Mathf.Sign(delta.y), 0);
-			}
+		if (isScrollableContainer) {
 			if (myGUI.gameInput.isTouchUp[scrollFinger]) {
 				mode = SelectionMode.Off;
-				touchOffTime = Time.realtimeSinceStartup;
+				touchOffTime = Time.fixedTime;
 			}
-		}
-		if (isScrollableContainer) {
+			if (mode == SelectionMode.On) {
+				if (myGUI.gameInput.isTouchMoved[scrollFinger]) {
+					// delta in pixels
+					ScrollBy(myGUI.gameInput.touchPositionDelta[scrollFinger]);
+				}
+			} else if (mode == SelectionMode.Bottom) {
+				if (myGUI.gameInput.wasTouchDown[scrollFinger]) {
+					ScrollBy(new Vector2(0,scrollAmountByButton));
+				}
+			} else if (mode == SelectionMode.Top) {
+				if (myGUI.gameInput.wasTouchDown[scrollFinger]) {
+					ScrollBy(new Vector2(0,-scrollAmountByButton));
+				}
+			}
 			// if beyond start or end pos, lerp back
-			if (transform.position.y < scrollStartPos.y) {
+			if (transform.position.y <= scrollStartPos.y) {
 				if (mode == SelectionMode.On) {
-					touchOffTime = Time.realtimeSinceStartup - Mathf.Min((scrollStartPos.y-transform.position.y)/1f, 1f) * 1f;
+					touchOffTime = Time.fixedTime - Mathf.Min((scrollStartPos.y-transform.position.y)/1f, 1f) * 1f;
 				}
-				realignTimer = Time.realtimeSinceStartup - touchOffTime;
+				realignTimer = Time.fixedTime - touchOffTime;
 				transform.position = Vector3.Lerp(transform.position, scrollStartPos, realignTimer);
-//				blendTop.renderer.enabled = false;
-			} else if (transform.position.y > scrollEndPos.y) {
+				blendTop.renderer.enabled = false;
+			} else if (transform.position.y >= scrollEndPos.y) {
 				if (mode == SelectionMode.On) {
-					touchOffTime = Time.realtimeSinceStartup - Mathf.Min((transform.position.y-scrollEndPos.y)/1f, 1f) * 1f;
+					touchOffTime = Time.fixedTime - Mathf.Min((transform.position.y-scrollEndPos.y)/1f, 1f) * 1f;
 				}
-				realignTimer = Time.realtimeSinceStartup - touchOffTime;
+				realignTimer = Time.fixedTime - touchOffTime;
 				transform.position = Vector3.Lerp(transform.position, scrollEndPos, realignTimer);
-//				blendBottom.renderer.enabled = false;
+				blendBottom.renderer.enabled = false;
 			} else {
 				realignTimer = 0;
-/*				if (transform.position.y >= scrollStartPos.y && transform.position.y <= scrollEndPos.y) {
+				if (transform.position.y >= scrollStartPos.y && transform.position.y <= scrollEndPos.y) {
 					blendTop.renderer.enabled = true;
 					blendBottom.renderer.enabled = true;
 				} else if (transform.position.y == scrollStartPos.y) {
 					blendTop.renderer.enabled = false;
 				} else if (transform.position.y == scrollEndPos.y) {
 					blendBottom.renderer.enabled = false;
-				}*/
+				}
 			}
+			blendTop.position = blendTopPos;
+			blendBottom.position = blendBottomPos;
 		}
+	}
+	
+	private void ScrollBy(Vector3 delta) {
+		Vector3 camDelta = myGUI.guiCamera.ScreenToWorldPoint(new Vector3(0, Mathf.Abs(delta.y), 0));
+		Vector3 camFinalDelta = camDelta - camZero;
+//				Debug.Log (delta + " " + camDelta + " " + camFinalDelta);
+		transform.position += new Vector3(0, camFinalDelta.y*Mathf.Sign(delta.y), 0);
 	}
 	
 	public void Initialize(MyGUI myGUI_, Vector3 scale_, bool isFixedSize_) {
@@ -111,6 +130,7 @@ public class Container : MonoBehaviour {
 			topRight = new Vector3(transform.position.x +  transform.lossyScale.x/2.0f, transform.position.y, transform.position.z);
 //			bottomLeft = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 //			topRight = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+//			Debug.Log ("bottomLeft, topright " + bottomLeft + " " +topRight);
 		}
 		nextPos = bottomLeft + new Vector3(0,0,-1f);
 	}
@@ -122,22 +142,23 @@ public class Container : MonoBehaviour {
 		SetBackground(backgr);
 	}
 	
-	public void InitializeAsScrollable(MyGUI mG, Transform backgr) { // , Transform blendT, Transform blendB
-		myGUI = mG;
+	public void InitializeAsScrollable(MyGUI myGUI_, Transform backgr, Transform blendT, Transform blendB) {
+		myGUI = myGUI_;
 		background = backgr;					
 		isScrollableContainer = true;
 		mode = SelectionMode.Off;
 		scrollStartPos = transform.position;
 		realignTimer = 0;
 		
-/*		blendTop = blendT;
-		blendTop.localScale = new Vector3(transform.lossyScale.x, transform.lossyScale.y * 0.15f, transform.lossyScale.z);
-		blendTop.position = new Vector3(transform.position.x, transform.position.y - blendTop.lossyScale.y/2.0f, transform.position.z - 1.0f);
-		blendTop.parent = transform.parent;
+		blendTop = blendT;
 		blendBottom = blendB;
-		blendBottom.localScale = new Vector3(transform.lossyScale.x, transform.lossyScale.y * 0.15f, transform.lossyScale.z);
-		blendBottom.position = new Vector3(transform.position.x, transform.position.y - transform.lossyScale.y + blendTop.lossyScale.y/2.0f, transform.position.z - 1.0f);
-		blendBottom.parent = transform.parent;	*/
+		blendTop.localScale = new Vector3(transform.lossyScale.x*0.3f, transform.lossyScale.y * 0.1f, transform.lossyScale.z);
+		blendTop.position = new Vector3(transform.position.x, transform.lossyScale.y/2f-blendTop.lossyScale.y/2f+blendTop.lossyScale.y/3f, transform.position.z - 4.0f);
+		blendTop.Rotate(0,0,180f);
+		blendTop.parent = transform;
+		blendBottom.localScale = new Vector3(transform.lossyScale.x*0.3f, transform.lossyScale.y * 0.1f, transform.lossyScale.z);
+		blendBottom.position = new Vector3(transform.position.x, -transform.lossyScale.y/2f-blendBottom.lossyScale.y/2f, transform.position.z - 4.0f);
+		blendBottom.parent = transform;
 	}
 	
 	private void SetBackground(Transform backgr) {
@@ -195,14 +216,23 @@ public class Container : MonoBehaviour {
 		return new Vector3(transform.position.x + transform.lossyScale.x/2, transform.position.y + transform.lossyScale.y/2, transform.position.z);
 	}
 	
-	public void Select(int finger) {
+	public void Select(GUITouchDown touch) {
 		if (touchDelegate != null) {
-			Debug.Log ("here");
 			touchDelegate();
 		} else if (isScrollableContainer) {
-			mode = SelectionMode.On;
-			scrollFinger = finger;
+			if (touch.id == blendTop.gameObject.GetInstanceID()) {
+				mode = SelectionMode.Top;
+			} else if (touch.id == blendBottom.gameObject.GetInstanceID()) {
+				mode = SelectionMode.Bottom;
+			} else if (touch.id == background.gameObject.GetInstanceID()) {
+				mode = SelectionMode.On;
+			}
+			scrollFinger = touch.finger;
 		}
+	}
+	
+	public void SetTouchDelegate(TouchDelegate touchDelegate_) {
+		touchDelegate = touchDelegate_;
 	}
 	
 	public void AddZLevel() {
@@ -212,5 +242,5 @@ public class Container : MonoBehaviour {
 	public void AddZLevel(float byLevel) {
 		nextPos.z -= byLevel;
 	}
-	
+		
 }

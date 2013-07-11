@@ -90,6 +90,7 @@
      <Compile Include="Assets\Scripts\GUI\Dim.cs" />
      <Compile Include="Assets\Scripts\GUI\Dropdown.cs" />
      <Compile Include="Assets\Scripts\GUI\Focussable.cs" />
+     <Compile Include="Assets\Scripts\GUI\GUITouchDown.cs" />
      <Compile Include="Assets\Scripts\GUI\Image.cs" />
      <Compile Include="Assets\Scripts\GUI\ImageButton.cs" />
      <Compile Include="Assets\Scripts\GUI\Label.cs" />

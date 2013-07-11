@@ -154,14 +154,14 @@ public class GameInput : MonoBehaviour {
 			} else {
 				if (hit.collider.tag == "Select1Up") {
 					if (isTouchDown[finger]) {
-						myGUI.SendTouchDown(hit.collider.transform.parent.gameObject, finger);
+						myGUI.SendTouchDown(hit.collider.transform.parent.gameObject, hit.collider.gameObject.GetInstanceID(), finger);
 					} else {
 						myGUI.SendHover(hit.collider.transform.parent.gameObject, finger);
 					}
 					result = true;
 				} else if (hit.collider.tag == "Select") {
 					if (isTouchDown[finger]) {
-						myGUI.SendTouchDown(hit.collider.gameObject, finger);
+						myGUI.SendTouchDown(hit.collider.gameObject, hit.collider.gameObject.GetInstanceID(), finger);
 					} else {
 						myGUI.SendHover(hit.collider.gameObject, finger);
 					}

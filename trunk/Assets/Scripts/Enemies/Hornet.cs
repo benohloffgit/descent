@@ -44,6 +44,7 @@ public class Hornet : Enemy {
 			//c.rigidbody.AddExplosionForce(MINE_EXPLOSION_POWER, transform.position, MINE_EXPLOSION_RADIUS);
 			play.ship.Damage(damage, c.contacts[0].point, Shot.MINE_TOUCH);
 			play.DamageShip(Game.ENEMY);
+			play.RemoveEnemyOnDeath(this);
 			Destroy(gameObject);
 		}
 	}

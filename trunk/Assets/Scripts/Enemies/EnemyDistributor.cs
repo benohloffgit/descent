@@ -205,9 +205,11 @@ public class EnemyDistributor {
 	}
 	
 	public void RemoveAll() {
-		System.Collections.Generic.Dictionary<int, Enemy>.Enumerator en = enemies.GetEnumerator();
-		while (en.MoveNext()) {
-			GameObject.Destroy(en.Current.Value);
+		if (enemies != null) {
+			System.Collections.Generic.Dictionary<int, Enemy>.Enumerator en = enemies.GetEnumerator();
+			while (en.MoveNext()) {
+				GameObject.Destroy(en.Current.Value);
+			}
 		}
 /*		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Enemy.TAG)) {
 			GameObject.Destroy(gO);

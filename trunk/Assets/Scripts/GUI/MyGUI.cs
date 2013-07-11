@@ -142,10 +142,9 @@ public class MyGUI : MonoBehaviour {
 	public int AddContainerScrollable(int containerID, Vector3 size, Vector2 pos, GUIBackground background, int textureIDBackground, Vector4 uvMap,
 			int textureIDBlendTop, Vector4 uvMapBlendTop, int textureIDBlendBottom, Vector4 uvMapBlendBottom) {
 		int cID = AddContainer(containerID, size, pos, false);
-		containers[cID].InitializeAsScrollable(this, CreateBackground(background, textureIDBackground, uvMap)
-			//CreateBackground(GUIBackground.Quad, textureIDBlendTop, uvMapBlendTop),
-			//CreateBackground(GUIBackground.Quad, textureIDBlendBottom, uvMapBlendBottom)
-			);
+		containers[cID].InitializeAsScrollable(this, CreateBackground(background, textureIDBackground, uvMap),
+			CreateBackground(GUIBackground.QuadWithCollider, textureIDBlendTop, uvMapBlendTop),
+			CreateBackground(GUIBackground.QuadWithCollider, textureIDBlendBottom, uvMapBlendBottom));
 		return cID;
 	}
 	
@@ -394,17 +393,17 @@ public class MyGUI : MonoBehaviour {
 		hoverParticles.renderer.enabled = false;
 	}
 	
-	public void SendTouchDown(GameObject gO, int finger) {
+	public void SendTouchDown(GameObject gOToSendTo, int gOID,  int finger) {
 		if (isGUIElementInFocus && guiElementInFocus.IsBlocking()) {
 			// do nothing
 		} else {
 			if (isGUIElementInFocus) {
 				guiElementInFocus.LostFocus();
 			}
-			if (gO != gameObject) {
+			if (gOToSendTo != gameObject) {
 				hoverParticles.Pause();
 				hoverParticles.renderer.enabled = false;
-				gO.SendMessage("Select", finger);
+				gOToSendTo.SendMessage("Select", new GUITouchDown(finger, gOID));
 				game.state.PlaySound(45);
 			}
 		}

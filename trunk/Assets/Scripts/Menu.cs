@@ -104,7 +104,7 @@ public class Menu : MonoBehaviour {
 	}
 
 	private void ToZone18() {
-		game.state.level = 18;
+		game.state.level = 20;
 		game.SetGameMode(Game.Mode.Play);
 	}
 

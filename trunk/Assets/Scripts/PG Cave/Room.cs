@@ -87,6 +87,10 @@ public class Room {
 		}
 	}
 
+	public Cell GetCell(IntTriple cellIndex) {
+		return cells[cellIndex.x, cellIndex.y, cellIndex.z];
+	}
+
 	public float GetIsovalueDensity(int x, int y, int z) {
 		float result = 0.3f;
 //		if (cells[x,y,z] != null && cells[x,y,z].isExit) return -0.3f;

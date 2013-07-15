@@ -26,14 +26,14 @@ public class MineBuilder : Enemy {
 		mode = Mode.ROAMING;
 		searchForNewMineLayingPos = true;
 		room = play.cave.zone.GetRoom(play.cave.GetGridFromPosition(transform.position));
-		exitIndex = 0;
 		exitPositions = new IntTriple[room.exits.Count];
 		int i=0;
 		System.Collections.Generic.Dictionary<IntTriple, Cell>.Enumerator en = room.exits.GetEnumerator();
-		if (en.MoveNext()) {
+		while (en.MoveNext()) {
 			exitPositions[i] = en.Current.Value.pos;
 			i++;
 		}
+		exitIndex = UnityEngine.Random.Range(0, exitPositions.Length);
 	}
 	
 	public override void InitializeWeapon(int mount, int type) {

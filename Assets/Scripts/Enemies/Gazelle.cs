@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 /*
  * Normal Roaming/Aiming behaviour according to generated model values
- * Chases ship
+ * Chases ship if < shootingRange
  * 
  */
 public class Gazelle : Enemy {
@@ -65,7 +65,7 @@ public class Gazelle : Enemy {
 			}					
 		}
 		if (mode == Mode.ROAMING) {
-			if (distanceToShip > shootingRange) {
+			if (distanceToShip > shootingRange && play.isShipInPlayableArea) {
 				mode = Mode.PATHFINDING;
 				play.movement.AStarPath(aStarThreadState, currentGridPosition, play.GetShipGridPosition());
 			} else {

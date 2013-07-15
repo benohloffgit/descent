@@ -8,11 +8,11 @@ public abstract class Enemy : MonoBehaviour {
 	public static string CLAZZ_A = "Spider"; // TYPE_GUN 
 	public static string CLAZZ_B = "Bat"; // TYPE_LASER 
 	public static string CLAZZ_C = "Gazelle"; // TYPE_TWIN_GUN
-	public static string CLAZZ_D = "Wombat"; // NO PRIMARY
+	public static string CLAZZ_D = "Wombat"; // NO PRIMARY / Missile
 	public static string CLAZZ_E = "Manta"; // TYPE_TWIN_LASER
 	public static string CLAZZ_F = "Pike"; // TYPE_GAUSS
 	public static string CLAZZ_G = "Bull"; // TYPE_TWIN_PHASER
-	public static string CLAZZ_H = "Rhino"; // TYPE_TWIN_GAUSS
+	public static string CLAZZ_H = "Rhino"; // TYPE_TWIN_GAUSS + Missile
 	
 	public static string CLAZZ_BUG = "Bug";
 	public static string CLAZZ_SNAKE = "Eel";

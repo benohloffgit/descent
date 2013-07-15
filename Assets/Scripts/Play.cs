@@ -92,7 +92,7 @@ public class Play : MonoBehaviour {
 		sokoban = new Sokoban(this);
 		
 		botSeed = UnityEngine.Random.Range(0,9999999);
-//		caveSeed = 2122215; 9164008 4995052;//
+//		caveSeed = 1818612;//2122215; 9164008 4995052;//
 		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
 //		zoneID = state.level;

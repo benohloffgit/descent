@@ -819,8 +819,8 @@ public class PlayGUI {
 		gui.AddLabel(play.game.state.GetDialog(44), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Center, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, 
 			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
 		TouchDelegate toGame = new TouchDelegate(ToGame);
-		gui.AddLabelButton(dialogBox, new Vector3(0.05f,0.05f,1f), toGame, play.game.state.GetDialog(37), 1.0f, 1.0f, 3, 
-			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, Game.GUI_UV_NULL, 0);
+		gui.AddLabelButtonF(0.25f, dialogBox, new Vector3(0.04f,0.04f,1f), toGame, play.game.state.GetDialog(37), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Bottom, 0.05f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
 	}
 
 	public void ToStory() {

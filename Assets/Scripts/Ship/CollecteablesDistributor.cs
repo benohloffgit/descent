@@ -10,8 +10,8 @@ public class CollecteablesDistributor {
 	
 	private Dictionary<int, Collecteable> collecteables;
 	
-	private static int AMOUNT_HEAL = 35;
-	private static int AMOUNT_SHIELD = 20;
+	private static int AMOUNT_HEAL = 25;
+	private static int AMOUNT_SHIELD = 35;
 
 	private int powerUpPositionOffsetLast;
 	private static Vector3[] POWER_UP_POS_OFFSETS = new Vector3[4] {new Vector3(-0.5f,0,0), new Vector3(0.5f,0,0), new Vector3(0,0.5f,0), new Vector3(0,-0.5f,0)};
@@ -209,7 +209,8 @@ public class CollecteablesDistributor {
 		System.Collections.Generic.Dictionary<int, Collecteable>.Enumerator en = collecteables.GetEnumerator();
 		while (en.MoveNext()) {
 			GameObject.Destroy(en.Current.Value);
-		}		
+		}
+		collecteables.Clear();
 	}
 	
 	public void RemoveCollecteable(Collecteable c) {

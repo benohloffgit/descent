@@ -54,7 +54,7 @@ public class Ship : MonoBehaviour {
 	public bool isDetonatorMissileExploded;
 	private float boostTimer;
 	private float cloakTimer;
-	private float invincibleTimer;
+	public float invincibleTimer;
 	private ParticleSystem powerUpParticleSystem;
 	private ParticleSystem powerUpParticleSystemOneParticle;
 	//private PowerUpBoostParticle powerUpBoostParticle;

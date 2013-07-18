@@ -29,6 +29,7 @@ public class Play : MonoBehaviour {
 	public bool[] isKeyCollected;
 	public string storyChapter;
 	public bool hasDied;
+	private float nextAtmoSoundTime;
 	
 	public GridPosition placeShipBeforeExitDoor;
 	public GridPosition placeShipBeforeSecretChamberDoor;
@@ -72,6 +73,8 @@ public class Play : MonoBehaviour {
 	private static Vector3 GEYSIR_POSITION = new Vector3(0f, 0f, 0.25f);
 	private static int MAX_SHOT_TRAIL_RENDERERS = 20;
 	private static int MAX_MISSILE_EXHAUST_RENDERERS = 5;
+	private static float ATMO_SOUND_INTERVAL_MIN = 30f;
+	private static float ATMO_SOUND_INTERVAL_MAX = 120f;
 
 	public enum Mode { Normal=0, Sokoban=1 }
 
@@ -189,6 +192,10 @@ public class Play : MonoBehaviour {
 			}
 			if (Input.GetKeyDown(KeyCode.F9)) {	
 				ship.isInvincibleOn = ship.isInvincibleOn ? false : true;
+				if (ship.isInvincibleOn) {
+					ship.invincibleTimer = Time.fixedTime + 3600f;
+				}
+				
 			}
 			if (Input.GetKeyDown(KeyCode.F11)) {	
 				ship.Damage(100, Vector3.zero, Shot.BULLET);
@@ -204,6 +211,10 @@ public class Play : MonoBehaviour {
 			playGUI.DispatchFixedUpdate();
 			foreach (Breadcrumb b in breadcrumbs) {
 				b.DispatchFixedUpdate();
+			}
+			if (Time.fixedTime > nextAtmoSoundTime && !state.IsMusicPlaying()) {
+				nextAtmoSoundTime = Time.fixedTime + UnityEngine.Random.Range(ATMO_SOUND_INTERVAL_MIN, ATMO_SOUND_INTERVAL_MAX);
+				state.PlayMusic(UnityEngine.Random.Range (49,55));
 			}
 		}
 	}
@@ -267,6 +278,7 @@ public class Play : MonoBehaviour {
 			SetPaused(true);
 		}
 		hasDied = false;
+		nextAtmoSoundTime = Time.fixedTime + UnityEngine.Random.Range(ATMO_SOUND_INTERVAL_MIN, ATMO_SOUND_INTERVAL_MAX);
 	}
 	
 	public void ZoneCompleted() {

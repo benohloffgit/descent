@@ -11,6 +11,7 @@ public class Bull : Enemy {
 	private RaycastHit hit;
 	private GridPosition targetPosition;
 	private GridPosition holdingPosition;
+	private GridPosition oppositeHoldingPosition; // in adjacent room
 	private Mode mode;
 	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private bool isOnPath;
@@ -78,6 +79,8 @@ public class Bull : Enemy {
 				} else {
 					mode = Mode.HOLDING;
 					holdingPosition = targetPosition;
+//					Debug.Log ("holdingPosition" +  holdingPosition + " " + exitPositions[exitIndex]);
+//					oppositeHoldingPosition = room.exits
 //					Debug.Log ("Exit pos reached on " + holdingPosition +  " " + play.cave.zone.GetRoom(holdingPosition).GetCell(holdingPosition.cellPosition).isExit);
 				}
 			}					

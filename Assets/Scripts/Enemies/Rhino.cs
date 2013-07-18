@@ -2,89 +2,162 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+/*
+ * Normal Roaming/Aiming behaviour according to generated model values
+ * Hides in regular intervals from ship
+ * Has secondary weapon as well
+ */
 public class Rhino : Enemy {	
-	private RaycastHit hit;
 	private GridPosition targetPosition;
+	private GridPosition coverPosition;
 	private Mode mode;
-	private AStarThreadState aStarThreadState = new AStarThreadState();
 	private bool isOnPath;
+	private float roamingStart;
+	private float aimingStart;
+	private float reloadedStart;
+	private bool isReloaded;
 
-	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0.184f, -0.51f, 0.825f), new Vector3(-0.184f, -0.51f, 0.825f), new Vector3(0, 0, 0)};
+	private AStarThreadState aStarThreadState = new AStarThreadState();
+	private CoverFindThreadState coverFindThreadState = new CoverFindThreadState();
+
+	private static Vector3[] WEAPON_POSITIONS = new Vector3[] {new Vector3(0.184f, -0.51f, 0.825f), new Vector3(-0.184f, -0.51f, 0.825f), new Vector3(0, 0.725f, 0)};
 	private static Vector3[] WEAPON_ROTATIONS = new Vector3[] {new Vector3(0,0,180f), new Vector3(0,0,180f), new Vector3(0,0,0)};
 		
-	public enum Mode { ROAMING=0, PATHFINDING=1, CHASING=2 }
+	public enum Mode { ROAMING=0, SHOOTING=1, AIMING=2, HIDING=3, PATHFINDING=4, COVERFINDING=5 }
+
+	private static float MAX_ROAMING_TIME = 6.0f;
+	private static float MAX_AIMING_TIME = 10.0f;
+	private static float SECONDARY_AIMING_TIME = 1.0f;
 	
 	public override void InitializeWeapon(int mount, int type) {
 		if (mount == Weapon.PRIMARY) {
 			primaryWeapons.Add(new Weapon(this, mount, transform, play, type, WEAPON_POSITIONS,
 				WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss));
 		}
+		if (mount == Weapon.SECONDARY) {
+			int ammo = Mathf.FloorToInt(modelClazzAEquivalent/6.0f)+1;
+			secondaryWeapons.Add
+				(new Weapon(this, mount, transform, play, Weapon.TYPE_MISSILE, WEAPON_POSITIONS,
+					WEAPON_ROTATIONS, Game.ENEMY, spawn.isBoss, ammo));
+		}
 	}
 	
 	void Start() {
-		targetPosition = cave.GetGridFromPosition(transform.position);
+		targetPosition = play.cave.GetGridFromPosition(transform.position);
 		mode = Mode.ROAMING;
-		currentAngleUp = 0f;
 		isOnPath = false;
-		canBeDeactivated = false;
+		roamingStart = Time.fixedTime;
 	}
-					
-	public override void DispatchFixedUpdate(Vector3 isShipVisible) {
-		
-		if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
-			aggressiveness = Enemy.AGGRESSIVENESS_ON;
+
+	public override void DispatchFixedUpdate(Vector3 isShipVisible) {		
+		if (aggressiveness > Enemy.AGGRESSIVENESS_OFF && mode != Mode.AIMING) {
+			if (mode == Mode.COVERFINDING) {
+				coverFindThreadState.Complete();
+			} else if (mode == Mode.PATHFINDING) {
+				aStarThreadState.Complete();
+			}
+			mode = Mode.AIMING;
+			aimingStart = Time.fixedTime;
 		}
-		float distanceToShip = Vector3.Distance(transform.position, play.GetShipPosition());
-			
+
+		if (secondaryWeapons[currentSecondaryWeapon].ammunition > 0) {
+			if (!isReloaded && secondaryWeapons[currentSecondaryWeapon].IsReloaded()) {
+				isReloaded = true;
+				reloadedStart = Time.fixedTime;
+			}
+		}
+		
+		if (mode == Mode.AIMING && Time.fixedTime > aimingStart + MAX_AIMING_TIME) {
+			mode = Mode.COVERFINDING;
+//				Debug.Log ("Mode.COVERFINDING 1" );
+			if (coverPosition == GridPosition.ZERO) {
+				coverPosition = currentGridPosition;
+			}
+			play.movement.CoverFind(coverFindThreadState, coverPosition, play.GetShipGridPosition());
+		}
+
+		if (mode == Mode.COVERFINDING) {
+			if (coverFindThreadState.IsFinishedNow()) {
+//				Debug.Log ("Mode.COVERFINDING finished " + coverFindThreadState.coverPosition);
+				coverFindThreadState.Complete();
+				if (coverFindThreadState.coverPosition == GridPosition.ZERO) { // no cover found
+					mode = Mode.ROAMING;
+					roamingStart = Time.fixedTime;
+//					Debug.Log ("No cover found, Mode.ROAMING" );					
+				} else {
+					coverPosition = coverFindThreadState.coverPosition;
+					if (coverPosition != currentGridPosition) {
+//						Debug.Log ("Mode.PATHFINDING" );					
+						mode = Mode.PATHFINDING;
+						play.movement.AStarPath(aStarThreadState, currentGridPosition, coverPosition);
+					} else {
+						mode = Mode.ROAMING;
+						roamingStart = Time.fixedTime;
+						coverPosition = GridPosition.ZERO;
+//						Debug.Log ("We are already on cover pos : Mode.ROAMING" );					
+					}
+				}
+			}
+		}
 		if (mode == Mode.PATHFINDING) {
 			if (aStarThreadState.IsFinishedNow()) {
 				aStarThreadState.Complete();
-				mode = Mode.CHASING;
+				mode = Mode.HIDING;
 				isOnPath = false;
-//				Debug.Log ("Pathfinding finished " + aStarThreadState.roomPath.Count);
+//				Debug.Log ("Pathfinding finished");
 			}
 		}
-		if (mode == Mode.CHASING) {
-//			Debug.Log ("Chasing ..." + chasingRange + " " + shootingRange);
+		if (mode == Mode.HIDING) {
 			if (isOnPath) {
-				play.movement.Chase(myRigidbody, currentGridPosition, targetPosition, movementForce, ref isOnPath);
-//				Debug.Log ("chasing " + isOnPath + " "  + Time.frameCount);
+				play.movement.Chase(myRigidbody, currentGridPosition, targetPosition, movementForce*3f, ref isOnPath);
+//				Debug.Log ("chasing " + isOnPath);
 			} else {
-				if (distanceToShip > chasingRange) {
-					if (aStarThreadState.roomPath.Count > 0) {
-						LinkedListNode<AStarNode> n = aStarThreadState.roomPath.First;
-						targetPosition = n.Value.gridPos;
-						aStarThreadState.roomPath.RemoveFirst();
-						isOnPath = true;
-//						Debug.Log ("setting new target position " + targetPosition);
-					} else {
-						mode = Mode.ROAMING;
-//						Debug.Log ("back to ROAMING 01");
-					}
+				if (aStarThreadState.roomPath.Count > 0) {
+					LinkedListNode<AStarNode> n = aStarThreadState.roomPath.First;
+					targetPosition = n.Value.gridPos;
+					aStarThreadState.roomPath.RemoveFirst();
+					isOnPath = true;
+//					Debug.Log ("setting new target position " + targetPosition);
 				} else {
 					mode = Mode.ROAMING;
-//					Debug.Log ("back to ROAMING 02");
+					roamingStart = Time.fixedTime;
+//					Debug.Log ("Mode.ROAMING" );
 				}
-			}					
-		}
-		if (mode == Mode.ROAMING) {
-//			Debug.Log ("Roaming ...");
-			if (distanceToShip > shootingRange) {
-//				Debug.Log ("PATHFINDING");
-				mode = Mode.PATHFINDING;
-				play.movement.AStarPath(aStarThreadState, currentGridPosition, play.GetShipGridPosition());
-			} else {
-				play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			}
 		}
-		if (aggressiveness > Enemy.AGGRESSIVENESS_OFF) {
+		if (mode == Mode.ROAMING) {
+			if (isShipVisible != Vector3.zero && isShipVisible.magnitude <= shootingRange) {
+				aggressiveness = Enemy.AGGRESSIVENESS_ON;
+			}
+		}
+		
+		if (mode == Mode.ROAMING) {
+			if (Time.fixedTime > roamingStart + MAX_ROAMING_TIME && aggressiveness == Enemy.AGGRESSIVENESS_OFF) {
+				mode = Mode.COVERFINDING;
+//				Debug.Log ("Mode.COVERFINDING 2" );
+				if (coverPosition == GridPosition.ZERO) {
+					coverPosition = currentGridPosition;
+				}
+				play.movement.CoverFind(coverFindThreadState, coverPosition, play.GetShipGridPosition());
+			} else {
+				play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
+				play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceRoaming, ref currentAngleUp,
+					ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
+			}
+		} else if (mode == Mode.AIMING) {
+			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 			play.movement.LookAt(myRigidbody, play.ship.transform, Mathf.CeilToInt(isShipVisible.magnitude), lookAtToleranceAiming,
-				ref currentAngleUp, ref dotProductLookAt, Movement.LookAtMode.None);
+				ref currentAngleUp, ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
+			if (isShipVisible != Vector3.zero && dotProductLookAt > 0.95f && Time.fixedTime > reloadedStart + SECONDARY_AIMING_TIME) {
+				ShootSecondary();
+				isReloaded = false;
+			}
 		} else {
-			play.movement.LookAt(myRigidbody, play.ship.transform, lookAtRange, lookAtToleranceAiming, ref currentAngleUp,
+			play.movement.LookAt(myRigidbody, play.ship.transform, 0, lookAtToleranceAiming, ref currentAngleUp,
 				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		}
 		
+		clazz = "Rhino " + mode;
 	}
 
 }

@@ -204,23 +204,6 @@ public class EnemyDistributor {
 		}
 	}
 	
-	public void RemoveAll() {
-		if (enemies != null) {
-			System.Collections.Generic.Dictionary<int, Enemy>.Enumerator en = enemies.GetEnumerator();
-			while (en.MoveNext()) {
-				GameObject.Destroy(en.Current.Value);
-			}
-		}
-		enemies.Clear();
-/*		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Enemy.TAG)) {
-			GameObject.Destroy(gO);
-		}*/
-		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Spawn.TAG)) {
-			GameObject.Destroy(gO);
-		}
-		ResetStats();
-	}
-	
 	public void DispatchFixedUpdate() {
 		System.Collections.Generic.Dictionary<int, Enemy>.Enumerator en = enemies.GetEnumerator();
 		while (en.MoveNext()) {
@@ -248,7 +231,7 @@ public class EnemyDistributor {
 		return enemy;
 	}
 	
-	public Enemy CreateEnemy(int clazz) {
+	private Enemy CreateEnemy(int clazz) {
 		Enemy e;
 		if (clazz == Enemy.CLAZZ_A0) {
 			e = (Enemy)(GameObject.Instantiate(game.spiderPrefab) as GameObject).GetComponent<Spider>();
@@ -284,6 +267,10 @@ public class EnemyDistributor {
 			e = (Enemy)(GameObject.Instantiate(game.bullPrefab) as GameObject).GetComponent<Bull>();
 		}
 		return e;
+	}
+
+	public Enemy CreateEnemy(Spawn spawn, int clazz, int model) {
+		return CreateEnemy(spawn, clazz, model, model + CLAZZ_A_EQUIVALENT_MODEL[clazz]);
 	}
 	
 	public Spawn CreateSpawn(int enemyClazz, int enemyModel, int enemyEquivalentClazzAModel, GridPosition gridPos,
@@ -346,8 +333,28 @@ public class EnemyDistributor {
 		enemies.Remove(e.gameObject.GetInstanceID());
 	}
 
-	public Enemy CreateEnemy(Spawn spawn, int clazz, int model) {
-		return CreateEnemy(spawn, clazz, model, model + CLAZZ_A_EQUIVALENT_MODEL[clazz]);
+	public void RemoveAll() {
+		int i=-1;
+		if (enemies != null) {
+			i=0;
+			System.Collections.Generic.Dictionary<int, Enemy>.Enumerator en = enemies.GetEnumerator();
+			while (en.MoveNext()) {
+				i++;
+				GameObject.Destroy(en.Current.Value.gameObject);
+			}
+		}
+		Debug.Log ("Cleared enemies " + i);
+		enemies.Clear();
+		i=0;
+		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Enemy.TAG)) {
+			i++;
+			//GameObject.Destroy(gO);
+		}
+		Debug.Log ("Found enemies " + i);
+		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Spawn.TAG)) {
+			GameObject.Destroy(gO);
+		}
+		ResetStats();
 	}
 	
 	private int CalculateEnemyClazzVariety(int zoneID) {

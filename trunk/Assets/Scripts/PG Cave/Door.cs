@@ -46,15 +46,21 @@ public class Door : MonoBehaviour {
 					play.playGUI.DisplayNotification(play.game.state.GetDialog(57));
 				}
 			} else {
-				animation.Play(ANIM_OPEN_DOOR);
-				myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
-				doorCollider.enabled = false;
+				if (type == TYPE_EXIT && play.zoneID == 1 && play.ship.currentPrimaryWeapon == -1) {
+					play.playGUI.DisplayNotification(play.game.state.GetDialog(62));
+				} else {
+					animation.Play(ANIM_OPEN_DOOR);
+					myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
+					doorCollider.enabled = false;
+				}
 			}
 		}
 	}
 
 	void OnTriggerExit(Collider other) {
-		if (!isShut && other.tag == Ship.TAG) {
+		if (type == TYPE_EXIT && play.zoneID == 1 && play.ship.currentPrimaryWeapon == -1) {
+			// nothing
+		} else if (!isShut && other.tag == Ship.TAG) {
 			animation.Play(ANIM_CLOSE_DOOR);
 			myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
 			doorCollider.enabled = true;

@@ -104,7 +104,7 @@ public class Menu : MonoBehaviour {
 	}
 
 	private void ToZone18() {
-		game.state.level = 20;
+		game.state.level = 25;
 		game.SetGameMode(Game.Mode.Play);
 	}
 
@@ -130,7 +130,15 @@ public class Menu : MonoBehaviour {
 	public void ToOptionsMouseSteering(MyGUI.GUIState selectState) {
 		state.SetPreferenceMouseYAxisInverted(selectState == MyGUI.GUIState.On ? 1 : -1);
 	}
-	
+
+	public void ToOptionsMusicOn(MyGUI.GUIState selectState) {
+		state.SetPreferenceMusicOn(selectState == MyGUI.GUIState.On ? true : false);
+	}
+
+	public void ToOptionsSoundOn(MyGUI.GUIState selectState) {
+		state.SetPreferenceSoundOn(selectState == MyGUI.GUIState.On ? true : false);
+	}
+
 	public void ToOptions() {
 		gui.OpenDialog();
 		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
@@ -142,12 +150,22 @@ public class Menu : MonoBehaviour {
 		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
 		gui.AddLabel(game.state.GetDialog(12), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.2f, 
 			1f, 1f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_BACK_NINEPATCH, 0);
-		gui.AddLabel(game.state.GetDialog(43), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, 0f, 
+		gui.AddLabel(game.state.GetDialog(43), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, 0.125f, 
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		gui.AddLabel(game.state.GetDialog(63), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, 0f, 
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		gui.AddLabel(game.state.GetDialog(64), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Left, MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, -0.125f, 
 			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
 		gui.containers[container].AddZLevel();
 		CheckboxDelegate toOptionsMouseSteering = new CheckboxDelegate(ToOptionsMouseSteering);
 		MyGUI.GUIState selectState = state.GetPreferenceMouseYAxisInverted() == 1 ? MyGUI.GUIState.On : MyGUI.GUIState.Off;
-		gui.AddCheckbox(dialogBox, new Vector3(0.1f, 0.1f, 0.1f), toOptionsMouseSteering, selectState, MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_CHECKBOX_BACKGROUND, 0, Game.GUI_UV_CHECKBOX_CHECKMARK, 0);
+		gui.AddCheckbox(dialogBox, new Vector3(0.1f, 0.1f, 0.1f), toOptionsMouseSteering, selectState, MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, 0.125f, Game.GUI_UV_CHECKBOX_BACKGROUND, 0, Game.GUI_UV_CHECKBOX_CHECKMARK, 0);
+		CheckboxDelegate toOptionsMusicOn = new CheckboxDelegate(ToOptionsMusicOn);
+		selectState = state.GetPreferenceMusicOn() ? MyGUI.GUIState.On : MyGUI.GUIState.Off;
+		gui.AddCheckbox(dialogBox, new Vector3(0.1f, 0.1f, 0.1f), toOptionsMusicOn, selectState, MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_CHECKBOX_BACKGROUND, 0, Game.GUI_UV_CHECKBOX_CHECKMARK, 0);
+		CheckboxDelegate toOptionsSoundOn = new CheckboxDelegate(ToOptionsSoundOn);
+		selectState = state.GetPreferenceSoundOn() ? MyGUI.GUIState.On : MyGUI.GUIState.Off;
+		gui.AddCheckbox(dialogBox, new Vector3(0.1f, 0.1f, 0.1f), toOptionsSoundOn, selectState, MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, -0.125f, Game.GUI_UV_CHECKBOX_BACKGROUND, 0, Game.GUI_UV_CHECKBOX_CHECKMARK, 0);
 		
 		TouchDelegate toGame = new TouchDelegate(ToGame);
 		gui.AddLabelButtonF(0.25f, dialogContainer, new Vector3(0.04f,0.04f,1f), toGame, game.state.GetDialog(37), 1.0f, 1.0f, 3, 

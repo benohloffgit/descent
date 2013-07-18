@@ -302,7 +302,7 @@ public class Cave {
 			d.Reset();
 		}
 	}
-	
+
 	private IntTriple GetOppositeCell(Cell cell, IntTriple alignment) {
 		IntTriple result = cell.pos;
 		if (alignment == IntTriple.UP) {

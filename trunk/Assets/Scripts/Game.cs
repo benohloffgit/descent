@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class Game : MonoBehaviour {
 	public GameObject statePrefab;
@@ -275,6 +276,11 @@ public class Game : MonoBehaviour {
 	}
 	
 	public void SetGameMode(Mode mode) {
+		StartCoroutine(DelayedSetGameMode(mode));
+	}
+
+	IEnumerator DelayedSetGameMode(Mode mode) {
+		yield return null;
 //		gameInput.DeRegisterGUI();
 		state.gameMode = mode;
 		if (mode == Mode.Menu) {
@@ -291,7 +297,7 @@ public class Game : MonoBehaviour {
 			play.Activate();
 		}
 	}
-		
+	
 	public void NonGUIClickInDialog() {
 	}
 	
@@ -338,34 +344,40 @@ public class Game : MonoBehaviour {
 	
 	// From dedicated AudioSource / Ship
 	public void PlaySound(AudioSource audioSource, int soundType, int type) {
-		if (soundType == Weapon.PRIMARY) {
-			audioSource.PlayOneShot(audioClips[type]);
-		} else if (soundType == Weapon.SECONDARY) {
-			audioSource.PlayOneShot(audioClips[8]);
-		} else if (soundType == SOUND_TYPE_VARIOUS) {
-			audioSource.PlayOneShot(audioClips[type]);
+		if (state.isSoundOn) {
+			if (soundType == Weapon.PRIMARY) {
+				audioSource.PlayOneShot(audioClips[type]);
+			} else if (soundType == Weapon.SECONDARY) {
+				audioSource.PlayOneShot(audioClips[8]);
+			} else if (soundType == SOUND_TYPE_VARIOUS) {
+				audioSource.PlayOneShot(audioClips[type]);
+			}
 		}
 	}
 	
 	// From AudioSourcePool
 	public int PlaySound(int audioSourceID, Transform t, int soundType, int type) {
-		if (soundType == Weapon.PRIMARY) {
-			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
-		} else if (soundType == Weapon.SECONDARY) {
-			if (type < 4) {
-				audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[8]);
-			} else if (type == 4) {
-				audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[35]);
+		if (state.isSoundOn) {
+			if (soundType == Weapon.PRIMARY) {
+				audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
+			} else if (soundType == Weapon.SECONDARY) {
+				if (type < 4) {
+					audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[8]);
+				} else if (type == 4) {
+					audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[35]);
+				}
+			} else if (soundType == SOUND_TYPE_VARIOUS) {
+				audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
 			}
-		} else if (soundType == SOUND_TYPE_VARIOUS) {
-			audioSourceID = audioSourcePool.PlaySound(audioSourceID, t, audioClips[type]);
 		}
 		return audioSourceID;
 	}
 
 	// From AudioSourcePool at pos without parenting AudioSource, always SOUND_TYPE_VARIOUS
 	public void PlaySound(Vector3 pos, int type) {
-		audioSourcePool.PlaySound(pos, audioClips[type]);
+		if (state.isSoundOn) {
+			audioSourcePool.PlaySound(pos, audioClips[type]);
+		}
 	}
 	
 }

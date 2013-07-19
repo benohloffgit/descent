@@ -7,8 +7,6 @@ public class Weapon {
 	public static int PRIMARY = 0;
 	public static int SECONDARY = 1;
 	
-//	public const int TYPE_EMPTY = 0;
-	
 	public const int TYPE_GUN = 0;
 	public const int TYPE_LASER = 1;
 	public const int TYPE_TWIN_GUN = 2;
@@ -28,11 +26,6 @@ public class Weapon {
 //	public const int TYPE_MINE_INFRARED = 6;
 //	public const int TYPE_MINE_TIMED = 7;
 	public const int TYPE_LASER_BEAM = 8;
-
-/*	public static int MISSILE_START = 2;
-	public static int MISSILE_GUIDED_START = 4;
-	public static int MISSILE_CHARGED_START = 8; // charged from shield
-	public static int MISSILE_DETONATOR_START = 16; // right click to exploded while flying*/
 	
 	private static float TWIN_WEAPON_DAMAGE_MODIFIER = 0.6f;
 	
@@ -44,8 +37,8 @@ public class Weapon {
 	public static int[] PRIMARY_DAMAGE = new int[] { 22, 25, 28, 30, 33, 36, 40, 43, 0, 0, 0, 0, 0, 0, 0, 0 };
 	public static int[] SECONDARY_DAMAGE = new int[] { 65, 85, 100, 120, 90, 50, 0, 0, 30 };	
 	public static float[] PRIMARY_SPEED = new float[] { 200f, 300f, 200f, 400f, 300f, 350f, 400f, 350f};
-	public static float[] PRIMARY_ACCURACY = new float[] { 4.0f, 3.0f, 4.0f, 3.0f, 3.0f, 2.5f, 3.0f, 2.5f };
-	public static float[] PRIMARY_FREQUENCY = new float[] { 3.0f, 2.9f, 2.8f, 2.7f, 2.6f, 2.5f, 2.3f, 2.1f };
+	public static float[] PRIMARY_ACCURACY = new float[] { 5.0f, 4.5f, 4.0f, 3.75f, 3.5f, 3.25f, 3.0f, 2.75f };
+	public static float[] PRIMARY_FREQUENCY = new float[] { 4.0f, 3.75f, 3.5f, 3.25f, 3.0f, 2.75f, 2.5f, 2.25f };
 	public static float[] SECONDARY_SPEED = new float[] { 50f, 50f, 50f, 50f, 0f, 0f, 0f, 0f, 0f };
 	public static float[] SECONDARY_ACCURACY = new float[] { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
 	public static float[] SECONDARY_FREQUENCY = new float[] { 6.0f, 5.5f, 5f, 5f, 8f, 0f, 0f, 0f, 0f};
@@ -60,10 +53,8 @@ public class Weapon {
 	public float lastShotTime;
 	public Transform weaponTransform;
 	public Transform[] subWeaponTransforms;
-//	public Vector3[] bulletPositions;
 	
 	public int type;
-//	public int model;
 	public int mountAs;
 	private int mountedTo;
 	protected float accuracy;
@@ -105,7 +96,6 @@ public class Weapon {
 		game = play.game;
 		type = type_;
 		isBoss = isBoss_;
-//		model = model_;
 		ammunition = ammunition_;
 		positions = positions_;
 		rotations = rotations_;

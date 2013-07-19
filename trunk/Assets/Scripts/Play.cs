@@ -222,7 +222,7 @@ public class Play : MonoBehaviour {
 	public void Activate() {
 		hasDied = false;
 		state.SetPreferenceSokobanSolved(false);
-		zoneID = state.level;
+		zoneID = state.GetPreferenceLevel();
 		playGUI.Activate();
 		ship.CalculateHullClazz();
 		ship.AddSpecials();
@@ -262,9 +262,7 @@ public class Play : MonoBehaviour {
 			isKeyCollected = new bool[] {false, false};
 			collecteablesDistributor.Reset();
 			collecteablesDistributor.DropKeys();
-			if (zoneID > 0) {
-				enemyDistributor.Distribute();
-			}
+			enemyDistributor.Distribute();
 			sokoban.RenderLevel(zoneID);
 			if (!state.GetPreferenceSokobanSolved()) {
 				collecteablesDistributor.DropPowerUps();
@@ -294,7 +292,7 @@ public class Play : MonoBehaviour {
 	
 	private void NextZone() {
 		zoneID++;
-		state.SetLevel(zoneID);
+		state.SetPreferenceLevel(zoneID);
 	}
 	
 	public void RepeatZone() {
@@ -606,6 +604,7 @@ public class Play : MonoBehaviour {
 
 	public void CollectPowerUp(int type, int id) {
 		SetPaused(true);
+		game.state.SetPowerUp(type, id);
 		if (type == Game.POWERUP_PRIMARY_WEAPON) {
 			ship.AddPrimaryWeapon(id);
 			playGUI.ToPowerUpFound(state.GetDialog(17), state.GetDialog(21+id), PlayGUI.PRIMARY_WEAPONS[id]); 

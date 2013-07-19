@@ -94,32 +94,56 @@ public class Menu : MonoBehaviour {
 	}*/
 	
 	private void ToZone01() {
-		game.state.level = 1;
+		game.state.SetPreferenceLevel(1);
 		game.SetGameMode(Game.Mode.Play);
 	}
 
 	private void ToZone09() {
-		game.state.level = 9;
+		game.state.SetPreferenceLevel(9);
 		game.SetGameMode(Game.Mode.Play);
 	}
 
 	private void ToZone18() {
-		game.state.level = 25;
+		game.state.SetPreferenceLevel(30);
 		game.SetGameMode(Game.Mode.Play);
 	}
 
 	private void ToZone24() {
-		game.state.level = 24;
+		game.state.SetPreferenceLevel(24);
 		game.SetGameMode(Game.Mode.Play);
 	}
 	
 	public void ToNewGame() {
-		game.state.level = 0;
+		gui.OpenDialog();
+		dialogContainer = gui.AddContainer(container, gui.GetSize(), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[container].transform.position.z-10f), true);
+//		TouchDelegate closeDialog = new TouchDelegate(CloseDialog);
+		int dim = gui.AddDim(dialogContainer, null, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_COLOR_BLACK, 0); 
+		gui.SetGameInputZLevel(gui.dims[dim].transform.position.z);
+
+		int dialogBox = gui.AddContainer(dialogContainer, new Vector3(gui.GetSize().x * 0.85f, gui.GetSize().y * 0.75f, 1.0f), new Vector3(gui.GetCenter().x, gui.GetCenter().y, gui.containers[dialogContainer].GetCenter().z-2f), true);
+		gui.AddLabel(game.state.GetDialog(0), dialogBox, new Vector3(0.05f,0.05f,1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Top, -0.2f, 
+			1f, 1f, 3, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_BACK_NINEPATCH, 0);
+		gui.AddLabel(game.state.GetDialog(29), dialogBox, new Vector3(0.04f,0.04f,1f), MyGUI.GUIAlignment.Center, MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.1f, 
+			0f, 1f, 3, MyGUI.GUIBackground.Quad, Game.GUI_UV_NULL, 0);
+		
+		TouchDelegate toGame = new TouchDelegate(ToGame);
+		gui.AddLabelButtonF(0.25f, dialogContainer, new Vector3(0.04f,0.04f,1f), toGame, game.state.GetDialog(30), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, -0.2f, MyGUI.GUIAlignment.Center, -0.2f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
+
+		TouchDelegate toNewGame = new TouchDelegate(ToNewGameOK);
+		gui.AddLabelButtonF(0.25f, dialogContainer, new Vector3(0.04f,0.04f,1f), toNewGame, game.state.GetDialog(6), 1.0f, 1.0f, 3, 
+			MyGUI.GUIAlignment.Center, 0.2f, MyGUI.GUIAlignment.Center, -0.2f, Game.GUI_UV_BUTTON_BACK_4T1, 0);
+	}
+	
+	public void ToNewGameOK() {
+		CloseDialog();
+		game.state.SetPreferenceLevel(0);
+		game.state.ResetPowerUpStates();
 		game.SetGameMode(Game.Mode.Play);
 	}
 
 	public void To1LevelDemo() {
-		game.state.level = 9;
+		game.state.SetPreferenceLevel(9);
 		game.SetGameMode(Game.Mode.Play);
 	}
 

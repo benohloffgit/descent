@@ -96,7 +96,9 @@ public class PlayGUI {
 	private static Vector3 ENEMY_HUD_OFFSET_LOCAL = new Vector3(-3.0f, 3.0f, 0f);
 	private static Vector3 ENEMY_HEALTH_BAR_OFFSET_LOCAL = new Vector3(3.0f, -3.0f, 0f);
 	private static Vector3 ENEMY_LOCK_OFFSET_LOCAL = new Vector3(3.0f, 3.0f, 0f);
+	
 	private static float TICK_DELTA = 0.05f;
+	
 	private static Vector4[] DIGITS_WHITE = new Vector4[] {Game.GUI_UV_NUMBER_0, Game.GUI_UV_NUMBER_1, Game.GUI_UV_NUMBER_2, Game.GUI_UV_NUMBER_3, Game.GUI_UV_NUMBER_4,
 												Game.GUI_UV_NUMBER_5, Game.GUI_UV_NUMBER_6, Game.GUI_UV_NUMBER_7, Game.GUI_UV_NUMBER_8, Game.GUI_UV_NUMBER_9};
 	private static Vector4[] DIGITS_RED = new Vector4[] {Game.GUI_UV_NUMBER_0+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_1+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_2+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_3+Game.GUI_UV_NUMBERS_RED_OFFSET, Game.GUI_UV_NUMBER_4+Game.GUI_UV_NUMBERS_RED_OFFSET,
@@ -136,6 +138,10 @@ public class PlayGUI {
 		imageId = gui.AddLabel("", topContainer, new Vector3(0.1f,0.1f,0.1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0.2f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
 		notifyLabel = gui.labelsCC[imageId];
 		
+		// help, pause label
+		gui.AddLabel(play.game.state.GetDialog(65), topContainer, new Vector3(0.03f,0.03f,0.1f), MyGUI.GUIAlignment.Center, MyGUI.GUIAlignment.Right, -0.15f, MyGUI.GUIAlignment.Bottom, 0.05f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		gui.AddLabel(play.game.state.GetDialog(66), topContainer, new Vector3(0.03f,0.03f,0.1f), MyGUI.GUIAlignment.Center, MyGUI.GUIAlignment.Left, -0.15f, MyGUI.GUIAlignment.Bottom, 0.05f, 0f, 0.3f, 3, MyGUI.GUIBackground.None, Game.GUI_UV_NULL,0);
+		
 		// Cross hair
 		imageId = gui.AddImage(topContainer, new Vector3(0.075f, 0.075f, 1f), MyGUI.GUIAlignment.Center, 0f, MyGUI.GUIAlignment.Center, 0f, Game.GUI_UV_CROSS_HAIR, 0);
 		shipCroosHair = gui.images[imageId];
@@ -152,23 +158,23 @@ public class PlayGUI {
 		imageId = gui.AddImage(powerUpContainer, new Vector3(0.12f, 0.12f, 1.0f), MyGUI.GUIAlignment.Right, 2.2f, MyGUI.GUIAlignment.Top, -0.13f, Game.GUI_UV_LIGHTS, 0);
 		lightsOn = gui.images[imageId];
 		lightsScale = lightsOn.transform.localScale;
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST_OFF, 0);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 2.8f, Game.GUI_UV_SHIPBOOST_OFF, 0);
 		shipBoostOff = gui.images[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_SHIPBOOST, 0);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 2.8f, Game.GUI_UV_SHIPBOOST, 0);
 		shipBoostOn = gui.images[imageId];
 		boosterScale = shipBoostOn.transform.localScale;
-		imageId = gui.AddProgressBar(powerUpContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 1.4f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_PROGRESS_FORE, 0);
+		imageId = gui.AddProgressBar(powerUpContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 4.2f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_PROGRESS_FORE, 0);
 		boosterProgressBar = gui.progressBars[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_OFF, 0);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_OFF, 0);
 		shipCloakOff = gui.images[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_ON, 0);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_CLOAK_ON, 0);
 		shipCloakOn = gui.images[imageId];
 		cloakScale = shipCloakOn.transform.localScale;
-		imageId = gui.AddProgressBar(powerUpContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Right, 6.6f, MyGUI.GUIAlignment.Top, 1.4f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_PROGRESS_FORE, 0);
+		imageId = gui.AddProgressBar(powerUpContainer, new Vector3(0.08f, 0.01f, 1f), MyGUI.GUIAlignment.Right, 4.4f, MyGUI.GUIAlignment.Top, 1.4f, MyGUI.GUIBackground.NinePatch, Game.GUI_UV_PROGRESS_BACK, 0, MyGUI.GUIBackground.Quad, Game.GUI_UV_PROGRESS_FORE, 0);
 		cloakProgressBar = gui.progressBars[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 8.8f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_INVINCIBLE_OFF, 0);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 5.6f, Game.GUI_UV_INVINCIBLE_OFF, 0);
 		shipInvincibleOff = gui.images[imageId];
-		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 8.8f, MyGUI.GUIAlignment.Top, 0f, Game.GUI_UV_INVINCIBLE_ON, 0);
+		imageId = gui.AddImage(powerUpContainer, MyGUI.GUIAlignment.Right, 0f, MyGUI.GUIAlignment.Top, 5.6f, Game.GUI_UV_INVINCIBLE_ON, 0);
 		shipInvincibleOn = gui.images[imageId];
 		invincibleScale = shipInvincibleOn.transform.localScale;
 		
@@ -266,12 +272,6 @@ public class PlayGUI {
 	
 	public void Initialize() {
 		ship = play.ship;
-		displayedHealth = ship.health;
-		displayedShield = ship.shield;
-		toBeDisplayedHealth = displayedHealth;
-		toBeDisplayedShield = displayedShield;
-		DisplayHealth(new int[] { MyGUI.GetDigitOfNumber(0, ship.health), MyGUI.GetDigitOfNumber(1, ship.health), MyGUI.GetDigitOfNumber(2, ship.health)});
-		DisplayShield(new int[] { MyGUI.GetDigitOfNumber(0, ship.shield), MyGUI.GetDigitOfNumber(1, ship.shield), MyGUI.GetDigitOfNumber(2, ship.shield)});
 //		shipTransform = ship.transform;
 		shipCamera = ship.shipCamera;
 	}
@@ -315,6 +315,14 @@ public class PlayGUI {
 			secondaryWeapon.SetUVMapping(Game.GUI_UV_TRANS);
 		}
 		
+		displayedHealth = ship.health;
+		displayedShield = ship.shield;
+		toBeDisplayedHealth = displayedHealth;
+		toBeDisplayedShield = displayedShield;
+		SetHealthCount(toBeDisplayedHealth);
+		SetShieldCount(toBeDisplayedShield);
+		DisplayHealth();//new int[] { MyGUI.GetDigitOfNumber(0, ship.health), MyGUI.GetDigitOfNumber(1, ship.health), MyGUI.GetDigitOfNumber(2, ship.health)});
+		DisplayShield();//new int[] { MyGUI.GetDigitOfNumber(0, ship.shield), MyGUI.GetDigitOfNumber(1, ship.shield), MyGUI.GetDigitOfNumber(2, ship.shield)});
 		DisplayZoneID();
 		SwitchHeadlight();
 		SwitchExitHelper();

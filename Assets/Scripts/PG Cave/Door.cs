@@ -46,7 +46,9 @@ public class Door : MonoBehaviour {
 					play.playGUI.DisplayNotification(play.game.state.GetDialog(57));
 				}
 			} else {
-				if (type == TYPE_EXIT && play.zoneID == 1 && play.ship.currentPrimaryWeapon == -1) {
+				if (type == TYPE_EXIT && play.zoneID == 0 && play.ship.hullCLazz == Ship.NO_HULL) {
+					play.playGUI.DisplayNotification(play.game.state.GetDialog(67));
+				} else if (type == TYPE_EXIT && play.zoneID == 1 && play.ship.currentPrimaryWeapon == -1) {
 					play.playGUI.DisplayNotification(play.game.state.GetDialog(62));
 				} else {
 					animation.Play(ANIM_OPEN_DOOR);
@@ -58,7 +60,9 @@ public class Door : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider other) {
-		if (type == TYPE_EXIT && play.zoneID == 1 && play.ship.currentPrimaryWeapon == -1) {
+		if (type == TYPE_EXIT && play.zoneID == 0 && play.ship.hullCLazz == Ship.NO_HULL) {
+			// nothing
+		} else if (type == TYPE_EXIT && play.zoneID == 1 && play.ship.currentPrimaryWeapon == -1) {
 			// nothing
 		} else if (!isShut && other.tag == Ship.TAG) {
 			animation.Play(ANIM_CLOSE_DOOR);

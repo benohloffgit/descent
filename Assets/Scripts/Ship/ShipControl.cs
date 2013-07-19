@@ -116,7 +116,7 @@ public class ShipControl {
 				if (!Input.GetKey(KeyCode.LeftAlt) && Input.GetAxis("Mouse ScrollWheel") != 0) {
 					ship.CyclePrimary(Mathf.FloorToInt(Mathf.Sign(Input.GetAxis("Mouse ScrollWheel"))));
 				}
-				if (Input.GetKeyDown(KeyCode.T)) {
+				if (Input.GetKeyDown(KeyCode.T) && play.isShipInPlayableArea) {
 					ship.LaunchExitHelper();
 				}
 				if (Input.GetKeyDown(KeyCode.Alpha1)) {

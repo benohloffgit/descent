@@ -208,7 +208,7 @@ public class CollecteablesDistributor {
 	public void RemoveAll() {
 		System.Collections.Generic.Dictionary<int, Collecteable>.Enumerator en = collecteables.GetEnumerator();
 		while (en.MoveNext()) {
-			GameObject.Destroy(en.Current.Value);
+			GameObject.Destroy(en.Current.Value.gameObject);
 		}
 		collecteables.Clear();
 	}

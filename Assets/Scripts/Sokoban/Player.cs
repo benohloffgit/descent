@@ -17,7 +17,7 @@ public class Player {
 		board = board_;
 		playerTransform = (GameObject.Instantiate(board.play.game.mesh3DPrefab) as GameObject).transform;
 		playerTransform.name = "SokobanPlayer";
-		playerTransform.renderer.material = board.play.game.sokobanMaterial;
+		playerTransform.renderer.material = board.play.game.gui.textureAtlas[1];
 		playerTransform.gameObject.layer = Game.LAYER_SOKOBAN;
 		playerTransform.position = new Vector3(0,0,-5f);
 //		pointingTo = IntTriple.RIGHT;
@@ -42,6 +42,12 @@ public class Player {
 	
 	public void PointTo(IntDouble to) {
 		IntDouble dir = to-pos;
-		playerTransform.right = new Vector3(dir.x, dir.y, 0);
+		if (dir.x != 0) {
+			playerTransform.rotation = Quaternion.Euler(0, 0, (dir.x-1) * -90f);
+		} else {
+			playerTransform.rotation = Quaternion.Euler(0, 0, (dir.y-2) * -90f);
+		}
+//		playerTransform.right = new Vector3(dir.x, dir.y, 0);
+//		playerTransform.forward = Vector3.forward;
 	}
 }

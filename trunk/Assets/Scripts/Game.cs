@@ -67,7 +67,6 @@ public class Game : MonoBehaviour {
 
 	public Texture2D[] caveTextures;
 	public Texture2D[] keyTextures;
-	public Material sokobanMaterial;
 	public Material[] shotTrailMaterials;
 	public Material[] explosionMaterials;
 	public Material[] powerUpParticleMaterials;

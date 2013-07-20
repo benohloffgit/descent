@@ -19,7 +19,7 @@ public class Bulb {
 		bulbTransform = (GameObject.Instantiate(board.play.game.mesh3DPrefab) as GameObject).transform;
 		bulbTransform.name = "SokobanBulb";
 		mesh = bulbTransform.GetComponent<MeshFilter>().mesh;
-		bulbTransform.renderer.material = board.play.game.sokobanMaterial;
+		bulbTransform.renderer.material = board.play.game.gui.textureAtlas[1];
 		bulbTransform.gameObject.layer = Game.LAYER_SOKOBAN;
 		bulbTransform.position = new Vector3(0,0,-5f);
 		SetTo(pos);

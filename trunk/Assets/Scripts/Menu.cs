@@ -139,6 +139,7 @@ public class Menu : MonoBehaviour {
 		CloseDialog();
 		game.state.SetPreferenceLevel(0);
 		game.state.ResetPowerUpStates();
+		game.state.SetPreferenceCaveSeed(UnityEngine.Random.Range(1000000,9999999));
 		game.SetGameMode(Game.Mode.Play);
 	}
 

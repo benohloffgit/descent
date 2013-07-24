@@ -23,7 +23,7 @@ public class Play : MonoBehaviour {
 	public Sokoban sokoban;
 	private string keyCommand;
 	public bool isInKeyboardMode;
-	private int caveSeed;
+//	private int caveSeed;
 	private int botSeed;
 	private Transform lightsHolder;
 	public bool[] isKeyCollected;
@@ -96,7 +96,6 @@ public class Play : MonoBehaviour {
 		
 		botSeed = UnityEngine.Random.Range(0,9999999);
 //		caveSeed = 1818612;//2122215; 9164008 4995052;//
-		caveSeed = UnityEngine.Random.Range(1000000,9999999);
 		
 //		zoneID = state.level;
 		isInKeyboardMode = false;
@@ -214,7 +213,7 @@ public class Play : MonoBehaviour {
 			}
 			if (Time.fixedTime > nextAtmoSoundTime && !state.IsMusicPlaying()) {
 				nextAtmoSoundTime = Time.fixedTime + UnityEngine.Random.Range(ATMO_SOUND_INTERVAL_MIN, ATMO_SOUND_INTERVAL_MAX);
-				state.PlayMusic(UnityEngine.Random.Range (49,55));
+				state.PlayMusic(UnityEngine.Random.Range (49,64));
 			}
 		}
 	}
@@ -241,7 +240,7 @@ public class Play : MonoBehaviour {
 		shipHitRatio = 0;
 		enemyHitRatio = 0;
 		isShipInPlayableArea = false;
-		Debug.Log (" ------------------------------- Cave Seed: " + caveSeed);
+		Debug.Log (" ------------------------------- Cave Seed: " + state.GetPreferenceCaveSeed());
 		if (hasDied) {
 			cave.ResetDoors();
 			playGUI.Reset();
@@ -256,7 +255,7 @@ public class Play : MonoBehaviour {
 			playGUI.ToHasDied();
 		} else {
 			trianglesUsedForWallPlacement = new List<int>();
-			UnityEngine.Random.seed = caveSeed;
+			UnityEngine.Random.seed = state.GetPreferenceCaveSeed();
 			cave.AddZone(zoneID);
 			UnityEngine.Random.seed = botSeed;
 			isKeyCollected = new bool[] {false, false};
@@ -282,7 +281,7 @@ public class Play : MonoBehaviour {
 	public void ZoneCompleted() {
 		hasDied = false;
 		state.SetPreferenceSokobanSolved(false);
-		EndZone();
+		EndZone(false);
 		NextZone();
 		StartCoroutine(DelayedStartZone());
 
@@ -297,12 +296,12 @@ public class Play : MonoBehaviour {
 	
 	public void RepeatZone() {
 		hasDied = true;
-		EndZone();
+		EndZone(false);
 		ship.SetHealthAndShield();
 		StartCoroutine(DelayedStartZone());
 	}
 	
-	private void EndZone() {
+	private void EndZone(bool isAborted) {
 		if (!hasDied) {
 			DestroyAllBreadcrumbs();
 			miniMap.DestroyAllBreadcrumbs();
@@ -310,8 +309,10 @@ public class Play : MonoBehaviour {
 			enemyDistributor.RemoveAll();
 			cave.RemoveZone();
 			botSeed = UnityEngine.Random.Range(0,9999999);
-			UnityEngine.Random.seed = caveSeed;
-			caveSeed = UnityEngine.Random.Range(1000000,9999999);
+			//UnityEngine.Random.seed = state.GetPreferenceCaveSeed();
+			if (!isAborted) {
+				state.SetPreferenceCaveSeed(UnityEngine.Random.Range(1000000,9999999));
+			}
 		}
 		miniMap.SwitchOff();
 		ship.Deactivate();
@@ -329,7 +330,12 @@ public class Play : MonoBehaviour {
 //		Debug.Log ("DelayedStartZone end");
 		StartZone();
 	}
-		
+
+	public void BackToMenu() {
+		EndZone(true);
+		game.SetGameMode(Game.Mode.Menu);
+	}
+	
 	void onDisable() {
 		CancelInvoke();
 //		Destroy(ship.gameObject);
@@ -683,11 +689,6 @@ public class Play : MonoBehaviour {
 		//Time.fixedDeltaTime = 0.0166666f;
 	}*/
 
-	public void BackToMenu() {
-		EndZone();
-		game.SetGameMode(Game.Mode.Menu);
-	}
-	
 	public void SwitchMode() {
 		if (mode == Mode.Normal) {
 			SetPaused(true);

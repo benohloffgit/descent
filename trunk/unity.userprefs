@@ -1,20 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Play.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\AndruidsShaders\Room\Dark.shader">
     <Files>
-      <File FileName="Assets\Scripts\Enemies\EnemyDistributor.cs" Line="61" Column="3" />
-      <File FileName="Assets\Scripts\Enemies\Enemy.cs" Line="196" Column="23" />
-      <File FileName="Assets\Scripts\Menu.cs" Line="152" Column="19" />
-      <File FileName="Assets\Scripts\PlayGUI.cs" Line="795" Column="18" />
-      <File FileName="Assets\Scripts\Ship\Ship.cs" Line="78" Column="8" />
-      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="305" Column="1" />
-      <File FileName="Assets\Scripts\Game.cs" Line="296" Column="17" />
-      <File FileName="Assets\Scripts\Play.cs" Line="299" Column="16" />
-      <File FileName="Assets\Scripts\State.cs" Line="178" Column="62" />
-      <File FileName="Assets\Scripts\GUI\MyGUI.cs" Line="270" Column="104" />
-      <File FileName="Assets\Scripts\PG Cave\Door.cs" Line="63" Column="83" />
-      <File FileName="Assets\Scripts\Sokoban\Sokoban.cs" Line="36" Column="74" />
-      <File FileName="Assets\Scripts\Sokoban\Player.cs" Line="50" Column="50" />
+      <File FileName="Assets\AndruidsShaders\TriplanarNew.shader" Line="17" Column="12" />
+      <File FileName="Assets\Scripts\Play.cs" Line="272" Column="4" />
+      <File FileName="Assets\AndruidsShaders\Room\MovingSpotlights.shader" Line="67" Column="1" />
+      <File FileName="Assets\AndruidsShaders\Room\Dark.shader" Line="44" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

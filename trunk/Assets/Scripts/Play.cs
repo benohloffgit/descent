@@ -269,7 +269,7 @@ public class Play : MonoBehaviour {
 			playGUI.Reset();
 			storyChapter = (Resources.Load("Story/EN/" + zoneID, typeof(TextAsset)) as TextAsset).text;
 			playGUI.ToStory();
-			ConfigureLighting();
+			//ConfigureLighting();
 			ship.Reset();
 			miniMap.Reset();
 			SetPaused(true);

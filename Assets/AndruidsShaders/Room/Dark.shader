@@ -17,7 +17,9 @@ Shader "Andruids/Room/Dark" {
 		_TexBase ("Texture (Base)", 2D) = "white" {}
 		_TexCeil ("Texture (Ceiling)", 2D) = "white" {}
 		_TexWall ("Texture (Wall)", 2D) = "white" {}
+		_LightMap ("Lightmap (RGB)", 2D) = "grey" {}
 		_Darkness ("_Darkness", Range(0,1) ) = 0.5
+		_LightMapScale ("_LightMapScale", Range(0,50) ) = 20.0
 	}
 	
 	Category {
@@ -27,12 +29,14 @@ Shader "Andruids/Room/Dark" {
 		CGPROGRAM
 		#pragma surface surf MyLambert noforwardadd vertex:vert 
 		// noambient novertexlights 
-		#pragma target 2.0
+		#pragma target 3.0
 		#pragma exclude_renderers flash
 		sampler2D _TexBase;
 		sampler2D _TexCeil;
 		sampler2D _TexWall;
+		sampler2D _LightMap;
 		fixed _Darkness;
+		fixed _LightMapScale;
 		
 		struct Input {
 //			half4 pos : SV_POSITION;
@@ -42,6 +46,7 @@ Shader "Andruids/Room/Dark" {
 			fixed3 localNormal;
 //			fixed3 worldPos;
 //			fixed3 worldNormal;
+//			fixed4 screenPos;
 		};
 		
 		void vert (inout appdata_full v, out Input i) {
@@ -71,18 +76,22 @@ Shader "Andruids/Room/Dark" {
 
 			o.Albedo = (color0_ * projnormal.z + color1_ * projnormal.y + color2_ * projnormal.x) * _Darkness;// * (i.localNormal);
 //			o.Normal = projnormal; // leads to "Shader wants tangents" complaint
-			
-			//o.Albedo *= tex2D(_LightMap, i.localPos.xy ).rgb * 2;
-			//o.Albedo *= tex2D(_LightMap, (i.localPos.xy/10.0)*_SinTime ).rgb;
 
+			color0_ = tex2D(_LightMap, i.localPos.xy/_LightMapScale); 
+			color1_ = tex2D(_LightMap, i.localPos.xz/_LightMapScale);
+			color2_ = tex2D(_LightMap, i.localPos.yz/_LightMapScale);
+
+			o.Albedo *= (color0_ * projnormal.z + color1_ * projnormal.y + color2_ * projnormal.x).rgb * 8;
+			//o.Albedo *= tex2D(_LightMap, i.screenPos.xy/5.0).rgb * 8;
 		}
 		
 		half4 LightingMyLambert (SurfaceOutput o, fixed3 lightDir, fixed atten) {
-          fixed NdotL = dot(o.Normal, lightDir);
+          //fixed NdotL = dot(o.Normal, lightDir);
           fixed4 c;
-          //c.rgb = o.Albedo; no light
+          c.rgb = o.Albedo; //no light
           //c.rgb = o.Albedo * _LightColor0.rgb; no light direction
-          c.rgb = o.Albedo * _LightColor0.rgb * (NdotL * atten * 2);
+          
+          //c.rgb = o.Albedo * _LightColor0.rgb * (NdotL * atten * 2);
           
           //c.rgb = o.Albedo;
           c.a = o.Alpha;

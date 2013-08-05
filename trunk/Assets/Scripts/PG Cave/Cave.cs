@@ -589,6 +589,11 @@ public class Cave {
 				gO.GetComponent<Geysir>().Initialize(play);
 				PutDecorationOnWall(r, gO);
 			}
+			for (int i=0; i<UnityEngine.Random.Range(20,40); i++) {
+				GameObject gO = UnityEngine.GameObject.Instantiate(game.tentaclePrefab, Vector3.zero, Quaternion.identity) as UnityEngine.GameObject;
+				PutDecorationOnWall(r, gO);
+				//gO.transform.parent = decorationParent.transform;
+			}
 		}
 		MeshFilter[] meshFilters = decorationParent.GetComponentsInChildren<MeshFilter>();
 		CombineInstance[] combine = new CombineInstance[meshFilters.Length];

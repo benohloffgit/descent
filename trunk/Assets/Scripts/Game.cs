@@ -24,6 +24,7 @@ public class Game : MonoBehaviour {
 	public GameObject flowerPrefab;
 	public GameObject geysirPrefab;
 	public GameObject geysirParticleSystemPrefab;
+	public GameObject tentaclePrefab;
 	
 	public GameObject testCubePrefab;
 	public GameObject shipPrefab;

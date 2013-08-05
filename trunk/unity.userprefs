@@ -2,10 +2,11 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\AndruidsShaders\Room\Dark.shader">
     <Files>
-      <File FileName="Assets\AndruidsShaders\TriplanarNew.shader" Line="17" Column="12" />
+      <File FileName="Assets\AndruidsShaders\Room\Dark.shader" Line="72" Column="4" />
+      <File FileName="Assets\AndruidsShaders\Room\Unlit Vertex Movement.shader" Line="54" Column="4" />
       <File FileName="Assets\Scripts\Play.cs" Line="272" Column="4" />
-      <File FileName="Assets\AndruidsShaders\Room\MovingSpotlights.shader" Line="67" Column="1" />
-      <File FileName="Assets\AndruidsShaders\Room\Dark.shader" Line="44" Column="17" />
+      <File FileName="Assets\Scripts\PG Cave\Cave.cs" Line="595" Column="7" />
+      <File FileName="Assets\Scripts\Game.cs" Line="27" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

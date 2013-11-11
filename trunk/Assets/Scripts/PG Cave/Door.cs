@@ -52,7 +52,8 @@ public class Door : MonoBehaviour {
 					play.playGUI.DisplayNotification(play.game.state.GetDialog(62));
 				} else {
 					animation.Play(ANIM_OPEN_DOOR);
-					myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
+					//myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
+					play.game.PlaySound(transform.position, 9);
 					doorCollider.enabled = false;
 				}
 			}
@@ -66,7 +67,8 @@ public class Door : MonoBehaviour {
 			// nothing
 		} else if (!isShut && other.tag == Ship.TAG) {
 			animation.Play(ANIM_CLOSE_DOOR);
-			myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
+//			myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 9);
+			play.game.PlaySound(transform.position, 9);
 			doorCollider.enabled = true;
 			if (type == TYPE_ENTRY && play.isShipInPlayableArea) {
 				isShut = true;

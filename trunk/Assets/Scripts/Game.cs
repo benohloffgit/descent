@@ -142,6 +142,8 @@ public class Game : MonoBehaviour {
 	public static int POWERUP_PARTICLE_MATERIAL_BOOST = 1;
 	public static int POWERUP_PARTICLE_MATERIAL_INVINCIBLE = 2;
 	
+	public static string TENTACLE_TAG = "Tentacle";
+	
 	public static Vector4 GUI_UV_NULL = new Vector4(0.0f,0.0f,0.0f,0.0f);
 	public static Vector4 GUI_UV_FULL = new Vector4(0.0f,0.0f,1.0f,1.0f);
 	public static Vector4 GUI_UV_COLOR_BLACK = new Vector4(0.0f,0.0f,0.0625f,0.0625f);

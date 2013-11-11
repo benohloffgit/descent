@@ -99,7 +99,7 @@ public class Menu : MonoBehaviour {
 	}
 
 	private void ToZone09() {
-		game.state.SetPreferenceLevel(9);
+		game.state.SetPreferenceLevel(12);
 		game.SetGameMode(Game.Mode.Play);
 	}
 

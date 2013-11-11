@@ -351,7 +351,7 @@ public class Sokoban {
 		levelDims[11] = new IntDouble(9,8);
 		levels[11] = 
 "#####-" +
-"#   ##" +
+"#   ##-" +
 "# $  #-" +
 "## $ ####" +
 " ###@.  #" +

@@ -628,6 +628,9 @@ public class Cave {
 		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Geysir.TAG)) {
 			GameObject.Destroy(gO);
 		}
+		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Game.TENTACLE_TAG)) {
+			GameObject.Destroy(gO);
+		}
 	}
 	
 	public void OpenExitDoor() {

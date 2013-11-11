@@ -453,6 +453,15 @@ public class Ship : MonoBehaviour {
 	
 	public void AddSpecial(int id) {
 		hasSpecial[id] = true;
+		if (id == SPECIAL_LIGHTS) {
+			play.playGUI.SwitchHeadlight();
+		} else if (id == SPECIAL_BOOST) {
+			play.playGUI.SwitchShipBoost();
+		} else if (id == SPECIAL_CLOAK) {
+			play.playGUI.SwitchShipCloak();
+		} else if (id == SPECIAL_INVINCIBLE) {
+			play.playGUI.SwitchShipInvincible();
+		}
 	}
 	
 	public void CalculateHullClazz() {

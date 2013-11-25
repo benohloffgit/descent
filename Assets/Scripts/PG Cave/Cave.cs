@@ -87,8 +87,8 @@ public class Cave {
 		//Debug.Log ("Texture Combinations Hell " + (count));	
 	}
 	
-	public void AddZone(int id) {
-		zone = new Zone(Game.DIMENSION_ZONE, this, id);
+	public void AddZone(int id, int lightZone) {
+		zone = new Zone(Game.DIMENSION_ZONE, this, id, lightZone);
 		DigRooms();
 		DistributeDecoration();
 	}
@@ -114,7 +114,20 @@ public class Cave {
 		}
 		secretCaveRoomID = roomsAvailableForSecretCave[UnityEngine.Random.Range(0, roomsAvailableForSecretCave.Count)];
 //		Debug.Log ("secretCaveRoomID "+ secretCaveRoomID);
-		
+
+		IntTriple textureSet;
+		if (play.zoneID < 8) {	
+			textureSet = textureCombinationsNormal[UnityEngine.Random.Range(0,textureCombinationsNormal.Length)];
+		} else if (play.zoneID < 24) {
+			textureSet = textureCombinationsNormal[UnityEngine.Random.Range(0,textureCombinationsNormal.Length)];
+			// replace one with hell textures
+			textureSet.SetFactor(UnityEngine.Random.Range(0,3), TEXTURES_HELL[UnityEngine.Random.Range(0,TEXTURES_HELL.Length)]);
+		} else {
+			textureSet = textureCombinationsHell[UnityEngine.Random.Range(0,textureCombinationsHell.Length)];
+			// replace one with normal textures
+			textureSet.SetFactor(UnityEngine.Random.Range(0,3), TEXTURES_NORMAL[UnityEngine.Random.Range(0,TEXTURES_NORMAL.Length)]);
+		}			
+
 		int[] connectorsSet = new int[] {0,0,0,0,0,0,0,0,0,0};
 //		quitOnPercentThreshold = UnityEngine.Random.Range(0, MINER_QUIT_ON_PERCENT_TYPES.Length);
 		for (int i=0; i<zone.roomList.Count; i++) { // first in array is entry room
@@ -268,33 +281,17 @@ public class Cave {
 				}
 			}
 			
-			Debug.Log ("Room " + room.id + " " + room.pos + " has cells: " + digCount + " j=" + j + " miners: " + roomMiners.Count);
+			Game.MyDebug ("Room " + room.id + " " + room.pos + " has cells: " + digCount + " j=" + j + " miners: " + roomMiners.Count);
 			foreach (RoomMiner miner in roomMiners) {
-				Debug.Log ("Miner " +  miner.id + " type: " + miner.type +" " + miner.connectedToNumberOfOtherMiners + " mineCount:"+miner.mineCount + " quitOn " + miner.quitOnMaxMined);
+				Game.MyDebug ("Miner " +  miner.id + " type: " + miner.type +" " + miner.connectedToNumberOfOtherMiners + " mineCount:"+miner.mineCount + " quitOn " + miner.quitOnMaxMined);
 			}
 			CreateRoomMesh(room);
+			room.roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureSet.x]);
+			room.roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureSet.y]);
+			room.roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureSet.z]);
 		}
 		roomMiners.Clear();
 		ResetDoors();
-		IntTriple textureSet;
-		if (play.zoneID < 8) {	
-			textureSet = textureCombinationsNormal[UnityEngine.Random.Range(0,textureCombinationsNormal.Length)];
-		} else if (play.zoneID < 24) {
-			textureSet = textureCombinationsNormal[UnityEngine.Random.Range(0,textureCombinationsNormal.Length)];
-			// replace one with hell textures
-			textureSet.SetFactor(UnityEngine.Random.Range(0,3), TEXTURES_HELL[UnityEngine.Random.Range(0,TEXTURES_HELL.Length)]);
-		} else {
-			textureSet = textureCombinationsHell[UnityEngine.Random.Range(0,textureCombinationsHell.Length)];
-			// replace one with normal textures
-			textureSet.SetFactor(UnityEngine.Random.Range(0,3), TEXTURES_NORMAL[UnityEngine.Random.Range(0,TEXTURES_NORMAL.Length)]);
-		}
-			
-/*		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[8]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[10]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[11]); */
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexWall", game.caveTextures[textureSet.x]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexBase", game.caveTextures[textureSet.y]);
-		zone.roomList[0].roomMesh.renderer.sharedMaterial.SetTexture("_TexCeil", game.caveTextures[textureSet.z]);
 	}
 
 	public void ResetDoors() {

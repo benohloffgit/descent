@@ -121,7 +121,7 @@ public class Bull : Enemy {
 				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		}
 		
-		clazz = "Bull " + mode;
+		//clazz = "Bull" + mode;
 	}
 
 }

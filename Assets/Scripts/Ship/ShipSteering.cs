@@ -163,85 +163,85 @@ public class ShipSteering {
 			} else {
 				directionBitwise = 0;
 				flyingBitwise = 0;
-				if (Input.GetKeyUp(KeyCode.A)) {
+/*				if (Input.GetButtonUp("a")) {
 					flyingBitwise &= ~flyingShiftLeft;
 				}
-				if (Input.GetKeyUp(KeyCode.D)) {
+				if (Input.GetButtonUp("d")) {
 					flyingBitwise &= ~flyingShiftRight;
-				}
-				if (Input.GetKeyUp(KeyCode.R)) {
+				}*/
+/*				if (Input.GetButtonUp("r")) {
 					flyingBitwise &= ~flyingShiftUp;
 				}
-				if (Input.GetKeyUp(KeyCode.F)) {
+				if (Input.GetButtonUp("f")) {
 					flyingBitwise &= ~flyingShiftDown;
-				}
+				}*/
 					
-				if (Input.GetKey(KeyCode.A)) {
+				if (Input.GetButton("a")) {
 					flyingBitwise |= flyingShiftLeft;
 					flyingBitwise &= ~flyingShiftRight;
 				}
-				if (Input.GetKey(KeyCode.D)) {
+				if (Input.GetButton("d")) {
 					flyingBitwise |= flyingShiftRight;
 					flyingBitwise &= ~flyingShiftLeft;
 				}
-				if (Input.GetKey(KeyCode.Y)) {
+				if (Input.GetButton("y")) {
 					flyingBitwise |= flyingShiftUp;
 					flyingBitwise &= ~flyingShiftDown;
 				}
-				if (Input.GetKey(KeyCode.X)) {
+				if (Input.GetButton("x")) {
 					flyingBitwise |= flyingShiftDown;
 					flyingBitwise &= ~flyingShiftUp;
 				}
 				
-				if (Input.GetKeyUp(KeyCode.W)) {
+/*				if (Input.GetButtonUp("w")) {
 					directionBitwise &= ~directionForward;
 				}
-				if (Input.GetKeyUp(KeyCode.S)) {
+				if (Input.GetButtonUp("s")) {
 					directionBitwise &= ~directionBackward;
-				}
-				if (Input.GetKey(KeyCode.W)) {
+				}*/
+				if (Input.GetButton("w")) {
 					directionBitwise |= directionForward;
 					directionBitwise &= ~directionBackward;
 				}
-				if (Input.GetKey(KeyCode.S)) {
+				if (Input.GetButton("s")) {
 					directionBitwise |= directionBackward;
 					directionBitwise &= ~directionForward;
 				}
 				
-				if (Input.GetKeyUp(KeyCode.LeftArrow)) {
+/*				if (Input.GetButtonUp(KeyCode.LeftArrow)) {
 					flyingBitwise &= ~flyingLeft;
 				}
-				if (Input.GetKeyUp(KeyCode.RightArrow)) {
+				if (Input.GetButtonUp(KeyCode.RightArrow)) {
 					flyingBitwise &= ~flyingRight;
 				}
-				if (Input.GetKeyUp(KeyCode.UpArrow)) {
+				if (Input.GetButtonUp(KeyCode.UpArrow)) {
 					flyingBitwise &= ~flyingUp;
 				}
-				if (Input.GetKeyUp(KeyCode.DownArrow)) {
+				if (Input.GetButtonUp(KeyCode.DownArrow)) {
 					flyingBitwise &= ~flyingDown;				
 				}
-				if (Input.GetKey(KeyCode.LeftArrow)) {
+					if (Input.GetButton(KeyCode.LeftArrow)) {
 					flyingBitwise |= flyingLeft;
 					flyingBitwise &= ~flyingRight;
 				}
-				if (Input.GetKey(KeyCode.RightArrow)) {
+				if (Input.GetButton(KeyCode.RightArrow)) {
 					flyingBitwise |= flyingRight;
 					flyingBitwise &= ~flyingLeft;
 				}
-				if (Input.GetKey(KeyCode.UpArrow)) {
+			if (Input.GetButton(KeyCode.UpArrow)) {
 					flyingBitwise |= flyingUp;
 					flyingBitwise &= ~flyingDown;				
 				}
-				if (Input.GetKey(KeyCode.DownArrow)) {
+				if (Input.GetButton(KeyCode.DownArrow)) {
 					flyingBitwise |= flyingDown;
 					flyingBitwise &= ~flyingUp;
-				}
+				}*/
 	
-				if (Input.GetKey(KeyCode.E)) {
+				if (Input.GetButton("e")) {
 					flyingBitwise |= flyingYawLeft;
 					flyingBitwise &= ~flyingYawRight;
 				}
-				if (Input.GetKey(KeyCode.Q)) {
+				if (Input.GetButton("q")) {
 					flyingBitwise |= flyingYawRight;
 					flyingBitwise &= ~flyingYawLeft;
 				}
@@ -328,8 +328,8 @@ public class ShipSteering {
 				ship.Yaw(Vector3.forward);
 			}
 			
-			if (!Input.GetKey(KeyCode.LeftAlt) && usesMouse) {
-				ship.Turn(Vector3.up * Input.GetAxis ("Mouse X"));
+			if (!Input.GetButton("left alt") && usesMouse) {
+				ship.Turn(Vector3.up * Input.GetAxis("Mouse X"));
 				ship.Turn(Vector3.right * Input.GetAxis("Mouse Y") * state.GetPreferenceMouseYAxisInverted());
 			}
 		}

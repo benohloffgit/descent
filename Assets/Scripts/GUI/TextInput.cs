@@ -18,13 +18,13 @@ public class TextInput : MonoBehaviour, Focussable {
 	private string cachedInputString;
 	private int maxLength;
 	private MyGUI myGUI;
-	private int containerID;
+//	private int containerID;
 	private float backgroundLeft;
 	private float textMargin;
 #if UNITY_ANDROID || UNITY_IPHONE
 	private TouchScreenKeyboard mobileKeyboard;
 #endif
-	private bool isInMobileKeyboardMode;
+//	private bool isInMobileKeyboardMode;
 	private TextInputDelegate textInputUpdated;
 	
 	public enum Cursor { Off=0, On=1, Waiting=2 }
@@ -37,13 +37,13 @@ public class TextInput : MonoBehaviour, Focussable {
 		editButtonMeshRenderer = editButton.GetComponentInChildren<MeshRenderer>();
 		editButtonMeshCollider = editButton.GetComponentInChildren<BoxCollider>();
 		focus = MyGUI.Focus.NoFocus;
-		isInMobileKeyboardMode = false;
+//		isInMobileKeyboardMode = false;
 	}
 
 	public void Initialize(MyGUI mG, string t, int cID, Transform backgrOff, Transform backgrOn, float tM, float size, MyGUI.GUIAlignment alignLeftRightCenter,
 						int mL, int textureID, Vector4 uvMapCursor, int textureIDText, int textureIDButton, Vector4 uvMapButton, TextInputDelegate tIU) {
 		myGUI = mG;
-		containerID = cID;
+//		containerID = cID;
 		backgroundOff = backgrOff;
 		backgroundOn = backgrOn;
 		textInputUpdated = tIU;

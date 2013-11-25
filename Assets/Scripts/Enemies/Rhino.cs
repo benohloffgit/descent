@@ -157,7 +157,7 @@ public class Rhino : Enemy {
 				ref dotProductLookAt, Movement.LookAtMode.IntoMovingDirection);
 		}
 		
-		clazz = "Rhino " + mode;
+		//clazz = "Rhino " + mode;
 	}
 
 }

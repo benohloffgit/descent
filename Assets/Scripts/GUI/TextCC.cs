@@ -6,7 +6,7 @@ public class TextCC : MonoBehaviour {
 	private Renderer myRenderer;
 	private MyGUI myGUI;
 	private MyGUI.GUIAlignment alignLeftRightCenter;
-	private Vector4 textMargin;
+//	private Vector4 textMargin;
 	private int containerID;
 	private bool noBreak;
 	
@@ -23,7 +23,7 @@ public class TextCC : MonoBehaviour {
 	
 	public void Initialize(MyGUI mG, string text, float size, int cID, Vector4 tM, MyGUI.GUIAlignment align, bool noBr, int textureID) {
 		myGUI = mG;
-		textMargin = tM;
+//		textMargin = tM;
 		containerID = cID;
 		alignLeftRightCenter = align;
 		noBreak = noBr;
@@ -61,7 +61,7 @@ public class TextCC : MonoBehaviour {
 //		if (!t.Contains("\n") && oversize > MAX_OVERSIZE) {
 			ShortenText(oversize);
 		}
-		Vector3 containerPos = myGUI.containers[containerID].transform.position;
+//		Vector3 containerPos = myGUI.containers[containerID].transform.position;
 		if (alignLeftRightCenter == MyGUI.GUIAlignment.Left) {
 			textMesh.Alignment = CCText.AlignmentMode.Left;
 			//transform.position = new Vector3(containerPos.x - (myGUI.containers[containerID].GetSize().x/2.0f - GetSize().x/2.0f) + textMargin.x, transform.position.y, transform.position.z);

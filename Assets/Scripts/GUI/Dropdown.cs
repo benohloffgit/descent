@@ -64,7 +64,7 @@ public class Dropdown : MonoBehaviour, Focussable {
 	
 	private void Open() {
 		openedBox = myGUI.AddContainer(containerID, myGUI.GetSize(), new Vector3(myGUI.GetCenter().x, myGUI.GetCenter().y, myGUI.containers[containerID].transform.position.z-2f), true);
-		TouchDelegate dimTouch = new TouchDelegate(DimTouch);
+//		TouchDelegate dimTouch = new TouchDelegate(DimTouch);
 		int dim = 0; // TODO !!!!!!!!!!!!!!!!!!! myGUI.AddDim(openedBox, dimTouch);
 		Vector3 openedBoxCenter = myGUI.containers[openedBox].GetCenter();
 		int radioContainer = myGUI.AddContainer(openedBox, new Vector3(myGUI.GetSize().x * DEFAULT_WIDTH, myGUI.GetSize().y * 0.5f, 1.0f), new Vector3(openedBoxCenter.x, openedBoxCenter.y + 0.3f, openedBoxCenter.z-2f), false);

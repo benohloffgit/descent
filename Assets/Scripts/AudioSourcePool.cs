@@ -9,7 +9,7 @@ public class AudioSourcePool {
 	//private Dictionary<int, PooledAudioSource> usedAudioSources;
 	private List<PooledAudioSource> audioSources;
 	
-	private static int MAX_AUDIO_SOURCES = 8;
+	private static int MAX_AUDIO_SOURCES = 16;
 	public static int NO_AUDIO_SOURCE = -1;
 	
 	private int nextAudioSource;

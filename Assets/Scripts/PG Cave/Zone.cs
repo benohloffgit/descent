@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Zone {
 	public int id;
 	public int dimension;
+	public int lightZone; // 7 or 8 means changing values
 	public Room[,,] rooms;
 	public List<Room> roomList;
 	public IntTriple position;
@@ -19,10 +20,11 @@ public class Zone {
 	
 	private static IntDouble[] ENTRYEXIT_POSITIONS = new IntDouble[] { new IntDouble(0,1), new IntDouble(1,1), new IntDouble(2,1), new IntDouble(1,0), new IntDouble(1,2) };
 
-	public Zone(int dimension_, Cave cave_, int id_) {
+	public Zone(int dimension_, Cave cave_, int id_, int lightZone_) {
 		dimension = dimension_;
 		cave = cave_;
 		id = id_;
+		lightZone = lightZone_;
 		rooms = new Room[dimension,dimension,dimension];
 		roomList = new List<Room>();
 		keyCells = new List<GridPosition>();
@@ -58,7 +60,7 @@ public class Zone {
 		if (cave.play.zoneID > Game.BEGINNER_ZONES) {
 			AddAdditionalRooms();
 		}			
-		Debug.Log ("Rooms generated " + roomList.Count);
+		Game.MyDebug ("Rooms generated " + roomList.Count);
 	}
 	
 	private void AddAdditionalRooms() {
@@ -84,7 +86,7 @@ public class Zone {
 			}
 		}
 		roomList.AddRange(newRoomList);
-		Debug.Log ("Added AddAdditionalRooms " + newRoomList.Count);
+		Game.MyDebug ("Added AddAdditionalRooms " + newRoomList.Count);
 	}
 
 	public Room GetRoom(GridPosition gP) {

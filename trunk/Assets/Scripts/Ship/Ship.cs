@@ -200,7 +200,7 @@ public class Ship : MonoBehaviour {
 		} else if (isCloakLoading) {
 			if (Time.fixedTime > cloakTimer + CLOAK_INTERVAL) {
 				isCloakLoading = false;
-				play.playGUI.SwitchShipBoost();
+				play.playGUI.SwitchShipCloak();
 			} else {
 				play.playGUI.cloakProgressBar.SetBar((Time.fixedTime-cloakTimer)/CLOAK_INTERVAL);
 			}
@@ -378,7 +378,7 @@ public class Ship : MonoBehaviour {
 		primaryWeapons[currentPrimaryWeapon].Mount();
 		firepowerPerSecond = primaryWeapons[currentPrimaryWeapon].damage;// / w1.frequency; // we assume 1 shot per second ALWAYS
 		play.playGUI.DisplayPrimaryWeapon(primaryWeapons[currentPrimaryWeapon]);		
-		Debug.Log ("adding primary weapon type: " + wType);
+		Game.MyDebug ("adding primary weapon type: " + wType);
 	}
 
 	public void AddSecondaryWeapon(int wType) {
@@ -396,7 +396,7 @@ public class Ship : MonoBehaviour {
 		highestSecondaryWeapon = currentSecondaryWeapon;
 		secondaryWeapons[currentSecondaryWeapon].Mount();
 		play.playGUI.DisplaySecondaryWeapon();
-//		Debug.Log ("adding secondary weapon type: " + wType);
+		Game.MyDebug ("adding secondary weapon type: " + wType);
 	}
 	
 	public void AddWeapons() {
@@ -405,13 +405,13 @@ public class Ship : MonoBehaviour {
 		currentSecondaryWeapon = -1;
 		for (int i=0; i < 8; i++) {
 			//if (play.zoneID > Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX[i]) {
-			if (game.state.HasPowerUp(Game.POWERUP_PRIMARY_WEAPON, i)) {
+			if (game.state.HasPowerUp(Game.POWERUP_PRIMARY_WEAPON, i) || Game.IS_DEBUG_ON && play.zoneID > Weapon.SHIP_PRIMARY_WEAPON_AVAILABILITY_MAX[i]) { //Game.IS_DEBUG_ON && 
 				AddPrimaryWeapon(i);
 				primaryWeapons[currentPrimaryWeapon].Unmount();
 			}	
 		}
 		for (int i=0; i < 4; i++) {
-			if (game.state.HasPowerUp(Game.POWERUP_SECONDARY_WEAPON, i)) {
+			if (game.state.HasPowerUp(Game.POWERUP_SECONDARY_WEAPON, i) || Game.IS_DEBUG_ON && play.zoneID > Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX[i]) {//Game.IS_DEBUG_ON && 
 //			if (play.zoneID > Weapon.SHIP_SECONDARY_WEAPON_AVAILABILITY_MAX[i]) {
 				AddSecondaryWeapon(i);
 				secondaryWeapons[currentSecondaryWeapon].Unmount();
@@ -444,8 +444,7 @@ public class Ship : MonoBehaviour {
 	
 	public void AddSpecials() {
 		for (int i=0; i<SPECIAL_NAMES.Length; i++) {
-//			if (play.zoneID > SPECIAL_POWER_UP[i]) {
-			if (game.state.HasPowerUp(Game.POWERUP_SPECIAL, i)) {
+			if (game.state.HasPowerUp(Game.POWERUP_SPECIAL, i) || Game.IS_DEBUG_ON && play.zoneID > SPECIAL_POWER_UP[i]) { //Game.IS_DEBUG_ON && 
 				hasSpecial[i] = true;
 			}
 		}
@@ -468,7 +467,7 @@ public class Ship : MonoBehaviour {
 		hullCLazz = NO_HULL;
 		for (int i=0; i<8; i++) {
 //			if (play.zoneID > HULL_POWER_UP[i]) {
-			if (game.state.HasPowerUp(Game.POWERUP_HULL, i)) {
+			if (game.state.HasPowerUp(Game.POWERUP_HULL, i) || Game.IS_DEBUG_ON && play.zoneID > HULL_POWER_UP[i]) {
 				hullCLazz = i;
 			}
 		}

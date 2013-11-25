@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Radio : MonoBehaviour {
 	private MyGUI myGUI;
-	private int containerID;
+//	private int containerID;
 	private Transform background;
 	private RadioButton button;
 	private TextCC text;
@@ -22,7 +22,7 @@ public class Radio : MonoBehaviour {
 		dropdownSelect = dS;
 		radioID = rID;
 		radioBox = rB;
-		containerID = cID;
+//		containerID = cID;
 		background = backgr;
 		text.Initialize(mG, t, size, cID, textMargin, alignLeftRightCenter, true, textureIDText);
 

@@ -139,6 +139,12 @@ public class RoomMesh : MonoBehaviour {
 		OcclusionArea oA = GetComponent<OcclusionArea>();
 		oA.size = new Vector3(Game.DIMENSION_ROOM, Game.DIMENSION_ROOM, Game.DIMENSION_ROOM);
 		oA.center = room.pos.GetVector3() * Game.DIMENSION_ROOM + oA.size/2f;
+		
+		if (room_.zone.lightZone == 7 || room_.zone.lightZone == 8)  {
+			meshFilter.renderer.material.SetFloat( "_Darkness", 0.025f);
+		} else {
+			meshFilter.renderer.material.SetFloat( "_Darkness", 0.1f);
+		}
 	}
 /*	
 	private int CountTriangles(Mesh mesh, int vertexIndex) {

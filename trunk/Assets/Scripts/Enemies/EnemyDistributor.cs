@@ -62,7 +62,7 @@ public class EnemyDistributor {
 //		Debug.Log ("Distributing enemies based on zoneID: " + zoneID + ", enemyCoreModelNum: "+ enemyCoreModelNum +", enemyCoreClazz: " + enemyCoreClazz +", enemyCoreModel: " +enemyCoreModel);
 		
 		int enemyClazzVariety = CalculateEnemyClazzVariety(play.zoneID);
-		Debug.Log ("enemyClazzVariety : " + enemyClazzVariety );
+		Game.MyDebug ("enemyClazzVariety : " + enemyClazzVariety );
 		
 		if (enemyClazzVariety > 0) {
 			float[] enemyClazzProbability = CalculateEnemyClazzProbability(enemyClazzVariety);
@@ -76,7 +76,7 @@ public class EnemyDistributor {
 				if (rand <= enemyClazzProbability[enemyClazz]) {
 					enemyEquivalentClazzAModel = CalculateEnemyEquivalentClazzAModel(play.zoneID, enemyClazz);
 					enemyModel = enemyEquivalentClazzAModel - CLAZZ_A_EQUIVALENT_MODEL[enemyClazz];
-					Debug.Log ("Enemy of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
+					Game.MyDebug ("Enemy of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
 					
 					if (play.zoneID > Game.BEGINNER_ZONES) {
 						spawnMinFrequency = SPAWN_MIN_FREQUENCY[1];
@@ -116,7 +116,7 @@ public class EnemyDistributor {
 						play.cave.zone.roomList[1].GetRandomExitPosition(),
 						1.0f, 1, 1, true);
 			enemiesAll++;
-			Debug.Log ("Boss of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
+			Game.MyDebug ("Boss of enemyClazz/enemyModel/equivalent A: " + enemyClazz+" / " +enemyModel + " / " + enemyEquivalentClazzAModel);
 		}
 		
 		DistributeOthers();
@@ -345,14 +345,14 @@ public class EnemyDistributor {
 				GameObject.Destroy(en.Current.Value.gameObject);
 			}
 		}
-		Debug.Log ("Cleared enemies " + i);
+		Game.MyDebug ("Cleared enemies " + i);
 		enemies.Clear();
-		i=0;
+/*		i=0;
 		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Enemy.TAG)) {
 			i++;
 			//GameObject.Destroy(gO);
 		}
-		Debug.Log ("Found enemies " + i);
+		Game.MyDebug ("Found enemies " + i);*/
 		foreach (GameObject gO in GameObject.FindGameObjectsWithTag(Spawn.TAG)) {
 			GameObject.Destroy(gO);
 		}

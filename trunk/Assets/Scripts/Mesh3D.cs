@@ -11,7 +11,7 @@ public class Mesh3D : MonoBehaviour {
 	public Vector2 uv0;
 	public Vector2 uv1;
 	
-	private static float UV_BORDER = 0.01f;
+//	private static float UV_BORDER = 0.01f;
 	
 	private Transform mesh;
 	

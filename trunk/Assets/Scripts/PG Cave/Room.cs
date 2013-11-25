@@ -12,7 +12,7 @@ public class Room {
 	public Dictionary<IntTriple, Cell> exits; // alignment, cell : alignment is other-me
 	public List<Cell> exitCells;
 	public RoomMesh roomMesh;
-	private Zone zone;
+	public Zone zone;
 	
 	public static float ENTRY_EXIT_CELL_MARKER = 2.0f;
 	

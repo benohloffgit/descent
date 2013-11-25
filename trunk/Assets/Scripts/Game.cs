@@ -83,6 +83,8 @@ public class Game : MonoBehaviour {
 	
 	public static Vector3 CELL_CENTER = new Vector3(0.5f,0.5f,0.5f);
 	
+	public static bool IS_DEBUG_ON = false;
+	
 	public static int SHIP = 0;
 	public static int ENEMY = 1;
 	
@@ -225,12 +227,13 @@ public class Game : MonoBehaviour {
 		DontDestroyOnLoad(this);
 		
 		Application.targetFrameRate = 60;
-		Application.runInBackground = true;
+		//Application.runInBackground = true;
 //		volume = AudioListener.volume;
 		showTrialDialog = false;
 //		Debug.Log ("MAX_VISIBILITY_DISTANCE " + MAX_VISIBILITY_DISTANCE);
 //		Screen.lockCursor = true;
 		//Screen.showCursor = false;
+//		StartCoroutine(OnApplicationFocus(true));
 	}
 	
 	public void Initialize(Mode m) {
@@ -308,35 +311,7 @@ public class Game : MonoBehaviour {
 			play.DispatchGameInput();
 		}
 	}
-	
-	public void PlayPayed() {
-		BuyProduct(0);
-	}
-			
-	public void RateIt() {
-		state.jniBridge.ShowMarketDialog();
-	}
-			
-	public void SwitchToProductAcquired(int id) {
-		if (id == 0) {
-			state.HideAd();
-			if (state.gameMode == Game.Mode.Menu) {
-				//menu.RemovePaygate();
-			}
-		} else {
-			state.ShowAd();
-			if (state.gameMode == Game.Mode.Menu) {
-				//menu.ShowPaygate();
-			}
-		}
-	}
-	
-	public void BuyProduct(int id) {
-		state.jniBridge.BuyProduct(id);
-//		state.jniBridge.TrackByFlurry(1);
-	//	Debug.Log("buying product");
-	}
-	
+				
 	public PrefabFactory CreateFromPrefab() {
 		return prefabFactory;
 	}
@@ -379,6 +354,25 @@ public class Game : MonoBehaviour {
 	public void PlaySound(Vector3 pos, int type) {
 		if (state.isSoundOn) {
 			audioSourcePool.PlaySound(pos, audioClips[type]);
+		}
+	}
+	
+/*	void OnApplicationFocus(bool focus) {
+//		Debug.Log ("focus " + focus);
+//		yield return null;
+		if (focus) {
+		} else {
+			if (!play.isPaused) {
+				play.SetPaused(true);
+				play.playGUI.ToQuit();
+			}
+			Screen.lockCursor = false;
+		}
+	}*/
+	
+	public static void MyDebug(string t) {
+		if (Game.IS_DEBUG_ON) {
+			Debug.Log(t);
 		}
 	}
 	

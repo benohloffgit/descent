@@ -111,7 +111,6 @@
      <Compile Include="Assets\Scripts\GUI\Touchable.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\GameInput.cs" />
-     <Compile Include="Assets\Scripts\JNIBridge.cs" />
      <Compile Include="Assets\Scripts\Menu.cs" />
      <Compile Include="Assets\Scripts\Mesh3D.cs" />
      <Compile Include="Assets\Scripts\PG Cave\Cave.cs" />

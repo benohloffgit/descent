@@ -18,12 +18,12 @@ public class MiniMap : MonoBehaviour {
 	private Transform[] roomConnectors = new Transform[MAX_EXITS];
 	private List<GameObject> breadcrumbs = new List<GameObject>();
 	
-	private static int MATERIAL_MINI_MAP = 0;
-	private static int MATERIAL_MINI_MAP_SHIP = 1;
+//	private static int MATERIAL_MINI_MAP = 0;
+//	private static int MATERIAL_MINI_MAP_SHIP = 1;
 	private static int MATERIAL_MINI_MAP_ROOM_NOT_ENTERED = 2;
 	private static int MATERIAL_MINI_MAP_ROOM_ENTERED = 3;
-	private static int MATERIAL_MINI_MAP_BREADCRUMB = 4;
-	private static int MATERIAL_MINI_MAP_ENTRYEXIT = 5;
+//	private static int MATERIAL_MINI_MAP_BREADCRUMB = 4;
+//	private static int MATERIAL_MINI_MAP_ENTRYEXIT = 5;
 		
 	private Mode mode;
 	private Follow follow;
@@ -250,7 +250,7 @@ public class MiniMap : MonoBehaviour {
 		if (mode == Mode.On) {
 			if (gameInput.isMobile) {
 			} else {
-				if (Input.GetKey(KeyCode.LeftAlt)) {
+				if (Input.GetButton("left alt")) {
 					Zoom();
 					Rotate();
 					if (follow == Follow.On) {

@@ -11,7 +11,7 @@ public class RadioButton : MonoBehaviour, Focussable {
 	private Transform meshOn;
 	private Renderer myRendererOff;
 	private Renderer myRendererOn;
-	private Game g;
+//	private Game g;
 	private MyGUI myGUI;
 	private MyGUI.GUIState state;
 	private Radio radio;
@@ -23,11 +23,7 @@ public class RadioButton : MonoBehaviour, Focussable {
 		myRendererOn = meshOn.renderer;
 		id = gameObject.GetInstanceID();
 	}
-	
-	void Start() {
-		g = GameObject.Find("/Game(Clone)").GetComponent<Game>();
-	}
-	
+		
 	public void Initialize(MyGUI mG, Radio r, int textureID, Vector4 uvMapRadioButtonOn, Vector4 uvMapRadioButtonOff, Vector3 scale) {
 		myGUI = mG;
 		radio = r;

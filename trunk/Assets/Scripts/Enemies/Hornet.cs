@@ -5,11 +5,17 @@ public class Hornet : Enemy {
 	private GridPosition targetPosition;
 	private Mode mode;
 	private int damage;
+	private float soundPlayedTime;
 
 	public enum Mode { ROAMING=0, ATTACKING=1 }
+
+	private static float SOUND_PLAY_DELTA = 2.5f;
+
+	private int myAudioSourceID = AudioSourcePool.NO_AUDIO_SOURCE;
 	
 	void Start() {
 		mode = Mode.ROAMING;
+		soundPlayedTime = Time.fixedTime;
 	}
 	
 	public override void InitializeWeapon(int mount, int type) {
@@ -30,6 +36,10 @@ public class Hornet : Enemy {
 		if (mode == Mode.ATTACKING) {
 			Vector3 direction = (play.GetShipPosition() - transform.position).normalized;
 			play.movement.MoveTo(myRigidbody, direction, movementForce);
+			if (Time.fixedTime > soundPlayedTime + SOUND_PLAY_DELTA) {
+				soundPlayedTime = Time.fixedTime;
+				myAudioSourceID = play.game.PlaySound(myAudioSourceID, transform, Game.SOUND_TYPE_VARIOUS, 64);
+			}
 		} else {
 			play.movement.Roam(myRigidbody, currentGridPosition, ref targetPosition, roamMinRange, roamMaxRange, movementForce);
 		}

@@ -28,20 +28,20 @@ public class ShipControl {
 		} else {
 			if (play.isPaused) {
 				if (play.mode == Play.Mode.Sokoban) {
-					if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)) {
+					if (Input.GetButtonDown("left") || Input.GetButtonDown("a")) {
 						play.sokoban.MovePlayer(IntDouble.LEFT);
-					} else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)) {
+					} else if (Input.GetButtonDown("right") || Input.GetButtonDown("d")) {
 						play.sokoban.MovePlayer(IntDouble.RIGHT);
-					} else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
+					} else if (Input.GetButtonDown("up") || Input.GetButtonDown("w")) {
 						play.sokoban.MovePlayer(IntDouble.UP);
-					} else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
+					} else if (Input.GetButtonDown("down") || Input.GetButtonDown("s")) {
 						play.sokoban.MovePlayer(IntDouble.DOWN);
 					}
-					if (Input.GetKeyDown(KeyCode.Escape)) {
+					if (Input.GetButtonDown("escape")) {
 						play.playGUI.ToQuitSokoban();
 					}
 				} else {
-					if (Input.GetKeyDown(KeyCode.Escape)) {
+					if (Input.GetButtonDown("escape")) {
 						if (play.game.gui.isInDialogMode) {
 							play.SetPaused(false);
 							play.playGUI.CloseDialog();
@@ -49,14 +49,14 @@ public class ShipControl {
 					}
 				}
 			} else {
-				if ((Input.GetKeyDown("mouse 0") || Input.GetKeyDown(KeyCode.LeftControl))) {
+				if ((Input.GetButtonDown("Fire1"))) {
 					if (ship.isCloakOn) {
 						play.playGUI.DisplayNotification(play.game.state.GetDialog(56));
 					} else {
 						ship.ShootPrimary();
 					}
 				}
-				if (Input.GetKeyDown("mouse 1") || Input.GetKeyDown(KeyCode.RightControl)) {
+				if (Input.GetButtonDown("Fire2")) {
 					if (ship.isCloakOn) {
 						play.playGUI.DisplayNotification(play.game.state.GetDialog(56));
 					} else {
@@ -67,12 +67,12 @@ public class ShipControl {
 						}
 					}
 				}
-				if (Input.GetKeyUp("mouse 1") || Input.GetKeyUp(KeyCode.RightControl)) {
+				if (Input.GetButtonUp("Fire2")) {
 					if (ship.currentSecondaryWeapon == Weapon.TYPE_CHARGED_MISSILE) {
 						ship.ShootSecondary();
 					}
 				}
-				if (Input.GetKeyDown(KeyCode.Escape)) {
+				if (Input.GetButtonDown("escape")) {
 					/*if (isPaused && !play.game.gui.isInDialogMode) {
 						SetPaused(false);
 						playGUI.CloseDialog();
@@ -80,69 +80,69 @@ public class ShipControl {
 					play.SetPaused(true);
 					play.playGUI.ToQuit();
 				}
-				if (Input.GetKeyDown(KeyCode.F5)) {
+				if (Input.GetButtonDown("f5")) {
 					play.SetPaused(true);
 					play.playGUI.ToHelp();
 				}
-				if (Input.GetKeyDown(KeyCode.B)) {
+				if (Input.GetButtonDown("b")) {
 					play.CreateBreadcrumb();
 				}
-				if (ship.hasSpecial[Ship.SPECIAL_LIGHTS] && Input.GetKeyDown(KeyCode.L)) {
+				if (ship.hasSpecial[Ship.SPECIAL_LIGHTS] && Input.GetButtonDown("l")) {
 					ship.SwitchHeadlight();
 				}
-				if (ship.hasSpecial[Ship.SPECIAL_BOOST] &&  Input.GetKeyDown(KeyCode.V)) {
+				if (ship.hasSpecial[Ship.SPECIAL_BOOST] &&  Input.GetButtonDown("v")) {
 					ship.BoostShip();
 				}
-				if (ship.hasSpecial[Ship.SPECIAL_CLOAK] &&  Input.GetKeyDown(KeyCode.C)) {
+				if (ship.hasSpecial[Ship.SPECIAL_CLOAK] &&  Input.GetButtonDown("c")) {
 					ship.CloakShip();
 				}
-				if (ship.hasSpecial[Ship.SPECIAL_INVINCIBLE] &&  Input.GetKeyDown(KeyCode.I)) {
+				if (ship.hasSpecial[Ship.SPECIAL_INVINCIBLE] &&  Input.GetButtonDown("i")) {
 					ship.InvincibleShip();
 				}
-				if (Input.GetKeyDown(KeyCode.M)) {
+				if (Input.GetButtonDown("m")) {
 					play.SwitchMiniMap();
 				}
-				if (Input.GetKeyDown(KeyCode.F)) {
+				if (Input.GetButtonDown("f")) {
 					play.SwitchMiniMapFollow();
 				}
-				if (Input.GetKeyDown(KeyCode.F10)) {
+				if (Input.GetButtonDown("f10")) {
 					ship.CycleCamera();
 				}
-				if (Input.GetKeyDown(KeyCode.PageUp)) {
+				if (Input.GetButtonDown("page up")) {
 					ship.CycleSecondary(1);
-				} else if (Input.GetKeyDown(KeyCode.PageDown)) {
+				} else if (Input.GetButtonDown("page down")) {
 					ship.CycleSecondary(-1);
 				}
-				if (!Input.GetKey(KeyCode.LeftAlt) && Input.GetAxis("Mouse ScrollWheel") != 0) {
+				if (!Input.GetButtonDown("left alt") && Input.GetAxis("Mouse ScrollWheel") != 0) {
 					ship.CyclePrimary(Mathf.FloorToInt(Mathf.Sign(Input.GetAxis("Mouse ScrollWheel"))));
 				}
-				if (Input.GetKeyDown(KeyCode.T) && play.isShipInPlayableArea) {
+				if (Input.GetButtonDown("t") && play.isShipInPlayableArea) {
 					ship.LaunchExitHelper();
 				}
-				if (Input.GetKeyDown(KeyCode.Alpha1)) {
+				if (Input.GetButtonDown("1")) {
 					ship.SetPrimary(Weapon.TYPE_GUN);
-				} else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+				} else if (Input.GetButtonDown("2")) {
 					ship.SetPrimary(Weapon.TYPE_LASER);
-				} else if (Input.GetKeyDown(KeyCode.Alpha3)) {
+				} else if (Input.GetButtonDown("3")) {
 					ship.SetPrimary(Weapon.TYPE_TWIN_GUN);
-				} else if (Input.GetKeyDown(KeyCode.Alpha4)) {
+				} else if (Input.GetButtonDown("4")) {
 					ship.SetPrimary(Weapon.TYPE_PHASER);
-				} else if (Input.GetKeyDown(KeyCode.Alpha5)) {
+				} else if (Input.GetButtonDown("5")) {
 					ship.SetPrimary(Weapon.TYPE_TWIN_LASER);
-				} else if (Input.GetKeyDown(KeyCode.Alpha6)) {
+				} else if (Input.GetButtonDown("6")) {
 					ship.SetPrimary(Weapon.TYPE_GAUSS);
-				} else if (Input.GetKeyDown(KeyCode.Alpha7)) {
+				} else if (Input.GetButtonDown("7")) {
 					ship.SetPrimary(Weapon.TYPE_TWIN_PHASER);
-				} else if (Input.GetKeyDown(KeyCode.Alpha8)) {
+				} else if (Input.GetButtonDown("8")) {
 					ship.SetPrimary(Weapon.TYPE_TWIN_GAUSS);
 				}
-				if (Input.GetKeyDown(KeyCode.F1)) {
+				if (Input.GetButtonDown("f1")) {
 					ship.SetSecondary(Weapon.TYPE_MISSILE);
-				} else if (Input.GetKeyDown(KeyCode.F2)) {
+				} else if (Input.GetButtonDown("f2")) {
 					ship.SetSecondary(Weapon.TYPE_GUIDED_MISSILE);
-				} else if (Input.GetKeyDown(KeyCode.F3)) {
+				} else if (Input.GetButtonDown("f3")) {
 					ship.SetSecondary(Weapon.TYPE_CHARGED_MISSILE);
-				} else if (Input.GetKeyDown(KeyCode.F4)) {
+				} else if (Input.GetButtonDown("f4")) {
 					ship.SetSecondary(Weapon.TYPE_DETONATOR_MISSILE);
 				}
 			}

@@ -8,7 +8,7 @@ public class LabelButton : MonoBehaviour, Focussable {
 	private NinePatch ninePatch;
 	private Transform mesh;
 	private Renderer backgroundRenderer;
-	private Renderer textRenderer;
+//	private Renderer textRenderer;
 	private TextCC text;
 	private MyGUI myGUI;
 	
@@ -16,7 +16,7 @@ public class LabelButton : MonoBehaviour, Focussable {
 	
 	void Awake() {
 		text = GetComponentInChildren<TextCC>();
-		textRenderer = text.renderer;
+//		textRenderer = text.renderer;
 		id = gameObject.GetInstanceID();
 	}
 		

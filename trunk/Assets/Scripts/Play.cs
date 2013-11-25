@@ -30,6 +30,7 @@ public class Play : MonoBehaviour {
 	public string storyChapter;
 	public bool hasDied;
 	private float nextAtmoSoundTime;
+	private bool isInProcessOfRestartingZone;
 	
 	public GridPosition placeShipBeforeExitDoor;
 	public GridPosition placeShipBeforeSecretChamberDoor;
@@ -73,8 +74,8 @@ public class Play : MonoBehaviour {
 	private static Vector3 GEYSIR_POSITION = new Vector3(0f, 0f, 0.25f);
 	private static int MAX_SHOT_TRAIL_RENDERERS = 20;
 	private static int MAX_MISSILE_EXHAUST_RENDERERS = 5;
-	private static float ATMO_SOUND_INTERVAL_MIN = 30f;
-	private static float ATMO_SOUND_INTERVAL_MAX = 120f;
+	private static float ATMO_SOUND_INTERVAL_MIN = 120f;
+	private static float ATMO_SOUND_INTERVAL_MAX = 180f;
 
 	public enum Mode { Normal=0, Sokoban=1 }
 
@@ -86,6 +87,7 @@ public class Play : MonoBehaviour {
 	public void Initialize(Game g) {
 		game = g;
 		state = game.state;
+		isInProcessOfRestartingZone = false;
 		isShipInvincible = false;
 		isMiniMapOn = false;
 		isMiniMapFollowOn = false;
@@ -140,6 +142,7 @@ public class Play : MonoBehaviour {
 	}
 	
 	void OnGUI() {
+		if (Game.IS_DEBUG_ON) {
 //		if (!isPaused) {
 			GUI.Label(new Rect (20,Screen.height-90,500,80),
 					"Active-Living-All: " + enemyDistributor.enemiesActive +"--"+ enemyDistributor.enemiesLiving +"--"+ enemyDistributor.enemiesAll);
@@ -166,6 +169,7 @@ public class Play : MonoBehaviour {
 				e.Use();
 			}
 		}*/
+		}
    	}
 	
 	void Update() {
@@ -181,8 +185,17 @@ public class Play : MonoBehaviour {
 				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
 			}
 			if (Input.GetKeyDown(KeyCode.F7)) {	
-				ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
-				SokobanSolved();
+/*				if (Screen.lockCursor) {
+					Screen.showCursor = true;
+					Screen.lockCursor = false;
+				} else {
+					Screen.showCursor = false;
+					Screen.lockCursor = true;
+				}*/
+				ship.Heal(100);
+				ship.Shield(100);
+				//ship.transform.position = cave.GetPositionFromGrid(placeShipBeforeSecretChamberDoor);
+				//SokobanSolved();
 			}
 			if (Input.GetKeyDown(KeyCode.F8)) {	
 				KeyFound(CollecteableKey.TYPE_SILVER);
@@ -237,12 +250,14 @@ public class Play : MonoBehaviour {
 	}
 
 	private void StartZone() {
+		isInProcessOfRestartingZone = false;
 		shipHitRatio = 0;
 		enemyHitRatio = 0;
 		isShipInPlayableArea = false;
-		Debug.Log (" ------------------------------- Cave Seed: " + state.GetPreferenceCaveSeed());
+		Game.MyDebug (" ------------------------------- Cave Seed: " + state.GetPreferenceCaveSeed());
 		if (hasDied) {
 			cave.ResetDoors();
+			ship.hasBeenInvincibleInThisZone = false;
 			playGUI.Reset();
 			if (isKeyCollected[CollecteableKey.TYPE_SILVER]) {
 				KeyFound(CollecteableKey.TYPE_SILVER);
@@ -251,12 +266,14 @@ public class Play : MonoBehaviour {
 				KeyFound(CollecteableKey.TYPE_GOLD);
 			}
 			ship.Reset();
+			playGUI.ResetShipSpecials();
 			miniMap.Reset();
 			playGUI.ToHasDied();
 		} else {
 			trianglesUsedForWallPlacement = new List<int>();
+			int lightZone = ConfigureLighting();
 			UnityEngine.Random.seed = state.GetPreferenceCaveSeed();
-			cave.AddZone(zoneID);
+			cave.AddZone(zoneID, lightZone);
 			UnityEngine.Random.seed = botSeed;
 			isKeyCollected = new bool[] {false, false};
 			collecteablesDistributor.Reset();
@@ -269,8 +286,8 @@ public class Play : MonoBehaviour {
 			playGUI.Reset();
 			storyChapter = (Resources.Load("Story/EN/" + zoneID, typeof(TextAsset)) as TextAsset).text;
 			playGUI.ToStory();
-			//ConfigureLighting();
 			ship.Reset();
+			playGUI.ResetShipSpecials();
 			miniMap.Reset();
 			SetPaused(true);
 		}
@@ -279,12 +296,19 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void ZoneCompleted() {
-		hasDied = false;
-		state.SetPreferenceSokobanSolved(false);
-		EndZone(false);
-		NextZone();
-		StartCoroutine(DelayedStartZone());
-
+		if (!isInProcessOfRestartingZone) {
+			hasDied = false;
+			state.SetPreferenceSokobanSolved(false);
+			EndZone(false);
+			if (zoneID < 31) {
+				NextZone();
+				isInProcessOfRestartingZone = true;
+				StartCoroutine(DelayedStartZone(0.5f));
+			} else {
+				storyChapter = (Resources.Load("Story/EN/" + (zoneID+1), typeof(TextAsset)) as TextAsset).text;
+				playGUI.ToGameEnd();
+			}
+		}
 		// 1 Level Demo
 //		playGUI.To1LevelDemoEnd();
 }
@@ -295,10 +319,13 @@ public class Play : MonoBehaviour {
 	}
 	
 	public void RepeatZone() {
-		hasDied = true;
-		EndZone(false);
-		ship.SetHealthAndShield();
-		StartCoroutine(DelayedStartZone());
+		if (!isInProcessOfRestartingZone) {	
+			hasDied = true;
+			EndZone(false);
+			ship.SetHealthAndShield();
+			isInProcessOfRestartingZone = true;
+			StartCoroutine(DelayedStartZone(0.5f));
+		}
 	}
 	
 	private void EndZone(bool isAborted) {
@@ -320,13 +347,8 @@ public class Play : MonoBehaviour {
 		SetPaused(true);
 	}
 	
-	IEnumerator DelayedStartZone() {
-//		Debug.Log ("DelayedStartZone");
-		float start = Time.realtimeSinceStartup;
-		while (Time.realtimeSinceStartup < start + 0.5f) {
-//			Debug.Log ("returning null");
-			yield return null;
-		}
+	IEnumerator DelayedStartZone(float waitTime) {
+		yield return new WaitForSeconds(waitTime);
 //		Debug.Log ("DelayedStartZone end");
 		StartZone();
 	}
@@ -559,7 +581,7 @@ public class Play : MonoBehaviour {
 	public bool AddMissile(int type, int amount) {
 		// order is highest first
 		if (ship.secondaryWeapons[type].ammunition < Game.MAX_MISSILE_AMMO) {
-			ship.secondaryWeapons[type].ammunition += amount;
+			ship.secondaryWeapons[type].ammunition = Mathf.Min(ship.secondaryWeapons[type].ammunition+amount, Game.MAX_MISSILE_AMMO);
 			playGUI.DisplaySecondaryWeapon();
 			ship.PlaySound(Game.SOUND_TYPE_VARIOUS, 37);
 			return true;
@@ -655,20 +677,22 @@ public class Play : MonoBehaviour {
 		return new Vector3(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value) * ((UnityEngine.Random.Range(0,2) == 0) ? 1 : -1);
 	}
 	
-	private void ConfigureLighting() {
+	private int ConfigureLighting() {
 		lightsHolder.rotation = Quaternion.identity;
 		lightsHolder.Rotate(UnityEngine.Random.value*360f,UnityEngine.Random.value*360f,UnityEngine.Random.value*360f);
 		int lightZone = zoneID % 10;
+//		Debug.Log (lightZone);
 		if (lightZone >= 7 && lightZone <= 8) {
-			lightZone = 2-(8-lightZone); // 1-2
+			int newLightZone = 2-(8-lightZone); // 1-2
 			for (int i=0; i<caveLights.Length; i++) {
-				caveLights[i].intensity = 1.0f - (0.45f*lightZone);
+				caveLights[i].intensity = 1.0f - (0.45f*newLightZone);
 			}
 		} else {
 			for (int i=0; i<caveLights.Length; i++) {
 				caveLights[i].intensity = 1.0f;
 			}
 		}
+		return lightZone;
 	}
 	
 	public void SetPaused(bool toPaused) {

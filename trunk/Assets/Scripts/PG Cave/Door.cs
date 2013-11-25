@@ -17,7 +17,7 @@ public class Door : MonoBehaviour {
 	private Play play;
 	private int type;
 	private bool isShut;
-	private int myAudioSourceID = AudioSourcePool.NO_AUDIO_SOURCE;
+//	private int myAudioSourceID = AudioSourcePool.NO_AUDIO_SOURCE;
 	
 	void Awake() {
 		doorCollider = GetComponentInChildren<BoxCollider>();

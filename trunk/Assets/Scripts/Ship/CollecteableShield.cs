@@ -13,7 +13,7 @@ public class CollecteableShield : Collecteable {
 	}
 
 	public override void DispatchFixedUpdate() {
-		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
+//		Vector3 isShipVisible =  play.ship.IsVisibleFrom(transform.position);
 //		if (isShipVisible != Vector3.zero) {
 		if (transform.renderer.isVisible) {
 //		if (isShipVisible != Vector3.zero || (!play.isShipInPlayableArea || play.GetRoomOfShip().id == play.cave.secretCaveRoomID)) {
